@@ -6,3 +6,9 @@ git_repository(
     tag = "release-1.8.1",
 )
 
+git_repository(
+    name = "compilecommands",
+    remote = "https://github.com/grailbio/bazel-compilation-database",
+    tag = "0.3.5",
+)
+
