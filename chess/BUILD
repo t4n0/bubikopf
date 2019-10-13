@@ -10,7 +10,7 @@ cc_library(
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
     deps = [
-        "//algorithm:alpha_beta",
+        "//alpha_beta",
     ],
 )
 
@@ -52,7 +52,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":chess",
-        "//algorithm:alpha_beta",
+        "//alpha_beta",
     ],
 )
 
