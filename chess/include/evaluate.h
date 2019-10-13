@@ -2,7 +2,7 @@
 #define CHESS_EVALUATE_H
 
 #include <chess/state.h>
-#include <game_tree/minimax.h>
+#include <alpha_beta/minimax.h>
 
 namespace Chess {
 const std::map<Piece, float> PIECE_VALUES{

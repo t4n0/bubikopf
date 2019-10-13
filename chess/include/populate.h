@@ -2,7 +2,7 @@
 #define CHESS_POPULATE_H
 
 #include <chess/state.h>
-#include <game_tree/minimax.h>
+#include <alpha_beta/minimax.h>
 
 namespace Chess {
 namespace detail {

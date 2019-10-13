@@ -2,7 +2,7 @@
 #define CHESS_STATE_H
 
 #include <chess/basic_types.h>
-#include <game_tree/minimax.h>
+#include <alpha_beta/minimax.h>
 
 #include <algorithm>
 #include <iostream>

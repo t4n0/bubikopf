@@ -1,17 +1,17 @@
 cc_library(
-    name = "game_tree",
+    name = "alpha_beta",
     hdrs = [
         "include/evaluation.h",
         "include/minimax.h",
     ],
     copts = ["-std=c++17"],
-    include_prefix = "game_tree",
+    include_prefix = "alpha_beta",
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
 )
 
 cc_test(
-    name = "game_tree_unit_tests",
+    name = "alpha_beta_unit_tests",
     srcs = [
         "test/evaluation_unit_tests.cpp",
         "test/minimax_abstract_examples.h",
@@ -20,7 +20,7 @@ cc_test(
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = [
-        ":game_tree",
+        ":alpha_beta",
         "@googletest//:gtest_main",
     ],
 )

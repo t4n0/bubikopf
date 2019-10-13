@@ -1,4 +1,4 @@
-#include <game_tree/evaluation.h>
+#include <alpha_beta/evaluation.h>
 
 #include <gtest/gtest.h>
 
