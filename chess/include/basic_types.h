@@ -1,6 +1,8 @@
 #ifndef CHESS_BASIC_TYPES_H
 #define CHESS_BASIC_TYPES_H
 
+#include <alpha_beta/evaluation.h>
+
 #include <array>
 #include <iostream>
 #include <map>
@@ -62,6 +64,18 @@ const std::map<Rank, std::size_t> RankMap{
 
 const std::vector<File> FILES{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 const std::vector<Rank> RANKS{8, 7, 6, 5, 4, 3, 2, 1};
+
+inline bool IsAPieceOfSide(const Piece piece, const GameTree::Player side) {
+  if (piece == Piece::e) {
+    return false;
+  }
+
+  const bool piece_is_black{piece >= Piece::p && piece <= Piece::k};
+  const bool piece_is_white{piece >= Piece::P && piece <= Piece::K};
+
+  return (piece_is_black && side == GameTree::Player::min) ||
+         (piece_is_white && side == GameTree::Player::max);
+};
 
 struct GetCoveredColumnsVisitor {
   int operator()(const Piece /*unused*/) { return 1; }

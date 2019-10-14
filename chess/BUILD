@@ -29,7 +29,10 @@ cc_library(
 
 cc_test(
     name = "chess_unit_tests",
-    srcs = ["test/state_unit_tests.cpp"],
+    srcs = [
+        "test/basic_types_unit_tests.cpp",
+        "test/state_unit_tests.cpp",
+    ],
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = [
