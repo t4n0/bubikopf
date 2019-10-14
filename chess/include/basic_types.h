@@ -136,8 +136,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Code code) {
   return stream;
 }
 
-inline std::ostream& operator<<(std::ostream& stream,
-                                const CodedRank& codes) {
+inline std::ostream& operator<<(std::ostream& stream, const CodedRank& codes) {
   stream << "size " << codes.size() << '\n';
   for (auto code : codes) {
     stream << code << ' ';
