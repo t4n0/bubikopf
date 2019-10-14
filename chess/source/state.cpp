@@ -41,7 +41,7 @@ AffectedCode GetAffectedCode(const CodedRank& rank, const int column) {
 }
 
 CodedRank EncodePiece(const Code code_prior, const int foregoing_column,
-                          const Piece piece, const int column) {
+                      const Piece piece, const int column) {
   CodedRank codes_posterior{};
   const int column_diff_foregoing = column - foregoing_column - 1;
   const int column_diff_following =
@@ -58,8 +58,8 @@ CodedRank EncodePiece(const Code code_prior, const int foregoing_column,
 }
 
 CodedRank MergeCodes(const CodedRank& codes_prior,
-                         const std::size_t idx_insertion,
-                         const CodedRank& codes_insertion) {
+                     const std::size_t idx_insertion,
+                     const CodedRank& codes_insertion) {
   CodedRank codes_posterior{};
 
   std::copy(begin(codes_prior),
@@ -114,8 +114,8 @@ void State::SetSquareTo(const File file, const Rank rank, const Piece piece) {
 
   const AffectedCode affected_code{GetAffectedCode(codes, column)};
   const CodedRank codes_insertion{EncodePiece(codes.at(affected_code.idx),
-                                                  affected_code.foregoing_file,
-                                                  piece, column)};
+                                              affected_code.foregoing_file,
+                                              piece, column)};
   CodedRank codes_posterior{
       MergeCodes(codes, affected_code.idx, codes_insertion)};
 
