@@ -1,13 +1,12 @@
 #ifndef CHESS_POPULATE_H
 #define CHESS_POPULATE_H
 
-#include <chess/state.h>
 #include <alpha_beta/minimax.h>
+#include <chess/state.h>
 
 namespace Chess {
 namespace detail {
 
-std::vector<NodePtr> find_pawn_capture_moves(const Node& node);
 std::vector<NodePtr> find_legal_moves(const Node& node);
 
 }  // namespace detail
