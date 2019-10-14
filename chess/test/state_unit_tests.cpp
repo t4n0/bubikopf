@@ -37,9 +37,9 @@ TEST_P(ChessStateTest, GetPieceFrom_FileAWhiteRooksOnly) {
 TEST_P(ChessStateTest, GetPieceFrom_Rank6BlackKnightsOnly) {
   const Rank rank_of_knights{6};
 
-  state_.board_.at(RankMap.at(rank_of_knights)).resize(8);
+  state_.board_.at(MapToRow[rank_of_knights]).resize(8);
   for (std::size_t idx{0}; idx < 8; ++idx) {
-    state_.board_.at(RankMap.at(rank_of_knights)).at(idx) = Piece::n;
+    state_.board_.at(MapToRow[rank_of_knights]).at(idx) = Piece::n;
   }
 
   if (GetParam().rank_ == rank_of_knights) {
@@ -57,12 +57,12 @@ TEST_P(ChessStateTest, GetPieceFrom_BlackKingD2andWhiteKingE5) {
   const File file_white_king{'e'};
   const Rank rank_white_king{5};
 
-  state_.board_.at(RankMap.at(rank_black_king)).at(0) = 3;
-  state_.board_.at(RankMap.at(rank_black_king)).emplace_back(Piece::k);
-  state_.board_.at(RankMap.at(rank_black_king)).emplace_back(4);
-  state_.board_.at(RankMap.at(rank_white_king)).at(0) = 4;
-  state_.board_.at(RankMap.at(rank_white_king)).emplace_back(Piece::K);
-  state_.board_.at(RankMap.at(rank_white_king)).emplace_back(3);
+  state_.board_.at(MapToRow[rank_black_king]).at(0) = 3;
+  state_.board_.at(MapToRow[rank_black_king]).emplace_back(Piece::k);
+  state_.board_.at(MapToRow[rank_black_king]).emplace_back(4);
+  state_.board_.at(MapToRow[rank_white_king]).at(0) = 4;
+  state_.board_.at(MapToRow[rank_white_king]).emplace_back(Piece::K);
+  state_.board_.at(MapToRow[rank_white_king]).emplace_back(3);
 
   if (GetParam().file_ == file_black_king &&
       GetParam().rank_ == rank_black_king) {

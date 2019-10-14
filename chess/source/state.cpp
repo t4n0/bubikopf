@@ -3,7 +3,7 @@
 namespace Chess {
 
 Piece State::GetPieceFrom(const File file, const Rank rank) const {
-  const CodedRank& codes{board_.at(RankMap.at(rank))};
+  const CodedRank& codes{board_.at(MapToRow[rank])};
   const int column{MapToColumn[file]};
 
   int column_counter{0};
@@ -109,7 +109,7 @@ CodedRank MergeCodes(const CodedRank& codes_prior,
 }  // namespace
 
 void State::SetSquareTo(const File file, const Rank rank, const Piece piece) {
-  CodedRank& codes{board_.at(RankMap.at(rank))};
+  CodedRank& codes{board_.at(MapToRow[rank])};
   const int column{MapToColumn[file]};
 
   const AffectedCode affected_code{GetAffectedCode(codes, column)};

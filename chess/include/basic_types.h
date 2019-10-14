@@ -75,9 +75,16 @@ const ConstMapWrapperForSyntaxSugar MapToColumn{
                         {'h', 8}},
 };
 
-const std::map<Rank, std::size_t> RankMap{
-    {1, 7}, {2, 6}, {3, 5}, {4, 4}, {5, 3}, {6, 2}, {7, 1}, {8, 0},
-};
+const ConstMapWrapperForSyntaxSugar MapToRow{std::map<Rank, std::size_t>{
+    {1, 7},
+    {2, 6},
+    {3, 5},
+    {4, 4},
+    {5, 3},
+    {6, 2},
+    {7, 1},
+    {8, 0},
+}};
 
 const std::vector<File> FILES{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 const std::vector<Rank> RANKS{8, 7, 6, 5, 4, 3, 2, 1};
