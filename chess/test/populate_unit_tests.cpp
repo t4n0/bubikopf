@@ -9,7 +9,7 @@ namespace {
 class FindLegalMovesTest : public detail::EmptyBoardFixture {};
 
 TEST_F(FindLegalMovesTest, MustNotThrow) {
-  std::unique_ptr<Node> unit{std::make_unique<Node>(unit_)};
+  std::unique_ptr<Node> unit{std::make_unique<Node>(state_)};
   unit->children_ = detail::find_legal_moves(*unit);
 }
 

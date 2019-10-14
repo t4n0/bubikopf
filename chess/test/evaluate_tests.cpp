@@ -16,12 +16,12 @@ TEST_P(EvaluateTest, AllMustHold) {
   const PlacedPieces& placed_pieces{std::get<PlacedPieces>(GetParam())};
   std::for_each(begin(placed_pieces), end(placed_pieces),
                 [this](const PlacedPiece& placed_piece) {
-                  unit_.SetSquareTo(placed_piece.coordinate_.file_,
-                                    placed_piece.coordinate_.rank_,
-                                    placed_piece.piece_);
+                  state_.SetSquareTo(placed_piece.coordinate_.file_,
+                                     placed_piece.coordinate_.rank_,
+                                     placed_piece.piece_);
                 });
 
-  const GameTree::Evaluation returned_evaluation{GameTree::evaluate(unit_)};
+  const GameTree::Evaluation returned_evaluation{GameTree::evaluate(state_)};
 
   const GameTree::Evaluation& expected_evaluation{
       std::get<GameTree::Evaluation>(GetParam())};

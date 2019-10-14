@@ -25,10 +25,10 @@ inline void SetUpEmptyBoard(BoardContainer& board) {
 
 class EmptyBoardFixture : public ::testing::Test {
  public:
-  void SetUp() { SetUpEmptyBoard(unit_.board_); }
-  void TearDown() { EXPECT_TRUE(BoardIsConsistent(unit_.board_)); }
+  void SetUp() { SetUpEmptyBoard(state_.board_); }
+  void TearDown() { EXPECT_TRUE(BoardIsConsistent(state_.board_)); }
 
-  State unit_{};
+  State state_{};
 };
 
 }  // namespace detail
