@@ -4,7 +4,7 @@ namespace Chess {
 
 Piece State::GetPieceFrom(const File file, const Rank rank) const {
   const CodedRank& codes{board_.at(RankMap.at(rank))};
-  const int column{FileMap.at(file)};
+  const int column{MapToColumn[file]};
 
   int column_counter{0};
   for (const Code& code : codes) {
@@ -110,7 +110,7 @@ CodedRank MergeCodes(const CodedRank& codes_prior,
 
 void State::SetSquareTo(const File file, const Rank rank, const Piece piece) {
   CodedRank& codes{board_.at(RankMap.at(rank))};
-  const int column{FileMap.at(file)};
+  const int column{MapToColumn[file]};
 
   const AffectedCode affected_code{GetAffectedCode(codes, column)};
   const CodedRank codes_insertion{EncodePiece(codes.at(affected_code.idx),

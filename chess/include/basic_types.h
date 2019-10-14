@@ -53,9 +53,26 @@ struct PlacedPiece {
 };
 using PlacedPieces = std::vector<PlacedPiece>;
 
-const std::map<File, int> FileMap{
-    {'a', 1}, {'b', 2}, {'c', 3}, {'d', 4},
-    {'e', 5}, {'f', 6}, {'g', 7}, {'h', 8},
+template <typename From, typename To>
+class ConstMapWrapperForSyntaxSugar {
+ public:
+  explicit ConstMapWrapperForSyntaxSugar(std::map<From, To>&& map)
+      : map_(std::move(map)) {}
+  To operator[](const From from) const { return map_.at(from); }
+
+ private:
+  std::map<From, To> map_;
+};
+
+const ConstMapWrapperForSyntaxSugar MapToColumn{
+    std::map<File, int>{{'a', 1},
+                        {'b', 2},
+                        {'c', 3},
+                        {'d', 4},
+                        {'e', 5},
+                        {'f', 6},
+                        {'g', 7},
+                        {'h', 8}},
 };
 
 const std::map<Rank, std::size_t> RankMap{
