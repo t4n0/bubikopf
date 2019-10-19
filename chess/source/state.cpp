@@ -2,18 +2,8 @@
 
 namespace Chess {
 
-Piece State::GetPieceFrom(const File file, const Rank rank) const {
-  const CodedRank& codes{board_.at(MapToRow[rank])};
-  const int column{MapToColumn[file]};
-
-  int column_counter{0};
-  for (const Code& code : codes) {
-    column_counter += GetCoveredColumns(code);
-    if (column_counter >= column) {
-      return GetPiece(code);
-    }
-  }
-  throw std::runtime_error{"GetPieceFrom failed."};
+Piece State::GetPieceFrom(const Column file, const Row rank) const {
+  board_.at()
 }
 
 namespace {

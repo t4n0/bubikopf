@@ -12,7 +12,8 @@
 
 namespace Chess {
 
-enum class Piece : int {
+enum class Piece {
+  e,  // empty square = default
   p,  // black pawn
   r,  // black rook
   n,  // black knight
@@ -25,148 +26,38 @@ enum class Piece : int {
   B,  // white bishop
   Q,  // white queen
   K,  // white king
-  e,  // empty square
 };
 
-const std::map<Piece, std::string> PieceAbbreviationMap{
-    {Piece::p, "p"}, {Piece::r, "r"}, {Piece::n, "n"}, {Piece::b, "b"},
-    {Piece::q, "q"}, {Piece::k, "k"}, {Piece::P, "P"}, {Piece::R, "R"},
-    {Piece::N, "N"}, {Piece::B, "B"}, {Piece::Q, "Q"}, {Piece::K, "K"},
-    {Piece::e, "_"},
-};
-
-using Code = std::variant<Piece, int>;
-using CodedRank = std::vector<Code>;
-using BoardContainer = std::array<CodedRank, 8>;
-using File = char;
-using Rank = int;
+using Column = int8_t;
+using Row = int8_t;
 
 struct Coordinate {
-  File file_{};
-  Rank rank_{};
+  Column col{};
+  Row row{};
 };
 using Coordinates = std::vector<Coordinate>;
 
+class Board {
+ public:
+  Piece Get(const Coordinate coor) const;
+  void Set(const Coordinate coor, const Piece piece);
+
+  std::array<std::array<Piece, 8>, 8> data_{};
+};
+
 struct PlacedPiece {
-  Coordinate coordinate_{};
-  Piece piece_{};
+  Coordinate coordinate{};
+  Piece piece{};
 };
 using PlacedPieces = std::vector<PlacedPiece>;
 
-template <typename From, typename To>
-class ConstMapWrapperForSyntaxSugar {
- public:
-  explicit ConstMapWrapperForSyntaxSugar(std::map<From, To>&& map)
-      : map_(std::move(map)) {}
-  To operator[](const From from) const { return map_.at(from); }
+bool IsAPieceOfSide(const Piece piece, const GameTree::Player side);
 
- private:
-  std::map<From, To> map_;
-};
+bool operator==(const Coordinate& a, const Coordinate& b);
+bool operator!=(const Coordinate& a, const Coordinate& b);
 
-const ConstMapWrapperForSyntaxSugar MapToColumn{
-    std::map<File, int>{{'a', 1},
-                        {'b', 2},
-                        {'c', 3},
-                        {'d', 4},
-                        {'e', 5},
-                        {'f', 6},
-                        {'g', 7},
-                        {'h', 8}},
-};
-
-const ConstMapWrapperForSyntaxSugar MapToRow{std::map<Rank, std::size_t>{
-    {1, 7},
-    {2, 6},
-    {3, 5},
-    {4, 4},
-    {5, 3},
-    {6, 2},
-    {7, 1},
-    {8, 0},
-}};
-
-const std::vector<File> FILES{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-const std::vector<Rank> RANKS{8, 7, 6, 5, 4, 3, 2, 1};
-
-inline bool IsAPieceOfSide(const Piece piece, const GameTree::Player side) {
-  if (piece == Piece::e) {
-    return false;
-  }
-
-  const bool piece_is_black{piece >= Piece::p && piece <= Piece::k};
-  const bool piece_is_white{piece >= Piece::P && piece <= Piece::K};
-
-  return (piece_is_black && side == GameTree::Player::min) ||
-         (piece_is_white && side == GameTree::Player::max);
-};
-
-struct GetCoveredColumnsVisitor {
-  int operator()(const Piece /*unused*/) { return 1; }
-  int operator()(const int value) { return value; }
-};
-inline int GetCoveredColumns(const Code& code) {
-  return std::visit(GetCoveredColumnsVisitor{}, code);
-}
-
-struct GetPieceVisitor {
-  Piece operator()(const Piece piece) { return piece; }
-  Piece operator()(const int /*unused*/) { return Piece::e; }
-};
-inline Piece GetPiece(const Code& code) {
-  return std::visit(GetPieceVisitor{}, code);
-}
-
-struct IsAPieceVisitor {
-  bool operator()(const Piece piece) { return piece != Piece::e; }
-  bool operator()(const int /*unused*/) { return false; }
-};
-inline bool IsAPiece(const Code& code) {
-  return std::visit(IsAPieceVisitor{}, code);
-}
-
-struct GetEmptySquaresVisitor {
-  int operator()(const Piece piece) { return int{piece == Piece::e}; }
-  int operator()(const int value) { return value; }
-};
-inline int GetEmptySquares(const Code& code) {
-  return std::visit(GetEmptySquaresVisitor{}, code);
-}
-
-struct SprintSquareCodeVisitor {
-  std::string operator()(const Piece piece) {
-    return PieceAbbreviationMap.at(piece);
-  }
-  std::string operator()(const int value) { return std::to_string(value); }
-};
-inline std::string SprintSquareCode(const Code& code) {
-  return std::visit(SprintSquareCodeVisitor{}, code);
-}
-
-inline bool operator==(const Coordinate& a, const Coordinate& b) {
-  return ((a.file_ == b.file_) && (a.rank_ == b.rank_));
-}
-inline bool operator!=(const Coordinate& a, const Coordinate& b) {
-  return !(a == b);
-}
-
-inline std::ostream& operator<<(std::ostream& stream, const Piece piece) {
-  stream << PieceAbbreviationMap.at(piece);
-  return stream;
-}
-
-inline std::ostream& operator<<(std::ostream& stream, const Code code) {
-  stream << SprintSquareCode(code);
-  return stream;
-}
-
-inline std::ostream& operator<<(std::ostream& stream, const CodedRank& codes) {
-  stream << "size " << codes.size() << '\n';
-  for (auto code : codes) {
-    stream << code << ' ';
-  }
-  return stream;
-}
+std::ostream& operator<<(std::ostream& stream, const Piece piece);
+std::ostream& operator<<(std::ostream& stream, const Board& piece);
 
 }  // namespace Chess
 

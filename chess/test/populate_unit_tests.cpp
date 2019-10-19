@@ -1,4 +1,3 @@
-#include <chess/board_test_helpers.h>
 #include <chess/populate.h>
 
 #include <gtest/gtest.h>

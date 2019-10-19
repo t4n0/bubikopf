@@ -1,4 +1,3 @@
-#include <chess/board_test_helpers.h>
 #include <chess/evaluate.h>
 
 #include <gtest/gtest.h>

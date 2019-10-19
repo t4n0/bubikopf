@@ -3,23 +3,24 @@
 #include <gtest/gtest.h>
 
 namespace Chess {
-
 namespace {
 
-TEST(Code, StreamOutputOperator_MustNotThrow) {
-  const Chess::Code a{Piece::K};
-  const Chess::Code b{Piece::e};
-  const Chess::Code c{1};
-  const Chess::Code d{8};
-
-  EXPECT_NO_THROW(std::cout << a << '\n');
-  EXPECT_NO_THROW(std::cout << b << '\n');
-  EXPECT_NO_THROW(std::cout << c << '\n');
-  EXPECT_NO_THROW(std::cout << d << '\n');
+TEST(Board, DefaultConstructedBoardIsFilledWithEmptyPieces) {
+  const Board board{};
+  for (const auto& row : board.data_) {
+    for (const auto piece : row) {
+      EXPECT_EQ(Piece::e, piece);
+    }
+  }
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
   EXPECT_NO_THROW(std::cout << Piece::B << '\n');
+}
+
+TEST(Board, StreamOutputOperator_MustNotThrow) {
+  const Board board{};
+  EXPECT_NO_THROW(std::cout << board << '\n');
 }
 
 TEST(IsAPieceOfSide, WhenBlacksTurnAndBlackPiece_ExpectTrue) {
@@ -61,5 +62,4 @@ TEST(IsAPieceOfSide, WhenWhitesTurnAndNotWhitePiece_ExpectFalse) {
 }
 
 }  // namespace
-
 }  // namespace Chess

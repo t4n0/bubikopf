@@ -1,4 +1,3 @@
-#include <chess/board_test_helpers.h>
 #include <chess/state.h>
 
 #include <gtest/gtest.h>
@@ -9,8 +8,7 @@ namespace Chess {
 
 namespace {
 
-class ChessStateTest : public Chess::detail::EmptyBoardFixture,
-                       public ::testing::WithParamInterface<Coordinate> {};
+class ChessStateTest : public ::testing::WithParamInterface<Coordinate> {};
 
 TEST_P(ChessStateTest, GetPieceFrom_EmptyBoard) {
   EXPECT_EQ(state_.GetPieceFrom(GetParam().file_, GetParam().rank_), Piece::e);

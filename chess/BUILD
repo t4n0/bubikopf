@@ -1,9 +1,11 @@
 cc_library(
     name = "chess",
-    srcs = ["source/state.cpp"],
+    srcs = [
+    #"source/state.cpp",
+    "source/basic_types.cpp"],
     hdrs = [
         "include/basic_types.h",
-        "include/state.h",
+        #"include/state.h",
     ],
     copts = ["-std=c++17"],
     include_prefix = "chess",
@@ -14,29 +16,15 @@ cc_library(
     ],
 )
 
-cc_library(
-    name = "board_test_helpers",
-    hdrs = ["test/board_test_helpers.h"],
-    copts = ["-std=c++17"],
-    include_prefix = "chess",
-    strip_include_prefix = "test",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":chess",
-        "@googletest//:gtest",
-    ],
-)
-
 cc_test(
     name = "chess_unit_tests",
     srcs = [
         "test/basic_types_unit_tests.cpp",
-        "test/state_unit_tests.cpp",
+        #"test/state_unit_tests.cpp",
     ],
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = [
-        ":board_test_helpers",
         ":chess",
         "@googletest//:gtest_main",
     ],

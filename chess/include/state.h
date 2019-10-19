@@ -1,8 +1,8 @@
 #ifndef CHESS_STATE_H
 #define CHESS_STATE_H
 
-#include <chess/basic_types.h>
 #include <alpha_beta/minimax.h>
+#include <chess/basic_types.h>
 
 #include <algorithm>
 #include <iostream>
@@ -11,8 +11,8 @@ namespace Chess {
 
 class State {
  public:
-  Piece GetPieceFrom(const File file, const Rank rank) const;
-  void SetSquareTo(const File file, const Rank rank, const Piece piece);
+  Piece GetPieceFrom(const Column file, const Row rank) const;
+  void SetSquareTo(const Column file, const Row rank, const Piece piece);
 
   // FEN example of starting position:
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
