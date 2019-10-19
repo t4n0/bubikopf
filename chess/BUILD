@@ -1,10 +1,12 @@
 cc_library(
     name = "chess",
     srcs = [
+        "source/populate.cpp",
         "source/state.cpp",
     ],
     hdrs = [
         "include/evaluate.h",
+        "include/populate.h",
         "include/state.h",
     ],
     copts = ["-std=c++17"],
@@ -18,6 +20,7 @@ cc_test(
     name = "chess_unit_tests",
     srcs = [
         "test/evaluate_tests.cpp",
+        "test/populate_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
     copts = ["-std=c++17"],
