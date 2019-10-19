@@ -1,7 +1,6 @@
 #include <chess/state.h>
 
 #include <map>
-#include <string>
 
 namespace Chess {
 
@@ -30,11 +29,11 @@ void Board::Set(const Coordinate coor, const Piece piece) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const Piece piece) {
-  const std::map<Piece, std::string> PieceAbbreviationMap{
-      {Piece::p, "p"}, {Piece::r, "r"}, {Piece::n, "n"}, {Piece::b, "b"},
-      {Piece::q, "q"}, {Piece::k, "k"}, {Piece::P, "P"}, {Piece::R, "R"},
-      {Piece::N, "N"}, {Piece::B, "B"}, {Piece::Q, "Q"}, {Piece::K, "K"},
-      {Piece::e, "_"},
+  const std::map<Piece, char> PieceAbbreviationMap{
+      {Piece::p, 'p'}, {Piece::r, 'r'}, {Piece::n, 'n'}, {Piece::b, 'b'},
+      {Piece::q, 'q'}, {Piece::k, 'k'}, {Piece::P, 'P'}, {Piece::R, 'R'},
+      {Piece::N, 'N'}, {Piece::B, 'B'}, {Piece::Q, 'Q'}, {Piece::K, 'K'},
+      {Piece::e, '_'},
   };
   stream << PieceAbbreviationMap.at(piece);
 
