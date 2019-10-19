@@ -12,13 +12,21 @@ bool operator==(const Coordinate& a, const Coordinate& b) {
 bool operator!=(const Coordinate& a, const Coordinate& b) { return !(a == b); }
 
 Piece Board::Get(const Coordinate coor) const {
-  return data_.at(static_cast<std::size_t>(coor.row))
-      .at(static_cast<std::size_t>(coor.col));
+  if (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8) {
+    return data_[static_cast<std::size_t>(coor.row)]
+                [static_cast<std::size_t>(coor.col)];
+  } else {
+    throw std::out_of_range{"Board::Get"};
+  }
 }
 
 void Board::Set(const Coordinate coor, const Piece piece) {
-  data_.at(static_cast<std::size_t>(coor.row))
-      .at(static_cast<std::size_t>(coor.col)) = piece;
+  if (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8) {
+    data_[static_cast<std::size_t>(coor.row)]
+         [static_cast<std::size_t>(coor.col)] = piece;
+  } else {
+    throw std::out_of_range{"Board::Set"};
+  }
 }
 
 std::ostream& operator<<(std::ostream& stream, const Piece piece) {

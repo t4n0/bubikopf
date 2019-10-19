@@ -16,6 +16,21 @@ TEST(Board, DefaultConstructedBoardIsFilledWithEmptyPieces) {
   }
 }
 
+TEST(Board, Set_ExpectBoundsCheck) {
+  Board board{};
+  EXPECT_NO_THROW(board.Get({3, 3}));
+  EXPECT_THROW(board.Get({-1, 3}), std::out_of_range);
+  EXPECT_THROW(board.Get({8, 3}), std::out_of_range);
+  EXPECT_THROW(board.Get({3, -1}), std::out_of_range);
+  EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
+
+  EXPECT_NO_THROW(board.Set({3, 3}, Piece::N));
+  EXPECT_THROW(board.Set({-1, 3}, Piece::N), std::out_of_range);
+  EXPECT_THROW(board.Set({8, 3}, Piece::N), std::out_of_range);
+  EXPECT_THROW(board.Set({3, -1}, Piece::N), std::out_of_range);
+  EXPECT_THROW(board.Set({3, 8}, Piece::N), std::out_of_range);
+}
+
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
   EXPECT_NO_THROW(std::cout << Piece::B << '\n');
 }
