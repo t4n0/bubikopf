@@ -1,11 +1,9 @@
 cc_library(
     name = "chess",
     srcs = [
-    #"source/state.cpp",
-    "source/basic_types.cpp"],
+    "source/state.cpp"    ],
     hdrs = [
-        "include/basic_types.h",
-        #"include/state.h",
+        "include/state.h",
     ],
     copts = ["-std=c++17"],
     include_prefix = "chess",
@@ -19,8 +17,7 @@ cc_library(
 cc_test(
     name = "chess_unit_tests",
     srcs = [
-        "test/basic_types_unit_tests.cpp",
-        #"test/state_unit_tests.cpp",
+        "test/state_unit_tests.cpp",
     ],
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
