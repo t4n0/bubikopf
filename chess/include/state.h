@@ -34,11 +34,17 @@ using Row = int8_t;
 struct Coordinate {
   Column col{};
   Row row{};
+
+  Coordinate& operator+=(const Coordinate& rhs);
+  Coordinate& operator-=(const Coordinate& rhs);
 };
 using Coordinates = std::vector<Coordinate>;
 
 bool operator==(const Coordinate& a, const Coordinate& b);
 bool operator!=(const Coordinate& a, const Coordinate& b);
+
+Coordinate operator+(Coordinate a, const Coordinate& b);
+Coordinate operator-(Coordinate a, const Coordinate& b);
 
 class Board {
  public:

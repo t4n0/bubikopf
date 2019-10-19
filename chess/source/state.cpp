@@ -10,6 +10,26 @@ bool operator==(const Coordinate& a, const Coordinate& b) {
 
 bool operator!=(const Coordinate& a, const Coordinate& b) { return !(a == b); }
 
+Coordinate& Coordinate::operator+=(const Coordinate& rhs) {
+  col += rhs.col;
+  row += rhs.row;
+  return *this;
+}
+
+Coordinate& Coordinate::operator-=(const Coordinate& rhs) {
+  col -= rhs.col;
+  row -= rhs.row;
+  return *this;
+}
+
+Coordinate operator+(Coordinate lhs, const Coordinate& rhs) {
+  return lhs += rhs;
+}
+
+Coordinate operator-(Coordinate lhs, const Coordinate& rhs) {
+  return lhs -= rhs;
+}
+
 Piece Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {
     return data_[static_cast<std::size_t>(coor.row)]
