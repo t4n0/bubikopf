@@ -74,6 +74,7 @@ using Node = GameTree::Node<State>;
 using NodePtr = std::unique_ptr<Node>;
 
 bool IsAPieceOfSide(const Piece piece, const GameTree::Player side);
+bool IsOnTheBoard(const Coordinate coordinate);
 
 }  // namespace Chess
 

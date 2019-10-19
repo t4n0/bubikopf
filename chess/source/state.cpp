@@ -11,20 +11,20 @@ bool operator==(const Coordinate& a, const Coordinate& b) {
 bool operator!=(const Coordinate& a, const Coordinate& b) { return !(a == b); }
 
 Piece Board::Get(const Coordinate coor) const {
-  if (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8) {
+  if (IsOnTheBoard(coor)) {
     return data_[static_cast<std::size_t>(coor.row)]
                 [static_cast<std::size_t>(coor.col)];
   } else {
-    throw std::out_of_range{"Board::Get"};
+    throw std::out_of_range{"Board::Get: Out of range."};
   }
 }
 
 void Board::Set(const Coordinate coor, const Piece piece) {
-  if (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8) {
+  if (IsOnTheBoard(coor)) {
     data_[static_cast<std::size_t>(coor.row)]
          [static_cast<std::size_t>(coor.col)] = piece;
   } else {
-    throw std::out_of_range{"Board::Set"};
+    throw std::out_of_range{"Board::Set: Out of range."};
   }
 }
 
@@ -67,6 +67,10 @@ bool IsAPieceOfSide(const Piece piece, const GameTree::Player side) {
     return (piece_is_black && side == GameTree::Player::min) ||
            (piece_is_white && side == GameTree::Player::max);
   }
+}
+
+bool IsOnTheBoard(const Coordinate coor) {
+  return (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8);
 }
 
 }  // namespace Chess
