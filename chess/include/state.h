@@ -61,11 +61,11 @@ class State {
   // FEN example of starting position:
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
   Board board_{};
-  GameTree::Player turn_{};
   std::array<bool, 4> castling_{};
   Coordinate en_passant_{};
   int static_plies_{};
   int plies_{};
+  GameTree::Player turn_{};
 };
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
