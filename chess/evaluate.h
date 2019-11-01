@@ -1,8 +1,8 @@
 #ifndef CHESS_EVALUATE_H
 #define CHESS_EVALUATE_H
 
-#include <alpha_beta/minimax.h>
-#include <chess/state.h>
+#include "alpha_beta/minimax.h"
+#include "chess/state.h"
 
 #include <map>
 

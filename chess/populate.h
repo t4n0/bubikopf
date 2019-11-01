@@ -1,8 +1,8 @@
 #ifndef CHESS_POPULATE_H
 #define CHESS_POPULATE_H
 
-#include <alpha_beta/minimax.h>
-#include <chess/state.h>
+#include "alpha_beta/minimax.h"
+#include "chess/state.h"
 
 namespace Chess {
 namespace detail {

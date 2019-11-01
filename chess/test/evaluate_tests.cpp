@@ -1,4 +1,4 @@
-#include <chess/evaluate.h>
+#include "chess/evaluate.h"
 
 #include <gtest/gtest.h>
 

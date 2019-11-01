@@ -1,17 +1,15 @@
 cc_library(
     name = "chess",
     srcs = [
-        "source/populate.cpp",
-        "source/state.cpp",
+        "populate.cpp",
+        "state.cpp",
     ],
     hdrs = [
-        "include/evaluate.h",
-        "include/populate.h",
-        "include/state.h",
+        "evaluate.h",
+        "populate.h",
+        "state.h",
     ],
     copts = ["-std=c++17"],
-    include_prefix = "chess",
-    strip_include_prefix = "include",
     visibility = ["//visibility:public"],
     deps = ["//alpha_beta"],
 )
