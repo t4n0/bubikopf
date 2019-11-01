@@ -1,4 +1,4 @@
-#include "minimax_abstract_examples.h"
+#include "alpha_beta/test/minimax_abstract_examples.h"
 
 #include <gtest/gtest.h>
 

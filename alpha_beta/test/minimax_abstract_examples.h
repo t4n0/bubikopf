@@ -1,7 +1,7 @@
 #ifndef GAME_TREE_ABSTRACT_EXAMPLES_H
 #define GAME_TREE_ABSTRACT_EXAMPLES_H
 
-#include <alpha_beta/minimax.h>
+#include "alpha_beta/minimax.h"
 
 #include <memory>
 

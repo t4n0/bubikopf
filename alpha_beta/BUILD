@@ -1,12 +1,10 @@
 cc_library(
     name = "alpha_beta",
     hdrs = [
-        "include/evaluation.h",
-        "include/minimax.h",
+        "evaluation.h",
+        "minimax.h",
     ],
     copts = ["-std=c++17"],
-    include_prefix = "alpha_beta",
-    strip_include_prefix = "include",
     visibility = ["//visibility:public"],
 )
 
