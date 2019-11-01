@@ -9,7 +9,6 @@ cc_library(
         "populate.h",
         "state.h",
     ],
-    copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = ["//alpha_beta"],
 )
@@ -21,7 +20,6 @@ cc_test(
         "test/populate_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
-    copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = [
         ":chess",

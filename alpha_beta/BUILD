@@ -4,7 +4,6 @@ cc_library(
         "evaluation.h",
         "minimax.h",
     ],
-    copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
 )
 
@@ -15,7 +14,6 @@ cc_test(
         "test/minimax_abstract_examples.h",
         "test/minimax_unit_tests.cpp",
     ],
-    copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
     deps = [
         ":alpha_beta",
