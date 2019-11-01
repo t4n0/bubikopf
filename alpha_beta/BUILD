@@ -8,7 +8,7 @@ cc_library(
 )
 
 cc_test(
-    name = "alpha_beta_unit_tests",
+    name = "unit_tests",
     srcs = [
         "test/evaluation_unit_tests.cpp",
         "test/minimax_abstract_examples.h",

@@ -14,7 +14,7 @@ cc_library(
 )
 
 cc_test(
-    name = "chess_unit_tests",
+    name = "unit_tests",
     srcs = [
         "test/evaluate_tests.cpp",
         "test/populate_unit_tests.cpp",
