@@ -8,9 +8,9 @@
 
 namespace GameTree {
 
-enum class Player : bool {
-  max = true,   // flag for maximizing player (e.g turn, victory, etc.)
-  min = false,  // flag for minimizing player (e.g turn, victory, etc.)
+enum class Player {
+  min,  // flag for minimizing player (e.g turn, victory, etc.)
+  max,  // flag for maximizing player (e.g turn, victory, etc.)
 };
 
 // The three variants mean respectivly:

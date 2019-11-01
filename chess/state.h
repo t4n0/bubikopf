@@ -10,23 +10,115 @@
 
 namespace Chess {
 
-enum class Piece {
-  e,  // empty square = default
-  p,  // black pawn
-  r,  // black rook
-  n,  // black knight
-  b,  // black bishop
-  q,  // black queen
-  k,  // black king
-  P,  // white pawn
-  R,  // white rook
-  N,  // white knight
-  B,  // white bishop
-  Q,  // white queen
-  K,  // white king
+class Square {
+ public:
+  virtual ~Square();
+
+  virtual bool IsEmpty() const = 0;
+  virtual bool IsOfSide(const GameTree::Player& player) = 0;
+  virtual std::ostream& print(std::ostream& stream) const = 0;
 };
 
-std::ostream& operator<<(std::ostream& stream, const Piece piece);
+std::ostream& operator<<(std::ostream& stream, const Square& square);
+
+class Empty : public Square {
+ public:
+  Empty(const GameTree::Player /*unused*/ = {}) {}
+  ~Empty() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& /*unused*/) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+};
+
+class Pawn : public Square {
+ public:
+  Pawn(const GameTree::Player side = {}) : side_(side) {}
+  ~Pawn() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+  bool en_passant_{false};
+};
+
+class Knight : public Square {
+ public:
+  Knight(const GameTree::Player side = {}) : side_(side) {}
+  ~Knight() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+};
+
+class Bishop : public Square {
+ public:
+  Bishop(const GameTree::Player side = {}) : side_(side) {}
+  ~Bishop() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+};
+
+class Rook : public Square {
+ public:
+  Rook(const GameTree::Player side = {}) : side_(side) {}
+  ~Rook() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+  bool castling_{true};
+};
+
+class Queen : public Square {
+ public:
+  Queen(const GameTree::Player side = {}) : side_(side) {}
+  ~Queen() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+};
+
+class King : public Square {
+ public:
+  King(const GameTree::Player side = {}) : side_(side) {}
+  ~King() override final {}
+
+  bool IsEmpty() const override final;
+  bool IsOfSide(const GameTree::Player& player = {}) override final;
+  std::ostream& print(std::ostream& stream) const override final;
+
+ private:
+  GameTree::Player side_{};
+  bool castling_{true};
+};
+
+using SquarePtr = std::unique_ptr<Square>;
+using KingPtr = std::unique_ptr<King>;
+using QueenPtr = std::unique_ptr<Queen>;
+using RookPtr = std::unique_ptr<Rook>;
+using BishopPtr = std::unique_ptr<Bishop>;
+using KnightPtr = std::unique_ptr<Knight>;
+using PawnPtr = std::unique_ptr<Pawn>;
 
 using Column = int8_t;
 using Row = int8_t;
@@ -46,23 +138,24 @@ bool operator!=(const Coordinate& a, const Coordinate& b);
 Coordinate operator+(Coordinate a, const Coordinate& b);
 Coordinate operator-(Coordinate a, const Coordinate& b);
 
+std::size_t ToIdx(const Coordinate coor);
+bool IsOnTheBoard(const Coordinate coordinate);
+
 class Board {
  public:
-  Piece Get(const Coordinate coor) const;
-  void Set(const Coordinate coor, const Piece piece);
+  Board();
 
-  std::array<std::array<Piece, 8>, 8> data_{};
+  std::array<std::unique_ptr<Square>, 64> squares_;
+
+  const SquarePtr& Get(const Coordinate coor) const;
+  void Set(const Coordinate coor, SquarePtr&& piece);
 };
 
 std::ostream& operator<<(std::ostream& stream, const Board& piece);
 
 class State {
  public:
-  // FEN example of starting position:
-  // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
   Board board_{};
-  std::array<bool, 4> castling_{};
-  Coordinate en_passant_{};
   int static_plies_{};
   int plies_{};
   GameTree::Player turn_{};
@@ -70,17 +163,14 @@ class State {
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
 
+template <typename T>
 struct PlacedPiece {
   Coordinate coordinate{};
-  Piece piece{};
+  T piece{};
 };
-using PlacedPieces = std::vector<PlacedPiece>;
 
 using Node = GameTree::Node<State>;
 using NodePtr = std::unique_ptr<Node>;
-
-bool IsAPieceOfSide(const Piece piece, const GameTree::Player side);
-bool IsOnTheBoard(const Coordinate coordinate);
 
 }  // namespace Chess
 

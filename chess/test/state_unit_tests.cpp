@@ -3,16 +3,15 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <iostream>
+#include <typeinfo>
 
 namespace Chess {
 namespace {
 
-TEST(Board, DefaultConstructedBoardIsFilledWithEmptyPieces) {
+TEST(Board, GivenDefaultConstructed_ExpectBoardIsFilledWithEmptySquares) {
   const Board board{};
-  for (const auto& row : board.data_) {
-    for (const auto piece : row) {
-      EXPECT_EQ(Piece::e, piece);
-    }
+  for (const auto& square : board.squares_) {
+    EXPECT_TRUE(square->IsEmpty());
   }
 }
 
@@ -24,15 +23,15 @@ TEST(Board, Set_ExpectBoundsCheck) {
   EXPECT_THROW(board.Get({3, -1}), std::out_of_range);
   EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
 
-  EXPECT_NO_THROW(board.Set({3, 3}, Piece::N));
-  EXPECT_THROW(board.Set({-1, 3}, Piece::N), std::out_of_range);
-  EXPECT_THROW(board.Set({8, 3}, Piece::N), std::out_of_range);
-  EXPECT_THROW(board.Set({3, -1}, Piece::N), std::out_of_range);
-  EXPECT_THROW(board.Set({3, 8}, Piece::N), std::out_of_range);
+  EXPECT_NO_THROW(board.Set({3, 3}, KnightPtr{}));
+  EXPECT_THROW(board.Set({-1, 3}, KnightPtr{}), std::out_of_range);
+  EXPECT_THROW(board.Set({8, 3}, KnightPtr{}), std::out_of_range);
+  EXPECT_THROW(board.Set({3, -1}, KnightPtr{}), std::out_of_range);
+  EXPECT_THROW(board.Set({3, 8}, KnightPtr{}), std::out_of_range);
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
-  EXPECT_NO_THROW(std::cout << Piece::B << '\n');
+  EXPECT_NO_THROW(std::cout << Bishop{} << '\n');
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
@@ -40,42 +39,36 @@ TEST(Board, StreamOutputOperator_MustNotThrow) {
   EXPECT_NO_THROW(std::cout << board << '\n');
 }
 
-TEST(IsAPieceOfSide, WhenBlacksTurnAndBlackPiece_ExpectTrue) {
-  EXPECT_TRUE(IsAPieceOfSide(Piece::p, GameTree::Player::min));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::k, GameTree::Player::min));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::b, GameTree::Player::min));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::r, GameTree::Player::min));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::q, GameTree::Player::min));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::k, GameTree::Player::min));
+TEST(IsAPieceOfSide, GivenBlacksTurn_ExpectBlackPiecesTrueRestFalse) {
+  EXPECT_TRUE(King{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(Queen{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(Rook{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(Bishop{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(Knight{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(Pawn{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Empty{}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(King{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Queen{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Rook{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Bishop{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Knight{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_FALSE(Pawn{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
 }
 
-TEST(IsAPieceOfSide, WhenBlacksTurnAndNotBlackPiece_ExpectFalse) {
-  EXPECT_FALSE(IsAPieceOfSide(Piece::P, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::K, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::B, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::R, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::Q, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::K, GameTree::Player::min));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::e, GameTree::Player::min));
-}
-
-TEST(IsAPieceOfSide, WhenWhitesTurnAndWhitePiece_ExpectTrue) {
-  EXPECT_TRUE(IsAPieceOfSide(Piece::P, GameTree::Player::max));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::K, GameTree::Player::max));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::B, GameTree::Player::max));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::R, GameTree::Player::max));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::Q, GameTree::Player::max));
-  EXPECT_TRUE(IsAPieceOfSide(Piece::K, GameTree::Player::max));
-}
-
-TEST(IsAPieceOfSide, WhenWhitesTurnAndNotWhitePiece_ExpectFalse) {
-  EXPECT_FALSE(IsAPieceOfSide(Piece::p, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::k, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::b, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::r, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::q, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::k, GameTree::Player::max));
-  EXPECT_FALSE(IsAPieceOfSide(Piece::e, GameTree::Player::max));
+TEST(IsAPieceOfSide, GivenWhitesTurn_ExpectWhitePiecesTrueRestFalse) {
+  EXPECT_FALSE(King{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Queen{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Rook{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Bishop{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Knight{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Pawn{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(Empty{}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(King{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(Queen{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(Rook{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(Bishop{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(Knight{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_TRUE(Pawn{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
 }
 
 }  // namespace

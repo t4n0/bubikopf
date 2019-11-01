@@ -1,12 +1,12 @@
 cc_library(
     name = "chess",
     srcs = [
-        "populate.cpp",
+        #"populate.cpp",
         "state.cpp",
     ],
     hdrs = [
-        "evaluate.h",
-        "populate.h",
+        #"evaluate.h",#
+        #"populate.h",
         "state.h",
     ],
     visibility = ["//visibility:public"],
@@ -16,8 +16,8 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
-        "test/evaluate_tests.cpp",
-        "test/populate_unit_tests.cpp",
+        #"test/evaluate_tests.cpp",
+        #"test/populate_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
     visibility = ["//visibility:public"],
