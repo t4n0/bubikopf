@@ -75,6 +75,26 @@ void Board::Set(const Coordinate coor, SquarePtr&& piece) {
 
 Square::~Square() {}
 
+float Empty::GetValue() const { return 0.0F; }
+float Pawn::GetValue() const {
+  return side_ == GameTree::Player::max ? 1.0F : -1.0F;
+}
+float Knight::GetValue() const {
+  return side_ == GameTree::Player::max ? 3.0F : -3.0F;
+}
+float Bishop::GetValue() const {
+  return side_ == GameTree::Player::max ? 3.0F : -3.0F;
+}
+float Rook::GetValue() const {
+  return side_ == GameTree::Player::max ? 5.0F : -5.0F;
+}
+float Queen::GetValue() const {
+  return side_ == GameTree::Player::max ? 9.0F : -9.0F;
+}
+float King::GetValue() const {
+  return side_ == GameTree::Player::max ? 100.0F : -100.0F;
+}
+
 bool Empty::IsOfSide(const GameTree::Player& /*unused*/) { return false; }
 bool Pawn::IsOfSide(const GameTree::Player& side) { return side_ == side; }
 bool Knight::IsOfSide(const GameTree::Player& side) { return side_ == side; }

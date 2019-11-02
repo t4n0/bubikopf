@@ -14,6 +14,7 @@ class Square {
  public:
   virtual ~Square();
 
+  virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
   virtual bool IsOfSide(const GameTree::Player& player) = 0;
   virtual std::ostream& print(std::ostream& stream) const = 0;
@@ -26,6 +27,7 @@ class Empty : public Square {
   Empty(const GameTree::Player /*unused*/ = {}) {}
   ~Empty() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& /*unused*/) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -36,6 +38,7 @@ class Pawn : public Square {
   Pawn(const GameTree::Player side = {}) : side_(side) {}
   ~Pawn() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -50,6 +53,7 @@ class Knight : public Square {
   Knight(const GameTree::Player side = {}) : side_(side) {}
   ~Knight() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -63,6 +67,7 @@ class Bishop : public Square {
   Bishop(const GameTree::Player side = {}) : side_(side) {}
   ~Bishop() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -76,6 +81,7 @@ class Rook : public Square {
   Rook(const GameTree::Player side = {}) : side_(side) {}
   ~Rook() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -90,6 +96,7 @@ class Queen : public Square {
   Queen(const GameTree::Player side = {}) : side_(side) {}
   ~Queen() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -103,6 +110,7 @@ class King : public Square {
   King(const GameTree::Player side = {}) : side_(side) {}
   ~King() override final {}
 
+  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const GameTree::Player& player = {}) override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -163,11 +171,11 @@ class State {
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
 
-template <typename T>
 struct PlacedPiece {
   Coordinate coordinate{};
-  T piece{};
+  SquarePtr piece{};
 };
+using PlacedPieces = std::vector<PlacedPiece>;
 
 using Node = GameTree::Node<State>;
 using NodePtr = std::unique_ptr<Node>;

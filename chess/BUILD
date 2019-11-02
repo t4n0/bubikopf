@@ -5,7 +5,7 @@ cc_library(
         "state.cpp",
     ],
     hdrs = [
-        #"evaluate.h",#
+        "evaluate.h",
         #"populate.h",
         "state.h",
     ],
@@ -16,7 +16,7 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
-        #"test/evaluate_tests.cpp",
+        "test/evaluate_tests.cpp",
         #"test/populate_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
