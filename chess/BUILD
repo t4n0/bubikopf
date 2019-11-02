@@ -3,11 +3,13 @@ cc_library(
     srcs = [
         #"populate.cpp",
         "state.cpp",
+        "pieces.cpp",
     ],
     hdrs = [
         "evaluate.h",
         #"populate.h",
         "state.h",
+        "pieces.h",
     ],
     visibility = ["//visibility:public"],
     deps = ["//alpha_beta"],
