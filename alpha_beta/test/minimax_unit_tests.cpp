@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 namespace {
 
@@ -75,4 +75,4 @@ TEST_F(MinimaxTest, TypicalTree_MustMeetExpectedEvaluationOrder) {
 
 }  // namespace
 
-}  // namespace GameTree
+}  // namespace AlphaBeta

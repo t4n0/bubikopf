@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 template <typename Game>
 class Node {
@@ -63,6 +63,6 @@ Evaluation minimax(const Node<Game>& node, const uint8_t depth,
 // todo: decrement evaluation upwards when propagating a checkmate backwards
 // todo: move function to choose a branch (rest of tree shall be discarded)
 
-}  // namespace GameTree
+}  // namespace AlphaBeta
 
 #endif

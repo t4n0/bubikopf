@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 static std::vector<float> order_of_evaluation{};
 
@@ -124,6 +124,6 @@ Node<float> generate_typical_tree() {
   return unit;
 }
 
-}  // namespace GameTree
+}  // namespace AlphaBeta
 
 #endif

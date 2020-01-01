@@ -4,31 +4,31 @@ namespace Chess {
 
 float Empty::GetValue() const { return 0.0F; }
 float Pawn::GetValue() const {
-  return side_ == GameTree::Player::max ? 1.0F : -1.0F;
+  return side_ == AlphaBeta::Player::max ? 1.0F : -1.0F;
 }
 float Knight::GetValue() const {
-  return side_ == GameTree::Player::max ? 3.0F : -3.0F;
+  return side_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
 }
 float Bishop::GetValue() const {
-  return side_ == GameTree::Player::max ? 3.0F : -3.0F;
+  return side_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
 }
 float Rook::GetValue() const {
-  return side_ == GameTree::Player::max ? 5.0F : -5.0F;
+  return side_ == AlphaBeta::Player::max ? 5.0F : -5.0F;
 }
 float Queen::GetValue() const {
-  return side_ == GameTree::Player::max ? 9.0F : -9.0F;
+  return side_ == AlphaBeta::Player::max ? 9.0F : -9.0F;
 }
 float King::GetValue() const {
-  return side_ == GameTree::Player::max ? 100.0F : -100.0F;
+  return side_ == AlphaBeta::Player::max ? 100.0F : -100.0F;
 }
 
-bool Empty::IsOfSide(const GameTree::Player& /*unused*/) { return false; }
-bool Pawn::IsOfSide(const GameTree::Player& side) { return side_ == side; }
-bool Knight::IsOfSide(const GameTree::Player& side) { return side_ == side; }
-bool Bishop::IsOfSide(const GameTree::Player& side) { return side_ == side; }
-bool Rook::IsOfSide(const GameTree::Player& side) { return side_ == side; }
-bool Queen::IsOfSide(const GameTree::Player& side) { return side_ == side; }
-bool King::IsOfSide(const GameTree::Player& side) { return side_ == side; }
+bool Empty::IsOfSide(const AlphaBeta::Player& /*unused*/) { return false; }
+bool Pawn::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool Knight::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool Bishop::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool Rook::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool Queen::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool King::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
 
 bool Empty::IsEmpty() const { return true; }
 bool Pawn::IsEmpty() const { return false; }
@@ -44,7 +44,7 @@ std::ostream& Empty::print(std::ostream& stream) const {
 }
 
 std::ostream& Pawn::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "P ";
   } else {
     stream << "p ";
@@ -53,7 +53,7 @@ std::ostream& Pawn::print(std::ostream& stream) const {
 }
 
 std::ostream& Knight::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "N ";
   } else {
     stream << "n ";
@@ -62,7 +62,7 @@ std::ostream& Knight::print(std::ostream& stream) const {
 }
 
 std::ostream& Bishop::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "B ";
   } else {
     stream << "b ";
@@ -71,7 +71,7 @@ std::ostream& Bishop::print(std::ostream& stream) const {
 }
 
 std::ostream& Rook::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "R ";
   } else {
     stream << "r ";
@@ -80,7 +80,7 @@ std::ostream& Rook::print(std::ostream& stream) const {
 }
 
 std::ostream& Queen::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "Q ";
   } else {
     stream << "q ";
@@ -89,7 +89,7 @@ std::ostream& Queen::print(std::ostream& stream) const {
 }
 
 std::ostream& King::print(std::ostream& stream) const {
-  if (side_ == GameTree::Player::max) {
+  if (side_ == AlphaBeta::Player::max) {
     stream << "K ";
   } else {
     stream << "k ";

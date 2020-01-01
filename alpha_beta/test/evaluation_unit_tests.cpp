@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 namespace {
 
@@ -70,4 +70,4 @@ TEST(EvaluationTest, StreamOutputOperator_MustNotThrow) {
 
 }  // namespace
 
-}  // namespace GameTree
+}  // namespace AlphaBeta

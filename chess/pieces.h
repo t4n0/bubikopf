@@ -10,99 +10,99 @@ namespace Chess {
 
 class Empty : public Square {
  public:
-  Empty(const GameTree::Player /*unused*/ = {}) {}
+  Empty(const AlphaBeta::Player /*unused*/ = {}) {}
   ~Empty() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& /*unused*/) override final;
+  bool IsOfSide(const AlphaBeta::Player& /*unused*/) override final;
   std::ostream& print(std::ostream& stream) const override final;
 };
 
 class Pawn : public Square {
  public:
-  Pawn(const GameTree::Player side = {}) : side_(side) {}
+  Pawn(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Pawn() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
   bool en_passant_{false};
 };
 
 class Knight : public Square {
  public:
-  Knight(const GameTree::Player side = {}) : side_(side) {}
+  Knight(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Knight() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
 };
 
 class Bishop : public Square {
  public:
-  Bishop(const GameTree::Player side = {}) : side_(side) {}
+  Bishop(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Bishop() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
 };
 
 class Rook : public Square {
  public:
-  Rook(const GameTree::Player side = {}) : side_(side) {}
+  Rook(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Rook() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
   bool castling_{true};
 };
 
 class Queen : public Square {
  public:
-  Queen(const GameTree::Player side = {}) : side_(side) {}
+  Queen(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Queen() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
 };
 
 class King : public Square {
  public:
-  King(const GameTree::Player side = {}) : side_(side) {}
+  King(const AlphaBeta::Player side = {}) : side_(side) {}
   ~King() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const GameTree::Player& player = {}) override final;
+  bool IsOfSide(const AlphaBeta::Player& player = {}) override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
-  GameTree::Player side_{};
+  AlphaBeta::Player side_{};
   bool castling_{true};
 };
 

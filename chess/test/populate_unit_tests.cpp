@@ -71,7 +71,7 @@ TEST_F(FindMovesTest, GivenBlackKingOnlyInCorner_Expect3Moves) {
 }
 
 TEST_F(FindMovesTest, GivenWhiteKingAdjacentWhitePawn_Expect7Moves) {
-  node_.state_.turn_ = GameTree::Player::max;
+  node_.state_.turn_ = AlphaBeta::Player::max;
   node_.state_.board_.Set({5, 5}, Piece::K);
   node_.state_.board_.Set({4, 5}, Piece::P);
 
@@ -82,7 +82,7 @@ TEST_F(FindMovesTest, GivenWhiteKingAdjacentWhitePawn_Expect7Moves) {
 }
 
 TEST_F(FindMovesTest, GivenWhiteKingAdjacentBlackPawn_Expect8Moves) {
-  node_.state_.turn_ = GameTree::Player::max;
+  node_.state_.turn_ = AlphaBeta::Player::max;
   node_.state_.board_.Set({5, 5}, Piece::K);
   node_.state_.board_.Set({4, 5}, Piece::p);
 

@@ -6,7 +6,7 @@
 
 #include <map>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 template <>
 Evaluation evaluate(const Chess::State& state) {
@@ -17,7 +17,7 @@ Evaluation evaluate(const Chess::State& state) {
   return evaluation;
 }
 
-}  // namespace GameTree
+}  // namespace AlphaBeta
 
 // todo: Test for checkmate
 

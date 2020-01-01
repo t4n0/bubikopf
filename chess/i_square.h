@@ -13,7 +13,7 @@ class Square {
 
   virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
-  virtual bool IsOfSide(const GameTree::Player& player) = 0;
+  virtual bool IsOfSide(const AlphaBeta::Player& player) = 0;
   virtual std::ostream& print(std::ostream& stream) const = 0;
 };
 

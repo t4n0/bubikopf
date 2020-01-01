@@ -26,9 +26,9 @@ std::vector<NodePtr> find_moves<Piece::k>(const Node& node,
         {{1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}}};
 
     Chess::State state_before_move{node.state_};
-    state_before_move.turn_ = node.state_.turn_ == GameTree::Player::max
-                                  ? GameTree::Player::min
-                                  : GameTree::Player::max;
+    state_before_move.turn_ = node.state_.turn_ == AlphaBeta::Player::max
+                                  ? AlphaBeta::Player::min
+                                  : AlphaBeta::Player::max;
     state_before_move.plies_++;
     state_before_move.static_plies_++;
 
@@ -124,7 +124,7 @@ std::vector<NodePtr> find_legal_moves(const Node& node);
 }  // namespace detail
 }  // namespace Chess
 
-namespace GameTree {
+namespace AlphaBeta {
 
 template <>
 void populate(Node<Chess::State>& node, const int depth) {
@@ -137,6 +137,6 @@ void populate(Node<Chess::State>& node, const int depth) {
   }
 }
 
-}  // namespace GameTree
+}  // namespace AlphaBeta
 
 #endif

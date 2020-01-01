@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <variant>
 
-namespace GameTree {
+namespace AlphaBeta {
 
 enum class Player {
   min,  // flag for minimizing player (e.g turn, victory, etc.)
@@ -92,6 +92,6 @@ inline std::ostream& operator<<(std::ostream& stream, const Evaluation output) {
   return stream;
 }
 
-}  // namespace GameTree
+}  // namespace AlphaBeta
 
 #endif

@@ -41,35 +41,35 @@ TEST(Board, StreamOutputOperator_MustNotThrow) {
 }
 
 TEST(IsAPieceOfSide, GivenBlacksTurn_ExpectBlackPiecesTrueRestFalse) {
-  EXPECT_TRUE(King{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_TRUE(Queen{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_TRUE(Rook{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_TRUE(Bishop{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_TRUE(Knight{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_TRUE(Pawn{GameTree::Player::min}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Empty{}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(King{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Queen{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Rook{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Bishop{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Knight{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
-  EXPECT_FALSE(Pawn{GameTree::Player::max}.IsOfSide(GameTree::Player::min));
+  EXPECT_TRUE(King{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(Queen{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(Rook{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(Bishop{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(Knight{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(Pawn{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Empty{}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(King{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Queen{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Rook{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Bishop{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Knight{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_FALSE(Pawn{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
 }
 
 TEST(IsAPieceOfSide, GivenWhitesTurn_ExpectWhitePiecesTrueRestFalse) {
-  EXPECT_FALSE(King{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Queen{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Rook{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Bishop{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Knight{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Pawn{GameTree::Player::min}.IsOfSide(GameTree::Player::max));
-  EXPECT_FALSE(Empty{}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(King{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(Queen{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(Rook{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(Bishop{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(Knight{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
-  EXPECT_TRUE(Pawn{GameTree::Player::max}.IsOfSide(GameTree::Player::max));
+  EXPECT_FALSE(King{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Queen{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Rook{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Bishop{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Knight{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Pawn{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(Empty{}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(King{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(Queen{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(Rook{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(Bishop{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(Knight{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_TRUE(Pawn{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
 }
 
 }  // namespace

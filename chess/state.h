@@ -49,7 +49,7 @@ class State {
   Board board_{};
   int static_plies_{};
   int plies_{};
-  GameTree::Player turn_{};
+  AlphaBeta::Player turn_{};
 };
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
@@ -60,7 +60,7 @@ struct PlacedPiece {
 };
 using PlacedPieces = std::vector<PlacedPiece>;
 
-using Node = GameTree::Node<State>;
+using Node = AlphaBeta::Node<State>;
 using NodePtr = std::unique_ptr<Node>;
 
 }  // namespace Chess
