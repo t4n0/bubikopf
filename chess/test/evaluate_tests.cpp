@@ -16,7 +16,7 @@ TEST(EvaluateTest, GivenSamples_ExpectAllHold) {
 
   state.board_.Set({0, 0}, std::make_unique<Pawn>(Player::min));
   GameTree::Evaluation returned_evaluation{GameTree::evaluate(state)};
-  EXPECT_EQ(std::get<float>(returned_evaluation), 1.0F);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -1.0F);
 
   state.board_.Set({0, 1}, std::make_unique<Pawn>(Player::max));
   returned_evaluation = GameTree::evaluate(state);
