@@ -1,3 +1,4 @@
+#include "chess/pieces.h"
 #include "chess/state.h"
 
 #include <gtest/gtest.h>

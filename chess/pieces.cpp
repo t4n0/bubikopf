@@ -2,12 +2,6 @@
 
 namespace Chess {
 
-Square::~Square() {}
-
-std::ostream& operator<<(std::ostream& stream, const Square& square) {
-  return square.print(stream);
-}
-
 float Empty::GetValue() const { return 0.0F; }
 float Pawn::GetValue() const {
   return side_ == GameTree::Player::max ? 1.0F : -1.0F;

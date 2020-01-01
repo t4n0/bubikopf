@@ -2,22 +2,11 @@
 #define CHESS_PIECES_H
 
 #include "alpha_beta/evaluation.h"
+#include "chess/i_square.h"
 
 #include <memory>
 
 namespace Chess {
-
-class Square {
- public:
-  virtual ~Square();
-
-  virtual float GetValue() const = 0;
-  virtual bool IsEmpty() const = 0;
-  virtual bool IsOfSide(const GameTree::Player& player) = 0;
-  virtual std::ostream& print(std::ostream& stream) const = 0;
-};
-
-std::ostream& operator<<(std::ostream& stream, const Square& square);
 
 class Empty : public Square {
  public:
@@ -117,7 +106,6 @@ class King : public Square {
   bool castling_{true};
 };
 
-using SquarePtr = std::unique_ptr<Square>;
 using KingPtr = std::unique_ptr<King>;
 using QueenPtr = std::unique_ptr<Queen>;
 using RookPtr = std::unique_ptr<Rook>;

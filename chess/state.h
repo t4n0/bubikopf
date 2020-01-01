@@ -3,7 +3,7 @@
 
 #include "alpha_beta/evaluation.h"
 #include "alpha_beta/minimax.h"
-#include "chess/pieces.h"
+#include "chess/i_square.h"
 
 #include <array>
 #include <iostream>

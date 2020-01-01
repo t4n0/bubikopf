@@ -1,4 +1,5 @@
 #include "chess/state.h"
+#include "chess/pieces.h"
 
 namespace Chess {
 

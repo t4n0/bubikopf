@@ -1,15 +1,16 @@
 cc_library(
     name = "chess",
     srcs = [
+        "pieces.cpp",
         #"populate.cpp",
         "state.cpp",
-        "pieces.cpp",
     ],
     hdrs = [
         "evaluate.h",
+        "i_square.h",
+        "pieces.h",
         #"populate.h",
         "state.h",
-        "pieces.h",
     ],
     visibility = ["//visibility:public"],
     deps = ["//alpha_beta"],
