@@ -1,5 +1,5 @@
-#ifndef GAME_TREE_FRAMEWORK_H
-#define GAME_TREE_FRAMEWORK_H
+#ifndef ALPHA_BETA_FRAMEWORK_H
+#define ALPHA_BETA_FRAMEWORK_H
 
 #include "alpha_beta/evaluation.h"
 

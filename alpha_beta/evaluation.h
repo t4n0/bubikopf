@@ -1,5 +1,5 @@
-#ifndef GAME_TREE_EVALUATION_H
-#define GAME_TREE_EVALUATION_H
+#ifndef ALPHA_BETA_EVALUATION_H
+#define ALPHA_BETA_EVALUATION_H
 
 #include <cstdint>
 #include <iostream>
