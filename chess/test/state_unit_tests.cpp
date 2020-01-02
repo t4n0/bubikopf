@@ -72,5 +72,13 @@ TEST(IsAPieceOfSide, GivenWhitesTurn_ExpectWhitePiecesTrueRestFalse) {
   EXPECT_TRUE(Pawn{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
 }
 
+TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {
+  const Coordinate coordinate{4, 3};
+  const std::size_t index{28};
+
+  EXPECT_TRUE(index == ToIdx(coordinate));
+  EXPECT_TRUE(coordinate == ToCoor(index));
+}
+
 }  // namespace
 }  // namespace Chess

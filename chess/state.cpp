@@ -33,6 +33,12 @@ std::size_t ToIdx(const Coordinate coor) {
   return static_cast<std::size_t>(coor.col + 8 * coor.row);
 }
 
+Coordinate ToCoor(const std::size_t idx) {
+  const std::div_t division = std::div(static_cast<int>(idx), 8);
+  return {static_cast<int8_t>(division.rem),
+          static_cast<int8_t>(division.quot)};
+}
+
 bool IsOnTheBoard(const Coordinate coor) {
   return (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8);
 }

@@ -30,6 +30,7 @@ Coordinate operator+(Coordinate a, const Coordinate& b);
 Coordinate operator-(Coordinate a, const Coordinate& b);
 
 std::size_t ToIdx(const Coordinate coor);
+Coordinate ToCoor(const std::size_t idx);
 bool IsOnTheBoard(const Coordinate coordinate);
 
 class Board {
