@@ -60,9 +60,6 @@ Evaluation minimax(const Node<Game>& node, const uint8_t depth,
   }
 }
 
-// todo: decrement evaluation upwards when propagating a checkmate backwards
-// todo: move function to choose a branch (rest of tree shall be discarded)
-
 }  // namespace AlphaBeta
 
 #endif
