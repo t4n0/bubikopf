@@ -37,7 +37,7 @@ class Board {
  public:
   Board();
 
-  const SquarePtr& Get(const Coordinate coor) const;
+  const Square& Get(const Coordinate coor) const;
   void Set(const Coordinate coor, SquarePtr&& piece);
 
   std::array<std::unique_ptr<Square>, 64> squares_;

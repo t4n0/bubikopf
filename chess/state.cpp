@@ -49,9 +49,9 @@ Board::Board() {
   }
 }
 
-const SquarePtr& Board::Get(const Coordinate coor) const {
+const Square& Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {
-    return squares_[ToIdx(coor)];
+    return *squares_[ToIdx(coor)];
   } else {
     throw std::out_of_range{"Board::Get: Out of range."};
   }
