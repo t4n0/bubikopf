@@ -3,8 +3,10 @@
 
 #include "alpha_beta/evaluation.h"
 #include "chess/i_square.h"
+#include "chess/state.h"
 
 #include <memory>
+#include <vector>
 
 namespace Chess {
 
@@ -16,6 +18,8 @@ class Empty : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& /*unused*/) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 };
 
@@ -27,6 +31,8 @@ class Pawn : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
@@ -42,6 +48,8 @@ class Knight : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
@@ -56,6 +64,8 @@ class Bishop : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
@@ -70,6 +80,8 @@ class Rook : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
@@ -85,6 +97,8 @@ class Queen : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:
@@ -99,6 +113,8 @@ class King : public Square {
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player = {}) override final;
+  std::vector<State> FindMoves(const std::size_t idx,
+                               const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
 
  private:

@@ -38,6 +38,35 @@ bool Rook::IsEmpty() const { return false; }
 bool Queen::IsEmpty() const { return false; }
 bool King::IsEmpty() const { return false; }
 
+std::vector<State> Empty::FindMoves(const std::size_t /*unused*/,
+                                    const State& /*unused*/) const {
+  return {};
+}
+std::vector<State> Pawn::FindMoves(const std::size_t idx,
+                                   const State& state) const {
+  return {};
+}
+std::vector<State> Knight::FindMoves(const std::size_t idx,
+                                     const State& state) const {
+  return {};
+}
+std::vector<State> Bishop::FindMoves(const std::size_t idx,
+                                     const State& state) const {
+  return {};
+}
+std::vector<State> Rook::FindMoves(const std::size_t idx,
+                                   const State& state) const {
+  return {};
+}
+std::vector<State> Queen::FindMoves(const std::size_t idx,
+                                    const State& state) const {
+  return {};
+}
+std::vector<State> King::FindMoves(const std::size_t idx,
+                                   const State& state) const {
+  return {};
+}
+
 std::ostream& Empty::print(std::ostream& stream) const {
   stream << "_ ";
   return stream;
