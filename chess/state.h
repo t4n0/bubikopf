@@ -11,12 +11,9 @@
 
 namespace Chess {
 
-using Column = int8_t;
-using Row = int8_t;
-
 struct Coordinate {
-  Column col{};
-  Row row{};
+  int8_t col{};
+  int8_t row{};
 
   Coordinate& operator+=(const Coordinate& rhs);
   Coordinate& operator-=(const Coordinate& rhs);
