@@ -55,12 +55,6 @@ class State {
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
 
-struct PlacedPiece {
-  Coordinate coordinate{};
-  SquarePtr piece{};
-};
-using PlacedPieces = std::vector<PlacedPiece>;
-
 using Node = AlphaBeta::Node<State>;
 using NodePtr = std::unique_ptr<Node>;
 
