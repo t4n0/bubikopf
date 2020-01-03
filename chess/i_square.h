@@ -4,8 +4,11 @@
 #include "alpha_beta/evaluation.h"
 
 #include <memory>
+#include <vector>
 
 namespace Chess {
+
+class State;
 
 class ISquare {
  public:
@@ -19,7 +22,7 @@ class ISquare {
   virtual std::ostream& print(std::ostream& stream) const = 0;
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const Square& square) {
+inline std::ostream& operator<<(std::ostream& stream, const ISquare& square) {
   return square.print(stream);
 }
 

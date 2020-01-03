@@ -55,9 +55,6 @@ class State {
 
 std::ostream& operator<<(std::ostream& stream, const State& state);
 
-using Node = AlphaBeta::Node<State>;
-using NodePtr = std::unique_ptr<Node>;
-
 }  // namespace Chess
 
 #endif

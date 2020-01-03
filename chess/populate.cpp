@@ -5,16 +5,19 @@
 namespace Chess {
 
 std::vector<NodePtr> collect_moves_from_all_pieces(const Node& node) {
-  std::vector<NodePtr> legal_moves{};
+  std::vector<NodePtr> collected_moves{};
   for (std::size_t idx{0}; idx < node.state_.board_.squares_.size(); ++idx) {
     const ISquare& square = *node.state_.board_.squares_.at(idx);
-    std::vector<State> piece_moves = square.FindMoves(idx, node.state_);
+    std::vector<State> new_moves = square.FindMoves(idx, node.state_);
 
-    legal_moves.insert(legal_moves.end(), piece_moves.begin(),
-                       piece_moves.end());
+    std::for_each(new_moves.begin(), new_moves.end(),
+                  [&collected_moves](State& state) {
+                    collected_moves.emplace_back(
+                        std::make_unique<Node>(std::move(state)));
+                  });
   }
 
-  return legal_moves;
+  return collected_moves;
 }
 
 }  // namespace Chess

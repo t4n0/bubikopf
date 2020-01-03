@@ -14,7 +14,7 @@ namespace AlphaBeta {
 template <typename Game>
 class Node {
  public:
-  Node(const Game& situation) : state_(situation) {}
+  Node(Game&& state) : state_(std::move(state)) {}
 
   std::vector<std::unique_ptr<Node>> children_{};
   Game state_{};

@@ -6,6 +6,9 @@
 
 namespace Chess {
 
+using Node = AlphaBeta::Node<State>;
+using NodePtr = std::unique_ptr<Node>;
+
 std::vector<NodePtr> collect_moves_from_all_pieces(const Chess::Node&);
 
 }  // namespace Chess
