@@ -7,9 +7,9 @@
 
 namespace Chess {
 
-class Square {
+class ISquare {
  public:
-  virtual ~Square() = default;
+  virtual ~ISquare() = default;
 
   virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
@@ -23,7 +23,7 @@ inline std::ostream& operator<<(std::ostream& stream, const Square& square) {
   return square.print(stream);
 }
 
-using SquarePtr = std::unique_ptr<Square>;
+using ISquarePtr = std::unique_ptr<ISquare>;
 
 }  // namespace Chess
 

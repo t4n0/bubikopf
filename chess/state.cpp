@@ -49,7 +49,7 @@ Board::Board() {
   }
 }
 
-const Square& Board::Get(const Coordinate coor) const {
+const ISquare& Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {
     return *squares_[ToIdx(coor)];
   } else {
@@ -57,7 +57,7 @@ const Square& Board::Get(const Coordinate coor) const {
   }
 }
 
-void Board::Set(const Coordinate coor, SquarePtr&& piece) {
+void Board::Set(const Coordinate coor, ISquarePtr&& piece) {
   if (IsOnTheBoard(coor)) {
     squares_[ToIdx(coor)].swap(piece);
   } else {

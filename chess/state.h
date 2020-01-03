@@ -37,10 +37,10 @@ class Board {
  public:
   Board();
 
-  const Square& Get(const Coordinate coor) const;
-  void Set(const Coordinate coor, SquarePtr&& piece);
+  const ISquare& Get(const Coordinate coor) const;
+  void Set(const Coordinate coor, ISquarePtr&& piece);
 
-  std::array<std::unique_ptr<Square>, 64> squares_;
+  std::array<ISquarePtr, 64> squares_;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Board& piece);

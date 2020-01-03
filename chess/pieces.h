@@ -10,7 +10,7 @@
 
 namespace Chess {
 
-class Empty : public Square {
+class Empty : public ISquare {
  public:
   Empty(const AlphaBeta::Player /*unused*/ = {}) {}
   ~Empty() override final {}
@@ -23,7 +23,7 @@ class Empty : public Square {
   std::ostream& print(std::ostream& stream) const override final;
 };
 
-class Pawn : public Square {
+class Pawn : public ISquare {
  public:
   Pawn(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Pawn() override final {}
@@ -40,7 +40,7 @@ class Pawn : public Square {
   bool en_passant_{false};
 };
 
-class Knight : public Square {
+class Knight : public ISquare {
  public:
   Knight(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Knight() override final {}
@@ -56,7 +56,7 @@ class Knight : public Square {
   AlphaBeta::Player side_{};
 };
 
-class Bishop : public Square {
+class Bishop : public ISquare {
  public:
   Bishop(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Bishop() override final {}
@@ -72,7 +72,7 @@ class Bishop : public Square {
   AlphaBeta::Player side_{};
 };
 
-class Rook : public Square {
+class Rook : public ISquare {
  public:
   Rook(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Rook() override final {}
@@ -89,7 +89,7 @@ class Rook : public Square {
   bool castling_{true};
 };
 
-class Queen : public Square {
+class Queen : public ISquare {
  public:
   Queen(const AlphaBeta::Player side = {}) : side_(side) {}
   ~Queen() override final {}
@@ -105,7 +105,7 @@ class Queen : public Square {
   AlphaBeta::Player side_{};
 };
 
-class King : public Square {
+class King : public ISquare {
  public:
   King(const AlphaBeta::Player side = {}) : side_(side) {}
   ~King() override final {}
