@@ -19,6 +19,4 @@ Evaluation evaluate(const Chess::State& state) {
 
 }  // namespace AlphaBeta
 
-// todo: Test for checkmate
-
 #endif
