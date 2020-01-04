@@ -33,6 +33,12 @@ bool IsOnTheBoard(const Coordinate coordinate);
 class Board {
  public:
   Board();
+  Board(const Board&);
+  Board& operator=(Board);
+  Board(Board&&) = default;
+  Board& operator=(Board&&) = default;
+  ~Board() = default;
+  void swap(Board&);
 
   const ISquare& Get(const Coordinate coor) const;
   void Set(const Coordinate coor, ISquarePtr&& piece);

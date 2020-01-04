@@ -1,6 +1,9 @@
 #include "chess/state.h"
 #include "chess/pieces.h"
 
+#include <algorithm>
+#include <memory>
+
 namespace Chess {
 
 bool operator==(const Coordinate& a, const Coordinate& b) {
@@ -48,6 +51,18 @@ Board::Board() {
     square = std::make_unique<Empty>();
   }
 }
+
+Board::Board(const Board& board) {
+  std::transform(board.squares_.begin(), board.squares_.end(), squares_.begin(),
+                 [](const ISquarePtr& square) { return square->clone(); });
+}
+
+Board& Board::operator=(Board other) {
+  this->swap(other);
+  return *this;
+}
+
+void Board::swap(Board& other) { squares_.swap(other.squares_); }
 
 const ISquare& Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {

@@ -80,5 +80,41 @@ TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {
   EXPECT_TRUE(coordinate == ToCoor(index));
 }
 
+TEST(BoardSpecialMemberFunctions, GivenCopies_ExpectEquality) {
+  // Setup
+  const Coordinate sample_square{2, 3};
+  Board original{};
+  original.Set(sample_square, std::make_unique<Bishop>(AlphaBeta::Player::max));
+  Board copy_assigend{};
+
+  // Call
+  const Board copy_constructed{original};
+  copy_assigend = original;
+
+  // Expect
+  EXPECT_FLOAT_EQ(
+      original.squares_.at(ToIdx(sample_square))->GetValue(),
+      copy_constructed.squares_.at(ToIdx(sample_square))->GetValue());
+  EXPECT_FLOAT_EQ(original.squares_.at(ToIdx(sample_square))->GetValue(),
+                  copy_assigend.squares_.at(ToIdx(sample_square))->GetValue());
+}
+
+TEST(BoardSpecialMemberFunctions, GivenCopies_ExpectIndependantEntities) {
+  // Setup
+  const Coordinate sample_square{2, 3};
+  Board original{};
+  original.Set(sample_square, std::make_unique<Bishop>(AlphaBeta::Player::max));
+  const float original_sample_piece_value =
+      original.squares_.at(ToIdx(sample_square))->GetValue();
+
+  // Call
+  const Board copy{original};
+  original.Set(sample_square, std::make_unique<Knight>(AlphaBeta::Player::min));
+
+  // Expect
+  EXPECT_FLOAT_EQ(original_sample_piece_value,
+                  copy.squares_.at(ToIdx(sample_square))->GetValue());
+}
+
 }  // namespace
 }  // namespace Chess
