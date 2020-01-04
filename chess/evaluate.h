@@ -4,8 +4,6 @@
 #include "alpha_beta/minimax.h"
 #include "chess/state.h"
 
-#include <map>
-
 namespace AlphaBeta {
 
 template <>
