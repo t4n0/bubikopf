@@ -126,4 +126,26 @@ std::ostream& King::print(std::ostream& stream) const {
   return stream;
 }
 
+std::unique_ptr<ISquare> Empty::clone() const {
+  return std::make_unique<Empty>(*this);
+}
+std::unique_ptr<ISquare> Pawn::clone() const {
+  return std::make_unique<Pawn>(*this);
+}
+std::unique_ptr<ISquare> Knight::clone() const {
+  return std::make_unique<Knight>(*this);
+}
+std::unique_ptr<ISquare> Bishop::clone() const {
+  return std::make_unique<Bishop>(*this);
+}
+std::unique_ptr<ISquare> Rook::clone() const {
+  return std::make_unique<Rook>(*this);
+}
+std::unique_ptr<ISquare> Queen::clone() const {
+  return std::make_unique<Queen>(*this);
+}
+std::unique_ptr<ISquare> King::clone() const {
+  return std::make_unique<King>(*this);
+}
+
 }  // namespace Chess

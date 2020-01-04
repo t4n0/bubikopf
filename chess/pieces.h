@@ -21,6 +21,7 @@ class Empty : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Pawn : public ISquare {
@@ -34,6 +35,7 @@ class Pawn : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
@@ -51,6 +53,7 @@ class Knight : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
@@ -67,6 +70,7 @@ class Bishop : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
@@ -83,6 +87,7 @@ class Rook : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
@@ -100,6 +105,7 @@ class Queen : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
@@ -116,6 +122,7 @@ class King : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
+  std::unique_ptr<ISquare> clone() const override final;
 
  private:
   AlphaBeta::Player side_{};
