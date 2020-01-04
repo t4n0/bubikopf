@@ -2,9 +2,6 @@
 #include "chess/state.h"
 
 #include <gtest/gtest.h>
-#include <algorithm>
-#include <iostream>
-#include <typeinfo>
 
 namespace Chess {
 namespace {

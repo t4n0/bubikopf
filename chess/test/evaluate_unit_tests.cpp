@@ -3,9 +3,6 @@
 
 #include <gtest/gtest.h>
 
-#include <utility>
-#include <vector>
-
 namespace Chess {
 namespace {
 
