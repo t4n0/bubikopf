@@ -2,6 +2,8 @@
 
 namespace Chess {
 
+Piece::~Piece() {}
+
 float Empty::GetValue() const { return 0.0F; }
 float Pawn::GetValue() const {
   return side_ == AlphaBeta::Player::max ? 1.0F : -1.0F;

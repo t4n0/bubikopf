@@ -23,9 +23,17 @@ class Empty : public ISquare {
   std::unique_ptr<ISquare> clone() const override final;
 };
 
-class Pawn : public ISquare {
+class Piece : public ISquare {
  public:
-  Pawn(const AlphaBeta::Player side) : side_(side) {}
+  Piece(const AlphaBeta::Player side) : side_(side) {}
+  ~Piece() override;
+
+  AlphaBeta::Player side_{};
+};
+
+class Pawn : public Piece {
+ public:
+  Pawn(const AlphaBeta::Player side) : Piece(side) {}
   ~Pawn() override final {}
 
   float GetValue() const override final;
@@ -35,14 +43,11 @@ class Pawn : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
-class Knight : public ISquare {
+class Knight : public Piece {
  public:
-  Knight(const AlphaBeta::Player side) : side_(side) {}
+  Knight(const AlphaBeta::Player side) : Piece(side) {}
   ~Knight() override final {}
 
   float GetValue() const override final;
@@ -52,14 +57,11 @@ class Knight : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
-class Bishop : public ISquare {
+class Bishop : public Piece {
  public:
-  Bishop(const AlphaBeta::Player side) : side_(side) {}
+  Bishop(const AlphaBeta::Player side) : Piece(side) {}
   ~Bishop() override final {}
 
   float GetValue() const override final;
@@ -69,14 +71,11 @@ class Bishop : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
-class Rook : public ISquare {
+class Rook : public Piece {
  public:
-  Rook(const AlphaBeta::Player side) : side_(side) {}
+  Rook(const AlphaBeta::Player side) : Piece(side) {}
   ~Rook() override final {}
 
   float GetValue() const override final;
@@ -86,14 +85,11 @@ class Rook : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
-class Queen : public ISquare {
+class Queen : public Piece {
  public:
-  Queen(const AlphaBeta::Player side) : side_(side) {}
+  Queen(const AlphaBeta::Player side) : Piece(side) {}
   ~Queen() override final {}
 
   float GetValue() const override final;
@@ -103,14 +99,11 @@ class Queen : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
-class King : public ISquare {
+class King : public Piece {
  public:
-  King(const AlphaBeta::Player side) : side_(side) {}
+  King(const AlphaBeta::Player side) : Piece(side) {}
   ~King() override final {}
 
   float GetValue() const override final;
@@ -120,9 +113,6 @@ class King : public ISquare {
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
   std::unique_ptr<ISquare> clone() const override final;
-
- private:
-  AlphaBeta::Player side_{};
 };
 
 using KingPtr = std::unique_ptr<King>;
