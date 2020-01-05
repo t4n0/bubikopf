@@ -80,6 +80,14 @@ void Board::Set(const Coordinate coor, ISquarePtr&& piece) {
   }
 }
 
+void Board::Set(const std::size_t idx, ISquarePtr&& piece) {
+  std::swap(squares_.at(idx), piece);
+}
+
+void Board::SwapSquares(const std::size_t a, const std::size_t b) {
+  std::swap(squares_.at(a), squares_.at(b));
+}
+
 Castling State::GetCastling(const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? castling_white_ : castling_black_;
 }

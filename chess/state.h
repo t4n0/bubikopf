@@ -43,6 +43,8 @@ class Board {
 
   const ISquare& Get(const Coordinate coor) const;
   void Set(const Coordinate coor, ISquarePtr&& piece);
+  void Set(const std::size_t idx, ISquarePtr&& piece);
+  void SwapSquares(const std::size_t a, const std::size_t b);
 
   std::array<ISquarePtr, 64> squares_;
 };
