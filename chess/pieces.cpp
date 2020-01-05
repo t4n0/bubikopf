@@ -84,10 +84,77 @@ std::vector<State> Empty::FindMoves(const std::size_t /*unused*/,
                                     const State& /*unused*/) const {
   return {};
 }
+
+Coordinate GetSingleStepFor(const AlphaBeta::Player player) {
+  constexpr Coordinate black_advance{0, 1};
+  constexpr Coordinate white_advance{0, -1};
+  return player == AlphaBeta::Player::max ? white_advance : black_advance;
+}
+
+int8_t GetPromotionRowFor(const AlphaBeta::Player player) {
+  constexpr int8_t black_start_row = 7;
+  constexpr int8_t white_start_row = 0;
+  return player == AlphaBeta::Player::max ? white_start_row : black_start_row;
+}
+
+std::array<ISquarePtr, 4> GetPromotionOptionsFor(
+    const AlphaBeta::Player player) {
+  std::array<ISquarePtr, 4> promotion_options{};
+  promotion_options.at(0) = std::make_unique<Queen>(player);
+  promotion_options.at(1) = std::make_unique<Rook>(player);
+  promotion_options.at(2) = std::make_unique<Knight>(player);
+  promotion_options.at(3) = std::make_unique<Bishop>(player);
+  return promotion_options;
+}
+
+State BaseStateAfterMove(const State& state) {
+  State new_state = state;
+  new_state.plies_++;
+  new_state.turn_ = state.turn_ == AlphaBeta::Player::max
+                        ? AlphaBeta::Player::min
+                        : AlphaBeta::Player::max;
+  new_state.en_passant_.reset();
+
+  return new_state;
+}
+
+State BaseStateAfterPawnMove(const State& state) {
+  State new_state = BaseStateAfterMove(state);
+  new_state.static_plies_ = 0;
+
+  return new_state;
+}
+
 std::vector<State> Pawn::FindMoves(const std::size_t idx,
                                    const State& state) const {
-  return {};
+  std::vector<State> new_moves{};
+
+  if (this->IsOfSide(state.turn_)) {
+    const Coordinate location = ToCoor(idx);
+
+    const Coordinate single_step_target =
+        location + GetSingleStepFor(this->side_);
+    if (state.board_.Get(single_step_target).IsEmpty()) {
+      if (single_step_target.row != GetPromotionRowFor(this->side_)) {
+        State new_move = BaseStateAfterPawnMove(state);
+        new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
+        new_moves.emplace_back(std::move(new_move));
+      } else {
+        std::array<ISquarePtr, 4> promotion_options =
+            GetPromotionOptionsFor(this->side_);
+        for (auto& promotion_option : promotion_options) {
+          State new_move = BaseStateAfterPawnMove(state);
+          new_move.board_.Set(idx, std::make_unique<Empty>());
+          new_move.board_.Set(single_step_target, std::move(promotion_option));
+          new_moves.emplace_back(std::move(new_move));
+        }
+      }
+    }
+  }
+
+  return new_moves;
 }
+
 std::vector<State> Knight::FindMoves(const std::size_t idx,
                                      const State& state) const {
   return {};
