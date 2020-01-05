@@ -12,7 +12,6 @@ namespace Chess {
 
 class Empty : public ISquare {
  public:
-  Empty(const AlphaBeta::Player /*unused*/ = {}) {}
   ~Empty() override final {}
 
   float GetValue() const override final;
@@ -26,7 +25,7 @@ class Empty : public ISquare {
 
 class Pawn : public ISquare {
  public:
-  Pawn(const AlphaBeta::Player side = {}) : side_(side) {}
+  Pawn(const AlphaBeta::Player side) : side_(side) {}
   ~Pawn() override final {}
 
   float GetValue() const override final;
@@ -43,7 +42,7 @@ class Pawn : public ISquare {
 
 class Knight : public ISquare {
  public:
-  Knight(const AlphaBeta::Player side = {}) : side_(side) {}
+  Knight(const AlphaBeta::Player side) : side_(side) {}
   ~Knight() override final {}
 
   float GetValue() const override final;
@@ -60,7 +59,7 @@ class Knight : public ISquare {
 
 class Bishop : public ISquare {
  public:
-  Bishop(const AlphaBeta::Player side = {}) : side_(side) {}
+  Bishop(const AlphaBeta::Player side) : side_(side) {}
   ~Bishop() override final {}
 
   float GetValue() const override final;
@@ -77,7 +76,7 @@ class Bishop : public ISquare {
 
 class Rook : public ISquare {
  public:
-  Rook(const AlphaBeta::Player side = {}) : side_(side) {}
+  Rook(const AlphaBeta::Player side) : side_(side) {}
   ~Rook() override final {}
 
   float GetValue() const override final;
@@ -94,7 +93,7 @@ class Rook : public ISquare {
 
 class Queen : public ISquare {
  public:
-  Queen(const AlphaBeta::Player side = {}) : side_(side) {}
+  Queen(const AlphaBeta::Player side) : side_(side) {}
   ~Queen() override final {}
 
   float GetValue() const override final;
@@ -111,12 +110,12 @@ class Queen : public ISquare {
 
 class King : public ISquare {
  public:
-  King(const AlphaBeta::Player side = {}) : side_(side) {}
+  King(const AlphaBeta::Player side) : side_(side) {}
   ~King() override final {}
 
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const AlphaBeta::Player& player = {}) override final;
+  bool IsOfSide(const AlphaBeta::Player& player) override final;
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;

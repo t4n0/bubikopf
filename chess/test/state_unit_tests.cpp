@@ -29,7 +29,7 @@ TEST(Board, Set_ExpectBoundsCheck) {
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
-  EXPECT_NO_THROW(std::cout << Bishop{} << '\n');
+  EXPECT_NO_THROW(std::cout << Bishop{AlphaBeta::Player::max} << '\n');
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
