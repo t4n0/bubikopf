@@ -14,6 +14,7 @@ class Empty : public ISquare {
  public:
   ~Empty() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& /*unused*/) const override final;
@@ -36,6 +37,7 @@ class Pawn : public Piece {
   Pawn(const AlphaBeta::Player side) : Piece(side) {}
   ~Pawn() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;
@@ -50,6 +52,7 @@ class Knight : public Piece {
   Knight(const AlphaBeta::Player side) : Piece(side) {}
   ~Knight() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;
@@ -64,6 +67,7 @@ class Bishop : public Piece {
   Bishop(const AlphaBeta::Player side) : Piece(side) {}
   ~Bishop() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;
@@ -78,6 +82,7 @@ class Rook : public Piece {
   Rook(const AlphaBeta::Player side) : Piece(side) {}
   ~Rook() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;
@@ -92,6 +97,7 @@ class Queen : public Piece {
   Queen(const AlphaBeta::Player side) : Piece(side) {}
   ~Queen() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;
@@ -106,6 +112,7 @@ class King : public Piece {
   King(const AlphaBeta::Player side) : Piece(side) {}
   ~King() override final {}
 
+  Square GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const AlphaBeta::Player& player) const override final;

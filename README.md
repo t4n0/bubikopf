@@ -15,4 +15,3 @@ Chess engine. Implements alpha/beta search.
 - Draw due to 50 move rule
 - Pawn promotion
 - Point to the same via simple ref. Avoid mallocs.
-- Compare pieces not via value but enum or sth.

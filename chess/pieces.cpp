@@ -4,6 +4,32 @@ namespace Chess {
 
 Piece::~Piece() {}
 
+Square Empty::GetId() const { return Square::Empty; }
+Square Pawn::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackPawn
+                                         : Square::WhitePawn;
+}
+Square Knight::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackKnight
+                                         : Square::WhiteKnight;
+}
+Square Bishop::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackBishop
+                                         : Square::WhiteBishop;
+}
+Square Rook::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackRook
+                                         : Square::WhiteRook;
+}
+Square Queen::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackQueen
+                                         : Square::WhiteQueen;
+}
+Square King::GetId() const {
+  return side_ == AlphaBeta::Player::min ? Square::BlackKing
+                                         : Square::WhiteKing;
+}
+
 float Empty::GetValue() const { return 0.0F; }
 float Pawn::GetValue() const {
   return side_ == AlphaBeta::Player::max ? 1.0F : -1.0F;
