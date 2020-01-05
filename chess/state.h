@@ -7,6 +7,7 @@
 
 #include <array>
 #include <iostream>
+#include <optional>
 #include <vector>
 
 namespace Chess {
@@ -48,12 +49,25 @@ class Board {
 
 std::ostream& operator<<(std::ostream& stream, const Board& piece);
 
+struct Castling {
+  bool queenside{true};
+  bool kingside{true};
+};
+
 class State {
  public:
   Board board_{};
   int static_plies_{};
   int plies_{};
   AlphaBeta::Player turn_{};
+  std::optional<Coordinate> en_passant_{};
+
+  Castling GetCastling(const AlphaBeta::Player player) const;
+  void SetCastling(const AlphaBeta::Player player, const Castling castling);
+
+ private:
+  Castling castling_black_{};
+  Castling castling_white_{};
 };
 
 std::ostream& operator<<(std::ostream& stream, const State& state);

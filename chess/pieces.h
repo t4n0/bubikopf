@@ -39,7 +39,6 @@ class Pawn : public ISquare {
 
  private:
   AlphaBeta::Player side_{};
-  bool en_passant_{false};
 };
 
 class Knight : public ISquare {
@@ -91,7 +90,6 @@ class Rook : public ISquare {
 
  private:
   AlphaBeta::Player side_{};
-  bool castling_{true};
 };
 
 class Queen : public ISquare {
@@ -126,7 +124,6 @@ class King : public ISquare {
 
  private:
   AlphaBeta::Player side_{};
-  bool castling_{true};
 };
 
 using KingPtr = std::unique_ptr<King>;

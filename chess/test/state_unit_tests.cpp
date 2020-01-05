@@ -113,5 +113,30 @@ TEST(BoardSpecialMemberFunctions, GivenCopies_ExpectIndependantEntities) {
                   copy.squares_.at(ToIdx(sample_square))->GetValue());
 }
 
+TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
+  // Setup
+  State state{};
+  const Castling expected_castling_white{true, false};
+  const Castling expected_castling_black{false, true};
+
+  // Call
+  state.SetCastling(AlphaBeta::Player::max, expected_castling_white);
+  state.SetCastling(AlphaBeta::Player::min, expected_castling_black);
+  const Castling returned_castling_white =
+      state.GetCastling(AlphaBeta::Player::max);
+  const Castling returned_castling_black =
+      state.GetCastling(AlphaBeta::Player::min);
+
+  // Expect
+  EXPECT_TRUE(expected_castling_white.queenside ==
+              returned_castling_white.queenside);
+  EXPECT_TRUE(expected_castling_white.kingside ==
+              returned_castling_white.kingside);
+  EXPECT_TRUE(expected_castling_black.queenside ==
+              returned_castling_black.queenside);
+  EXPECT_TRUE(expected_castling_black.kingside ==
+              returned_castling_black.kingside);
+}
+
 }  // namespace
 }  // namespace Chess

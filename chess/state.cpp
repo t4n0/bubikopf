@@ -80,6 +80,19 @@ void Board::Set(const Coordinate coor, ISquarePtr&& piece) {
   }
 }
 
+Castling State::GetCastling(const AlphaBeta::Player player) const {
+  return player == AlphaBeta::Player::max ? castling_white_ : castling_black_;
+}
+
+void State::SetCastling(const AlphaBeta::Player player,
+                        const Castling castling) {
+  if (player == AlphaBeta::Player::max) {
+    castling_white_ = castling;
+  } else {
+    castling_black_ = castling;
+  }
+}
+
 std::ostream& operator<<(std::ostream& stream, const Board& board) {
   for (std::size_t idx{0}; idx < board.squares_.size(); idx++) {
     stream << *board.squares_[idx] << " ";
