@@ -117,6 +117,40 @@ TEST_F(BlackPawnFindMoves_Fixture,
                   Bishop{AlphaBeta::Player::min}.GetValue());
 }
 
+TEST_F(BlackPawnFindMoves_Fixture,
+       GivenLocationOnStartRankAndTwoFreeSquaresInfront_ExpectAlsoDoubleStep) {
+  // Setup
+  const Coordinate location_behind_black_pawn{4, 0};
+  const Coordinate black_pawn_location{4, 1};
+  const Coordinate single_step_target{4, 2};
+  const Coordinate double_step_target{4, 3};
+  state_.board_.Set(black_pawn_location,
+                    std::make_unique<Pawn>(AlphaBeta::Player::min));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(black_pawn_location)
+          .FindMoves(ToIdx(black_pawn_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 2);
+  for (const auto& returned_state : returned_states) {
+    EXPECT_TRUE(
+        returned_state.board_.Get(location_behind_black_pawn).IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
+  }
+  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target).IsEmpty());
+  EXPECT_FALSE(returned_states.at(0).board_.Get(single_step_target).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_states.at(0).board_.Get(single_step_target).GetValue(),
+      Pawn{AlphaBeta::Player::min}.GetValue());
+  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target).IsEmpty());
+  EXPECT_FALSE(returned_states.at(1).board_.Get(double_step_target).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_states.at(1).board_.Get(double_step_target).GetValue(),
+      Pawn{AlphaBeta::Player::min}.GetValue());
+}
+
 class WhitePawnFindMoves_Fixture : public testing::Test {
  public:
   void SetUp() override {
@@ -216,6 +250,57 @@ TEST_F(WhitePawnFindMoves_Fixture,
                   Knight{AlphaBeta::Player::max}.GetValue());
   EXPECT_FLOAT_EQ(returned_states.at(3).board_.Get(promotion_square).GetValue(),
                   Bishop{AlphaBeta::Player::max}.GetValue());
+}
+
+TEST_F(WhitePawnFindMoves_Fixture,
+       GivenLocationOnStartRankAndTwoFreeSquaresInfront_ExpectAlsoDoubleStep) {
+  // Setup
+  const Coordinate location_behind_white_pawn{4, 7};
+  const Coordinate white_pawn_location{4, 6};
+  const Coordinate single_step_target{4, 5};
+  const Coordinate double_step_target{4, 4};
+  state_.board_.Set(white_pawn_location,
+                    std::make_unique<Pawn>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(white_pawn_location)
+          .FindMoves(ToIdx(white_pawn_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 2);
+  for (const auto& returned_state : returned_states) {
+    EXPECT_TRUE(
+        returned_state.board_.Get(location_behind_white_pawn).IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
+  }
+  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target).IsEmpty());
+  EXPECT_FALSE(returned_states.at(0).board_.Get(single_step_target).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_states.at(0).board_.Get(single_step_target).GetValue(),
+      Pawn{AlphaBeta::Player::max}.GetValue());
+  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target).IsEmpty());
+  EXPECT_FALSE(returned_states.at(1).board_.Get(double_step_target).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_states.at(1).board_.Get(double_step_target).GetValue(),
+      Pawn{AlphaBeta::Player::max}.GetValue());
+}
+
+TEST_F(WhitePawnFindMoves_Fixture,
+       GivenDoubleStep_ExpectEnPassantOnlyForDoubleStep) {
+  // Setup
+  const Coordinate white_pawn_location{4, 6};
+  const Coordinate single_step_target{4, 5};
+  state_.board_.Set(white_pawn_location,
+                    std::make_unique<Pawn>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(white_pawn_location)
+          .FindMoves(ToIdx(white_pawn_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.at(1).en_passant_ == single_step_target);
 }
 
 }  // namespace

@@ -1,5 +1,7 @@
 #include "pieces.h"
 
+#include <array>
+
 namespace Chess {
 
 Piece::~Piece() {}
@@ -91,6 +93,12 @@ Coordinate GetSingleStepFor(const AlphaBeta::Player player) {
   return player == AlphaBeta::Player::max ? white_advance : black_advance;
 }
 
+int8_t GetDoubleStepStartRowFor(const AlphaBeta::Player player) {
+  constexpr int8_t black_start_row = 1;
+  constexpr int8_t white_start_row = 6;
+  return player == AlphaBeta::Player::max ? white_start_row : black_start_row;
+}
+
 int8_t GetPromotionRowFor(const AlphaBeta::Player player) {
   constexpr int8_t black_start_row = 7;
   constexpr int8_t white_start_row = 0;
@@ -107,6 +115,11 @@ std::array<ISquarePtr, 4> GetPromotionOptionsFor(
   return promotion_options;
 }
 
+Coordinate GetDoubleStepFor(const AlphaBeta::Player player) {
+  constexpr Coordinate black_advance{0, 2};
+  constexpr Coordinate white_advance{0, -2};
+  return player == AlphaBeta::Player::max ? white_advance : black_advance;
+}
 State BaseStateAfterMove(const State& state) {
   State new_state = state;
   new_state.plies_++;
@@ -149,6 +162,17 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
           new_moves.emplace_back(std::move(new_move));
         }
       }
+    }
+
+    const Coordinate double_step_target =
+        location + GetDoubleStepFor(this->side_);
+    if (location.row == GetDoubleStepStartRowFor(this->side_) &&
+        state.board_.Get(single_step_target).IsEmpty() &&
+        state.board_.Get(double_step_target).IsEmpty()) {
+      State new_move = BaseStateAfterPawnMove(state);
+      new_move.board_.SwapSquares(idx, ToIdx(double_step_target));
+      new_move.en_passant_ = single_step_target;
+      new_moves.emplace_back(std::move(new_move));
     }
   }
 
