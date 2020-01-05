@@ -120,6 +120,16 @@ Coordinate GetDoubleStepFor(const AlphaBeta::Player player) {
   constexpr Coordinate white_advance{0, -2};
   return player == AlphaBeta::Player::max ? white_advance : black_advance;
 }
+
+std::array<Coordinate, 2> GetCaptureBehaviourFor(
+    const AlphaBeta::Player player) {
+  constexpr std::array<Coordinate, 2> black_captures{Coordinate{1, 1},
+                                                     Coordinate{-1, 1}};
+  constexpr std::array<Coordinate, 2> white_captures{Coordinate{1, -1},
+                                                     Coordinate{-1, -1}};
+  return player == AlphaBeta::Player::max ? white_captures : black_captures;
+}
+
 State BaseStateAfterMove(const State& state) {
   State new_state = state;
   new_state.plies_++;
@@ -136,6 +146,11 @@ State BaseStateAfterPawnMove(const State& state) {
   new_state.static_plies_ = 0;
 
   return new_state;
+}
+
+AlphaBeta::Player GetOtherPlayer(const AlphaBeta::Player player) {
+  return player == AlphaBeta::Player::max ? AlphaBeta::Player::min
+                                          : AlphaBeta::Player::max;
 }
 
 std::vector<State> Pawn::FindMoves(const std::size_t idx,
@@ -173,6 +188,30 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       new_move.board_.SwapSquares(idx, ToIdx(double_step_target));
       new_move.en_passant_ = single_step_target;
       new_moves.emplace_back(std::move(new_move));
+    }
+
+    std::array<Coordinate, 2> capture_targets =
+        GetCaptureBehaviourFor(this->side_);
+    for (auto& capture_target : capture_targets) {
+      capture_target += location;
+      if (IsOnTheBoard(capture_target)) {
+        if (state.board_.Get(capture_target)
+                .IsOfSide(GetOtherPlayer(this->side_))) {
+          State new_move = BaseStateAfterPawnMove(state);
+          new_move.board_.SwapSquares(idx, ToIdx(capture_target));
+          new_move.board_.Set(idx, std::make_unique<Empty>());
+          new_moves.emplace_back(std::move(new_move));
+        } else if (state.en_passant_ &&
+                   state.en_passant_.value() == capture_target) {
+          State new_move = BaseStateAfterPawnMove(state);
+          new_move.board_.SwapSquares(idx, ToIdx(capture_target));
+          new_move.board_.Set(
+              ToIdx(state.en_passant_.value() +
+                    GetSingleStepFor(GetOtherPlayer(this->side_))),
+              std::make_unique<Empty>());
+          new_moves.emplace_back(std::move(new_move));
+        }
+      }
     }
   }
 

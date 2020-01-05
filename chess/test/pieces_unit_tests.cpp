@@ -151,6 +151,67 @@ TEST_F(BlackPawnFindMoves_Fixture,
       Pawn{AlphaBeta::Player::min}.GetValue());
 }
 
+TEST_F(BlackPawnFindMoves_Fixture, GivenOneCapturePossible_ExpectOneMove) {
+  // Setup
+  const Coordinate black_pawn_location{3, 3};
+  const Coordinate white_blocking_piece_location{3, 4};
+  const Coordinate white_hanging_piece_location{4, 4};
+  const Coordinate black_piece_on_caputre_location{2, 4};
+  state_.board_.Set(black_pawn_location,
+                    std::make_unique<Pawn>(AlphaBeta::Player::min));
+  state_.board_.Set(black_piece_on_caputre_location,
+                    std::make_unique<Knight>(AlphaBeta::Player::min));
+  state_.board_.Set(white_blocking_piece_location,
+                    std::make_unique<King>(AlphaBeta::Player::max));
+  state_.board_.Set(white_hanging_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(black_pawn_location)
+          .FindMoves(ToIdx(black_pawn_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 1);
+  const State& returned_state = returned_states.front();
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(white_blocking_piece_location).GetValue(),
+      100.0F);
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(white_hanging_piece_location).GetValue(),
+      -1.0F);
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(black_piece_on_caputre_location).GetValue(),
+      -3.0F);
+}
+
+TEST_F(BlackPawnFindMoves_Fixture, GivenEnPassant_ExpectCapture) {
+  // Setup
+  const Coordinate black_pawn{5, 4};
+  const Coordinate white_pawn{4, 4};
+  const Coordinate white_blocking_piece{5, 5};
+  const Coordinate en_passant{4, 5};
+  state_.board_.Set(black_pawn, std::make_unique<Pawn>(AlphaBeta::Player::min));
+  state_.board_.Set(white_pawn, std::make_unique<Pawn>(AlphaBeta::Player::max));
+  state_.board_.Set(white_blocking_piece,
+                    std::make_unique<Knight>(AlphaBeta::Player::max));
+  state_.en_passant_ = en_passant;
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(black_pawn).FindMoves(ToIdx(black_pawn), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 1);
+  const State& returned_state = returned_states.front();
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn).IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn).IsEmpty());
+  EXPECT_FLOAT_EQ(returned_state.board_.Get(en_passant).GetValue(), -1.0F);
+  EXPECT_FLOAT_EQ(returned_state.board_.Get(white_blocking_piece).GetValue(),
+                  3.0F);
+}
+
 class WhitePawnFindMoves_Fixture : public testing::Test {
  public:
   void SetUp() override {
@@ -301,6 +362,66 @@ TEST_F(WhitePawnFindMoves_Fixture,
 
   // Expect
   EXPECT_TRUE(returned_states.at(1).en_passant_ == single_step_target);
+}
+
+TEST_F(WhitePawnFindMoves_Fixture, GivenOneCapturePossible_ExpectOneMove) {
+  // Setup
+  const Coordinate white_pawn_location{5, 5};
+  const Coordinate black_blocking_piece_location{5, 4};
+  const Coordinate black_hanging_piece_location{6, 4};
+  const Coordinate white_piece_on_caputre_location{4, 4};
+  state_.board_.Set(white_pawn_location,
+                    std::make_unique<Pawn>(AlphaBeta::Player::max));
+  state_.board_.Set(white_piece_on_caputre_location,
+                    std::make_unique<Knight>(AlphaBeta::Player::max));
+  state_.board_.Set(black_blocking_piece_location,
+                    std::make_unique<King>(AlphaBeta::Player::min));
+  state_.board_.Set(black_hanging_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(white_pawn_location)
+          .FindMoves(ToIdx(white_pawn_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 1);
+  const State& returned_state = returned_states.front();
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(black_blocking_piece_location).GetValue(),
+      -100.0F);
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(black_hanging_piece_location).GetValue(), 1.0F);
+  EXPECT_FLOAT_EQ(
+      returned_state.board_.Get(white_piece_on_caputre_location).GetValue(),
+      3.0F);
+}
+
+TEST_F(WhitePawnFindMoves_Fixture, GivenEnPassant_ExpectCapture) {
+  // Setup
+  const Coordinate white_pawn{4, 3};
+  const Coordinate black_pawn{5, 3};
+  const Coordinate black_blocking_piece{4, 2};
+  const Coordinate en_passant{5, 2};
+  state_.board_.Set(white_pawn, std::make_unique<Pawn>(AlphaBeta::Player::max));
+  state_.board_.Set(black_pawn, std::make_unique<Pawn>(AlphaBeta::Player::min));
+  state_.board_.Set(black_blocking_piece,
+                    std::make_unique<Knight>(AlphaBeta::Player::min));
+  state_.en_passant_ = en_passant;
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(white_pawn).FindMoves(ToIdx(white_pawn), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 1);
+  const State& returned_state = returned_states.front();
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn).IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn).IsEmpty());
+  EXPECT_FLOAT_EQ(returned_state.board_.Get(en_passant).GetValue(), 1.0F);
+  EXPECT_FLOAT_EQ(returned_state.board_.Get(black_blocking_piece).GetValue(),
+                  -3.0F);
 }
 
 }  // namespace
