@@ -21,11 +21,16 @@ TEST(Board, Set_ExpectBoundsCheck) {
   EXPECT_THROW(board.Get({3, -1}), std::out_of_range);
   EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
 
-  EXPECT_NO_THROW(board.Set({3, 3}, KnightPtr{}));
-  EXPECT_THROW(board.Set({-1, 3}, KnightPtr{}), std::out_of_range);
-  EXPECT_THROW(board.Set({8, 3}, KnightPtr{}), std::out_of_range);
-  EXPECT_THROW(board.Set({3, -1}, KnightPtr{}), std::out_of_range);
-  EXPECT_THROW(board.Set({3, 8}, KnightPtr{}), std::out_of_range);
+  constexpr AlphaBeta::Player player{AlphaBeta::Player::max};
+  EXPECT_NO_THROW(board.Set({3, 3}, std::make_unique<Knight>(player)));
+  EXPECT_THROW(board.Set({-1, 3}, std::make_unique<Knight>(player)),
+               std::out_of_range);
+  EXPECT_THROW(board.Set({8, 3}, std::make_unique<Knight>(player)),
+               std::out_of_range);
+  EXPECT_THROW(board.Set({3, -1}, std::make_unique<Knight>(player)),
+               std::out_of_range);
+  EXPECT_THROW(board.Set({3, 8}, std::make_unique<Knight>(player)),
+               std::out_of_range);
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {

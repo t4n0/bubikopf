@@ -115,13 +115,6 @@ class King : public Piece {
   std::unique_ptr<ISquare> clone() const override final;
 };
 
-using KingPtr = std::unique_ptr<King>;
-using QueenPtr = std::unique_ptr<Queen>;
-using RookPtr = std::unique_ptr<Rook>;
-using BishopPtr = std::unique_ptr<Bishop>;
-using KnightPtr = std::unique_ptr<Knight>;
-using PawnPtr = std::unique_ptr<Pawn>;
-
 }  // namespace Chess
 
 #endif  // CHESS_PIECES_H
