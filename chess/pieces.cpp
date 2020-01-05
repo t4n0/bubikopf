@@ -24,13 +24,27 @@ float King::GetValue() const {
   return side_ == AlphaBeta::Player::max ? 100.0F : -100.0F;
 }
 
-bool Empty::IsOfSide(const AlphaBeta::Player& /*unused*/) { return false; }
-bool Pawn::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
-bool Knight::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
-bool Bishop::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
-bool Rook::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
-bool Queen::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
-bool King::IsOfSide(const AlphaBeta::Player& side) { return side_ == side; }
+bool Empty::IsOfSide(const AlphaBeta::Player& /*unused*/) const {
+  return false;
+}
+bool Pawn::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
+bool Knight::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
+bool Bishop::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
+bool Rook::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
+bool Queen::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
+bool King::IsOfSide(const AlphaBeta::Player& side) const {
+  return side_ == side;
+}
 
 bool Empty::IsEmpty() const { return true; }
 bool Pawn::IsEmpty() const { return false; }
