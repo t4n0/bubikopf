@@ -258,18 +258,55 @@ std::vector<State> Knight::FindMoves(const std::size_t idx,
 
   return new_moves;
 }
+
+std::vector<State> FindStraightLineMoves(
+    const State& state, const std::size_t location,
+    const AlphaBeta::Player owner, const std::vector<Coordinate>& directions) {
+  std::vector<State> new_moves{};
+
+  if (owner == state.turn_) {
+    for (const Coordinate& direction : directions) {
+      Coordinate target = ToCoor(location);
+      target += direction;
+      while (IsOnTheBoard(target) &&
+             !state.board_.Get(target)->IsOfSide(owner)) {
+        if (state.board_.Get(target)->IsEmpty()) {
+          new_moves.emplace_back(
+              MakePieceAdvance(state, location, ToIdx(target)));
+        } else if (!state.board_.Get(target)->IsOfSide(owner)) {
+          new_moves.emplace_back(
+              MakePieceCapture(state, location, ToIdx(target)));
+          break;
+        }
+        target += direction;
+      }
+    }
+  }
+
+  return new_moves;
+}
+
 std::vector<State> Bishop::FindMoves(const std::size_t idx,
                                      const State& state) const {
-  return {};
+  const std::vector<Coordinate> bishop_directions{
+      {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}}};
+  return FindStraightLineMoves(state, idx, owner_, bishop_directions);
 }
+
 std::vector<State> Rook::FindMoves(const std::size_t idx,
                                    const State& state) const {
-  return {};
+  const std::vector<Coordinate> rook_directions{
+      {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
+  return FindStraightLineMoves(state, idx, owner_, rook_directions);
 }
+
 std::vector<State> Queen::FindMoves(const std::size_t idx,
                                     const State& state) const {
-  return {};
+  const std::vector<Coordinate> queen_directions{
+      {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
+  return FindStraightLineMoves(state, idx, owner_, queen_directions);
 }
+
 std::vector<State> King::FindMoves(const std::size_t idx,
                                    const State& state) const {
   return {};

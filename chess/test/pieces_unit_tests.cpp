@@ -402,16 +402,11 @@ TEST_F(WhitePawnFindMoves_Fixture, GivenEnPassant_ExpectCapture) {
               Square::BlackKnight);
 }
 
-class KnightFindMoves_Fixture : public testing::Test {
- public:
-  void SetUp() override { state_ = State{}; }
-  void TearDown() override {}
-
-  State state_;
+struct PiecePlies_Fixture : public testing::Test {
+  State state_{};
 };
 
-TEST_F(KnightFindMoves_Fixture,
-       GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoMoves) {
+TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoMoves) {
   // Setup
   const Coordinate knight_location{3, 4};
   state_.board_.Set(knight_location,
@@ -426,7 +421,7 @@ TEST_F(KnightFindMoves_Fixture,
   EXPECT_TRUE(returned_states.size() == 0);
 }
 
-TEST_F(KnightFindMoves_Fixture, GivenKnightInCenter_ExpectEightMoves) {
+TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightMoves) {
   // Setup
   const Coordinate knight_location{3, 4};
   state_.board_.Set(knight_location,
@@ -445,7 +440,7 @@ TEST_F(KnightFindMoves_Fixture, GivenKnightInCenter_ExpectEightMoves) {
   EXPECT_TRUE(returned_states.front().static_plies_ == expected_static_plies);
 }
 
-TEST_F(KnightFindMoves_Fixture, GivenKnightInCorner_ExpectTwoMoves) {
+TEST_F(PiecePlies_Fixture, GivenKnightInCorner_ExpectTwoMoves) {
   // Setup
   const Coordinate knight_location{0, 0};
   state_.board_.Set(knight_location,
@@ -460,7 +455,7 @@ TEST_F(KnightFindMoves_Fixture, GivenKnightInCorner_ExpectTwoMoves) {
   EXPECT_TRUE(returned_states.size() == 2);
 }
 
-TEST_F(KnightFindMoves_Fixture,
+TEST_F(PiecePlies_Fixture,
        GivenKnightInCornerAndPiecesOnTargetSquares_ExpectCapture) {
   // Setup
   const Coordinate knight_location{0, 0};
@@ -484,6 +479,74 @@ TEST_F(KnightFindMoves_Fixture,
   EXPECT_TRUE(returned_states.size() == 1);
   EXPECT_TRUE(returned_states.front().plies_ == expected_plies);
   EXPECT_TRUE(returned_states.front().static_plies_ == expected_static_plies);
+}
+
+TEST_F(
+    PiecePlies_Fixture,
+    GivenBishopInCenterWithOneCapturePossible_ExpectAppropriateNumberOfMoves) {
+  // Setup
+  const Coordinate bishop_location{3, 4};
+  const Coordinate own_piece_location{1, 2};
+  const Coordinate opponent_piece_location{5, 2};
+  state_.board_.Set(bishop_location,
+                    std::make_unique<Bishop>(AlphaBeta::Player::min));
+  state_.board_.Set(own_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+  state_.board_.Set(opponent_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(bishop_location)
+          ->FindMoves(ToIdx(bishop_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 9);
+}
+
+TEST_F(PiecePlies_Fixture,
+       GivenRookInCenterWithOneCapturePossible_ExpectAppropriateNumberOfMoves) {
+  // Setup
+  const Coordinate rook_location{3, 4};
+  const Coordinate own_piece_location{1, 4};
+  const Coordinate opponent_piece_location{3, 2};
+  state_.board_.Set(rook_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+  state_.board_.Set(own_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+  state_.board_.Set(opponent_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(rook_location)
+          ->FindMoves(ToIdx(rook_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 10);
+}
+
+TEST_F(
+    PiecePlies_Fixture,
+    GivenQueenInCenterWithOneCapturePossible_ExpectAppropriateNumberOfMoves) {
+  // Setup
+  const Coordinate queen_location{3, 4};
+  const Coordinate own_piece_location{1, 4};
+  const Coordinate opponent_piece_location{3, 2};
+  state_.board_.Set(queen_location,
+                    std::make_unique<Queen>(AlphaBeta::Player::min));
+  state_.board_.Set(own_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+  state_.board_.Set(opponent_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(queen_location)
+          ->FindMoves(ToIdx(queen_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 23);
 }
 
 }  // namespace
