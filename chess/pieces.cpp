@@ -141,9 +141,16 @@ State BaseStateAfterMove(const State& state) {
   return new_state;
 }
 
-State BaseStateAfterPawnMove(const State& state) {
+State BaseStateAfterCaptureOrPawnMove(const State& state) {
   State new_state = BaseStateAfterMove(state);
   new_state.static_plies_ = 0;
+
+  return new_state;
+}
+
+State BaseStateAfterPieceMove(const State& state) {
+  State new_state = BaseStateAfterMove(state);
+  new_state.static_plies_++;
 
   return new_state;
 }
@@ -163,14 +170,14 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
     const Coordinate single_step_target = location + GetSingleStepFor(owner_);
     if (state.board_.Get(single_step_target)->IsEmpty()) {
       if (single_step_target.row != GetPromotionRowFor(owner_)) {
-        State new_move = BaseStateAfterPawnMove(state);
+        State new_move = BaseStateAfterCaptureOrPawnMove(state);
         new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
         new_moves.emplace_back(std::move(new_move));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
             GetPromotionOptionsFor(owner_);
         for (auto& promotion_option : promotion_options) {
-          State new_move = BaseStateAfterPawnMove(state);
+          State new_move = BaseStateAfterCaptureOrPawnMove(state);
           new_move.board_.Set(idx, std::make_unique<Empty>());
           new_move.board_.Set(single_step_target, std::move(promotion_option));
           new_moves.emplace_back(std::move(new_move));
@@ -182,7 +189,7 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
     if (location.row == GetDoubleStepStartRowFor(owner_) &&
         state.board_.Get(single_step_target)->IsEmpty() &&
         state.board_.Get(double_step_target)->IsEmpty()) {
-      State new_move = BaseStateAfterPawnMove(state);
+      State new_move = BaseStateAfterCaptureOrPawnMove(state);
       new_move.board_.SwapSquares(idx, ToIdx(double_step_target));
       new_move.en_passant_ = single_step_target;
       new_moves.emplace_back(std::move(new_move));
@@ -194,13 +201,13 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       if (IsOnTheBoard(capture_target)) {
         if (state.board_.Get(capture_target)
                 ->IsOfSide(GetOtherPlayer(owner_))) {
-          State new_move = BaseStateAfterPawnMove(state);
+          State new_move = BaseStateAfterCaptureOrPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(idx, std::make_unique<Empty>());
           new_moves.emplace_back(std::move(new_move));
         } else if (state.en_passant_ &&
                    state.en_passant_.value() == capture_target) {
-          State new_move = BaseStateAfterPawnMove(state);
+          State new_move = BaseStateAfterCaptureOrPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(ToIdx(state.en_passant_.value() +
                                     GetSingleStepFor(GetOtherPlayer(owner_))),
@@ -216,7 +223,30 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
 
 std::vector<State> Knight::FindMoves(const std::size_t idx,
                                      const State& state) const {
-  return {};
+  constexpr std::array<Coordinate, 8> knight_moves{
+      {{1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}}};
+
+  std::vector<State> new_moves{};
+
+  if (IsOfSide(state.turn_)) {
+    for (const Coordinate& knight_move : knight_moves) {
+      const Coordinate target = ToCoor(idx) + knight_move;
+      if (IsOnTheBoard(target)) {
+        if (state.board_.Get(target)->IsEmpty()) {
+          State new_move = BaseStateAfterPieceMove(state);
+          new_move.board_.SwapSquares(idx, ToIdx(target));
+          new_moves.emplace_back(std::move(new_move));
+        } else if (!state.board_.Get(target)->IsOfSide(owner_)) {
+          State new_move = BaseStateAfterCaptureOrPawnMove(state);
+          new_move.board_.SwapSquares(idx, ToIdx(target));
+          new_move.board_.Set(idx, std::make_unique<Empty>());
+          new_moves.emplace_back(std::move(new_move));
+        }
+      }
+    }
+  }
+
+  return new_moves;
 }
 std::vector<State> Bishop::FindMoves(const std::size_t idx,
                                      const State& state) const {
