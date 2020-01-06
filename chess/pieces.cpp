@@ -157,19 +157,18 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
                                    const State& state) const {
   std::vector<State> new_moves{};
 
-  if (this->IsOfSide(state.turn_)) {
+  if (IsOfSide(state.turn_)) {
     const Coordinate location = ToCoor(idx);
 
-    const Coordinate single_step_target =
-        location + GetSingleStepFor(this->side_);
+    const Coordinate single_step_target = location + GetSingleStepFor(side_);
     if (state.board_.Get(single_step_target)->IsEmpty()) {
-      if (single_step_target.row != GetPromotionRowFor(this->side_)) {
+      if (single_step_target.row != GetPromotionRowFor(side_)) {
         State new_move = BaseStateAfterPawnMove(state);
         new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
         new_moves.emplace_back(std::move(new_move));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
-            GetPromotionOptionsFor(this->side_);
+            GetPromotionOptionsFor(side_);
         for (auto& promotion_option : promotion_options) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.Set(idx, std::make_unique<Empty>());
@@ -179,9 +178,8 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       }
     }
 
-    const Coordinate double_step_target =
-        location + GetDoubleStepFor(this->side_);
-    if (location.row == GetDoubleStepStartRowFor(this->side_) &&
+    const Coordinate double_step_target = location + GetDoubleStepFor(side_);
+    if (location.row == GetDoubleStepStartRowFor(side_) &&
         state.board_.Get(single_step_target)->IsEmpty() &&
         state.board_.Get(double_step_target)->IsEmpty()) {
       State new_move = BaseStateAfterPawnMove(state);
@@ -190,13 +188,11 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       new_moves.emplace_back(std::move(new_move));
     }
 
-    std::array<Coordinate, 2> capture_targets =
-        GetCaptureBehaviourFor(this->side_);
+    std::array<Coordinate, 2> capture_targets = GetCaptureBehaviourFor(side_);
     for (auto& capture_target : capture_targets) {
       capture_target += location;
       if (IsOnTheBoard(capture_target)) {
-        if (state.board_.Get(capture_target)
-                ->IsOfSide(GetOtherPlayer(this->side_))) {
+        if (state.board_.Get(capture_target)->IsOfSide(GetOtherPlayer(side_))) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(idx, std::make_unique<Empty>());
@@ -205,10 +201,9 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
                    state.en_passant_.value() == capture_target) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_move.board_.Set(
-              ToIdx(state.en_passant_.value() +
-                    GetSingleStepFor(GetOtherPlayer(this->side_))),
-              std::make_unique<Empty>());
+          new_move.board_.Set(ToIdx(state.en_passant_.value() +
+                                    GetSingleStepFor(GetOtherPlayer(side_))),
+                              std::make_unique<Empty>());
           new_moves.emplace_back(std::move(new_move));
         }
       }
