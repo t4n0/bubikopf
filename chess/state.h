@@ -34,16 +34,10 @@ bool IsOnTheBoard(const Coordinate coordinate);
 class Board {
  public:
   Board();
-  Board(const Board&);
-  Board& operator=(Board);
-  Board(Board&&) = default;
-  Board& operator=(Board&&) = default;
-  ~Board() = default;
-  void swap(Board&);
 
-  const ISquare& Get(const Coordinate coor) const;
-  void Set(const Coordinate coor, ISquarePtr&& piece);
-  void Set(const std::size_t idx, ISquarePtr&& piece);
+  ISquarePtr Get(const Coordinate coor) const;
+  void Set(const Coordinate coor, const ISquarePtr square);
+  void Set(const std::size_t idx, const ISquarePtr square);
   void SwapSquares(const std::size_t a, const std::size_t b);
 
   std::array<ISquarePtr, 64> squares_;

@@ -52,36 +52,24 @@ Board::Board() {
   }
 }
 
-Board::Board(const Board& board) {
-  std::transform(board.squares_.begin(), board.squares_.end(), squares_.begin(),
-                 [](const ISquarePtr& square) { return square->clone(); });
-}
-
-Board& Board::operator=(Board other) {
-  this->swap(other);
-  return *this;
-}
-
-void Board::swap(Board& other) { squares_.swap(other.squares_); }
-
-const ISquare& Board::Get(const Coordinate coor) const {
+ISquarePtr Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {
-    return *squares_[ToIdx(coor)];
+    return squares_[ToIdx(coor)];
   } else {
     throw std::out_of_range{"Board::Get: Out of range."};
   }
 }
 
-void Board::Set(const Coordinate coor, ISquarePtr&& piece) {
+void Board::Set(const Coordinate coor, const ISquarePtr square) {
   if (IsOnTheBoard(coor)) {
-    squares_[ToIdx(coor)].swap(piece);
+    squares_[ToIdx(coor)] = square;
   } else {
     throw std::out_of_range{"Board::Set: Out of range."};
   }
 }
 
-void Board::Set(const std::size_t idx, ISquarePtr&& piece) {
-  std::swap(squares_.at(idx), piece);
+void Board::Set(const std::size_t idx, const ISquarePtr square) {
+  squares_.at(idx) = square;
 }
 
 void Board::SwapSquares(const std::size_t a, const std::size_t b) {

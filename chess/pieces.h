@@ -21,7 +21,6 @@ class Empty : public ISquare {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Piece : public ISquare {
@@ -44,7 +43,6 @@ class Pawn : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Knight : public Piece {
@@ -59,7 +57,6 @@ class Knight : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Bishop : public Piece {
@@ -74,7 +71,6 @@ class Bishop : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Rook : public Piece {
@@ -89,7 +85,6 @@ class Rook : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class Queen : public Piece {
@@ -104,7 +99,6 @@ class Queen : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 class King : public Piece {
@@ -119,7 +113,6 @@ class King : public Piece {
   std::vector<State> FindMoves(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-  std::unique_ptr<ISquare> clone() const override final;
 };
 
 }  // namespace Chess

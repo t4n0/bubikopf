@@ -37,14 +37,13 @@ class ISquare {
   virtual std::vector<State> FindMoves(const std::size_t idx,
                                        const State& state) const = 0;
   virtual std::ostream& print(std::ostream& stream) const = 0;
-  virtual std::unique_ptr<ISquare> clone() const = 0;
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const ISquare& square) {
   return square.print(stream);
 }
 
-using ISquarePtr = std::unique_ptr<ISquare>;
+using ISquarePtr = std::shared_ptr<const ISquare>;
 
 }  // namespace Chess
 

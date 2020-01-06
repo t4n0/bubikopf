@@ -6,18 +6,6 @@
 namespace Chess {
 namespace {
 
-TEST(Clone, ExpectEquality) {
-  // Setup
-  const std::unique_ptr<ISquare> original =
-      std::make_unique<King>(AlphaBeta::Player::max);
-
-  // Call
-  const std::unique_ptr<ISquare> clone = original->clone();
-
-  // Expect
-  EXPECT_TRUE(original->GetId() == clone->GetId());
-}
-
 class BlackPawnFindMoves_Fixture : public testing::Test {
  public:
   void SetUp() override { state_ = State{}; }
@@ -38,7 +26,7 @@ TEST_F(BlackPawnFindMoves_Fixture, GivenNoFreeSquareInfront_ExpectNoMoves) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 0);
@@ -53,7 +41,7 @@ TEST_F(BlackPawnFindMoves_Fixture, GivenWhitePawn_ExpectNoMoves) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 0);
@@ -71,14 +59,14 @@ TEST_F(BlackPawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_states.size() == 1);
-  EXPECT_TRUE(returned_state.board_.Get(location_behind_black_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(free_square).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
               Square::BlackPawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
@@ -95,22 +83,22 @@ TEST_F(BlackPawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 4);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
-        returned_state.board_.Get(location_behind_black_pawn).IsEmpty());
-    EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
+        returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
               Square::BlackQueen);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
               Square::BlackRook);
-  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
               Square::BlackKnight);
-  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
               Square::BlackBishop);
 }
 
@@ -127,20 +115,20 @@ TEST_F(BlackPawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 2);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
-        returned_state.board_.Get(location_behind_black_pawn).IsEmpty());
-    EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
+        returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target).IsEmpty());
-  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target).GetId() ==
+  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
+  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
               Square::BlackPawn);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target).IsEmpty());
-  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target).GetId() ==
+  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
+  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
               Square::BlackPawn);
 }
 
@@ -162,19 +150,20 @@ TEST_F(BlackPawnFindMoves_Fixture, GivenOneCapturePossible_ExpectOneMove) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_states.size() == 1);
-  EXPECT_TRUE(returned_state.board_.Get(black_pawn_location).IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   EXPECT_TRUE(
-      returned_state.board_.Get(white_blocking_piece_location).GetId() ==
+      returned_state.board_.Get(white_blocking_piece_location)->GetId() ==
       Square::WhiteKing);
-  EXPECT_TRUE(returned_state.board_.Get(white_hanging_piece_location).GetId() ==
-              Square::BlackPawn);
   EXPECT_TRUE(
-      returned_state.board_.Get(black_piece_on_caputre_location).GetId() ==
+      returned_state.board_.Get(white_hanging_piece_location)->GetId() ==
+      Square::BlackPawn);
+  EXPECT_TRUE(
+      returned_state.board_.Get(black_piece_on_caputre_location)->GetId() ==
       Square::BlackKnight);
 }
 
@@ -192,16 +181,16 @@ TEST_F(BlackPawnFindMoves_Fixture, GivenEnPassant_ExpectCapture) {
 
   // Call
   const std::vector<State> returned_states{
-      state_.board_.Get(black_pawn).FindMoves(ToIdx(black_pawn), state_)};
+      state_.board_.Get(black_pawn)->FindMoves(ToIdx(black_pawn), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 1);
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_state.board_.Get(white_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(black_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(en_passant).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
               Square::BlackPawn);
-  EXPECT_TRUE(returned_state.board_.Get(white_blocking_piece).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(white_blocking_piece)->GetId() ==
               Square::WhiteKnight);
 }
 
@@ -228,7 +217,7 @@ TEST_F(WhitePawnFindMoves_Fixture, GivenNoFreeSquareInfront_ExpectNoMoves) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 0);
@@ -243,7 +232,7 @@ TEST_F(WhitePawnFindMoves_Fixture, GivenBlackPawn_ExpectNoMoves) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(black_pawn_location)
-          .FindMoves(ToIdx(black_pawn_location), state_)};
+          ->FindMoves(ToIdx(black_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 0);
@@ -261,14 +250,14 @@ TEST_F(WhitePawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 1);
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_state.board_.Get(location_behind_white_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(free_square).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
               Square::WhitePawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
@@ -285,22 +274,22 @@ TEST_F(WhitePawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 4);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
-        returned_state.board_.Get(location_behind_white_pawn).IsEmpty());
-    EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
+        returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
               Square::WhiteQueen);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
               Square::WhiteRook);
-  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
               Square::WhiteKnight);
-  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square).GetId() ==
+  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
               Square::WhiteBishop);
 }
 
@@ -317,20 +306,20 @@ TEST_F(WhitePawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 2);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
-        returned_state.board_.Get(location_behind_white_pawn).IsEmpty());
-    EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
+        returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
+    EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target).IsEmpty());
-  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target).GetId() ==
+  EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
+  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
               Square::WhitePawn);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target).IsEmpty());
-  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target).GetId() ==
+  EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
+  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
               Square::WhitePawn);
 }
 
@@ -345,7 +334,7 @@ TEST_F(WhitePawnFindMoves_Fixture,
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.at(1).en_passant_ == single_step_target);
@@ -369,19 +358,20 @@ TEST_F(WhitePawnFindMoves_Fixture, GivenOneCapturePossible_ExpectOneMove) {
   // Call
   const std::vector<State> returned_states{
       state_.board_.Get(white_pawn_location)
-          .FindMoves(ToIdx(white_pawn_location), state_)};
+          ->FindMoves(ToIdx(white_pawn_location), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 1);
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_state.board_.Get(white_pawn_location).IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   EXPECT_TRUE(
-      returned_state.board_.Get(black_blocking_piece_location).GetId() ==
+      returned_state.board_.Get(black_blocking_piece_location)->GetId() ==
       Square::BlackKing);
-  EXPECT_TRUE(returned_state.board_.Get(black_hanging_piece_location).GetId() ==
-              Square::WhitePawn);
   EXPECT_TRUE(
-      returned_state.board_.Get(white_piece_on_caputre_location).GetId() ==
+      returned_state.board_.Get(black_hanging_piece_location)->GetId() ==
+      Square::WhitePawn);
+  EXPECT_TRUE(
+      returned_state.board_.Get(white_piece_on_caputre_location)->GetId() ==
       Square::WhiteKnight);
 }
 
@@ -399,16 +389,16 @@ TEST_F(WhitePawnFindMoves_Fixture, GivenEnPassant_ExpectCapture) {
 
   // Call
   const std::vector<State> returned_states{
-      state_.board_.Get(white_pawn).FindMoves(ToIdx(white_pawn), state_)};
+      state_.board_.Get(white_pawn)->FindMoves(ToIdx(white_pawn), state_)};
 
   // Expect
   EXPECT_TRUE(returned_states.size() == 1);
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_state.board_.Get(white_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(black_pawn).IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(en_passant).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
+  EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
               Square::WhitePawn);
-  EXPECT_TRUE(returned_state.board_.Get(black_blocking_piece).GetId() ==
+  EXPECT_TRUE(returned_state.board_.Get(black_blocking_piece)->GetId() ==
               Square::BlackKnight);
 }
 

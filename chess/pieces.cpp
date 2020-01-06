@@ -162,7 +162,7 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
 
     const Coordinate single_step_target =
         location + GetSingleStepFor(this->side_);
-    if (state.board_.Get(single_step_target).IsEmpty()) {
+    if (state.board_.Get(single_step_target)->IsEmpty()) {
       if (single_step_target.row != GetPromotionRowFor(this->side_)) {
         State new_move = BaseStateAfterPawnMove(state);
         new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
@@ -182,8 +182,8 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
     const Coordinate double_step_target =
         location + GetDoubleStepFor(this->side_);
     if (location.row == GetDoubleStepStartRowFor(this->side_) &&
-        state.board_.Get(single_step_target).IsEmpty() &&
-        state.board_.Get(double_step_target).IsEmpty()) {
+        state.board_.Get(single_step_target)->IsEmpty() &&
+        state.board_.Get(double_step_target)->IsEmpty()) {
       State new_move = BaseStateAfterPawnMove(state);
       new_move.board_.SwapSquares(idx, ToIdx(double_step_target));
       new_move.en_passant_ = single_step_target;
@@ -196,7 +196,7 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       capture_target += location;
       if (IsOnTheBoard(capture_target)) {
         if (state.board_.Get(capture_target)
-                .IsOfSide(GetOtherPlayer(this->side_))) {
+                ->IsOfSide(GetOtherPlayer(this->side_))) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(idx, std::make_unique<Empty>());
@@ -296,28 +296,6 @@ std::ostream& King::print(std::ostream& stream) const {
     stream << "k ";
   }
   return stream;
-}
-
-std::unique_ptr<ISquare> Empty::clone() const {
-  return std::make_unique<Empty>(*this);
-}
-std::unique_ptr<ISquare> Pawn::clone() const {
-  return std::make_unique<Pawn>(*this);
-}
-std::unique_ptr<ISquare> Knight::clone() const {
-  return std::make_unique<Knight>(*this);
-}
-std::unique_ptr<ISquare> Bishop::clone() const {
-  return std::make_unique<Bishop>(*this);
-}
-std::unique_ptr<ISquare> Rook::clone() const {
-  return std::make_unique<Rook>(*this);
-}
-std::unique_ptr<ISquare> Queen::clone() const {
-  return std::make_unique<Queen>(*this);
-}
-std::unique_ptr<ISquare> King::clone() const {
-  return std::make_unique<King>(*this);
 }
 
 }  // namespace Chess
