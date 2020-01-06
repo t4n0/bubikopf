@@ -8,70 +8,70 @@ Piece::~Piece() {}
 
 Square Empty::GetId() const { return Square::Empty; }
 Square Pawn::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackPawn
-                                         : Square::WhitePawn;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackPawn
+                                          : Square::WhitePawn;
 }
 Square Knight::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackKnight
-                                         : Square::WhiteKnight;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackKnight
+                                          : Square::WhiteKnight;
 }
 Square Bishop::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackBishop
-                                         : Square::WhiteBishop;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackBishop
+                                          : Square::WhiteBishop;
 }
 Square Rook::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackRook
-                                         : Square::WhiteRook;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackRook
+                                          : Square::WhiteRook;
 }
 Square Queen::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackQueen
-                                         : Square::WhiteQueen;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackQueen
+                                          : Square::WhiteQueen;
 }
 Square King::GetId() const {
-  return side_ == AlphaBeta::Player::min ? Square::BlackKing
-                                         : Square::WhiteKing;
+  return owner_ == AlphaBeta::Player::min ? Square::BlackKing
+                                          : Square::WhiteKing;
 }
 
 float Empty::GetValue() const { return 0.0F; }
 float Pawn::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 1.0F : -1.0F;
+  return owner_ == AlphaBeta::Player::max ? 1.0F : -1.0F;
 }
 float Knight::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
+  return owner_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
 }
 float Bishop::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
+  return owner_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
 }
 float Rook::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 5.0F : -5.0F;
+  return owner_ == AlphaBeta::Player::max ? 5.0F : -5.0F;
 }
 float Queen::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 9.0F : -9.0F;
+  return owner_ == AlphaBeta::Player::max ? 9.0F : -9.0F;
 }
 float King::GetValue() const {
-  return side_ == AlphaBeta::Player::max ? 100.0F : -100.0F;
+  return owner_ == AlphaBeta::Player::max ? 100.0F : -100.0F;
 }
 
 bool Empty::IsOfSide(const AlphaBeta::Player& /*unused*/) const {
   return false;
 }
 bool Pawn::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 bool Knight::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 bool Bishop::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 bool Rook::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 bool Queen::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 bool King::IsOfSide(const AlphaBeta::Player& side) const {
-  return side_ == side;
+  return owner_ == side;
 }
 
 bool Empty::IsEmpty() const { return true; }
@@ -160,15 +160,15 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
   if (IsOfSide(state.turn_)) {
     const Coordinate location = ToCoor(idx);
 
-    const Coordinate single_step_target = location + GetSingleStepFor(side_);
+    const Coordinate single_step_target = location + GetSingleStepFor(owner_);
     if (state.board_.Get(single_step_target)->IsEmpty()) {
-      if (single_step_target.row != GetPromotionRowFor(side_)) {
+      if (single_step_target.row != GetPromotionRowFor(owner_)) {
         State new_move = BaseStateAfterPawnMove(state);
         new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
         new_moves.emplace_back(std::move(new_move));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
-            GetPromotionOptionsFor(side_);
+            GetPromotionOptionsFor(owner_);
         for (auto& promotion_option : promotion_options) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.Set(idx, std::make_unique<Empty>());
@@ -178,8 +178,8 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       }
     }
 
-    const Coordinate double_step_target = location + GetDoubleStepFor(side_);
-    if (location.row == GetDoubleStepStartRowFor(side_) &&
+    const Coordinate double_step_target = location + GetDoubleStepFor(owner_);
+    if (location.row == GetDoubleStepStartRowFor(owner_) &&
         state.board_.Get(single_step_target)->IsEmpty() &&
         state.board_.Get(double_step_target)->IsEmpty()) {
       State new_move = BaseStateAfterPawnMove(state);
@@ -188,11 +188,12 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       new_moves.emplace_back(std::move(new_move));
     }
 
-    std::array<Coordinate, 2> capture_targets = GetCaptureBehaviourFor(side_);
+    std::array<Coordinate, 2> capture_targets = GetCaptureBehaviourFor(owner_);
     for (auto& capture_target : capture_targets) {
       capture_target += location;
       if (IsOnTheBoard(capture_target)) {
-        if (state.board_.Get(capture_target)->IsOfSide(GetOtherPlayer(side_))) {
+        if (state.board_.Get(capture_target)
+                ->IsOfSide(GetOtherPlayer(owner_))) {
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(idx, std::make_unique<Empty>());
@@ -202,7 +203,7 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
           State new_move = BaseStateAfterPawnMove(state);
           new_move.board_.SwapSquares(idx, ToIdx(capture_target));
           new_move.board_.Set(ToIdx(state.en_passant_.value() +
-                                    GetSingleStepFor(GetOtherPlayer(side_))),
+                                    GetSingleStepFor(GetOtherPlayer(owner_))),
                               std::make_unique<Empty>());
           new_moves.emplace_back(std::move(new_move));
         }
@@ -240,7 +241,7 @@ std::ostream& Empty::print(std::ostream& stream) const {
 }
 
 std::ostream& Pawn::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "P ";
   } else {
     stream << "p ";
@@ -249,7 +250,7 @@ std::ostream& Pawn::print(std::ostream& stream) const {
 }
 
 std::ostream& Knight::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "N ";
   } else {
     stream << "n ";
@@ -258,7 +259,7 @@ std::ostream& Knight::print(std::ostream& stream) const {
 }
 
 std::ostream& Bishop::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "B ";
   } else {
     stream << "b ";
@@ -267,7 +268,7 @@ std::ostream& Bishop::print(std::ostream& stream) const {
 }
 
 std::ostream& Rook::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "R ";
   } else {
     stream << "r ";
@@ -276,7 +277,7 @@ std::ostream& Rook::print(std::ostream& stream) const {
 }
 
 std::ostream& Queen::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "Q ";
   } else {
     stream << "q ";
@@ -285,7 +286,7 @@ std::ostream& Queen::print(std::ostream& stream) const {
 }
 
 std::ostream& King::print(std::ostream& stream) const {
-  if (side_ == AlphaBeta::Player::max) {
+  if (owner_ == AlphaBeta::Player::max) {
     stream << "K ";
   } else {
     stream << "k ";

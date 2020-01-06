@@ -25,15 +25,15 @@ class Empty : public ISquare {
 
 class Piece : public ISquare {
  public:
-  Piece(const AlphaBeta::Player side) : side_(side) {}
+  Piece(const AlphaBeta::Player player) : owner_(player) {}
   ~Piece() override;
 
-  AlphaBeta::Player side_{};
+  AlphaBeta::Player owner_{};
 };
 
 class Pawn : public Piece {
  public:
-  Pawn(const AlphaBeta::Player side) : Piece(side) {}
+  Pawn(const AlphaBeta::Player player) : Piece(player) {}
   ~Pawn() override final {}
 
   Square GetId() const override final;
@@ -47,7 +47,7 @@ class Pawn : public Piece {
 
 class Knight : public Piece {
  public:
-  Knight(const AlphaBeta::Player side) : Piece(side) {}
+  Knight(const AlphaBeta::Player player) : Piece(player) {}
   ~Knight() override final {}
 
   Square GetId() const override final;
@@ -61,7 +61,7 @@ class Knight : public Piece {
 
 class Bishop : public Piece {
  public:
-  Bishop(const AlphaBeta::Player side) : Piece(side) {}
+  Bishop(const AlphaBeta::Player player) : Piece(player) {}
   ~Bishop() override final {}
 
   Square GetId() const override final;
@@ -75,7 +75,7 @@ class Bishop : public Piece {
 
 class Rook : public Piece {
  public:
-  Rook(const AlphaBeta::Player side) : Piece(side) {}
+  Rook(const AlphaBeta::Player player) : Piece(player) {}
   ~Rook() override final {}
 
   Square GetId() const override final;
@@ -89,7 +89,7 @@ class Rook : public Piece {
 
 class Queen : public Piece {
  public:
-  Queen(const AlphaBeta::Player side) : Piece(side) {}
+  Queen(const AlphaBeta::Player player) : Piece(player) {}
   ~Queen() override final {}
 
   Square GetId() const override final;
@@ -103,7 +103,7 @@ class Queen : public Piece {
 
 class King : public Piece {
  public:
-  King(const AlphaBeta::Player side) : Piece(side) {}
+  King(const AlphaBeta::Player player) : Piece(player) {}
   ~King() override final {}
 
   Square GetId() const override final;
