@@ -60,6 +60,8 @@ ISquarePtr Board::Get(const Coordinate coor) const {
   }
 }
 
+ISquarePtr Board::Get(const std::size_t idx) const { return squares_.at(idx); }
+
 void Board::Set(const Coordinate coor, const ISquarePtr square) {
   if (IsOnTheBoard(coor)) {
     squares_[ToIdx(coor)] = square;
