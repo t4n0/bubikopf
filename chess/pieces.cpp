@@ -221,6 +221,21 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
   return new_moves;
 }
 
+State MakePieceAdvance(const State& state, const std::size_t location,
+                       const std::size_t target) {
+  State new_move = BaseStateAfterPieceMove(state);
+  new_move.board_.SwapSquares(location, target);
+  return new_move;
+}
+
+State MakePieceCapture(const State& state, const std::size_t location,
+                       const std::size_t target) {
+  State new_move = BaseStateAfterCaptureOrPawnMove(state);
+  new_move.board_.SwapSquares(location, target);
+  new_move.board_.Set(location, std::make_unique<Empty>());
+  return new_move;
+}
+
 std::vector<State> Knight::FindMoves(const std::size_t idx,
                                      const State& state) const {
   constexpr std::array<Coordinate, 8> knight_moves{
@@ -233,14 +248,9 @@ std::vector<State> Knight::FindMoves(const std::size_t idx,
       const Coordinate target = ToCoor(idx) + knight_move;
       if (IsOnTheBoard(target)) {
         if (state.board_.Get(target)->IsEmpty()) {
-          State new_move = BaseStateAfterPieceMove(state);
-          new_move.board_.SwapSquares(idx, ToIdx(target));
-          new_moves.emplace_back(std::move(new_move));
+          new_moves.emplace_back(MakePieceAdvance(state, idx, ToIdx(target)));
         } else if (!state.board_.Get(target)->IsOfSide(owner_)) {
-          State new_move = BaseStateAfterCaptureOrPawnMove(state);
-          new_move.board_.SwapSquares(idx, ToIdx(target));
-          new_move.board_.Set(idx, std::make_unique<Empty>());
-          new_moves.emplace_back(std::move(new_move));
+          new_moves.emplace_back(MakePieceCapture(state, idx, ToIdx(target)));
         }
       }
     }
