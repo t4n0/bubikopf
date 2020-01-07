@@ -381,23 +381,25 @@ std::ostream& King::print(std::ostream& stream) const {
   return stream;
 }
 
-ISquarePtr SquareBehaviour::GetEmpty() const { return empty_square_; }
-ISquarePtr SquareBehaviour::GetPawn(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetEmpty() const { return empty_square_; }
+ISquarePtr SquareBehaviourPool::GetPawn(const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_pawn_ : black_pawn_;
 }
-ISquarePtr SquareBehaviour::GetKnight(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetKnight(
+    const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_knight_ : black_knight_;
 }
-ISquarePtr SquareBehaviour::GetBishop(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetBishop(
+    const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_bishop_ : black_bishop_;
 }
-ISquarePtr SquareBehaviour::GetRook(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetRook(const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_rook_ : black_rook_;
 }
-ISquarePtr SquareBehaviour::GetQueen(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetQueen(const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_queen_ : black_queen_;
 }
-ISquarePtr SquareBehaviour::GetKing(const AlphaBeta::Player player) const {
+ISquarePtr SquareBehaviourPool::GetKing(const AlphaBeta::Player player) const {
   return player == AlphaBeta::Player::max ? white_king_ : black_king_;
 }
 

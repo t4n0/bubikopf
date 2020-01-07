@@ -8,7 +8,7 @@ namespace {
 
 class BlackPawnFindPlies_Fixture : public testing::Test {
  public:
-  SquareBehaviour pool_{};
+  SquareBehaviourPool pool_{};
   State state_{pool_};
 };
 
@@ -197,7 +197,7 @@ class WhitePawnFindPlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = AlphaBeta::Player::max; }
   void TearDown() override {}
 
-  SquareBehaviour pool_{};
+  SquareBehaviourPool pool_{};
   State state_{pool_};
 };
 
@@ -399,7 +399,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 }
 
 struct PiecePlies_Fixture : public testing::Test {
-  SquareBehaviour pool_{};
+  SquareBehaviourPool pool_{};
   State state_{pool_};
 };
 

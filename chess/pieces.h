@@ -115,7 +115,7 @@ class King : public Piece {
   std::ostream& print(std::ostream& stream) const override final;
 };
 
-class SquareBehaviour {
+class SquareBehaviourPool {
  public:
   ISquarePtr GetEmpty() const;
   ISquarePtr GetPawn(const AlphaBeta::Player player) const;
