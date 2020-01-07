@@ -236,29 +236,6 @@ State MakePieceCapture(const State& state, const std::size_t location,
   return new_move;
 }
 
-std::vector<State> Knight::FindMoves(const std::size_t idx,
-                                     const State& state) const {
-  constexpr std::array<Coordinate, 8> knight_moves{
-      {{1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}}};
-
-  std::vector<State> new_moves{};
-
-  if (IsOfSide(state.turn_)) {
-    for (const Coordinate& knight_move : knight_moves) {
-      const Coordinate target = ToCoor(idx) + knight_move;
-      if (IsOnTheBoard(target)) {
-        if (state.board_.Get(target)->IsEmpty()) {
-          new_moves.emplace_back(MakePieceAdvance(state, idx, ToIdx(target)));
-        } else if (!state.board_.Get(target)->IsOfSide(owner_)) {
-          new_moves.emplace_back(MakePieceCapture(state, idx, ToIdx(target)));
-        }
-      }
-    }
-  }
-
-  return new_moves;
-}
-
 std::vector<State> FindStraightLineMoves(
     const State& state, const std::size_t location,
     const AlphaBeta::Player owner, const std::vector<Coordinate>& directions) {
@@ -307,9 +284,42 @@ std::vector<State> Queen::FindMoves(const std::size_t idx,
   return FindStraightLineMoves(state, idx, owner_, queen_directions);
 }
 
+std::vector<State> FindJumpStyleMoves(const State& state,
+                                      const std::size_t location,
+                                      const AlphaBeta::Player owner,
+                                      const std::vector<Coordinate>& jumps) {
+  std::vector<State> new_moves{};
+
+  if (owner == state.turn_) {
+    for (const Coordinate& jump : jumps) {
+      const Coordinate target = ToCoor(location) + jump;
+      if (IsOnTheBoard(target)) {
+        if (state.board_.Get(target)->IsEmpty()) {
+          new_moves.emplace_back(
+              MakePieceAdvance(state, location, ToIdx(target)));
+        } else if (!state.board_.Get(target)->IsOfSide(owner)) {
+          new_moves.emplace_back(
+              MakePieceCapture(state, location, ToIdx(target)));
+        }
+      }
+    }
+  }
+
+  return new_moves;
+}
+
+std::vector<State> Knight::FindMoves(const std::size_t idx,
+                                     const State& state) const {
+  const std::vector<Coordinate> knight_jumps{
+      {{1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}}};
+  return FindJumpStyleMoves(state, idx, owner_, knight_jumps);
+}
+
 std::vector<State> King::FindMoves(const std::size_t idx,
                                    const State& state) const {
-  return {};
+  const std::vector<Coordinate> king_jumps{
+      {{1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}}};
+  return FindJumpStyleMoves(state, idx, owner_, king_jumps);
 }
 
 std::ostream& Empty::print(std::ostream& stream) const {

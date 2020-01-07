@@ -549,5 +549,27 @@ TEST_F(
   EXPECT_TRUE(returned_states.size() == 23);
 }
 
+TEST_F(PiecePlies_Fixture,
+       GivenKingOnEdgeWithOneCapturePossible_ExpectAppropriateNumberOfMoves) {
+  // Setup
+  const Coordinate king_location{0, 3};
+  const Coordinate own_piece_location{1, 3};
+  const Coordinate opponent_piece_location{0, 4};
+  state_.board_.Set(king_location,
+                    std::make_unique<King>(AlphaBeta::Player::min));
+  state_.board_.Set(own_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::min));
+  state_.board_.Set(opponent_piece_location,
+                    std::make_unique<Rook>(AlphaBeta::Player::max));
+
+  // Call
+  const std::vector<State> returned_states{
+      state_.board_.Get(king_location)
+          ->FindMoves(ToIdx(king_location), state_)};
+
+  // Expect
+  EXPECT_TRUE(returned_states.size() == 4);
+}
+
 }  // namespace
 }  // namespace Chess
