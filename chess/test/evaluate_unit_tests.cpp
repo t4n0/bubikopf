@@ -9,7 +9,8 @@ namespace {
 using AlphaBeta::Player;
 
 TEST(EvaluateTest, GivenSamples_ExpectAllHold) {
-  State state{};
+  const SquareBehaviour pool{};
+  State state{pool};
 
   state.board_.Set({0, 0}, std::make_unique<Pawn>(Player::min));
   AlphaBeta::Evaluation returned_evaluation{AlphaBeta::evaluate(state)};

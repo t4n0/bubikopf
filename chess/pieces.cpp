@@ -106,12 +106,12 @@ int8_t GetPromotionRowFor(const AlphaBeta::Player player) {
 }
 
 std::array<ISquarePtr, 4> GetPromotionOptionsFor(
-    const AlphaBeta::Player player) {
+    const State& state, const AlphaBeta::Player player) {
   std::array<ISquarePtr, 4> promotion_options{};
-  promotion_options.at(0) = std::make_unique<Queen>(player);
-  promotion_options.at(1) = std::make_unique<Rook>(player);
-  promotion_options.at(2) = std::make_unique<Knight>(player);
-  promotion_options.at(3) = std::make_unique<Bishop>(player);
+  promotion_options.at(0) = state.pool_.GetQueen(player);
+  promotion_options.at(1) = state.pool_.GetRook(player);
+  promotion_options.at(2) = state.pool_.GetKnight(player);
+  promotion_options.at(3) = state.pool_.GetBishop(player);
   return promotion_options;
 }
 
@@ -175,10 +175,10 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
         new_plies.emplace_back(std::move(new_ply));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
-            GetPromotionOptionsFor(owner_);
+            GetPromotionOptionsFor(state, owner_);
         for (auto& promotion_option : promotion_options) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
-          new_ply.board_.Set(idx, std::make_unique<Empty>());
+          new_ply.board_.Set(idx, state.pool_.GetEmpty());
           new_ply.board_.Set(single_step_target, std::move(promotion_option));
           new_plies.emplace_back(std::move(new_ply));
         }
@@ -203,7 +203,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
                 ->IsOfSide(GetOtherPlayer(owner_))) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_ply.board_.Set(idx, std::make_unique<Empty>());
+          new_ply.board_.Set(idx, state.pool_.GetEmpty());
           new_plies.emplace_back(std::move(new_ply));
         } else if (state.en_passant_ &&
                    state.en_passant_.value() == capture_target) {
@@ -211,7 +211,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
           new_ply.board_.Set(ToIdx(state.en_passant_.value() +
                                    GetSingleStepFor(GetOtherPlayer(owner_))),
-                             std::make_unique<Empty>());
+                             state.pool_.GetEmpty());
           new_plies.emplace_back(std::move(new_ply));
         }
       }
@@ -232,7 +232,7 @@ State MakePieceCapture(const State& state, const std::size_t location,
                        const std::size_t target) {
   State new_ply = BaseStateAfterCaptureOrPawnPly(state);
   new_ply.board_.SwapSquares(location, target);
-  new_ply.board_.Set(location, std::make_unique<Empty>());
+  new_ply.board_.Set(location, state.pool_.GetEmpty());
   return new_ply;
 }
 

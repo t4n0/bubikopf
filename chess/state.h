@@ -51,13 +51,20 @@ struct Castling {
   bool kingside{true};
 };
 
+class SquareBehaviour;
+
 class State {
  public:
+  State() = delete;
+  State(const SquareBehaviour& pool) : pool_(pool) {}
+
   Board board_{};
   int static_plies_{};
   int plies_{};
   AlphaBeta::Player turn_{};
   std::optional<Coordinate> en_passant_{};
+
+  const SquareBehaviour& pool_;
 
   Castling GetCastling(const AlphaBeta::Player player) const;
   void SetCastling(const AlphaBeta::Player player, const Castling castling);

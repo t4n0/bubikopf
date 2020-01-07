@@ -8,10 +8,8 @@ namespace {
 
 class BlackPawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_ = State{}; }
-  void TearDown() override {}
-
-  State state_;
+  SquareBehaviour pool_{};
+  State state_{pool_};
 };
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -196,13 +194,11 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override {
-    state_ = State{};
-    state_.turn_ = AlphaBeta::Player::max;
-  }
+  void SetUp() override { state_.turn_ = AlphaBeta::Player::max; }
   void TearDown() override {}
 
-  State state_;
+  SquareBehaviour pool_{};
+  State state_{pool_};
 };
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -403,7 +399,8 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 }
 
 struct PiecePlies_Fixture : public testing::Test {
-  State state_{};
+  SquareBehaviour pool_{};
+  State state_{pool_};
 };
 
 TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {

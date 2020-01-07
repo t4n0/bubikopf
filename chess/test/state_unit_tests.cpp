@@ -120,7 +120,8 @@ TEST(BoardSpecialMemberFunctions, GivenCopies_ExpectIndependantEntities) {
 
 TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
   // Setup
-  State state{};
+  const SquareBehaviour pool{};
+  State state{pool};
   const Castling expected_castling_white{true, false};
   const Castling expected_castling_black{false, true};
 
