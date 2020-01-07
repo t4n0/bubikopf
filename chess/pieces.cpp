@@ -82,7 +82,7 @@ bool Rook::IsEmpty() const { return false; }
 bool Queen::IsEmpty() const { return false; }
 bool King::IsEmpty() const { return false; }
 
-std::vector<State> Empty::FindMoves(const std::size_t /*unused*/,
+std::vector<State> Empty::FindPlies(const std::size_t /*unused*/,
                                     const State& /*unused*/) const {
   return {};
 }
@@ -130,7 +130,7 @@ std::array<Coordinate, 2> GetCaptureBehaviourFor(
   return player == AlphaBeta::Player::max ? white_captures : black_captures;
 }
 
-State BaseStateAfterMove(const State& state) {
+State BaseStateAfterPly(const State& state) {
   State new_state = state;
   new_state.plies_++;
   new_state.turn_ = state.turn_ == AlphaBeta::Player::max
@@ -141,15 +141,15 @@ State BaseStateAfterMove(const State& state) {
   return new_state;
 }
 
-State BaseStateAfterCaptureOrPawnMove(const State& state) {
-  State new_state = BaseStateAfterMove(state);
+State BaseStateAfterCaptureOrPawnPly(const State& state) {
+  State new_state = BaseStateAfterPly(state);
   new_state.static_plies_ = 0;
 
   return new_state;
 }
 
-State BaseStateAfterPieceMove(const State& state) {
-  State new_state = BaseStateAfterMove(state);
+State BaseStateAfterPiecePly(const State& state) {
+  State new_state = BaseStateAfterPly(state);
   new_state.static_plies_++;
 
   return new_state;
@@ -160,9 +160,9 @@ AlphaBeta::Player GetOtherPlayer(const AlphaBeta::Player player) {
                                           : AlphaBeta::Player::max;
 }
 
-std::vector<State> Pawn::FindMoves(const std::size_t idx,
+std::vector<State> Pawn::FindPlies(const std::size_t idx,
                                    const State& state) const {
-  std::vector<State> new_moves{};
+  std::vector<State> new_plies{};
 
   if (IsOfSide(state.turn_)) {
     const Coordinate location = ToCoor(idx);
@@ -170,17 +170,17 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
     const Coordinate single_step_target = location + GetSingleStepFor(owner_);
     if (state.board_.Get(single_step_target)->IsEmpty()) {
       if (single_step_target.row != GetPromotionRowFor(owner_)) {
-        State new_move = BaseStateAfterCaptureOrPawnMove(state);
-        new_move.board_.SwapSquares(idx, ToIdx(single_step_target));
-        new_moves.emplace_back(std::move(new_move));
+        State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+        new_ply.board_.SwapSquares(idx, ToIdx(single_step_target));
+        new_plies.emplace_back(std::move(new_ply));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
             GetPromotionOptionsFor(owner_);
         for (auto& promotion_option : promotion_options) {
-          State new_move = BaseStateAfterCaptureOrPawnMove(state);
-          new_move.board_.Set(idx, std::make_unique<Empty>());
-          new_move.board_.Set(single_step_target, std::move(promotion_option));
-          new_moves.emplace_back(std::move(new_move));
+          State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+          new_ply.board_.Set(idx, std::make_unique<Empty>());
+          new_ply.board_.Set(single_step_target, std::move(promotion_option));
+          new_plies.emplace_back(std::move(new_ply));
         }
       }
     }
@@ -189,10 +189,10 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
     if (location.row == GetDoubleStepStartRowFor(owner_) &&
         state.board_.Get(single_step_target)->IsEmpty() &&
         state.board_.Get(double_step_target)->IsEmpty()) {
-      State new_move = BaseStateAfterCaptureOrPawnMove(state);
-      new_move.board_.SwapSquares(idx, ToIdx(double_step_target));
-      new_move.en_passant_ = single_step_target;
-      new_moves.emplace_back(std::move(new_move));
+      State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+      new_ply.board_.SwapSquares(idx, ToIdx(double_step_target));
+      new_ply.en_passant_ = single_step_target;
+      new_plies.emplace_back(std::move(new_ply));
     }
 
     std::array<Coordinate, 2> capture_targets = GetCaptureBehaviourFor(owner_);
@@ -201,45 +201,45 @@ std::vector<State> Pawn::FindMoves(const std::size_t idx,
       if (IsOnTheBoard(capture_target)) {
         if (state.board_.Get(capture_target)
                 ->IsOfSide(GetOtherPlayer(owner_))) {
-          State new_move = BaseStateAfterCaptureOrPawnMove(state);
-          new_move.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_move.board_.Set(idx, std::make_unique<Empty>());
-          new_moves.emplace_back(std::move(new_move));
+          State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+          new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
+          new_ply.board_.Set(idx, std::make_unique<Empty>());
+          new_plies.emplace_back(std::move(new_ply));
         } else if (state.en_passant_ &&
                    state.en_passant_.value() == capture_target) {
-          State new_move = BaseStateAfterCaptureOrPawnMove(state);
-          new_move.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_move.board_.Set(ToIdx(state.en_passant_.value() +
-                                    GetSingleStepFor(GetOtherPlayer(owner_))),
-                              std::make_unique<Empty>());
-          new_moves.emplace_back(std::move(new_move));
+          State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+          new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
+          new_ply.board_.Set(ToIdx(state.en_passant_.value() +
+                                   GetSingleStepFor(GetOtherPlayer(owner_))),
+                             std::make_unique<Empty>());
+          new_plies.emplace_back(std::move(new_ply));
         }
       }
     }
   }
 
-  return new_moves;
+  return new_plies;
 }
 
 State MakePieceAdvance(const State& state, const std::size_t location,
                        const std::size_t target) {
-  State new_move = BaseStateAfterPieceMove(state);
-  new_move.board_.SwapSquares(location, target);
-  return new_move;
+  State new_ply = BaseStateAfterPiecePly(state);
+  new_ply.board_.SwapSquares(location, target);
+  return new_ply;
 }
 
 State MakePieceCapture(const State& state, const std::size_t location,
                        const std::size_t target) {
-  State new_move = BaseStateAfterCaptureOrPawnMove(state);
-  new_move.board_.SwapSquares(location, target);
-  new_move.board_.Set(location, std::make_unique<Empty>());
-  return new_move;
+  State new_ply = BaseStateAfterCaptureOrPawnPly(state);
+  new_ply.board_.SwapSquares(location, target);
+  new_ply.board_.Set(location, std::make_unique<Empty>());
+  return new_ply;
 }
 
-std::vector<State> FindStraightLineMoves(
+std::vector<State> FindStraightLinePlies(
     const State& state, const std::size_t location,
     const AlphaBeta::Player owner, const std::vector<Coordinate>& directions) {
-  std::vector<State> new_moves{};
+  std::vector<State> new_plies{};
 
   if (owner == state.turn_) {
     for (const Coordinate& direction : directions) {
@@ -248,10 +248,10 @@ std::vector<State> FindStraightLineMoves(
       while (IsOnTheBoard(target) &&
              !state.board_.Get(target)->IsOfSide(owner)) {
         if (state.board_.Get(target)->IsEmpty()) {
-          new_moves.emplace_back(
+          new_plies.emplace_back(
               MakePieceAdvance(state, location, ToIdx(target)));
         } else if (!state.board_.Get(target)->IsOfSide(owner)) {
-          new_moves.emplace_back(
+          new_plies.emplace_back(
               MakePieceCapture(state, location, ToIdx(target)));
           break;
         }
@@ -260,66 +260,66 @@ std::vector<State> FindStraightLineMoves(
     }
   }
 
-  return new_moves;
+  return new_plies;
 }
 
-std::vector<State> Bishop::FindMoves(const std::size_t idx,
+std::vector<State> Bishop::FindPlies(const std::size_t idx,
                                      const State& state) const {
   const std::vector<Coordinate> bishop_directions{
       {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}}};
-  return FindStraightLineMoves(state, idx, owner_, bishop_directions);
+  return FindStraightLinePlies(state, idx, owner_, bishop_directions);
 }
 
-std::vector<State> Rook::FindMoves(const std::size_t idx,
+std::vector<State> Rook::FindPlies(const std::size_t idx,
                                    const State& state) const {
   const std::vector<Coordinate> rook_directions{
       {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
-  return FindStraightLineMoves(state, idx, owner_, rook_directions);
+  return FindStraightLinePlies(state, idx, owner_, rook_directions);
 }
 
-std::vector<State> Queen::FindMoves(const std::size_t idx,
+std::vector<State> Queen::FindPlies(const std::size_t idx,
                                     const State& state) const {
   const std::vector<Coordinate> queen_directions{
       {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
-  return FindStraightLineMoves(state, idx, owner_, queen_directions);
+  return FindStraightLinePlies(state, idx, owner_, queen_directions);
 }
 
-std::vector<State> FindJumpStyleMoves(const State& state,
+std::vector<State> FindJumpStylePlies(const State& state,
                                       const std::size_t location,
                                       const AlphaBeta::Player owner,
                                       const std::vector<Coordinate>& jumps) {
-  std::vector<State> new_moves{};
+  std::vector<State> new_plies{};
 
   if (owner == state.turn_) {
     for (const Coordinate& jump : jumps) {
       const Coordinate target = ToCoor(location) + jump;
       if (IsOnTheBoard(target)) {
         if (state.board_.Get(target)->IsEmpty()) {
-          new_moves.emplace_back(
+          new_plies.emplace_back(
               MakePieceAdvance(state, location, ToIdx(target)));
         } else if (!state.board_.Get(target)->IsOfSide(owner)) {
-          new_moves.emplace_back(
+          new_plies.emplace_back(
               MakePieceCapture(state, location, ToIdx(target)));
         }
       }
     }
   }
 
-  return new_moves;
+  return new_plies;
 }
 
-std::vector<State> Knight::FindMoves(const std::size_t idx,
+std::vector<State> Knight::FindPlies(const std::size_t idx,
                                      const State& state) const {
   const std::vector<Coordinate> knight_jumps{
       {{1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}}};
-  return FindJumpStyleMoves(state, idx, owner_, knight_jumps);
+  return FindJumpStylePlies(state, idx, owner_, knight_jumps);
 }
 
-std::vector<State> King::FindMoves(const std::size_t idx,
+std::vector<State> King::FindPlies(const std::size_t idx,
                                    const State& state) const {
   const std::vector<Coordinate> king_jumps{
       {{1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}}};
-  return FindJumpStyleMoves(state, idx, owner_, king_jumps);
+  return FindJumpStylePlies(state, idx, owner_, king_jumps);
 }
 
 std::ostream& Empty::print(std::ostream& stream) const {
