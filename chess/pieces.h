@@ -115,6 +115,32 @@ class King : public Piece {
   std::ostream& print(std::ostream& stream) const override final;
 };
 
+class SquareBehaviour {
+ public:
+  ISquarePtr GetEmpty() const;
+  ISquarePtr GetPawn(const AlphaBeta::Player player) const;
+  ISquarePtr GetKnight(const AlphaBeta::Player player) const;
+  ISquarePtr GetBishop(const AlphaBeta::Player player) const;
+  ISquarePtr GetRook(const AlphaBeta::Player player) const;
+  ISquarePtr GetQueen(const AlphaBeta::Player player) const;
+  ISquarePtr GetKing(const AlphaBeta::Player player) const;
+
+ private:
+  ISquarePtr empty_square_{std::make_shared<Empty>()};
+  ISquarePtr black_pawn_{std::make_shared<Pawn>(AlphaBeta::Player::min)};
+  ISquarePtr black_knight_{std::make_shared<Knight>(AlphaBeta::Player::min)};
+  ISquarePtr black_bishop_{std::make_shared<Bishop>(AlphaBeta::Player::min)};
+  ISquarePtr black_rook_{std::make_shared<Rook>(AlphaBeta::Player::min)};
+  ISquarePtr black_queen_{std::make_shared<Queen>(AlphaBeta::Player::min)};
+  ISquarePtr black_king_{std::make_shared<King>(AlphaBeta::Player::min)};
+  ISquarePtr white_pawn_{std::make_shared<Pawn>(AlphaBeta::Player::max)};
+  ISquarePtr white_knight_{std::make_shared<Knight>(AlphaBeta::Player::max)};
+  ISquarePtr white_bishop_{std::make_shared<Bishop>(AlphaBeta::Player::max)};
+  ISquarePtr white_rook_{std::make_shared<Rook>(AlphaBeta::Player::max)};
+  ISquarePtr white_queen_{std::make_shared<Queen>(AlphaBeta::Player::max)};
+  ISquarePtr white_king_{std::make_shared<King>(AlphaBeta::Player::max)};
+};
+
 }  // namespace Chess
 
 #endif  // CHESS_PIECES_H
