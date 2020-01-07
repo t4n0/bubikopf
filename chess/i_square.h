@@ -10,7 +10,7 @@ namespace Chess {
 
 class State;
 
-enum class Square {
+enum class SquareId {
   WhitePawn,
   WhiteKnight,
   WhiteBishop,
@@ -30,7 +30,7 @@ class ISquare {
  public:
   virtual ~ISquare() = default;
 
-  virtual Square GetId() const = 0;
+  virtual SquareId GetId() const = 0;
   virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
   virtual bool IsOfSide(const AlphaBeta::Player& player) const = 0;

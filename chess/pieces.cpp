@@ -6,30 +6,30 @@ namespace Chess {
 
 Piece::~Piece() {}
 
-Square Empty::GetId() const { return Square::Empty; }
-Square Pawn::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackPawn
-                                          : Square::WhitePawn;
+SquareId Empty::GetId() const { return SquareId::Empty; }
+SquareId Pawn::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackPawn
+                                          : SquareId::WhitePawn;
 }
-Square Knight::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackKnight
-                                          : Square::WhiteKnight;
+SquareId Knight::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackKnight
+                                          : SquareId::WhiteKnight;
 }
-Square Bishop::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackBishop
-                                          : Square::WhiteBishop;
+SquareId Bishop::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackBishop
+                                          : SquareId::WhiteBishop;
 }
-Square Rook::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackRook
-                                          : Square::WhiteRook;
+SquareId Rook::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackRook
+                                          : SquareId::WhiteRook;
 }
-Square Queen::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackQueen
-                                          : Square::WhiteQueen;
+SquareId Queen::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackQueen
+                                          : SquareId::WhiteQueen;
 }
-Square King::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? Square::BlackKing
-                                          : Square::WhiteKing;
+SquareId King::GetId() const {
+  return owner_ == AlphaBeta::Player::min ? SquareId::BlackKing
+                                          : SquareId::WhiteKing;
 }
 
 float Empty::GetValue() const { return 0.0F; }

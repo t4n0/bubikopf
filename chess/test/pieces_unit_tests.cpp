@@ -67,7 +67,7 @@ TEST_F(BlackPawnFindPlies_Fixture,
   EXPECT_TRUE(returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
-              Square::BlackPawn);
+              SquareId::BlackPawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
 
@@ -93,13 +93,13 @@ TEST_F(BlackPawnFindPlies_Fixture,
     EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
-              Square::BlackQueen);
+              SquareId::BlackQueen);
   EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
-              Square::BlackRook);
+              SquareId::BlackRook);
   EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
-              Square::BlackKnight);
+              SquareId::BlackKnight);
   EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
-              Square::BlackBishop);
+              SquareId::BlackBishop);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture,
@@ -126,10 +126,10 @@ TEST_F(BlackPawnFindPlies_Fixture,
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
   EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
-              Square::BlackPawn);
+              SquareId::BlackPawn);
   EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
   EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
-              Square::BlackPawn);
+              SquareId::BlackPawn);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
@@ -158,13 +158,13 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   EXPECT_TRUE(
       returned_state.board_.Get(white_blocking_piece_location)->GetId() ==
-      Square::WhiteKing);
+      SquareId::WhiteKing);
   EXPECT_TRUE(
       returned_state.board_.Get(white_hanging_piece_location)->GetId() ==
-      Square::BlackPawn);
+      SquareId::BlackPawn);
   EXPECT_TRUE(
       returned_state.board_.Get(black_piece_on_caputre_location)->GetId() ==
-      Square::BlackKnight);
+      SquareId::BlackKnight);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -189,9 +189,9 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
   EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
-              Square::BlackPawn);
+              SquareId::BlackPawn);
   EXPECT_TRUE(returned_state.board_.Get(white_blocking_piece)->GetId() ==
-              Square::WhiteKnight);
+              SquareId::WhiteKnight);
 }
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
@@ -258,7 +258,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   EXPECT_TRUE(returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
-              Square::WhitePawn);
+              SquareId::WhitePawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
 
@@ -284,13 +284,13 @@ TEST_F(WhitePawnFindPlies_Fixture,
     EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
-              Square::WhiteQueen);
+              SquareId::WhiteQueen);
   EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
-              Square::WhiteRook);
+              SquareId::WhiteRook);
   EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
-              Square::WhiteKnight);
+              SquareId::WhiteKnight);
   EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
-              Square::WhiteBishop);
+              SquareId::WhiteBishop);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -317,10 +317,10 @@ TEST_F(WhitePawnFindPlies_Fixture,
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
   EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
-              Square::WhitePawn);
+              SquareId::WhitePawn);
   EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
   EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
-              Square::WhitePawn);
+              SquareId::WhitePawn);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -366,13 +366,13 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   EXPECT_TRUE(
       returned_state.board_.Get(black_blocking_piece_location)->GetId() ==
-      Square::BlackKing);
+      SquareId::BlackKing);
   EXPECT_TRUE(
       returned_state.board_.Get(black_hanging_piece_location)->GetId() ==
-      Square::WhitePawn);
+      SquareId::WhitePawn);
   EXPECT_TRUE(
       returned_state.board_.Get(white_piece_on_caputre_location)->GetId() ==
-      Square::WhiteKnight);
+      SquareId::WhiteKnight);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -397,9 +397,9 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
   EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
-              Square::WhitePawn);
+              SquareId::WhitePawn);
   EXPECT_TRUE(returned_state.board_.Get(black_blocking_piece)->GetId() ==
-              Square::BlackKnight);
+              SquareId::BlackKnight);
 }
 
 struct PiecePlies_Fixture : public testing::Test {
