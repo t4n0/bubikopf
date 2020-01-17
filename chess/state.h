@@ -59,9 +59,9 @@ class State {
   State(const SquareBehaviourPool& pool) : pool_(pool) {}
 
   Board board_{};
-  int static_plies_{};
-  int plies_{};
-  AlphaBeta::Player turn_{};
+  int static_plies_{0};
+  int plies_{0};
+  AlphaBeta::Player turn_{AlphaBeta::Player::max};
   std::optional<Coordinate> en_passant_{};
 
   const SquareBehaviourPool& pool_;
@@ -70,8 +70,8 @@ class State {
   void SetCastling(const AlphaBeta::Player player, const Castling castling);
 
  private:
-  Castling castling_black_{};
-  Castling castling_white_{};
+  Castling castling_black_{true, true};
+  Castling castling_white_{true, true};
 };
 
 std::ostream& operator<<(std::ostream& stream, const State& state);

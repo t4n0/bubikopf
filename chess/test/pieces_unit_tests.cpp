@@ -8,6 +8,9 @@ namespace {
 
 class BlackPawnFindPlies_Fixture : public testing::Test {
  public:
+  void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
+  void TearDown() override {}
+
   SquareBehaviourPool pool_{};
   State state_{pool_};
 };
@@ -399,6 +402,9 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 }
 
 struct PiecePlies_Fixture : public testing::Test {
+  void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
+  void TearDown() override {}
+
   SquareBehaviourPool pool_{};
   State state_{pool_};
 };
