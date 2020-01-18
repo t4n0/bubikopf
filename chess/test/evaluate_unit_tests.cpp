@@ -1,5 +1,6 @@
 #include "chess/evaluate.h"
-#include "chess/pieces.h"
+
+#include "chess/game.h"
 
 #include <gtest/gtest.h>
 
@@ -9,8 +10,7 @@ namespace {
 using AlphaBeta::Player;
 
 TEST(EvaluateTest, GivenSamples_ExpectAllHold) {
-  const SquareBehaviourPool pool{};
-  State state{pool};
+  State state{SetUpEmptyBoard()};
 
   state.board_.Set({0, 0}, std::make_unique<Pawn>(Player::min));
   AlphaBeta::Evaluation returned_evaluation{AlphaBeta::evaluate(state)};

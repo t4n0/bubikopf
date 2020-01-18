@@ -46,12 +46,6 @@ bool IsOnTheBoard(const Coordinate coor) {
   return (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8);
 }
 
-Board::Board() {
-  for (auto& square : squares_) {
-    square = std::make_unique<Empty>();
-  }
-}
-
 ISquarePtr Board::Get(const Coordinate coor) const {
   if (IsOnTheBoard(coor)) {
     return squares_[ToIdx(coor)];

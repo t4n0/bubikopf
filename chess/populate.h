@@ -16,7 +16,7 @@ std::vector<NodePtr> collect_plies_from_all_pieces(const Chess::Node&);
 namespace AlphaBeta {
 
 template <>
-void populate(Chess::Node& node, const int depth) {
+inline void populate(Chess::Node& node, const int depth) {
   if (depth) {
     if (!node.children_.size()) {
       node.children_ = Chess::collect_plies_from_all_pieces(node);

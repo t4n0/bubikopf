@@ -1,5 +1,7 @@
 #include "chess/pieces.h"
 
+#include "chess/game.h"
+
 #include <gtest/gtest.h>
 #include <vector>
 
@@ -11,8 +13,7 @@ class BlackPawnFindPlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
   void TearDown() override {}
 
-  SquareBehaviourPool pool_{};
-  State state_{pool_};
+  State state_{SetUpEmptyBoard()};
 };
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -200,8 +201,7 @@ class WhitePawnFindPlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = AlphaBeta::Player::max; }
   void TearDown() override {}
 
-  SquareBehaviourPool pool_{};
-  State state_{pool_};
+  State state_{SetUpEmptyBoard()};
 };
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -401,12 +401,12 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
               SquareId::BlackKnight);
 }
 
-struct PiecePlies_Fixture : public testing::Test {
+class PiecePlies_Fixture : public testing::Test {
+ public:
   void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
   void TearDown() override {}
 
-  SquareBehaviourPool pool_{};
-  State state_{pool_};
+  State state_{SetUpEmptyBoard()};
 };
 
 TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {
