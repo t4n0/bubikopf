@@ -32,3 +32,9 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_binary(
+    name = "play",
+    srcs = ["main.cpp"],
+    deps = [":chess"],
+)
