@@ -101,5 +101,18 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
               returned_castling_black.kingside);
 }
 
+TEST(State, MemoryFootprint) {
+  State state{SetUpEmptyBoard()};
+  EXPECT_EQ(sizeof(State), 1056);
+  // consisting of
+  EXPECT_EQ(sizeof(Board), 1024);
+  EXPECT_EQ(sizeof(SquareBehaviourPool*), 8);
+  EXPECT_EQ(sizeof(int), 4);  // x2 = 8
+  EXPECT_EQ(sizeof(AlphaBeta::Player), 4);
+  EXPECT_EQ(sizeof(std::optional<Coordinate>), 3);
+  EXPECT_EQ(sizeof(Castling), 2);  // x2 = 4
+  // + 4 bytes of padding
+}
+
 }  // namespace
 }  // namespace Chess
