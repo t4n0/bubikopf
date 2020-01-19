@@ -75,6 +75,7 @@ int main() {
                 << branch_evaluations.at(ai_move_idx) << ":\n";
       std::cout << node->children_.at(ai_move_idx)->state_.board_;
       node = ChooseChild(ai_move_idx, std::move(node));
+      std::cout << "Number of nodes: " << CountChildren(*node) << '\n';
       UserPause();
     } else {
       throw - 1;

@@ -11,6 +11,8 @@ using NodePtr = std::unique_ptr<Node>;
 
 std::vector<NodePtr> collect_plies_from_all_pieces(const Chess::Node&);
 
+int CountChildren(const Node& node);
+
 }  // namespace Chess
 
 namespace AlphaBeta {

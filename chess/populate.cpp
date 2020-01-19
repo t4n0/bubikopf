@@ -20,4 +20,16 @@ std::vector<NodePtr> collect_plies_from_all_pieces(const Node& node) {
   return collected_plies;
 }
 
+int CountChildren(const Node& node) {
+  if (node.children_.size()) {
+    int sum{0};
+    for (const auto& child : node.children_) {
+      sum += CountChildren(*child);
+    }
+    return sum + 1;
+  } else {
+    return 1;
+  }
+}
+
 }  // namespace Chess
