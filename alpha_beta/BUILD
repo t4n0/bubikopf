@@ -14,7 +14,6 @@ cc_test(
         "test/minimax_abstract_examples.h",
         "test/minimax_unit_tests.cpp",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         ":alpha_beta",
         "@googletest//:gtest_main",

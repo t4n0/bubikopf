@@ -26,7 +26,6 @@ cc_test(
         "test/populate_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         ":chess",
         "@googletest//:gtest_main",
