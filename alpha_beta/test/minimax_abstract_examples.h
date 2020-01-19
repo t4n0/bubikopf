@@ -3,6 +3,7 @@
 
 #include "alpha_beta/minimax.h"
 
+#include <functional>
 #include <memory>
 
 namespace AlphaBeta {
@@ -29,19 +30,26 @@ void populate(Node<float>& node, const int depth) {
   }
 };
 
+std::size_t GetBit(const int bit_position, const int value) {
+  return (value >> bit_position) & 1;
+}
+
+void FillLeafNodesFromLeftToRight(Node<float>& node,
+                                  std::function<int(const int)> func) {
+  for (int i{0}; i < 8; i++) {
+    node.children_.at(GetBit(2, i))
+        ->children_.at(GetBit(1, i))
+        ->children_.at(GetBit(0, i))
+        ->state_ = func(i);
+  }
+}
+
 Node<float> generate_negative_tree() {
   Node<float> unit{0.0F};
   const int depth{3};
   populate<float>(unit, depth);
 
-  unit.children_.at(0)->children_.at(0)->children_.at(0)->state_ = -1.0F;
-  unit.children_.at(0)->children_.at(0)->children_.at(1)->state_ = -2.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(0)->state_ = -3.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(1)->state_ = -4.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(0)->state_ = -5.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(1)->state_ = -6.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(0)->state_ = -7.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(1)->state_ = -8.0F;
+  FillLeafNodesFromLeftToRight(unit, [](const int i) { return -i - 1; });
 
   // produces the following tree:                                 |
   //                                                              |
@@ -73,14 +81,7 @@ Node<float> generate_positive_tree() {
   const int depth{3};
   populate<float>(unit, depth);
 
-  unit.children_.at(0)->children_.at(0)->children_.at(0)->state_ = 1.0F;
-  unit.children_.at(0)->children_.at(0)->children_.at(1)->state_ = 2.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(0)->state_ = 3.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(1)->state_ = 4.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(0)->state_ = 5.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(1)->state_ = 6.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(0)->state_ = 7.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(1)->state_ = 8.0F;
+  FillLeafNodesFromLeftToRight(unit, [](const int i) { return i + 1; });
 
   // produces the following tree:                                 |
   //                                                              |
@@ -102,7 +103,7 @@ Node<float> generate_positive_tree() {
   //                0         0         0         0               |
   //               / \       / \       / \       / \              |
   //              /   \     /   \     /   \     /   \             |
-  //             7     8   9    10   11   12   13   14            |
+  //             1     2   3     4   5     6   7     8            |
 
   return unit;
 }
@@ -112,14 +113,12 @@ Node<float> generate_typical_tree() {
   const int depth{3};
   populate<float>(unit, depth);
 
-  unit.children_.at(0)->children_.at(0)->children_.at(0)->state_ = -1.0F;
-  unit.children_.at(0)->children_.at(0)->children_.at(1)->state_ = 3.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(0)->state_ = 5.0F;
-  unit.children_.at(0)->children_.at(1)->children_.at(1)->state_ = 42.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(0)->state_ = -6.0F;
-  unit.children_.at(1)->children_.at(0)->children_.at(1)->state_ = -4.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(0)->state_ = 43.0F;
-  unit.children_.at(1)->children_.at(1)->children_.at(1)->state_ = 44.0F;
+  const std::vector<float> leaf_evaluations{-1.0F, 3.0F,  5.0F,  42.0F,
+                                            -6.0F, -4.0F, 43.0F, 44.0F};
+
+  FillLeafNodesFromLeftToRight(unit, [&leaf_evaluations](const int i) {
+    return leaf_evaluations.at(static_cast<std::size_t>(i));
+  });
 
   return unit;
 }
