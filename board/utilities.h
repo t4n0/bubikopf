@@ -1,8 +1,8 @@
-#ifndef CHESS_GAME_H
-#define CHESS_GAME_H
+#ifndef BOARD_UTILITIES_H
+#define BOARD_UTILITIES_H
 
-#include "chess/pieces.h"
-#include "chess/state.h"
+#include "board/piece.h"
+#include "board/state.h"
 
 namespace Chess {
 
@@ -51,4 +51,4 @@ inline State SetUpBoard() {
 
 }  // namespace Chess
 
-#endif  // CHESS_GAME_H
+#endif

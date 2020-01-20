@@ -1,4 +1,4 @@
-#include "alpha_beta/evaluation.h"
+#include "search/evaluation.h"
 
 #include <gtest/gtest.h>
 

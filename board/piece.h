@@ -1,9 +1,8 @@
-#ifndef CHESS_PIECES_H
-#define CHESS_PIECES_H
+#ifndef BOARD_PIECE_H
+#define BOARD_PIECE_H
 
-#include "alpha_beta/evaluation.h"
-#include "chess/i_square.h"
-#include "chess/state.h"
+#include "board/i_square.h"
+#include "board/state.h"
 
 #include <memory>
 #include <vector>
@@ -143,4 +142,4 @@ class SquareBehaviourPool {
 
 }  // namespace Chess
 
-#endif  // CHESS_PIECES_H
+#endif

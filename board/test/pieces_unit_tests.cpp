@@ -1,6 +1,6 @@
-#include "chess/pieces.h"
+#include "board/piece.h"
 
-#include "chess/board_generator.h"
+#include "board/utilities.h"
 
 #include <gtest/gtest.h>
 #include <vector>

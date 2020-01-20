@@ -1,5 +1,7 @@
-#ifndef ALPHA_BETA_EVALUATION_H
-#define ALPHA_BETA_EVALUATION_H
+#ifndef SEARCH_EVALUATION_H
+#define SEARCH_EVALUATION_H
+
+#include "board/player.h"
 
 #include <cstdint>
 #include <iostream>
@@ -7,11 +9,6 @@
 #include <variant>
 
 namespace AlphaBeta {
-
-enum class Player {
-  min,  // flag for minimizing player (e.g turn, victory, etc.)
-  max,  // flag for maximizing player (e.g turn, victory, etc.)
-};
 
 // The three variants mean respectivly:
 // Player: The game is over. The value indicates the winning side.

@@ -1,5 +1,4 @@
-#include "chess/state.h"
-#include "chess/pieces.h"
+#include "board/state.h"
 
 #include <algorithm>
 #include <memory>

@@ -1,4 +1,4 @@
-#include "chess/populate.h"
+#include "search/populate.h"
 
 #include <algorithm>
 

@@ -1,6 +1,6 @@
-#include "chess/state.h"
+#include "board/state.h"
 
-#include "chess/board_generator.h"
+#include "board/utilities.h"
 
 #include <gtest/gtest.h>
 

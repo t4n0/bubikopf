@@ -1,4 +1,4 @@
-#include "pieces.h"
+#include "piece.h"
 
 #include <array>
 

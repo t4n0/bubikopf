@@ -1,9 +1,7 @@
-#ifndef CHESS_STATE_H
-#define CHESS_STATE_H
+#ifndef BOARD_STATE_H
+#define BOARD_STATE_H
 
-#include "alpha_beta/evaluation.h"
-#include "alpha_beta/minimax.h"
-#include "chess/i_square.h"
+#include "board/i_square.h"
 
 #include <array>
 #include <iostream>

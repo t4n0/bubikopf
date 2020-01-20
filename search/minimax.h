@@ -1,7 +1,7 @@
-#ifndef ALPHA_BETA_FRAMEWORK_H
-#define ALPHA_BETA_FRAMEWORK_H
+#ifndef SEARCH_MINIMAX_H
+#define SEARCH_MINIMAX_H
 
-#include "alpha_beta/evaluation.h"
+#include "search/evaluation.h"
 
 #include <cstdint>
 #include <limits>

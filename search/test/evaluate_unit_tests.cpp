@@ -1,6 +1,6 @@
-#include "chess/evaluate.h"
+#include "search/evaluate.h"
 
-#include "chess/board_generator.h"
+#include "board/utilities.h"
 
 #include <gtest/gtest.h>
 

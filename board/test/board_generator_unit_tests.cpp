@@ -1,4 +1,4 @@
-#include "chess/board_generator.h"
+#include "board/utilities.h"
 
 #include <gtest/gtest.h>
 

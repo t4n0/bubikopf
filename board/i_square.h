@@ -1,7 +1,7 @@
-#ifndef CHESS_I_SQUARE_H
-#define CHESS_I_SQUARE_H
+#ifndef BOARD_I_SQUARE_H
+#define BOARD_I_SQUARE_H
 
-#include "alpha_beta/evaluation.h"
+#include "board/player.h"
 
 #include <memory>
 #include <vector>
@@ -47,4 +47,4 @@ using ISquarePtr = const ISquare*;
 
 }  // namespace Chess
 
-#endif  // CHESS_I_SQUARE_H
+#endif

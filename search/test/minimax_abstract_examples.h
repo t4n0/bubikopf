@@ -1,7 +1,7 @@
-#ifndef ALPHA_BETA_ABSTRACT_EXAMPLES_H
-#define ALPHA_BETA_ABSTRACT_EXAMPLES_H
+#ifndef SEARCH_TEST_MINIMAX_ABSTRACT_EXAMPLES_H
+#define SEARCH_TEST_MINIMAX_ABSTRACT_EXAMPLES_H
 
-#include "alpha_beta/minimax.h"
+#include "search/minimax.h"
 
 #include <functional>
 #include <memory>

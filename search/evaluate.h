@@ -1,8 +1,8 @@
-#ifndef CHESS_EVALUATE_H
-#define CHESS_EVALUATE_H
+#ifndef SEARCH_EVALUATE_H
+#define SEARCH_EVALUATE_H
 
-#include "alpha_beta/minimax.h"
-#include "chess/state.h"
+#include "board/state.h"
+#include "search/minimax.h"
 
 namespace AlphaBeta {
 
