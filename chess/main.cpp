@@ -1,5 +1,5 @@
+#include "chess/board_generator.h"
 #include "chess/evaluate.h"
-#include "chess/game.h"
 #include "chess/populate.h"
 
 #include <algorithm>
