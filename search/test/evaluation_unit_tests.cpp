@@ -49,8 +49,8 @@ const std::vector<EvaluationComparisonOperatorParameters>
 
 };
 
-INSTANTIATE_TEST_CASE_P(AllPermutations, EvaluationTest,
-                        ::testing::ValuesIn(comparison_permutations));
+INSTANTIATE_TEST_SUITE_P(AllPermutations, EvaluationTest,
+                         ::testing::ValuesIn(comparison_permutations));
 
 TEST(EvaluationTest, StreamOutputOperator_MustNotThrow) {
   const Evaluation player_type_max_example{Player::max};

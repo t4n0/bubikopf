@@ -51,10 +51,10 @@ MinimaxTest_FixtureParameters POSITIVE_TREE_EXAMPLE{
 MinimaxTest_FixtureParameters TYPICAL_TREE_EXAMPLE{
     generate_typical_tree, {-1.0F, 3.0F, 5.0F, -6.0F, -4.0F}, 3.0F};
 
-INSTANTIATE_TEST_CASE_P(BasicExamples, MinimaxTest_Fixture,
-                        ::testing::ValuesIn({NEGATIVE_TREE_EXAMPLE,
-                                             POSITIVE_TREE_EXAMPLE,
-                                             TYPICAL_TREE_EXAMPLE}));
+INSTANTIATE_TEST_SUITE_P(BasicExamples, MinimaxTest_Fixture,
+                         ::testing::ValuesIn({NEGATIVE_TREE_EXAMPLE,
+                                              POSITIVE_TREE_EXAMPLE,
+                                              TYPICAL_TREE_EXAMPLE}));
 
 }  // namespace
 }  // namespace AlphaBeta
