@@ -8,6 +8,7 @@ namespace Chess {
 namespace {
 
 TEST(Board, Set_ExpectBoundsCheck) {
+  SquareBehaviourPool pool;
   Board board{};
   EXPECT_NO_THROW(board.Get({3, 3}));
   EXPECT_THROW(board.Get({-1, 3}), std::out_of_range);
@@ -16,15 +17,11 @@ TEST(Board, Set_ExpectBoundsCheck) {
   EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
 
   constexpr AlphaBeta::Player player{AlphaBeta::Player::max};
-  EXPECT_NO_THROW(board.Set({3, 3}, std::make_unique<Knight>(player)));
-  EXPECT_THROW(board.Set({-1, 3}, std::make_unique<Knight>(player)),
-               std::out_of_range);
-  EXPECT_THROW(board.Set({8, 3}, std::make_unique<Knight>(player)),
-               std::out_of_range);
-  EXPECT_THROW(board.Set({3, -1}, std::make_unique<Knight>(player)),
-               std::out_of_range);
-  EXPECT_THROW(board.Set({3, 8}, std::make_unique<Knight>(player)),
-               std::out_of_range);
+  EXPECT_NO_THROW(board.Set({3, 3}, pool.GetKnight(player)));
+  EXPECT_THROW(board.Set({-1, 3}, pool.GetKnight(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({8, 3}, pool.GetKnight(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({3, -1}, pool.GetKnight(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({3, 8}, pool.GetKnight(player)), std::out_of_range);
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
@@ -103,9 +100,9 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
 
 TEST(State, MemoryFootprint) {
   State state{SetUpEmptyBoard()};
-  EXPECT_EQ(sizeof(State), 1056);
+  EXPECT_EQ(sizeof(State), 544);
   // consisting of
-  EXPECT_EQ(sizeof(Board), 1024);
+  EXPECT_EQ(sizeof(Board), 512);
   EXPECT_EQ(sizeof(SquareBehaviourPool*), 8);
   EXPECT_EQ(sizeof(int), 4);  // x2 = 8
   EXPECT_EQ(sizeof(AlphaBeta::Player), 4);

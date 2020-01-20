@@ -12,51 +12,51 @@ using AlphaBeta::Player;
 TEST(EvaluateTest, GivenSamples_ExpectAllHold) {
   State state{SetUpEmptyBoard()};
 
-  state.board_.Set({0, 0}, std::make_unique<Pawn>(Player::min));
+  state.board_.Set({0, 0}, state.pool_.GetPawn(Player::min));
   AlphaBeta::Evaluation returned_evaluation{AlphaBeta::evaluate(state)};
   EXPECT_EQ(std::get<float>(returned_evaluation), -1.0F);
 
-  state.board_.Set({0, 1}, std::make_unique<Pawn>(Player::max));
+  state.board_.Set({0, 1}, state.pool_.GetPawn(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 
-  state.board_.Set({1, 0}, std::make_unique<Knight>(Player::min));
+  state.board_.Set({1, 0}, state.pool_.GetKnight(Player::min));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), -3.0F);
 
-  state.board_.Set({1, 1}, std::make_unique<Knight>(Player::max));
+  state.board_.Set({1, 1}, state.pool_.GetKnight(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 
-  state.board_.Set({3, 0}, std::make_unique<Bishop>(Player::min));
+  state.board_.Set({3, 0}, state.pool_.GetBishop(Player::min));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), -3.0F);
 
-  state.board_.Set({3, 1}, std::make_unique<Bishop>(Player::max));
+  state.board_.Set({3, 1}, state.pool_.GetBishop(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 
-  state.board_.Set({4, 0}, std::make_unique<Rook>(Player::min));
+  state.board_.Set({4, 0}, state.pool_.GetRook(Player::min));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), -5.0F);
 
-  state.board_.Set({4, 1}, std::make_unique<Rook>(Player::max));
+  state.board_.Set({4, 1}, state.pool_.GetRook(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 
-  state.board_.Set({5, 0}, std::make_unique<Queen>(Player::min));
+  state.board_.Set({5, 0}, state.pool_.GetQueen(Player::min));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), -9.0F);
 
-  state.board_.Set({5, 1}, std::make_unique<Queen>(Player::max));
+  state.board_.Set({5, 1}, state.pool_.GetQueen(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 
-  state.board_.Set({6, 0}, std::make_unique<King>(Player::min));
+  state.board_.Set({6, 0}, state.pool_.GetKing(Player::min));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), -100.0F);
 
-  state.board_.Set({6, 1}, std::make_unique<King>(Player::max));
+  state.board_.Set({6, 1}, state.pool_.GetKing(Player::max));
   returned_evaluation = AlphaBeta::evaluate(state);
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 };

@@ -126,19 +126,19 @@ class SquareBehaviourPool {
   ISquarePtr GetKing(const AlphaBeta::Player player) const;
 
  private:
-  ISquarePtr empty_square_{std::make_shared<Empty>()};
-  ISquarePtr black_pawn_{std::make_shared<Pawn>(AlphaBeta::Player::min)};
-  ISquarePtr black_knight_{std::make_shared<Knight>(AlphaBeta::Player::min)};
-  ISquarePtr black_bishop_{std::make_shared<Bishop>(AlphaBeta::Player::min)};
-  ISquarePtr black_rook_{std::make_shared<Rook>(AlphaBeta::Player::min)};
-  ISquarePtr black_queen_{std::make_shared<Queen>(AlphaBeta::Player::min)};
-  ISquarePtr black_king_{std::make_shared<King>(AlphaBeta::Player::min)};
-  ISquarePtr white_pawn_{std::make_shared<Pawn>(AlphaBeta::Player::max)};
-  ISquarePtr white_knight_{std::make_shared<Knight>(AlphaBeta::Player::max)};
-  ISquarePtr white_bishop_{std::make_shared<Bishop>(AlphaBeta::Player::max)};
-  ISquarePtr white_rook_{std::make_shared<Rook>(AlphaBeta::Player::max)};
-  ISquarePtr white_queen_{std::make_shared<Queen>(AlphaBeta::Player::max)};
-  ISquarePtr white_king_{std::make_shared<King>(AlphaBeta::Player::max)};
+  Empty empty_square_{};
+  Pawn black_pawn_{AlphaBeta::Player::min};
+  Knight black_knight_{AlphaBeta::Player::min};
+  Bishop black_bishop_{AlphaBeta::Player::min};
+  Rook black_rook_{AlphaBeta::Player::min};
+  Queen black_queen_{AlphaBeta::Player::min};
+  King black_king_{AlphaBeta::Player::min};
+  Pawn white_pawn_{AlphaBeta::Player::max};
+  Knight white_knight_{AlphaBeta::Player::max};
+  Bishop white_bishop_{AlphaBeta::Player::max};
+  Rook white_rook_{AlphaBeta::Player::max};
+  Queen white_queen_{AlphaBeta::Player::max};
+  King white_king_{AlphaBeta::Player::max};
 };
 
 }  // namespace Chess

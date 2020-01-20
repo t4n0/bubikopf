@@ -52,9 +52,9 @@ TEST(Node, MemoryFootprint) {
   NodePtr node{std::make_unique<Node>(SetUpEmptyBoard())};
   AlphaBeta::populate(*node, 1);
 
-  EXPECT_EQ(sizeof(Node), 1080);
+  EXPECT_EQ(sizeof(Node), 568);
   // consisting of
-  EXPECT_EQ(sizeof(State), 1056);
+  EXPECT_EQ(sizeof(State), 544);
   EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node>>), 24);
 }
 

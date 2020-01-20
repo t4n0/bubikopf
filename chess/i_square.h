@@ -43,7 +43,7 @@ inline std::ostream& operator<<(std::ostream& stream, const ISquare& square) {
   return square.print(stream);
 }
 
-using ISquarePtr = std::shared_ptr<const ISquare>;
+using ISquarePtr = const ISquare*;
 
 }  // namespace Chess
 
