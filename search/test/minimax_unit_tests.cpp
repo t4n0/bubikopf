@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace AlphaBeta {
+namespace Chess {
 namespace {
 
 struct MinimaxTest_FixtureParameters {
@@ -57,4 +57,4 @@ INSTANTIATE_TEST_SUITE_P(BasicExamples, MinimaxTest_Fixture,
                                               TYPICAL_TREE_EXAMPLE}));
 
 }  // namespace
-}  // namespace AlphaBeta
+}  // namespace Chess

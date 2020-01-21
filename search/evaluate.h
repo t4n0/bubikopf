@@ -4,7 +4,7 @@
 #include "board/state.h"
 #include "search/minimax.h"
 
-namespace AlphaBeta {
+namespace Chess {
 
 template <>
 inline Evaluation evaluate(const Chess::State& state) {
@@ -15,6 +15,6 @@ inline Evaluation evaluate(const Chess::State& state) {
   return evaluation;
 }
 
-}  // namespace AlphaBeta
+}  // namespace Chess
 
 #endif

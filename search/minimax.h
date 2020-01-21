@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace AlphaBeta {
+namespace Chess {
 
 template <typename Game>
 class Node {
@@ -60,6 +60,6 @@ Evaluation minimax(const Node<Game>& node, const uint8_t depth,
   }
 }
 
-}  // namespace AlphaBeta
+}  // namespace Chess
 
 #endif

@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <variant>
 
-namespace AlphaBeta {
+namespace Chess {
 
 // The three variants mean respectivly:
 // Player: The game is over. The value indicates the winning side.
@@ -89,6 +89,6 @@ inline std::ostream& operator<<(std::ostream& stream, const Evaluation output) {
   return stream;
 }
 
-}  // namespace AlphaBeta
+}  // namespace Chess
 
 #endif

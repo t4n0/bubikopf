@@ -16,7 +16,7 @@ TEST(Board, Set_ExpectBoundsCheck) {
   EXPECT_THROW(board.Get({3, -1}), std::out_of_range);
   EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
 
-  constexpr AlphaBeta::Player player{AlphaBeta::Player::max};
+  constexpr Player player{Player::max};
   EXPECT_NO_THROW(board.Set({3, 3}, pool.GetKnight(player)));
   EXPECT_THROW(board.Set({-1, 3}, pool.GetKnight(player)), std::out_of_range);
   EXPECT_THROW(board.Set({8, 3}, pool.GetKnight(player)), std::out_of_range);
@@ -25,7 +25,7 @@ TEST(Board, Set_ExpectBoundsCheck) {
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
-  EXPECT_NO_THROW(std::cout << Bishop{AlphaBeta::Player::max} << '\n');
+  EXPECT_NO_THROW(std::cout << Bishop{Player::max} << '\n');
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
@@ -34,35 +34,35 @@ TEST(Board, StreamOutputOperator_MustNotThrow) {
 }
 
 TEST(IsAPieceOfSide, GivenBlacksTurn_ExpectBlackPiecesTrueRestFalse) {
-  EXPECT_TRUE(King{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_TRUE(Queen{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_TRUE(Rook{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_TRUE(Bishop{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_TRUE(Knight{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_TRUE(Pawn{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Empty{}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(King{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Queen{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Rook{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Bishop{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Knight{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
-  EXPECT_FALSE(Pawn{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::min));
+  EXPECT_TRUE(King{Player::min}.IsOfSide(Player::min));
+  EXPECT_TRUE(Queen{Player::min}.IsOfSide(Player::min));
+  EXPECT_TRUE(Rook{Player::min}.IsOfSide(Player::min));
+  EXPECT_TRUE(Bishop{Player::min}.IsOfSide(Player::min));
+  EXPECT_TRUE(Knight{Player::min}.IsOfSide(Player::min));
+  EXPECT_TRUE(Pawn{Player::min}.IsOfSide(Player::min));
+  EXPECT_FALSE(Empty{}.IsOfSide(Player::min));
+  EXPECT_FALSE(King{Player::max}.IsOfSide(Player::min));
+  EXPECT_FALSE(Queen{Player::max}.IsOfSide(Player::min));
+  EXPECT_FALSE(Rook{Player::max}.IsOfSide(Player::min));
+  EXPECT_FALSE(Bishop{Player::max}.IsOfSide(Player::min));
+  EXPECT_FALSE(Knight{Player::max}.IsOfSide(Player::min));
+  EXPECT_FALSE(Pawn{Player::max}.IsOfSide(Player::min));
 }
 
 TEST(IsAPieceOfSide, GivenWhitesTurn_ExpectWhitePiecesTrueRestFalse) {
-  EXPECT_FALSE(King{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Queen{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Rook{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Bishop{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Knight{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Pawn{AlphaBeta::Player::min}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_FALSE(Empty{}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(King{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(Queen{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(Rook{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(Bishop{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(Knight{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
-  EXPECT_TRUE(Pawn{AlphaBeta::Player::max}.IsOfSide(AlphaBeta::Player::max));
+  EXPECT_FALSE(King{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Queen{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Rook{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Bishop{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Knight{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Pawn{Player::min}.IsOfSide(Player::max));
+  EXPECT_FALSE(Empty{}.IsOfSide(Player::max));
+  EXPECT_TRUE(King{Player::max}.IsOfSide(Player::max));
+  EXPECT_TRUE(Queen{Player::max}.IsOfSide(Player::max));
+  EXPECT_TRUE(Rook{Player::max}.IsOfSide(Player::max));
+  EXPECT_TRUE(Bishop{Player::max}.IsOfSide(Player::max));
+  EXPECT_TRUE(Knight{Player::max}.IsOfSide(Player::max));
+  EXPECT_TRUE(Pawn{Player::max}.IsOfSide(Player::max));
 }
 
 TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {
@@ -80,12 +80,10 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
   const Castling expected_castling_black{false, true};
 
   // Call
-  state.SetCastling(AlphaBeta::Player::max, expected_castling_white);
-  state.SetCastling(AlphaBeta::Player::min, expected_castling_black);
-  const Castling returned_castling_white =
-      state.GetCastling(AlphaBeta::Player::max);
-  const Castling returned_castling_black =
-      state.GetCastling(AlphaBeta::Player::min);
+  state.SetCastling(Player::max, expected_castling_white);
+  state.SetCastling(Player::min, expected_castling_black);
+  const Castling returned_castling_white = state.GetCastling(Player::max);
+  const Castling returned_castling_black = state.GetCastling(Player::min);
 
   // Expect
   EXPECT_TRUE(expected_castling_white.queenside ==
@@ -105,7 +103,7 @@ TEST(State, MemoryFootprint) {
   EXPECT_EQ(sizeof(Board), 512);
   EXPECT_EQ(sizeof(SquareBehaviourPool*), 8);
   EXPECT_EQ(sizeof(int), 4);  // x2 = 8
-  EXPECT_EQ(sizeof(AlphaBeta::Player), 4);
+  EXPECT_EQ(sizeof(Player), 4);
   EXPECT_EQ(sizeof(std::optional<Coordinate>), 3);
   EXPECT_EQ(sizeof(Castling), 2);  // x2 = 4
   // + 4 bytes of padding

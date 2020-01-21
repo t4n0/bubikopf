@@ -11,13 +11,13 @@ namespace {
 
 class Populate_Fixture : public testing::Test {
  public:
-  NodePtr node_{std::make_unique<Node>(SetUpBoard())};
+  NodePtr node_{std::make_unique<Node<State>>(SetUpBoard())};
 };
 
 TEST_F(Populate_Fixture, GivenDepth1_Expect20children) {
   const int depth{1};
   const auto t1 = std::chrono::high_resolution_clock::now();
-  AlphaBeta::populate(*node_, depth);
+  populate(*node_, depth);
   const auto t2 = std::chrono::high_resolution_clock::now();
 
   auto duration =
@@ -33,12 +33,10 @@ TEST(CountChildren,
      GivenKingsInOppositeCornersAndSearchDepth4_ExpectCorrectNumberOfChildren) {
   // Setup
   const int depth = 3;
-  NodePtr node_{std::make_unique<Node>(SetUpEmptyBoard())};
-  node_->state_.board_.Set(0,
-                           node_->state_.pool_.GetKing(AlphaBeta::Player::max));
-  node_->state_.board_.Set(63,
-                           node_->state_.pool_.GetKing(AlphaBeta::Player::min));
-  AlphaBeta::populate(*node_, depth);
+  NodePtr node_{std::make_unique<Node<State>>(SetUpEmptyBoard())};
+  node_->state_.board_.Set(0, node_->state_.pool_.GetKing(Player::max));
+  node_->state_.board_.Set(63, node_->state_.pool_.GetKing(Player::min));
+  populate(*node_, depth);
 
   // Call
   const int returned_number_of_children{CountChildren(*node_)};
@@ -49,13 +47,13 @@ TEST(CountChildren,
 }
 
 TEST(Node, MemoryFootprint) {
-  NodePtr node{std::make_unique<Node>(SetUpEmptyBoard())};
-  AlphaBeta::populate(*node, 1);
+  NodePtr node{std::make_unique<Node<State>>(SetUpEmptyBoard())};
+  populate(*node, 1);
 
-  EXPECT_EQ(sizeof(Node), 568);
+  EXPECT_EQ(sizeof(Node<State>), 568);
   // consisting of
   EXPECT_EQ(sizeof(State), 544);
-  EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node>>), 24);
+  EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node<State>>>), 24);
 }
 
 }  // namespace

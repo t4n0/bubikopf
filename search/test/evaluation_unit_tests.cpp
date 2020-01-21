@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace AlphaBeta {
+namespace Chess {
 
 namespace {
 
@@ -70,4 +70,4 @@ TEST(EvaluationTest, StreamOutputOperator_MustNotThrow) {
 
 }  // namespace
 
-}  // namespace AlphaBeta
+}  // namespace Chess

@@ -8,71 +8,41 @@ Piece::~Piece() {}
 
 SquareId Empty::GetId() const { return SquareId::Empty; }
 SquareId Pawn::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackPawn
-                                          : SquareId::WhitePawn;
+  return owner_ == Player::min ? SquareId::BlackPawn : SquareId::WhitePawn;
 }
 SquareId Knight::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackKnight
-                                          : SquareId::WhiteKnight;
+  return owner_ == Player::min ? SquareId::BlackKnight : SquareId::WhiteKnight;
 }
 SquareId Bishop::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackBishop
-                                          : SquareId::WhiteBishop;
+  return owner_ == Player::min ? SquareId::BlackBishop : SquareId::WhiteBishop;
 }
 SquareId Rook::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackRook
-                                          : SquareId::WhiteRook;
+  return owner_ == Player::min ? SquareId::BlackRook : SquareId::WhiteRook;
 }
 SquareId Queen::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackQueen
-                                          : SquareId::WhiteQueen;
+  return owner_ == Player::min ? SquareId::BlackQueen : SquareId::WhiteQueen;
 }
 SquareId King::GetId() const {
-  return owner_ == AlphaBeta::Player::min ? SquareId::BlackKing
-                                          : SquareId::WhiteKing;
+  return owner_ == Player::min ? SquareId::BlackKing : SquareId::WhiteKing;
 }
 
 float Empty::GetValue() const { return 0.0F; }
-float Pawn::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 1.0F : -1.0F;
-}
-float Knight::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
-}
-float Bishop::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 3.0F : -3.0F;
-}
-float Rook::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 5.0F : -5.0F;
-}
-float Queen::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 9.0F : -9.0F;
-}
+float Pawn::GetValue() const { return owner_ == Player::max ? 1.0F : -1.0F; }
+float Knight::GetValue() const { return owner_ == Player::max ? 3.0F : -3.0F; }
+float Bishop::GetValue() const { return owner_ == Player::max ? 3.0F : -3.0F; }
+float Rook::GetValue() const { return owner_ == Player::max ? 5.0F : -5.0F; }
+float Queen::GetValue() const { return owner_ == Player::max ? 9.0F : -9.0F; }
 float King::GetValue() const {
-  return owner_ == AlphaBeta::Player::max ? 100.0F : -100.0F;
+  return owner_ == Player::max ? 100.0F : -100.0F;
 }
 
-bool Empty::IsOfSide(const AlphaBeta::Player& /*unused*/) const {
-  return false;
-}
-bool Pawn::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
-bool Knight::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
-bool Bishop::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
-bool Rook::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
-bool Queen::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
-bool King::IsOfSide(const AlphaBeta::Player& side) const {
-  return owner_ == side;
-}
+bool Empty::IsOfSide(const Player& /*unused*/) const { return false; }
+bool Pawn::IsOfSide(const Player& side) const { return owner_ == side; }
+bool Knight::IsOfSide(const Player& side) const { return owner_ == side; }
+bool Bishop::IsOfSide(const Player& side) const { return owner_ == side; }
+bool Rook::IsOfSide(const Player& side) const { return owner_ == side; }
+bool Queen::IsOfSide(const Player& side) const { return owner_ == side; }
+bool King::IsOfSide(const Player& side) const { return owner_ == side; }
 
 bool Empty::IsEmpty() const { return true; }
 bool Pawn::IsEmpty() const { return false; }
@@ -87,26 +57,26 @@ std::vector<State> Empty::FindPlies(const std::size_t /*unused*/,
   return {};
 }
 
-Coordinate GetSingleStepFor(const AlphaBeta::Player player) {
+Coordinate GetSingleStepFor(const Player player) {
   constexpr Coordinate black_advance{0, 1};
   constexpr Coordinate white_advance{0, -1};
-  return player == AlphaBeta::Player::max ? white_advance : black_advance;
+  return player == Player::max ? white_advance : black_advance;
 }
 
-int8_t GetDoubleStepStartRowFor(const AlphaBeta::Player player) {
+int8_t GetDoubleStepStartRowFor(const Player player) {
   constexpr int8_t black_start_row = 1;
   constexpr int8_t white_start_row = 6;
-  return player == AlphaBeta::Player::max ? white_start_row : black_start_row;
+  return player == Player::max ? white_start_row : black_start_row;
 }
 
-int8_t GetPromotionRowFor(const AlphaBeta::Player player) {
+int8_t GetPromotionRowFor(const Player player) {
   constexpr int8_t black_start_row = 7;
   constexpr int8_t white_start_row = 0;
-  return player == AlphaBeta::Player::max ? white_start_row : black_start_row;
+  return player == Player::max ? white_start_row : black_start_row;
 }
 
-std::array<ISquarePtr, 4> GetPromotionOptionsFor(
-    const State& state, const AlphaBeta::Player player) {
+std::array<ISquarePtr, 4> GetPromotionOptionsFor(const State& state,
+                                                 const Player player) {
   std::array<ISquarePtr, 4> promotion_options{};
   promotion_options.at(0) = state.pool_.GetQueen(player);
   promotion_options.at(1) = state.pool_.GetRook(player);
@@ -115,27 +85,24 @@ std::array<ISquarePtr, 4> GetPromotionOptionsFor(
   return promotion_options;
 }
 
-Coordinate GetDoubleStepFor(const AlphaBeta::Player player) {
+Coordinate GetDoubleStepFor(const Player player) {
   constexpr Coordinate black_advance{0, 2};
   constexpr Coordinate white_advance{0, -2};
-  return player == AlphaBeta::Player::max ? white_advance : black_advance;
+  return player == Player::max ? white_advance : black_advance;
 }
 
-std::array<Coordinate, 2> GetCaptureBehaviourFor(
-    const AlphaBeta::Player player) {
+std::array<Coordinate, 2> GetCaptureBehaviourFor(const Player player) {
   constexpr std::array<Coordinate, 2> black_captures{Coordinate{1, 1},
                                                      Coordinate{-1, 1}};
   constexpr std::array<Coordinate, 2> white_captures{Coordinate{1, -1},
                                                      Coordinate{-1, -1}};
-  return player == AlphaBeta::Player::max ? white_captures : black_captures;
+  return player == Player::max ? white_captures : black_captures;
 }
 
 State BaseStateAfterPly(const State& state) {
   State new_state = state;
   new_state.plies_++;
-  new_state.turn_ = state.turn_ == AlphaBeta::Player::max
-                        ? AlphaBeta::Player::min
-                        : AlphaBeta::Player::max;
+  new_state.turn_ = state.turn_ == Player::max ? Player::min : Player::max;
   new_state.en_passant_.reset();
 
   return new_state;
@@ -155,9 +122,8 @@ State BaseStateAfterPiecePly(const State& state) {
   return new_state;
 }
 
-AlphaBeta::Player GetOtherPlayer(const AlphaBeta::Player player) {
-  return player == AlphaBeta::Player::max ? AlphaBeta::Player::min
-                                          : AlphaBeta::Player::max;
+Player GetOtherPlayer(const Player player) {
+  return player == Player::max ? Player::min : Player::max;
 }
 
 std::vector<State> Pawn::FindPlies(const std::size_t idx,
@@ -237,8 +203,8 @@ State MakePieceCapture(const State& state, const std::size_t location,
 }
 
 std::vector<State> FindStraightLinePlies(
-    const State& state, const std::size_t location,
-    const AlphaBeta::Player owner, const std::vector<Coordinate>& directions) {
+    const State& state, const std::size_t location, const Player owner,
+    const std::vector<Coordinate>& directions) {
   std::vector<State> new_plies{};
 
   if (owner == state.turn_) {
@@ -286,7 +252,7 @@ std::vector<State> Queen::FindPlies(const std::size_t idx,
 
 std::vector<State> FindJumpStylePlies(const State& state,
                                       const std::size_t location,
-                                      const AlphaBeta::Player owner,
+                                      const Player owner,
                                       const std::vector<Coordinate>& jumps) {
   std::vector<State> new_plies{};
 
@@ -328,7 +294,7 @@ std::ostream& Empty::print(std::ostream& stream) const {
 }
 
 std::ostream& Pawn::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "P ";
   } else {
     stream << "p ";
@@ -337,7 +303,7 @@ std::ostream& Pawn::print(std::ostream& stream) const {
 }
 
 std::ostream& Knight::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "N ";
   } else {
     stream << "n ";
@@ -346,7 +312,7 @@ std::ostream& Knight::print(std::ostream& stream) const {
 }
 
 std::ostream& Bishop::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "B ";
   } else {
     stream << "b ";
@@ -355,7 +321,7 @@ std::ostream& Bishop::print(std::ostream& stream) const {
 }
 
 std::ostream& Rook::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "R ";
   } else {
     stream << "r ";
@@ -364,7 +330,7 @@ std::ostream& Rook::print(std::ostream& stream) const {
 }
 
 std::ostream& Queen::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "Q ";
   } else {
     stream << "q ";
@@ -373,7 +339,7 @@ std::ostream& Queen::print(std::ostream& stream) const {
 }
 
 std::ostream& King::print(std::ostream& stream) const {
-  if (owner_ == AlphaBeta::Player::max) {
+  if (owner_ == Player::max) {
     stream << "K ";
   } else {
     stream << "k ";
@@ -382,25 +348,23 @@ std::ostream& King::print(std::ostream& stream) const {
 }
 
 ISquarePtr SquareBehaviourPool::GetEmpty() const { return &empty_square_; }
-ISquarePtr SquareBehaviourPool::GetPawn(const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_pawn_ : &black_pawn_;
+ISquarePtr SquareBehaviourPool::GetPawn(const Player player) const {
+  return player == Player::max ? &white_pawn_ : &black_pawn_;
 }
-ISquarePtr SquareBehaviourPool::GetKnight(
-    const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_knight_ : &black_knight_;
+ISquarePtr SquareBehaviourPool::GetKnight(const Player player) const {
+  return player == Player::max ? &white_knight_ : &black_knight_;
 }
-ISquarePtr SquareBehaviourPool::GetBishop(
-    const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_bishop_ : &black_bishop_;
+ISquarePtr SquareBehaviourPool::GetBishop(const Player player) const {
+  return player == Player::max ? &white_bishop_ : &black_bishop_;
 }
-ISquarePtr SquareBehaviourPool::GetRook(const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_rook_ : &black_rook_;
+ISquarePtr SquareBehaviourPool::GetRook(const Player player) const {
+  return player == Player::max ? &white_rook_ : &black_rook_;
 }
-ISquarePtr SquareBehaviourPool::GetQueen(const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_queen_ : &black_queen_;
+ISquarePtr SquareBehaviourPool::GetQueen(const Player player) const {
+  return player == Player::max ? &white_queen_ : &black_queen_;
 }
-ISquarePtr SquareBehaviourPool::GetKing(const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? &white_king_ : &black_king_;
+ISquarePtr SquareBehaviourPool::GetKing(const Player player) const {
+  return player == Player::max ? &white_king_ : &black_king_;
 }
 
 }  // namespace Chess

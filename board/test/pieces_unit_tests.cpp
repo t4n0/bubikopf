@@ -10,7 +10,7 @@ namespace {
 
 class BlackPawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
+  void SetUp() override { state_.turn_ = Player::min; }
   void TearDown() override {}
 
   State state_{SetUpEmptyBoard()};
@@ -20,10 +20,8 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
   // Setup
   const Coordinate black_pawn_location{3, 1};
   const Coordinate blocking_piece_location{3, 2};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
-  state_.board_.Set(blocking_piece_location,
-                    state_.pool_.GetKing(AlphaBeta::Player::max));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
+  state_.board_.Set(blocking_piece_location, state_.pool_.GetKing(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -37,8 +35,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
 TEST_F(BlackPawnFindPlies_Fixture, GivenWhitePawn_ExpectNoPlies) {
   // Setup
   const Coordinate white_pawn_location{3, 3};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -55,8 +52,7 @@ TEST_F(BlackPawnFindPlies_Fixture,
   const Coordinate location_behind_black_pawn{3, 3};
   const Coordinate black_pawn_location{3, 4};
   const Coordinate free_square{3, 5};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -79,8 +75,7 @@ TEST_F(BlackPawnFindPlies_Fixture,
   const Coordinate location_behind_black_pawn{3, 5};
   const Coordinate black_pawn_location{3, 6};
   const Coordinate promotion_square{3, 7};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -111,8 +106,7 @@ TEST_F(BlackPawnFindPlies_Fixture,
   const Coordinate black_pawn_location{4, 1};
   const Coordinate single_step_target{4, 2};
   const Coordinate double_step_target{4, 3};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -140,14 +134,13 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   const Coordinate white_blocking_piece_location{3, 4};
   const Coordinate white_hanging_piece_location{4, 4};
   const Coordinate black_piece_on_caputre_location{2, 4};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
   state_.board_.Set(black_piece_on_caputre_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::min));
+                    state_.pool_.GetKnight(Player::min));
   state_.board_.Set(white_blocking_piece_location,
-                    state_.pool_.GetKing(AlphaBeta::Player::max));
+                    state_.pool_.GetKing(Player::max));
   state_.board_.Set(white_hanging_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+                    state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -175,10 +168,9 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
   const Coordinate white_pawn{4, 4};
   const Coordinate white_blocking_piece{5, 5};
   const Coordinate en_passant{4, 5};
-  state_.board_.Set(black_pawn, state_.pool_.GetPawn(AlphaBeta::Player::min));
-  state_.board_.Set(white_pawn, state_.pool_.GetPawn(AlphaBeta::Player::max));
-  state_.board_.Set(white_blocking_piece,
-                    state_.pool_.GetKnight(AlphaBeta::Player::max));
+  state_.board_.Set(black_pawn, state_.pool_.GetPawn(Player::min));
+  state_.board_.Set(white_pawn, state_.pool_.GetPawn(Player::max));
+  state_.board_.Set(white_blocking_piece, state_.pool_.GetKnight(Player::max));
   state_.en_passant_ = en_passant;
 
   // Call
@@ -198,7 +190,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = AlphaBeta::Player::max; }
+  void SetUp() override { state_.turn_ = Player::max; }
   void TearDown() override {}
 
   State state_{SetUpEmptyBoard()};
@@ -208,10 +200,8 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
   // Setup
   const Coordinate white_pawn_location{3, 6};
   const Coordinate blocking_piece_location{3, 5};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
-  state_.board_.Set(blocking_piece_location,
-                    state_.pool_.GetKing(AlphaBeta::Player::min));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
+  state_.board_.Set(blocking_piece_location, state_.pool_.GetKing(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -225,8 +215,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
 TEST_F(WhitePawnFindPlies_Fixture, GivenBlackPawn_ExpectNoPlies) {
   // Setup
   const Coordinate black_pawn_location{3, 3};
-  state_.board_.Set(black_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::min));
+  state_.board_.Set(black_pawn_location, state_.pool_.GetPawn(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -243,8 +232,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   const Coordinate location_behind_white_pawn{3, 5};
   const Coordinate white_pawn_location{3, 4};
   const Coordinate free_square{3, 3};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -267,8 +255,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   const Coordinate location_behind_white_pawn{3, 2};
   const Coordinate white_pawn_location{3, 1};
   const Coordinate promotion_square{3, 0};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -299,8 +286,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   const Coordinate white_pawn_location{4, 6};
   const Coordinate single_step_target{4, 5};
   const Coordinate double_step_target{4, 4};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -327,8 +313,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   // Setup
   const Coordinate white_pawn_location{4, 6};
   const Coordinate single_step_target{4, 5};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -345,14 +330,13 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   const Coordinate black_blocking_piece_location{5, 4};
   const Coordinate black_hanging_piece_location{6, 4};
   const Coordinate white_piece_on_caputre_location{4, 4};
-  state_.board_.Set(white_pawn_location,
-                    state_.pool_.GetPawn(AlphaBeta::Player::max));
+  state_.board_.Set(white_pawn_location, state_.pool_.GetPawn(Player::max));
   state_.board_.Set(white_piece_on_caputre_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::max));
+                    state_.pool_.GetKnight(Player::max));
   state_.board_.Set(black_blocking_piece_location,
-                    state_.pool_.GetKing(AlphaBeta::Player::min));
+                    state_.pool_.GetKing(Player::min));
   state_.board_.Set(black_hanging_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
+                    state_.pool_.GetRook(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -380,10 +364,9 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
   const Coordinate black_pawn{5, 3};
   const Coordinate black_blocking_piece{4, 2};
   const Coordinate en_passant{5, 2};
-  state_.board_.Set(white_pawn, state_.pool_.GetPawn(AlphaBeta::Player::max));
-  state_.board_.Set(black_pawn, state_.pool_.GetPawn(AlphaBeta::Player::min));
-  state_.board_.Set(black_blocking_piece,
-                    state_.pool_.GetKnight(AlphaBeta::Player::min));
+  state_.board_.Set(white_pawn, state_.pool_.GetPawn(Player::max));
+  state_.board_.Set(black_pawn, state_.pool_.GetPawn(Player::min));
+  state_.board_.Set(black_blocking_piece, state_.pool_.GetKnight(Player::min));
   state_.en_passant_ = en_passant;
 
   // Call
@@ -403,7 +386,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 
 class PiecePlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = AlphaBeta::Player::min; }
+  void SetUp() override { state_.turn_ = Player::min; }
   void TearDown() override {}
 
   State state_{SetUpEmptyBoard()};
@@ -412,8 +395,7 @@ class PiecePlies_Fixture : public testing::Test {
 TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {
   // Setup
   const Coordinate knight_location{3, 4};
-  state_.board_.Set(knight_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::max));
+  state_.board_.Set(knight_location, state_.pool_.GetKnight(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -427,8 +409,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {
 TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightPlies) {
   // Setup
   const Coordinate knight_location{3, 4};
-  state_.board_.Set(knight_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::min));
+  state_.board_.Set(knight_location, state_.pool_.GetKnight(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -446,8 +427,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightPlies) {
 TEST_F(PiecePlies_Fixture, GivenKnightInCorner_ExpectTwoPlies) {
   // Setup
   const Coordinate knight_location{0, 0};
-  state_.board_.Set(knight_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::min));
+  state_.board_.Set(knight_location, state_.pool_.GetKnight(Player::min));
 
   // Call
   const std::vector<State> returned_states{
@@ -464,12 +444,9 @@ TEST_F(PiecePlies_Fixture,
   const Coordinate knight_location{0, 0};
   const Coordinate own_piece_location{1, 2};
   const Coordinate opponent_piece_location{2, 1};
-  state_.board_.Set(knight_location,
-                    state_.pool_.GetKnight(AlphaBeta::Player::min));
-  state_.board_.Set(own_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(opponent_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+  state_.board_.Set(knight_location, state_.pool_.GetKnight(Player::min));
+  state_.board_.Set(own_piece_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(opponent_piece_location, state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -491,12 +468,9 @@ TEST_F(
   const Coordinate bishop_location{3, 4};
   const Coordinate own_piece_location{1, 2};
   const Coordinate opponent_piece_location{5, 2};
-  state_.board_.Set(bishop_location,
-                    state_.pool_.GetBishop(AlphaBeta::Player::min));
-  state_.board_.Set(own_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(opponent_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+  state_.board_.Set(bishop_location, state_.pool_.GetBishop(Player::min));
+  state_.board_.Set(own_piece_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(opponent_piece_location, state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -513,12 +487,9 @@ TEST_F(PiecePlies_Fixture,
   const Coordinate rook_location{3, 4};
   const Coordinate own_piece_location{1, 4};
   const Coordinate opponent_piece_location{3, 2};
-  state_.board_.Set(rook_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(own_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(opponent_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+  state_.board_.Set(rook_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(own_piece_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(opponent_piece_location, state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -536,12 +507,9 @@ TEST_F(
   const Coordinate queen_location{3, 4};
   const Coordinate own_piece_location{1, 4};
   const Coordinate opponent_piece_location{3, 2};
-  state_.board_.Set(queen_location,
-                    state_.pool_.GetQueen(AlphaBeta::Player::min));
-  state_.board_.Set(own_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(opponent_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+  state_.board_.Set(queen_location, state_.pool_.GetQueen(Player::min));
+  state_.board_.Set(own_piece_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(opponent_piece_location, state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{
@@ -558,12 +526,9 @@ TEST_F(PiecePlies_Fixture,
   const Coordinate king_location{0, 3};
   const Coordinate own_piece_location{1, 3};
   const Coordinate opponent_piece_location{0, 4};
-  state_.board_.Set(king_location,
-                    state_.pool_.GetKing(AlphaBeta::Player::min));
-  state_.board_.Set(own_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::min));
-  state_.board_.Set(opponent_piece_location,
-                    state_.pool_.GetRook(AlphaBeta::Player::max));
+  state_.board_.Set(king_location, state_.pool_.GetKing(Player::min));
+  state_.board_.Set(own_piece_location, state_.pool_.GetRook(Player::min));
+  state_.board_.Set(opponent_piece_location, state_.pool_.GetRook(Player::max));
 
   // Call
   const std::vector<State> returned_states{

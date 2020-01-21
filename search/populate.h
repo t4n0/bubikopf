@@ -6,19 +6,14 @@
 
 namespace Chess {
 
-using Node = AlphaBeta::Node<State>;
-using NodePtr = std::unique_ptr<Node>;
+using NodePtr = std::unique_ptr<Node<State>>;
 
-std::vector<NodePtr> collect_plies_from_all_pieces(const Chess::Node&);
+std::vector<NodePtr> collect_plies_from_all_pieces(const Chess::Node<State>&);
 
-int CountChildren(const Node& node);
-
-}  // namespace Chess
-
-namespace AlphaBeta {
+int CountChildren(const Node<State>& node);
 
 template <>
-inline void populate(Chess::Node& node, const int depth) {
+inline void populate(Chess::Node<State>& node, const int depth) {
   if (depth) {
     if (!node.children_.size()) {
       node.children_ = Chess::collect_plies_from_all_pieces(node);
@@ -30,6 +25,6 @@ inline void populate(Chess::Node& node, const int depth) {
   }
 }
 
-}  // namespace AlphaBeta
+}  // namespace Chess
 
 #endif

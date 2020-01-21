@@ -14,9 +14,9 @@ TEST(Evaluate_Fixture, GivenScholarsMate_ExpectCorrectDefence) {
   node.state_.board_.SwapSquares(34, 61);
   node.state_.board_.SwapSquares(36, 52);
   node.state_.board_.SwapSquares(45, 59);
-  node.state_.turn_ = AlphaBeta::Player::min;
+  node.state_.turn_ = Player::min;
 
-  AlphaBeta::populate(node, 5);
+  populate(node, 5);
 }
 
 }  // namespace

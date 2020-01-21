@@ -71,13 +71,12 @@ void Board::SwapSquares(const std::size_t a, const std::size_t b) {
   std::swap(squares_.at(a), squares_.at(b));
 }
 
-Castling State::GetCastling(const AlphaBeta::Player player) const {
-  return player == AlphaBeta::Player::max ? castling_white_ : castling_black_;
+Castling State::GetCastling(const Player player) const {
+  return player == Player::max ? castling_white_ : castling_black_;
 }
 
-void State::SetCastling(const AlphaBeta::Player player,
-                        const Castling castling) {
-  if (player == AlphaBeta::Player::max) {
+void State::SetCastling(const Player player, const Castling castling) {
+  if (player == Player::max) {
     castling_white_ = castling;
   } else {
     castling_black_ = castling;

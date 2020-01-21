@@ -6,7 +6,7 @@
 #include <functional>
 #include <memory>
 
-namespace AlphaBeta {
+namespace Chess {
 
 static std::vector<float> order_of_evaluation{};
 
@@ -123,6 +123,6 @@ Node<float> generate_typical_tree() {
   return unit;
 }
 
-}  // namespace AlphaBeta
+}  // namespace Chess
 
 #endif

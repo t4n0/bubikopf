@@ -57,13 +57,13 @@ class State {
   Board board_{};
   int static_plies_{0};
   int plies_{0};
-  AlphaBeta::Player turn_{AlphaBeta::Player::max};
+  Player turn_{Player::max};
   std::optional<Coordinate> en_passant_{};
 
   const SquareBehaviourPool& pool_;
 
-  Castling GetCastling(const AlphaBeta::Player player) const;
-  void SetCastling(const AlphaBeta::Player player, const Castling castling);
+  Castling GetCastling(const Player player) const;
+  void SetCastling(const Player player, const Castling castling);
 
  private:
   Castling castling_black_{true, true};

@@ -28,8 +28,9 @@ void UserPause() {
 }
 
 int main() {
-  Chess::NodePtr node{std::make_unique<Chess::Node>(Chess::SetUpBoard())};
-  AlphaBeta::populate(*node, 1);
+  Chess::NodePtr node{
+      std::make_unique<Chess::Node<Chess::State>>(Chess::SetUpBoard())};
+  populate(*node, 1);
   Chess::Board board_after_human_move;
 
   while (true) {
@@ -55,13 +56,12 @@ int main() {
 
     // AI moves
     const int DEPTH{5};
-    AlphaBeta::populate(*node, DEPTH);
-    std::vector<AlphaBeta::Evaluation> branch_evaluations{
-        node->children_.size()};
+    populate(*node, DEPTH);
+    std::vector<Chess::Evaluation> branch_evaluations{node->children_.size()};
     for (std::size_t idx{0}; idx < branch_evaluations.size(); idx++) {
-      branch_evaluations.at(idx) = AlphaBeta::minimax<Chess::State>(
-          *(node->children_.at(idx)), DEPTH, AlphaBeta::Player::min,
-          AlphaBeta::MIN_EVAL, AlphaBeta::MAX_EVAL);
+      branch_evaluations.at(idx) = Chess::minimax<Chess::State>(
+          *(node->children_.at(idx)), DEPTH, Chess::Player::min,
+          Chess::MIN_EVAL, Chess::MAX_EVAL);
       std::cout << "Option " << static_cast<int>(idx) << " with evaluation of "
                 << branch_evaluations.at(idx) << ":\n";
       std::cout << node->children_.at(idx)->state_.board_;
@@ -75,7 +75,7 @@ int main() {
                 << branch_evaluations.at(ai_move_idx) << ":\n";
       std::cout << node->children_.at(ai_move_idx)->state_.board_;
       node = ChooseChild(ai_move_idx, std::move(node));
-      std::cout << "Number of nodes: " << CountChildren(*node) << '\n';
+      std::cout << "Number of nodes: " << Chess::CountChildren(*node) << '\n';
       UserPause();
     } else {
       throw - 1;
