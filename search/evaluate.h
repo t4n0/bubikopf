@@ -7,7 +7,7 @@
 namespace Chess {
 
 template <>
-inline Evaluation evaluate(const Chess::State& state) {
+inline Evaluation evaluate(const State& state) {
   float evaluation = 0.0F;
   for (const auto& square : state.board_.squares_) {
     evaluation += square->GetValue();
