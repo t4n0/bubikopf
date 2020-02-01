@@ -1,29 +1,21 @@
 #ifndef SEARCH_POPULATE_H
 #define CHESS_POPULATE_H
 
-#include "board/state.h"
-#include "search/minimax.h"
+#include "search/evaluation.h"
+#include "search/node.h"
+
+#include <memory>
+#include <vector>
 
 namespace Chess {
 
-using NodePtr = std::unique_ptr<Node<State>>;
+using NodePtr = std::unique_ptr<Node>;
 
-std::vector<NodePtr> collect_plies_from_all_pieces(const Node<State>&);
+std::vector<NodePtr> collect_plies_from_all_pieces(const Node&);
 
-int CountChildren(const Node<State>& node);
+int CountChildren(const Node& node);
 
-template <>
-inline void populate(Node<State>& node, const int depth) {
-  if (depth) {
-    if (!node.children_.size()) {
-      node.children_ = collect_plies_from_all_pieces(node);
-    }
-
-    for (NodePtr& child : node.children_) {
-      populate(*child, depth - 1);
-    }
-  }
-}
+void populate(Node& node, const int depth);
 
 }  // namespace Chess
 

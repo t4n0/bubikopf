@@ -1,60 +1,121 @@
-#include "search/test/minimax_abstract_examples.h"
+#include "search/minimax.h"
+
+#include "board/utilities.h"
+#include "search/test/evaluate_mock.h"
 
 #include <gtest/gtest.h>
 
 namespace Chess {
 namespace {
 
-struct MinimaxTest_FixtureParameters {
-  std::function<Node<float>()> tree_generator;
-  std::vector<float> expected_order_of_evaluation;
-  float expected_overall_evaluation;
-};
-
-class MinimaxTest_Fixture
-    : public ::testing::TestWithParam<MinimaxTest_FixtureParameters> {
- public:
-  void SetUp() { order_of_evaluation.resize(0); }
-  void TearDown() {}
-};
-
-TEST_P(MinimaxTest_Fixture, GivenTree_ExpectEvaluationOrderAndFinalEvaluation) {
-  // Setup
-  Node<float> unit = GetParam().tree_generator();
-
-  // Call
-  Evaluation state_evaluation =
-      minimax<float>(unit, 3, Player::max, MIN_EVAL, MAX_EVAL);
-  float overall_evaluation{std::get<float>(state_evaluation)};
-
-  // Expect
-  EXPECT_FLOAT_EQ(overall_evaluation, GetParam().expected_overall_evaluation);
-  EXPECT_EQ(GetParam().expected_order_of_evaluation.size(),
-            order_of_evaluation.size());
-  for (std::size_t idx{0}; idx < order_of_evaluation.size(); ++idx) {
-    EXPECT_FLOAT_EQ(GetParam().expected_order_of_evaluation.at(idx),
-                    order_of_evaluation.at(idx));
-  }
+static int GLOBAL_NODE_IDENTIFIER{0};
+std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable() {
+  std::unique_ptr<Node> child = std::make_unique<Node>(SetUpEmptyBoard());
+  child->state_.plies_ = ++GLOBAL_NODE_IDENTIFIER;
+  return child;
 }
 
-MinimaxTest_FixtureParameters NEGATIVE_TREE_EXAMPLE{
-    generate_negative_tree,
-    {-1.0F, -2.0F, -3.0F, -4.0F, -5.0F,
-     -6.0F},  // nodes -7 and -8 will be pruned
-    -3.0F};
+// produces the following tree:                                    |
+//                                                                 |
+//                               0                                 |
+//                              / \                                |
+//                             /   \                               |
+//                            /     \                              |
+//                           /       \                             |
+//                          /         \                            |
+//                         /           \                           |
+//                        /             \                          |
+//                       /               \                         |
+//                      /                 \                        |
+//                     1                   2                       |
+//                    / \                 / \                      |
+//                   /   \               /   \                     |
+//                  /     \             /     \                    |
+//                 /       \           /       \                   |
+//                3         4         9        10                  |
+//               / \       / \       / \       / \                 |
+//              /   \     /   \     /   \     /   \                |
+//             5     6   7     8   11   12   13   14               |
+//                                                                 |
+// depicted number represents the id hidden in the plies variable  |
+//                                                                 |
+void PopulateWithTwoChildren(Node& node, const int depth) {
+  if (depth) {
+    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable());
+    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable());
 
-MinimaxTest_FixtureParameters POSITIVE_TREE_EXAMPLE{
-    generate_positive_tree,
-    {1.0F, 2.0F, 3.0F, 5.0F, 6.0F, 7.0F},  // nodes 4 and 8 will be pruned
-    6.0F};
+    for (std::size_t idx{}; idx < node.children_.size(); idx++) {
+      PopulateWithTwoChildren(*node.children_.at(idx), depth - 1);
+    }
+  }
+};
 
-MinimaxTest_FixtureParameters TYPICAL_TREE_EXAMPLE{
-    generate_typical_tree, {-1.0F, 3.0F, 5.0F, -6.0F, -4.0F}, 3.0F};
+template <typename T>
+struct MinimaxTest : public ::testing::Test {
+  void SetUp() override {
+    GLOBAL_NODE_IDENTIFIER = 0;
+    ORDER_OF_NODE_EVALUATION.resize(0);
+    const int depth = 3;
+    PopulateWithTwoChildren(node_, depth);
+  }
+  void TearDown() override {}
 
-INSTANTIATE_TEST_SUITE_P(BasicExamples, MinimaxTest_Fixture,
-                         ::testing::ValuesIn({NEGATIVE_TREE_EXAMPLE,
-                                              POSITIVE_TREE_EXAMPLE,
-                                              TYPICAL_TREE_EXAMPLE}));
+  Node node_{SetUpEmptyBoard()};
+};
+
+struct LeafNodesEvaluateToDecreasingValues {
+  static std::map<int, float> GetNodeValueMap() {
+    return {{5, -1.0F},  {6, -2.0F},  {7, -3.0F},  {8, -4.0F},
+            {11, -5.0F}, {12, -6.0F}, {13, -7.0F}, {14, -8.0F}};
+  }
+  static std::vector<int> GetExpectedEvaluationOrder() {
+    return {5, 6, 7, 8, 11, 12};  // nodes 13 and 14 will be pruned
+  }
+  static float GetExpectedFinalEvaluation() { return -3.0F; }
+  static constexpr bool is_mock{true};
+};
+
+struct LeafNodesEvaluateToIncreasingValues {
+  static std::map<int, float> GetNodeValueMap() {
+    return {{5, 1.0F},  {6, 2.0F},  {7, 3.0F},  {8, 4.0F},
+            {11, 5.0F}, {12, 6.0F}, {13, 7.0F}, {14, 8.0F}};
+  }
+  static std::vector<int> GetExpectedEvaluationOrder() {
+    return {5, 6, 7, 11, 12, 13};  // nodes 8 and 14 will be pruned
+  }
+  static float GetExpectedFinalEvaluation() { return 6.0F; }
+  static constexpr bool is_mock{true};
+};
+
+struct LeafNodesEvaluateToTypicalValues {
+  static std::map<int, float> GetNodeValueMap() {
+    return {{5, -1.0F},  {6, 3.0F},   {7, 5.0F},   {8, 42.0F},
+            {11, -4.0F}, {12, -6.0F}, {13, 43.0F}, {14, 44.0F}};
+  }
+  static std::vector<int> GetExpectedEvaluationOrder() {
+    return {5, 6, 7, 11, 12};  // nodes 13 and 14 will be pruned
+  }
+  static float GetExpectedFinalEvaluation() { return 3.0F; }
+  static constexpr bool is_mock{true};
+};
+
+using EvaluateMocks = ::testing::Types<LeafNodesEvaluateToDecreasingValues,
+                                       LeafNodesEvaluateToIncreasingValues,
+                                       LeafNodesEvaluateToTypicalValues>;
+TYPED_TEST_SUITE(MinimaxTest, EvaluateMocks);
+
+TYPED_TEST(
+    MinimaxTest,
+    GivenInjectedNodeEvaluation_ExpectEvaluationOrderAndFinalEvaluation) {
+  // Call
+  const Evaluation returned_evaluation = minimax<TypeParam>(
+      TestFixture::node_, 3, Player::max, MIN_EVAL, MAX_EVAL);
+
+  // Expect
+  EXPECT_FLOAT_EQ(std::get<float>(returned_evaluation),
+                  TypeParam::GetExpectedFinalEvaluation());
+  EXPECT_EQ(ORDER_OF_NODE_EVALUATION, TypeParam::GetExpectedEvaluationOrder());
+}
 
 }  // namespace
 }  // namespace Chess

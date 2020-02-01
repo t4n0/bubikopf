@@ -1,5 +1,5 @@
 #include "board/utilities.h"
-#include "search/evaluate.h"
+#include "search/minimax.h"
 #include "search/populate.h"
 
 #include <algorithm>
@@ -28,8 +28,7 @@ void UserPause() {
 }
 
 int main() {
-  Chess::NodePtr node{
-      std::make_unique<Chess::Node<Chess::State>>(Chess::SetUpBoard())};
+  Chess::NodePtr node{std::make_unique<Chess::Node>(Chess::SetUpBoard())};
   populate(*node, 1);
   Chess::Board board_after_human_move;
 
@@ -59,9 +58,9 @@ int main() {
     populate(*node, DEPTH);
     std::vector<Chess::Evaluation> branch_evaluations{node->children_.size()};
     for (std::size_t idx{0}; idx < branch_evaluations.size(); idx++) {
-      branch_evaluations.at(idx) = Chess::minimax<Chess::State>(
-          *(node->children_.at(idx)), DEPTH, Chess::Player::min,
-          Chess::MIN_EVAL, Chess::MAX_EVAL);
+      branch_evaluations.at(idx) =
+          Chess::minimax(*(node->children_.at(idx)), DEPTH, Chess::Player::min,
+                         Chess::MIN_EVAL, Chess::MAX_EVAL);
       std::cout << "Option " << static_cast<int>(idx) << " with evaluation of "
                 << branch_evaluations.at(idx) << ":\n";
       std::cout << node->children_.at(idx)->state_.board_;

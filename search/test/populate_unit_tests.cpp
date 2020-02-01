@@ -11,7 +11,7 @@ namespace {
 
 class Populate_Fixture : public testing::Test {
  public:
-  NodePtr node_{std::make_unique<Node<State>>(SetUpBoard())};
+  NodePtr node_{std::make_unique<Node>(SetUpBoard())};
 };
 
 TEST_F(Populate_Fixture, GivenDepth1_Expect20children) {
@@ -33,7 +33,7 @@ TEST(CountChildren,
      GivenKingsInOppositeCornersAndSearchDepth4_ExpectCorrectNumberOfChildren) {
   // Setup
   const int depth = 3;
-  NodePtr node_{std::make_unique<Node<State>>(SetUpEmptyBoard())};
+  NodePtr node_{std::make_unique<Node>(SetUpEmptyBoard())};
   node_->state_.board_.Set(0, node_->state_.pool_.GetKing(Player::max));
   node_->state_.board_.Set(63, node_->state_.pool_.GetKing(Player::min));
   populate(*node_, depth);
@@ -47,13 +47,13 @@ TEST(CountChildren,
 }
 
 TEST(Node, MemoryFootprint) {
-  NodePtr node{std::make_unique<Node<State>>(SetUpEmptyBoard())};
+  NodePtr node{std::make_unique<Node>(SetUpEmptyBoard())};
   populate(*node, 1);
 
-  EXPECT_EQ(sizeof(Node<State>), 568);
+  EXPECT_EQ(sizeof(Node), 568);
   // consisting of
   EXPECT_EQ(sizeof(State), 544);
-  EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node<State>>>), 24);
+  EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node>>), 24);
 }
 
 }  // namespace
