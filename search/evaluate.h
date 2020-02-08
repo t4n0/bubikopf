@@ -8,12 +8,13 @@
 
 namespace Chess {
 
-struct ConcreteEvaluation {
-  static constexpr bool is_mock{false};
+struct Production {
+  static constexpr bool is_concrete{true};
 };
 
-template <typename Behaviour = ConcreteEvaluation>
-std::enable_if_t<!Behaviour::is_mock, Evaluation> evaluate(const State& state) {
+template <typename Behaviour = Production>
+std::enable_if_t<Behaviour::is_concrete, Evaluation> evaluate(
+    const State& state) {
   float evaluation = 0.0F;
   for (const auto& square : state.board_.squares_) {
     evaluation += square->GetValue();

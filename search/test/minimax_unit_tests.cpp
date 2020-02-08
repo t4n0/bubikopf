@@ -55,12 +55,12 @@ struct MinimaxTest : public ::testing::Test {
   void SetUp() override {
     GLOBAL_NODE_IDENTIFIER = 0;
     ORDER_OF_NODE_EVALUATION.resize(0);
-    const int depth = 3;
-    PopulateWithTwoChildren(node_, depth);
+    PopulateWithTwoChildren(node_, depth_);
   }
   void TearDown() override {}
 
   Node node_{SetUpEmptyBoard()};
+  const int depth_{3};
 };
 
 struct LeafNodesEvaluateToDecreasingValues {
@@ -107,9 +107,12 @@ TYPED_TEST_SUITE(MinimaxTest, EvaluateMocks);
 TYPED_TEST(
     MinimaxTest,
     GivenInjectedNodeEvaluation_ExpectEvaluationOrderAndFinalEvaluation) {
+  // Setup
+  using EvaluateMock = TypeParam;
+
   // Call
-  const Evaluation returned_evaluation = minimax<TypeParam>(
-      TestFixture::node_, 3, Player::max, MIN_EVAL, MAX_EVAL);
+  const Evaluation returned_evaluation = minimax<EvaluateMock>(
+      TestFixture::node_, TestFixture::depth_, Player::max, MIN_EVAL, MAX_EVAL);
 
   // Expect
   EXPECT_FLOAT_EQ(std::get<float>(returned_evaluation),
