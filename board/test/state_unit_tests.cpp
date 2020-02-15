@@ -109,5 +109,16 @@ TEST(State, MemoryFootprint) {
   // + 4 bytes of padding
 }
 
+TEST(ToIdx, GivenSquareNotation_ExpectIndex) {
+  const std::size_t a8_idx = 0;
+  const std::size_t h8_idx = 7;
+  const std::size_t a1_idx = 56;
+  const std::size_t h1_idx = 63;
+  EXPECT_EQ(ToIdx('a', 1), a1_idx);
+  EXPECT_EQ(ToIdx('a', 8), a8_idx);
+  EXPECT_EQ(ToIdx('h', 1), h1_idx);
+  EXPECT_EQ(ToIdx('h', 8), h8_idx);
+}
+
 }  // namespace
 }  // namespace Chess

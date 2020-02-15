@@ -31,6 +31,12 @@ Coordinate operator-(Coordinate lhs, const Coordinate& rhs) {
   return lhs -= rhs;
 }
 
+std::size_t ToIdx(const char file, const int8_t rank) {
+  const int8_t col = 8 - ('i' - file);
+  const int8_t row = 8 - rank;
+  return ToIdx(Coordinate{col, row});
+}
+
 std::size_t ToIdx(const Coordinate coor) {
   return static_cast<std::size_t>(coor.col + 8 * coor.row);
 }

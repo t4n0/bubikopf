@@ -25,6 +25,7 @@ bool operator!=(const Coordinate& a, const Coordinate& b);
 Coordinate operator+(Coordinate a, const Coordinate& b);
 Coordinate operator-(Coordinate a, const Coordinate& b);
 
+std::size_t ToIdx(const char file, const int8_t rank);
 std::size_t ToIdx(const Coordinate coor);
 Coordinate ToCoor(const std::size_t idx);
 bool IsOnTheBoard(const Coordinate coordinate);
