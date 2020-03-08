@@ -10,7 +10,7 @@
 
 namespace Chess {
 
-// The three variants mean respectivly:
+// The three variants mean respectively:
 // Player: The game is over. The value indicates the winning side.
 // int8_t: The game is decided. The value indicates the remaining moves the
 // winning side must play before it can force a win.
