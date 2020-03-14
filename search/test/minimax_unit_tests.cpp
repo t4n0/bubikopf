@@ -64,9 +64,11 @@ struct MinimaxTest : public ::testing::Test {
 };
 
 struct LeafNodesEvaluateToDecreasingValues {
-  static std::map<int, float> GetNodeValueMap() {
-    return {{5, -1.0F},  {6, -2.0F},  {7, -3.0F},  {8, -4.0F},
-            {11, -5.0F}, {12, -6.0F}, {13, -7.0F}, {14, -8.0F}};
+  static float GetNodeValue(int identifier) {
+    const std::map<int, float> map_id_value{
+        {5, -1.0F},  {6, -2.0F},  {7, -3.0F},  {8, -4.0F},
+        {11, -5.0F}, {12, -6.0F}, {13, -7.0F}, {14, -8.0F}};
+    return map_id_value.at(identifier);
   }
   static std::vector<int> GetExpectedEvaluationOrder() {
     return {5, 6, 7, 8, 11, 12};  // nodes 13 and 14 will be pruned
@@ -76,9 +78,11 @@ struct LeafNodesEvaluateToDecreasingValues {
 };
 
 struct LeafNodesEvaluateToIncreasingValues {
-  static std::map<int, float> GetNodeValueMap() {
-    return {{5, 1.0F},  {6, 2.0F},  {7, 3.0F},  {8, 4.0F},
-            {11, 5.0F}, {12, 6.0F}, {13, 7.0F}, {14, 8.0F}};
+  static float GetNodeValue(int identifier) {
+    const std::map<int, float> map_id_value{{5, 1.0F},  {6, 2.0F},  {7, 3.0F},
+                                            {8, 4.0F},  {11, 5.0F}, {12, 6.0F},
+                                            {13, 7.0F}, {14, 8.0F}};
+    return map_id_value.at(identifier);
   }
   static std::vector<int> GetExpectedEvaluationOrder() {
     return {5, 6, 7, 11, 12, 13};  // nodes 8 and 14 will be pruned
@@ -88,9 +92,11 @@ struct LeafNodesEvaluateToIncreasingValues {
 };
 
 struct LeafNodesEvaluateToTypicalValues {
-  static std::map<int, float> GetNodeValueMap() {
-    return {{5, -1.0F},  {6, 3.0F},   {7, 5.0F},   {8, 42.0F},
-            {11, -4.0F}, {12, -6.0F}, {13, 43.0F}, {14, 44.0F}};
+  static float GetNodeValue(int identifier) {
+    const std::map<int, float> map_id_value{
+        {5, -1.0F},  {6, 3.0F},   {7, 5.0F},   {8, 42.0F},
+        {11, -4.0F}, {12, -6.0F}, {13, 43.0F}, {14, 44.0F}};
+    return map_id_value.at(identifier);
   }
   static std::vector<int> GetExpectedEvaluationOrder() {
     return {5, 6, 7, 11, 12};  // nodes 13 and 14 will be pruned
