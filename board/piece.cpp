@@ -102,7 +102,7 @@ std::array<Coordinate, 2> GetCaptureBehaviourFor(const Player player) {
 State BaseStateAfterPly(const State& state) {
   State new_state = state;
   new_state.plies_++;
-  new_state.turn_ = state.turn_ == Player::max ? Player::min : Player::max;
+  new_state.turn_ = !state.turn_;
   new_state.en_passant_.reset();
 
   return new_state;
@@ -120,10 +120,6 @@ State BaseStateAfterPiecePly(const State& state) {
   new_state.static_plies_++;
 
   return new_state;
-}
-
-Player GetOtherPlayer(const Player player) {
-  return player == Player::max ? Player::min : Player::max;
 }
 
 std::vector<State> Pawn::FindPlies(const std::size_t idx,
@@ -165,8 +161,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
     for (auto& capture_target : capture_targets) {
       capture_target += location;
       if (IsOnTheBoard(capture_target)) {
-        if (state.board_.Get(capture_target)
-                ->IsOfSide(GetOtherPlayer(owner_))) {
+        if (state.board_.Get(capture_target)->IsOfSide(!owner_)) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
           new_ply.board_.Set(idx, state.pool_.GetEmpty());
@@ -175,9 +170,9 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
                    state.en_passant_.value() == capture_target) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_ply.board_.Set(ToIdx(state.en_passant_.value() +
-                                   GetSingleStepFor(GetOtherPlayer(owner_))),
-                             state.pool_.GetEmpty());
+          new_ply.board_.Set(
+              ToIdx(state.en_passant_.value() + GetSingleStepFor(!owner_)),
+              state.pool_.GetEmpty());
           new_plies.emplace_back(std::move(new_ply));
         }
       }
