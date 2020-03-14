@@ -19,6 +19,7 @@ cc_test(
     srcs = [
         "test/board_generator_unit_tests.cpp",
         "test/pieces_unit_tests.cpp",
+        "test/player_unit_tests.cpp",
         "test/state_unit_tests.cpp",
     ],
     deps = [
