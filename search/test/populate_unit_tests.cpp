@@ -29,7 +29,7 @@ TEST_F(Populate_Fixture, GivenDepth1_Expect20children) {
   EXPECT_TRUE(node_->children_.size() == 20);
 }
 
-TEST(CountChildren,
+TEST(PopulateSmokeTest,
      GivenKingsInOppositeCornersAndSearchDepth4_ExpectCorrectNumberOfChildren) {
   // Setup
   const int depth = 3;
@@ -39,7 +39,7 @@ TEST(CountChildren,
   populate(*node_, depth);
 
   // Call
-  const int returned_number_of_children{CountChildren(*node_)};
+  const int returned_number_of_children{CountNodes(*node_)};
 
   // Expect
   const int expected_number_of_moves = 67;  // worked out by hand

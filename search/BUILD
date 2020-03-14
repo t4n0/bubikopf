@@ -19,6 +19,7 @@ cc_test(
         "test/evaluate_unit_tests.cpp",
         "test/evaluation_unit_tests.cpp",
         "test/minimax_unit_tests.cpp",
+        "test/node_unit_tests.cpp",
         "test/populate_unit_tests.cpp",
     ],
     deps = [

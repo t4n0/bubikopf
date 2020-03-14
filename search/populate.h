@@ -13,8 +13,6 @@ using NodePtr = std::unique_ptr<Node>;
 
 std::vector<NodePtr> collect_plies_from_all_pieces(const Node&);
 
-int CountChildren(const Node& node);
-
 void populate(Node& node, const int depth);
 
 }  // namespace Chess
