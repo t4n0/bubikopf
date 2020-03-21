@@ -5,13 +5,6 @@
 #include <algorithm>
 #include <limits>
 
-Chess::NodePtr ChooseChild(const std::size_t idx, Chess::NodePtr&& node) {
-  Chess::NodePtr tmp{};
-  tmp.swap(node);
-  node.swap(tmp->children_.at(idx));
-  return std::move(node);
-}
-
 void PrintBoardWithPlyCaption(const Chess::Board& board, const int ply) {
   std::cout << "========= The board at ply: " << ply << " =========\n";
   std::cout << board;
@@ -49,7 +42,7 @@ int main() {
       std::cin >> human_move_idx;
     }
     std::cout << "Option choosen: " << human_move_idx << '\n';
-    node = ChooseChild(human_move_idx, std::move(node));
+    node = Chess::ChooseChild(human_move_idx, std::move(node));
     UserPause();
     board_after_human_move = node->state_.board_;
 
@@ -72,7 +65,7 @@ int main() {
       std::cout << "Ai's choice with evaluation of "
                 << branch_evaluations.at(ai_move_idx) << ":\n";
       std::cout << node->children_.at(ai_move_idx)->state_.board_;
-      node = ChooseChild(ai_move_idx, std::move(node));
+      node = Chess::ChooseChild(ai_move_idx, std::move(node));
       std::cout << "Number of nodes: " << Chess::CountNodes(*node) << '\n';
       UserPause();
     } else {

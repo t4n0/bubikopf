@@ -1,6 +1,9 @@
 cc_library(
     name = "search",
-    srcs = ["populate.cpp"],
+    srcs = [
+        "node.cpp",
+        "populate.cpp",
+    ],
     hdrs = [
         "evaluate.h",
         "evaluation.h",
