@@ -12,6 +12,13 @@ class Node {
  public:
   Node(State&& state) : state_(std::move(state)) {}
 
+  Node() = delete;
+  Node(const Node&) = delete;
+  Node(Node&&) = delete;
+  Node& operator=(Node) = delete;
+  Node& operator=(Node&&) = delete;
+  ~Node() = default;
+
   std::vector<std::unique_ptr<Node>> children_{};
   State state_;
 };
