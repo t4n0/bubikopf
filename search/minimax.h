@@ -9,10 +9,14 @@
 
 namespace Chess {
 
+namespace {
+bool GameIsOver(const Node& node) { return node.children_.size() == 0; }
+}  // namespace
+
 template <typename Behaviour = Production>
 Evaluation minimax(const Node& node, const uint8_t depth, const Player turn,
                    Evaluation alpha, Evaluation beta) {
-  if ((depth == 0) || !node.children_.size()) {
+  if ((depth == 0) || GameIsOver(node)) {
     return evaluate<Behaviour>(node.state_);
 
   } else if (turn == Player::max) {
