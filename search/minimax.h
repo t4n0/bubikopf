@@ -38,7 +38,7 @@ Evaluation minimax(const Node& node, const uint8_t depth,
       Evaluation eval =
           minimax<Behaviour>(*child, depth - 1, alpha_parent, beta);
       beta = eval < beta ? eval : beta;
-      if (beta < alpha_parent) {
+      if (alpha_parent > beta) {
         break;
       }
     }
