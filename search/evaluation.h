@@ -69,9 +69,9 @@ inline bool operator>(const Evaluation lhs, const Evaluation rhs) {
 inline std::ostream& operator<<(std::ostream& stream, const Evaluation output) {
   if (std::holds_alternative<Player>(output)) {
     if (bool(std::get<Player>(output))) {
-      stream << "+0";
+      stream << "+";
     } else {
-      stream << "-0";
+      stream << "-";
     }
   } else if (std::holds_alternative<int8_t>(output)) {
     int value{std::get<int8_t>(output)};
