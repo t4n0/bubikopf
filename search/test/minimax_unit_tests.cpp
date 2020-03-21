@@ -70,8 +70,48 @@ struct AllNodesEvaluateToSameValue {
   static constexpr float arbitrary_value{42.0F};
 };
 
+struct MinimaxTestParameters {
+  uint8_t search_depth;
+  uint8_t tree_depth;
+  int expected_number_of_evaluated_nodes;
+};
+
+struct MinimaxTest_Fixture
+    : public ::testing::TestWithParam<MinimaxTestParameters> {
+  void SetUp() override {
+    ORDER_OF_NODE_EVALUATION.resize(0);
+    GLOBAL_NODE_IDENTIFIER = 0;
+  }
+  void TearDown() override {}
+};
+
+TEST_P(MinimaxTest_Fixture, GivenDepths_ExpectCutOfAtSmallerDepth) {
+  // Setup
+  Node root_node{SetUpEmptyBoard()};
+  PopulateWithTwoChildren(root_node, GetParam().tree_depth);
+
+  // Call
+  minimax<AllNodesEvaluateToSameValue>(
+      root_node, GetParam().search_depth, Player::max,
+      AllNodesEvaluateToSameValue::arbitrary_value,
+      AllNodesEvaluateToSameValue::arbitrary_value);
+
+  // Expect
+  const std::size_t number_of_evaluated_nodes{ORDER_OF_NODE_EVALUATION.size()};
+  EXPECT_EQ(number_of_evaluated_nodes,
+            GetParam().expected_number_of_evaluated_nodes);
+}
+
+const MinimaxTestParameters SEARCH_DEPTH_GREATER_TREE_DEPTH{7, 3, 8};
+const MinimaxTestParameters TREE_DEPTH_GREATER_SEARCH_DEPTH{2, 7, 4};
+const std::vector<MinimaxTestParameters> SAMPLES{
+    TREE_DEPTH_GREATER_SEARCH_DEPTH, SEARCH_DEPTH_GREATER_TREE_DEPTH};
+
+INSTANTIATE_TEST_SUITE_P(TwoPermutations, MinimaxTest_Fixture,
+                         ::testing::ValuesIn(SAMPLES));
+
 template <typename T>
-struct MinimaxTest : public ::testing::Test {
+struct MinimaxTest_TypedFixture : public ::testing::Test {
   void SetUp() override {
     GLOBAL_NODE_IDENTIFIER = 0;
     ORDER_OF_NODE_EVALUATION.resize(0);
@@ -128,10 +168,10 @@ struct LeafNodesEvaluateToTypicalValues {
 using EvaluateMocks = ::testing::Types<LeafNodesEvaluateToDecreasingValues,
                                        LeafNodesEvaluateToIncreasingValues,
                                        LeafNodesEvaluateToTypicalValues>;
-TYPED_TEST_SUITE(MinimaxTest, EvaluateMocks);
+TYPED_TEST_SUITE(MinimaxTest_TypedFixture, EvaluateMocks);
 
 TYPED_TEST(
-    MinimaxTest,
+    MinimaxTest_TypedFixture,
     GivenInjectedNodeEvaluation_ExpectEvaluationOrderAndFinalEvaluation) {
   // Setup
   using EvaluateMock = TypeParam;
