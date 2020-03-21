@@ -96,7 +96,6 @@ std::ostream& operator<<(std::ostream& stream, const Board& board) {
       stream << '\n';
     }
   }
-  stream << '\n';
 
   return stream;
 }
