@@ -43,7 +43,6 @@ int main() {
     }
     std::cout << "Option choosen: " << human_move_idx << '\n';
     node = Chess::ChooseChild(human_move_idx, std::move(node));
-    UserPause();
     board_after_human_move = node->state_.board_;
 
     // AI moves
