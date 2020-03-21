@@ -21,6 +21,7 @@ cc_test(
         "test/minimax_unit_tests.cpp",
         "test/node_unit_tests.cpp",
         "test/populate_unit_tests.cpp",
+        "test/puzzle_tests.cpp",
     ],
     deps = [
         ":search",
