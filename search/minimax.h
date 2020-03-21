@@ -14,34 +14,35 @@ bool GameIsOver(const Node& node) { return node.children_.size() == 0; }
 }  // namespace
 
 template <typename Behaviour = Production>
-Evaluation minimax(const Node& node, const uint8_t depth, Evaluation alpha,
-                   Evaluation beta) {
+Evaluation minimax(const Node& node, const uint8_t depth,
+                   const Evaluation alpha_parent,
+                   const Evaluation beta_parent) {
   if ((depth == 0) || GameIsOver(node)) {
     return evaluate<Behaviour>(node.state_);
 
   } else if (node.state_.turn_ == Player::max) {
-    Evaluation max_eval{MIN_EVAL};
+    Evaluation alpha{MIN_EVAL};
     for (const std::unique_ptr<Node>& child : node.children_) {
-      Evaluation eval = minimax<Behaviour>(*child, depth - 1, alpha, beta);
-      max_eval = eval > max_eval ? eval : max_eval;
+      Evaluation eval =
+          minimax<Behaviour>(*child, depth - 1, alpha, beta_parent);
       alpha = eval > alpha ? eval : alpha;
-      if (max_eval > beta) {
+      if (alpha > beta_parent) {
         break;
       }
     }
-    return max_eval;
+    return alpha;
 
   } else {
-    Evaluation min_eval{MAX_EVAL};
+    Evaluation beta{MAX_EVAL};
     for (const std::unique_ptr<Node>& child : node.children_) {
-      Evaluation eval = minimax<Behaviour>(*child, depth - 1, alpha, beta);
-      min_eval = eval < min_eval ? eval : min_eval;
+      Evaluation eval =
+          minimax<Behaviour>(*child, depth - 1, alpha_parent, beta);
       beta = eval < beta ? eval : beta;
-      if (min_eval < alpha) {
+      if (beta < alpha_parent) {
         break;
       }
     }
-    return min_eval;
+    return beta;
   }
 }
 
