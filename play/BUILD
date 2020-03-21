@@ -1,5 +1,5 @@
 cc_binary(
-    name = "play",
+    name = "command_line",
     srcs = ["main.cpp"],
     deps = [
         "//board",
