@@ -50,6 +50,26 @@ void PopulateWithTwoChildren(Node& node, const int depth) {
   }
 };
 
+TEST(PopulateWithTwoChildrenTest, GivenDepth3_Expect15Nodes) {
+  // Setup
+  Node root_node{SetUpEmptyBoard()};
+  const int depth{2};
+
+  // Call
+  PopulateWithTwoChildren(root_node, depth);
+
+  // Expect
+  const int exected_number_of_nodes{7};
+  const int returned_number_of_nodes{CountNodes(root_node)};
+  EXPECT_EQ(exected_number_of_nodes, returned_number_of_nodes);
+}
+
+struct AllNodesEvaluateToSameValue {
+  static float GetNodeValue(int /*unused*/) { return arbitrary_value; }
+  static constexpr bool is_mock{true};
+  static constexpr float arbitrary_value{42.0F};
+};
+
 template <typename T>
 struct MinimaxTest : public ::testing::Test {
   void SetUp() override {
