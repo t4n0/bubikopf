@@ -9,9 +9,11 @@ namespace Chess {
 namespace {
 
 static int GLOBAL_NODE_IDENTIFIER{0};
-std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable() {
+std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable(
+    const Node& node) {
   std::unique_ptr<Node> child = std::make_unique<Node>(SetUpEmptyBoard());
   child->state_.plies_ = ++GLOBAL_NODE_IDENTIFIER;
+  child->state_.turn_ = !node.state_.turn_;
   return child;
 }
 
@@ -41,8 +43,8 @@ std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable() {
 //                                                                 |
 void PopulateWithTwoChildren(Node& node, const int depth) {
   if (depth) {
-    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable());
-    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable());
+    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable(node));
+    node.children_.push_back(MakeChildWithUniqueIdHiddenInPliesVariable(node));
 
     for (std::size_t idx{}; idx < node.children_.size(); idx++) {
       PopulateWithTwoChildren(*node.children_.at(idx), depth - 1);
@@ -92,7 +94,7 @@ TEST_P(MinimaxTest_Fixture, GivenDepths_ExpectCutOfAtSmallerDepth) {
 
   // Call
   minimax<AllNodesEvaluateToSameValue>(
-      root_node, GetParam().search_depth, Player::max,
+      root_node, GetParam().search_depth,
       AllNodesEvaluateToSameValue::arbitrary_value,
       AllNodesEvaluateToSameValue::arbitrary_value);
 
@@ -178,7 +180,7 @@ TYPED_TEST(
 
   // Call
   const Evaluation returned_evaluation = minimax<EvaluateMock>(
-      TestFixture::node_, TestFixture::depth_, Player::max, MIN_EVAL, MAX_EVAL);
+      TestFixture::node_, TestFixture::depth_, MIN_EVAL, MAX_EVAL);
 
   // Expect
   EXPECT_FLOAT_EQ(std::get<float>(returned_evaluation),
