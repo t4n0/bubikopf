@@ -10,10 +10,34 @@ cc_binary(
     ],
 )
 
+cc_library(
+    name = "lichess_interactor",
+    srcs = ["lichess_interactor.cpp"],
+    hdrs = ["lichess_interactor.h"],
+)
+
+cc_binary(
+    name = "bubikopf.so",
+    srcs = ["lichess_interactor_py_binding.cpp"],
+    linkshared = True,
+    linkstatic = False,
+    deps = [
+        ":lichess_interactor",
+        "@boost//:python",
+    ],
+)
+
+py_library(
+    name = "bubikopf",
+    data = [":bubikopf.so"],
+    imports = ["."],
+)
+
 py_binary(
     name = "lichess_connector",
     srcs = ["lichess_connector.py"],
     deps = [
+        ":bubikopf",
         requirement("berserk"),
         requirement("requests"),
         requirement("ndjson"),

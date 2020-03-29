@@ -27,3 +27,14 @@ pip3_import(
 load("@bubikopf_deps//:requirements.bzl", "pip_install")
 
 pip_install()
+
+git_repository(
+    name = "com_github_nelhage_rules_boost",
+    commit = "0f64534c46155ac3760882727bed5be39c39a309",
+    remote = "https://github.com/t4n0/rules_boost",
+    shallow_since = "1586009442 +0200"
+)
+
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+
+boost_deps()
