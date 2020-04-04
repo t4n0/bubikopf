@@ -45,3 +45,14 @@ py_binary(
         requirement("wrapt"),
     ],
 )
+
+cc_library(
+    name = "uci_utilities",
+    srcs = ["uci_utilities.cpp"],
+    hdrs = ["uci_utilities.h"],
+    visibility = [
+        ":__subpackages__",
+        "//:__pkg__",
+    ],
+    deps = ["@boost//:algorithm"],
+)

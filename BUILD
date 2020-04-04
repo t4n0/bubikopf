@@ -10,6 +10,8 @@ compilation_database(
         "//play:bubikopf.so",
         "//play:command_line",
         "//play:lichess_interactor",
+        "//play:uci_utilities",
+        "//play/test",
         "//search",
         "//search:unit_tests",
     ],
