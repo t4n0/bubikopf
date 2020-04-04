@@ -11,7 +11,10 @@ cc_library(
         "state.h",
         "utilities.h",
     ],
-    visibility = ["//search:__pkg__"],
+    visibility = [
+        "//:__pkg__",
+        "//search:__pkg__",
+    ],
 )
 
 cc_test(
@@ -21,6 +24,9 @@ cc_test(
         "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
         "test/state_unit_tests.cpp",
+    ],
+    visibility = [
+        "//:__pkg__",
     ],
     deps = [
         ":board",

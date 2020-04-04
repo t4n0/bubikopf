@@ -11,7 +11,10 @@ cc_library(
         "node.h",
         "populate.h",
     ],
-    visibility = ["//play:__pkg__"],
+    visibility = [
+        "//:__pkg__",
+        "//play:__pkg__",
+    ],
     deps = ["//board"],
 )
 
@@ -26,6 +29,7 @@ cc_test(
         "test/populate_unit_tests.cpp",
         "test/puzzle_tests.cpp",
     ],
+    visibility = ["//:__pkg__"],
     deps = [
         ":search",
         "@googletest//:gtest_main",
