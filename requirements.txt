@@ -1,0 +1,5 @@
+berserk~=0.8.0
+requests~=2.20
+ndjson~=0.2
+deprecated~=1.2.7
+wrapt~=1.12.1
