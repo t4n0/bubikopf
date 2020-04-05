@@ -8,6 +8,7 @@ compilation_database(
         "//board",
         "//board:unit_tests",
         "//play:bubikopf.so",
+        "//play:bubikopf_facade",
         "//play:command_line",
         "//play:lichess_interactor",
         "//play:uci_utilities",

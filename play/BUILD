@@ -14,6 +14,7 @@ cc_library(
     name = "lichess_interactor",
     srcs = ["lichess_interactor.cpp"],
     hdrs = ["lichess_interactor.h"],
+    deps = [":bubikopf_facade"],
 )
 
 cc_binary(
@@ -55,4 +56,17 @@ cc_library(
         "//:__pkg__",
     ],
     deps = ["@boost//:algorithm"],
+)
+
+
+cc_library(
+    name = "bubikopf_facade",
+    srcs = ["bubikopf_facade.cpp"],
+    hdrs = ["bubikopf_facade.h"],
+    visibility = ["//:__pkg__"],
+    deps = [
+        ":uci_utilities",
+        "//board",
+        "//search",
+    ],
 )
