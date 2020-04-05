@@ -131,5 +131,12 @@ TEST(ToIdx, GivenUciNotation_ExpectIndex) {
   EXPECT_EQ(ToIdx("h8"), h8_idx);
 }
 
+TEST(ToIdx, GivenIndex_ExpectUciNotation) {
+  EXPECT_EQ(ToUciSquare(0), "a8");
+  EXPECT_EQ(ToUciSquare(7), "h8");
+  EXPECT_EQ(ToUciSquare(56), "a1");
+  EXPECT_EQ(ToUciSquare(63), "h1");
+}
+
 }  // namespace
 }  // namespace Chess

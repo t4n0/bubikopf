@@ -53,6 +53,14 @@ Coordinate ToCoor(const std::size_t idx) {
           static_cast<int8_t>(division.quot)};
 }
 
+std::string ToUciSquare(const std::size_t idx) {
+  Coordinate coor = ToCoor(idx);
+  std::string uci{};
+  uci.push_back('a' + coor.col);
+  uci.push_back('0' + (8 - coor.row));
+  return uci;
+}
+
 bool IsOnTheBoard(const Coordinate coor) {
   return (coor.row >= 0 && coor.row < 8 && coor.col >= 0 && coor.col < 8);
 }
