@@ -31,6 +31,12 @@ Coordinate operator-(Coordinate lhs, const Coordinate& rhs) {
   return lhs -= rhs;
 }
 
+std::size_t ToIdx(const std::string& uci_square) {
+  const int8_t col = uci_square.at(0) - 'a';
+  const int8_t row = 8 - (uci_square.at(1) - '0');
+  return ToIdx(Coordinate{col, row});
+}
+
 std::size_t ToIdx(const char file, const int8_t rank) {
   const int8_t col = 8 - ('i' - file);
   const int8_t row = 8 - rank;

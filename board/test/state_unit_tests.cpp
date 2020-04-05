@@ -120,5 +120,16 @@ TEST(ToIdx, GivenSquareNotation_ExpectIndex) {
   EXPECT_EQ(ToIdx('h', 8), h8_idx);
 }
 
+TEST(ToIdx, GivenUciNotation_ExpectIndex) {
+  const std::size_t a8_idx = 0;
+  const std::size_t h8_idx = 7;
+  const std::size_t a1_idx = 56;
+  const std::size_t h1_idx = 63;
+  EXPECT_EQ(ToIdx("a1"), a1_idx);
+  EXPECT_EQ(ToIdx("a8"), a8_idx);
+  EXPECT_EQ(ToIdx("h1"), h1_idx);
+  EXPECT_EQ(ToIdx("h8"), h8_idx);
+}
+
 }  // namespace
 }  // namespace Chess
