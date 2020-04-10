@@ -22,7 +22,7 @@ load("@rules_python//python:pip.bzl", "pip3_import")
 
 pip3_import(
    name = "bubikopf_deps",
-   requirements = "//:requirements.txt",
+   requirements = "//lichess:requirements.txt",
 )
 load("@bubikopf_deps//:requirements.bzl", "pip_install")
 
