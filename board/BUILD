@@ -1,10 +1,12 @@
 cc_library(
     name = "board",
     srcs = [
+        "board.cpp",
         "piece.cpp",
         "state.cpp",
     ],
     hdrs = [
+        "board.h",
         "i_square.h",
         "piece.h",
         "player.h",
@@ -21,6 +23,7 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
+        "test/board_unit_tests.cpp",
         "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
         "test/state_unit_tests.cpp",

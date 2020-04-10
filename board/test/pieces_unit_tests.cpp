@@ -14,6 +14,42 @@ class BlackPawnFindPlies_Fixture : public testing::Test {
   State state_{};
 };
 
+TEST(Piece, StreamOutputOperator_MustNotThrow) {
+  EXPECT_NO_THROW(std::cout << Bishop::OfSide(Player::max) << '\n');
+}
+
+TEST(IsAPieceOfSide, GivenBlackPieces_ExpectBlackPiecesTrueRestFalse) {
+  EXPECT_TRUE(King::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Queen::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Rook::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Bishop::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Knight::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Pawn::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_FALSE(Empty::Make()->IsOfSide(Player::min));
+  EXPECT_FALSE(King::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Queen::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Rook::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Bishop::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Knight::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Pawn::OfSide(Player::max)->IsOfSide(Player::min));
+}
+
+TEST(IsAPieceOfSide, GivenWhitePieces_ExpectWhitePiecesTrueRestFalse) {
+  EXPECT_FALSE(King::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Queen::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Rook::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Bishop::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Knight::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Pawn::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Empty::Make()->IsOfSide(Player::max));
+  EXPECT_TRUE(King::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Queen::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Rook::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Bishop::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Knight::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Pawn::OfSide(Player::max)->IsOfSide(Player::max));
+}
+
 TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
   // Setup
   const Coordinate black_pawn_location{3, 1};
