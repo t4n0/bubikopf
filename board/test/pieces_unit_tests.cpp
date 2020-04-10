@@ -13,7 +13,7 @@ class BlackPawnFindPlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = Player::min; }
   void TearDown() override {}
 
-  State state_{SetUpEmptyBoard()};
+  State state_{};
 };
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -191,7 +191,7 @@ class WhitePawnFindPlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = Player::max; }
   void TearDown() override {}
 
-  State state_{SetUpEmptyBoard()};
+  State state_{};
 };
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
@@ -385,7 +385,7 @@ class PiecePlies_Fixture : public testing::Test {
   void SetUp() override { state_.turn_ = Player::min; }
   void TearDown() override {}
 
-  State state_{SetUpEmptyBoard()};
+  State state_{};
 };
 
 TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {

@@ -11,7 +11,7 @@ namespace {
 static int GLOBAL_NODE_IDENTIFIER{0};
 std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable(
     const Node& node) {
-  std::unique_ptr<Node> child = std::make_unique<Node>(SetUpEmptyBoard());
+  std::unique_ptr<Node> child = std::make_unique<Node>(State{});
   child->state_.plies_ = ++GLOBAL_NODE_IDENTIFIER;
   child->state_.turn_ = !node.state_.turn_;
   return child;
@@ -54,7 +54,7 @@ void PopulateWithTwoChildren(Node& node, const int depth) {
 
 TEST(PopulateWithTwoChildrenTest, GivenDepth3_Expect15Nodes) {
   // Setup
-  Node root_node{SetUpEmptyBoard()};
+  Node root_node{State{}};
   const int depth{2};
 
   // Call
@@ -89,7 +89,7 @@ struct MinimaxTest_Fixture
 
 TEST_P(MinimaxTest_Fixture, GivenDepths_ExpectCutOfAtSmallerDepth) {
   // Setup
-  Node root_node{SetUpEmptyBoard()};
+  Node root_node{State{}};
   PopulateWithTwoChildren(root_node, GetParam().tree_depth);
 
   // Call
@@ -121,7 +121,7 @@ struct MinimaxTest_TypedFixture : public ::testing::Test {
   }
   void TearDown() override {}
 
-  Node node_{SetUpEmptyBoard()};
+  Node node_{State{}};
   const int depth_{3};
 };
 

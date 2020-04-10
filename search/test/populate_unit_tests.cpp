@@ -33,7 +33,7 @@ TEST(PopulateSmokeTest,
      GivenKingsInOppositeCornersAndSearchDepth4_ExpectCorrectNumberOfChildren) {
   // Setup
   const int depth = 3;
-  NodePtr node_{std::make_unique<Node>(SetUpEmptyBoard())};
+  NodePtr node_{std::make_unique<Node>(State{})};
   node_->state_.board_.Set(0, King::OfSide(Player::max));
   node_->state_.board_.Set(63, King::OfSide(Player::min));
   populate(*node_, depth);
@@ -47,7 +47,7 @@ TEST(PopulateSmokeTest,
 }
 
 TEST(Node, MemoryFootprint) {
-  NodePtr node{std::make_unique<Node>(SetUpEmptyBoard())};
+  NodePtr node{std::make_unique<Node>(State{})};
   populate(*node, 1);
 
   EXPECT_EQ(sizeof(Node), 560);

@@ -8,7 +8,7 @@ namespace Chess {
 namespace {
 
 TEST(Evaluate, GivenSamples_ExpectAllHold) {
-  State state{SetUpEmptyBoard()};
+  State state{};
   state.board_.Set({0, 0}, Pawn::OfSide(Player::min));
   Evaluation returned_evaluation{evaluate(state)};
   EXPECT_EQ(std::get<float>(returned_evaluation), -1.0F);

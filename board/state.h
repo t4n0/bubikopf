@@ -52,6 +52,8 @@ struct Castling {
 
 class State {
  public:
+  State();
+
   Board board_{};
   int static_plies_{0};
   int plies_{0};

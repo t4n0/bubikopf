@@ -28,7 +28,7 @@ TEST(Piece, StreamOutputOperator_MustNotThrow) {
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
-  const State state{SetUpEmptyBoard()};
+  const State state{};
   EXPECT_NO_THROW(std::cout << state.board_ << '\n');
 }
 
@@ -74,7 +74,7 @@ TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {
 
 TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
   // Setup
-  State state{SetUpEmptyBoard()};
+  State state{};
   const Castling expected_castling_white{true, false};
   const Castling expected_castling_black{false, true};
 
@@ -133,6 +133,13 @@ TEST(ToIdx, GivenIndex_ExpectUciNotation) {
   EXPECT_EQ(ToUciSquare(7), "h8");
   EXPECT_EQ(ToUciSquare(56), "a1");
   EXPECT_EQ(ToUciSquare(63), "h1");
+}
+
+TEST(State, GivenDefaultCtor_ExpectBoardIsFilledWithEmptySquares) {
+  const State state{};
+  for (const auto& square : state.board_.squares_) {
+    EXPECT_TRUE(square->IsEmpty());
+  }
 }
 
 }  // namespace

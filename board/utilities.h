@@ -6,17 +6,8 @@
 
 namespace Chess {
 
-inline State SetUpEmptyBoard() {
-  State state{};
-  for (std::size_t idx{0}; idx < state.board_.squares_.size(); idx++) {
-    state.board_.Set(idx, Empty::Make());
-  }
-
-  return state;
-}
-
 inline State SetUpBoard() {
-  State state{SetUpEmptyBoard()};
+  State state{};
   // Pawns
   for (std::int8_t col{0}; col < 8; col++) {
     state.board_.Set({col, 1}, Pawn::OfSide(Player::min));

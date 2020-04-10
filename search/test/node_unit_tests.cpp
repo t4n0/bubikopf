@@ -11,7 +11,7 @@ namespace {
 
 TEST(CountNodesTest, GivenNoChildren_Expect1) {
   // Setup
-  Node root_node{SetUpEmptyBoard()};
+  Node root_node{State{}};
 
   // Call
   const int returned_number_of_nodes{CountNodes(root_node)};
@@ -23,10 +23,10 @@ TEST(CountNodesTest, GivenNoChildren_Expect1) {
 
 TEST(CountNodesTest, Given7Children_Expect8) {
   // Setup
-  Node root_node{SetUpEmptyBoard()};
+  Node root_node{State{}};
   root_node.children_.resize(7);
   std::generate(root_node.children_.begin(), root_node.children_.end(),
-                []() { return std::make_unique<Node>(SetUpEmptyBoard()); });
+                []() { return std::make_unique<Node>(State{}); });
 
   // Call
   const int returned_number_of_nodes{CountNodes(root_node)};
@@ -38,17 +38,17 @@ TEST(CountNodesTest, Given7Children_Expect8) {
 
 TEST(CountNodesTest, Given2ChildrenAnd4GrandChildren_Expect7) {
   // Setup
-  Node root_node{SetUpEmptyBoard()};
-  root_node.children_.push_back(std::make_unique<Node>(SetUpEmptyBoard()));
-  root_node.children_.push_back(std::make_unique<Node>(SetUpEmptyBoard()));
+  Node root_node{State{}};
+  root_node.children_.push_back(std::make_unique<Node>(State{}));
+  root_node.children_.push_back(std::make_unique<Node>(State{}));
   root_node.children_.at(0)->children_.push_back(
-      std::make_unique<Node>(SetUpEmptyBoard()));
+      std::make_unique<Node>(State{}));
   root_node.children_.at(0)->children_.push_back(
-      std::make_unique<Node>(SetUpEmptyBoard()));
+      std::make_unique<Node>(State{}));
   root_node.children_.at(1)->children_.push_back(
-      std::make_unique<Node>(SetUpEmptyBoard()));
+      std::make_unique<Node>(State{}));
   root_node.children_.at(1)->children_.push_back(
-      std::make_unique<Node>(SetUpEmptyBoard()));
+      std::make_unique<Node>(State{}));
 
   // Call
   const int returned_number_of_nodes{CountNodes(root_node)};

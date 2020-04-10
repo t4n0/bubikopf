@@ -9,7 +9,7 @@ namespace Chess {
 namespace {
 
 struct Puzzle_Fixture : public ::testing::Test {
-  Node root_node_{SetUpEmptyBoard()};
+  Node root_node_{State{}};
   Board& root_board_{root_node_.state_.board_};
 };
 

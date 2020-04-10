@@ -1,4 +1,5 @@
 #include "board/state.h"
+#include "board/piece.h"
 
 #include <algorithm>
 #include <memory>
@@ -89,6 +90,12 @@ void Board::Set(const std::size_t idx, const ISquarePtr square) {
 
 void Board::SwapSquares(const std::size_t a, const std::size_t b) {
   std::swap(squares_.at(a), squares_.at(b));
+}
+
+State::State() {
+  for (auto& square : board_.squares_) {
+    square = Empty::Make();
+  }
 }
 
 Castling State::GetCastling(const Player player) const {
