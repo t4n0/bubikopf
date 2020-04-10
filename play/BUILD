@@ -58,7 +58,6 @@ cc_library(
     deps = ["@boost//:algorithm"],
 )
 
-
 cc_library(
     name = "bubikopf_facade",
     srcs = ["bubikopf_facade.cpp"],

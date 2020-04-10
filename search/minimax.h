@@ -1,7 +1,7 @@
 #ifndef SEARCH_MINIMAX_H
 #define SEARCH_MINIMAX_H
 
-#include "search/evaluate.h"
+#include "evaluate/evaluate.h"
 #include "search/node.h"
 
 #include <cstdint>

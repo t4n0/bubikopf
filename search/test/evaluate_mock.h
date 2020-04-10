@@ -1,7 +1,7 @@
 #ifndef SEARCH_TEST_EVALUATE_MOCK_H
 #define SEARCH_TEST_EVALUATE_MOCK_H
 
-#include "search/evaluate.h"
+#include "evaluate/evaluate.h"
 
 #include <type_traits>
 #include <vector>

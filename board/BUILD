@@ -13,6 +13,7 @@ cc_library(
     ],
     visibility = [
         "//:__pkg__",
+        "//evaluate:__pkg__",
         "//play:__pkg__",
         "//search:__pkg__",
     ],

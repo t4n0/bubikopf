@@ -1,5 +1,5 @@
-#ifndef SEARCH_EVALUATION_H
-#define SEARCH_EVALUATION_H
+#ifndef EVALUATE_EVALUATION_H
+#define EVALUATE_EVALUATION_H
 
 #include "board/player.h"
 

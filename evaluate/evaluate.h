@@ -1,8 +1,8 @@
-#ifndef SEARCH_EVALUATE_H
-#define SEARCH_EVALUATE_H
+#ifndef EVALUATE_EVALUATE_H
+#define EVALUATE_EVALUATE_H
 
 #include "board/state.h"
-#include "search/evaluation.h"
+#include "evaluate/evaluation.h"
 
 #include <type_traits>
 

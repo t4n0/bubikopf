@@ -1,7 +1,7 @@
 #ifndef SEARCH_POPULATE_H
 #define CHESS_POPULATE_H
 
-#include "search/evaluation.h"
+#include "evaluate/evaluation.h"
 #include "search/node.h"
 
 #include <memory>

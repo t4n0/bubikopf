@@ -5,8 +5,6 @@ cc_library(
         "populate.cpp",
     ],
     hdrs = [
-        "evaluate.h",
-        "evaluation.h",
         "minimax.h",
         "node.h",
         "populate.h",
@@ -15,15 +13,16 @@ cc_library(
         "//:__pkg__",
         "//play:__pkg__",
     ],
-    deps = ["//board"],
+    deps = [
+        "//board",
+        "//evaluate",
+    ],
 )
 
 cc_test(
     name = "unit_tests",
     srcs = [
         "test/evaluate_mock.h",
-        "test/evaluate_unit_tests.cpp",
-        "test/evaluation_unit_tests.cpp",
         "test/minimax_unit_tests.cpp",
         "test/node_unit_tests.cpp",
         "test/populate_unit_tests.cpp",
