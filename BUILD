@@ -7,8 +7,8 @@ compilation_database(
     targets = [
         "//board:unit_tests",
         "//evaluate:unit_tests",
+        "//lichess:bubikopf.so",
         "//play/test",
-        "//play:bubikopf.so",
         "//play:command_line",
         "//search:unit_tests",
     ],

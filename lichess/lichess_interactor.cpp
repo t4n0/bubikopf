@@ -1,4 +1,4 @@
-#include "play/lichess_interactor.h"
+#include "lichess/lichess_interactor.h"
 
 namespace Chess {
 

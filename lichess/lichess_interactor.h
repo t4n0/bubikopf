@@ -1,5 +1,5 @@
-#ifndef PLAY_LICHESS_INTERACTOR_H
-#define PLAY_LICHESS_INTERACTOR_H
+#ifndef LICHESS_LICHESS_INTERACTOR_H
+#define LICHESS_LICHESS_INTERACTOR_H
 
 #include "play/bubikopf_facade.h"
 
