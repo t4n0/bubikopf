@@ -12,7 +12,7 @@ class BubikopfFacade {
  public:
   BubikopfFacade(BubikopfFacade const&) = delete;
   void operator=(BubikopfFacade const&) = delete;
-  static BubikopfFacade& getInstance() {
+  static BubikopfFacade& GetInstance() {
     static BubikopfFacade instance;
     return instance;
   }

@@ -16,7 +16,7 @@ class LichessInteractor {
   std::string RespondTo(const std::string& moves);
 
  private:
-  BubikopfFacade& bubikopf{BubikopfFacade::getInstance()};
+  BubikopfFacade& bubikopf{BubikopfFacade::GetInstance()};
 };
 
 }  // namespace Chess
