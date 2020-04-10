@@ -65,7 +65,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
           ->FindPlies(ToIdx(black_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 0);
+  EXPECT_TRUE(returned_states.empty());
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenWhitePawn_ExpectNoPlies) {
@@ -79,7 +79,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenWhitePawn_ExpectNoPlies) {
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 0);
+  EXPECT_TRUE(returned_states.empty());
 }
 
 TEST_F(BlackPawnFindPlies_Fixture,
@@ -97,11 +97,11 @@ TEST_F(BlackPawnFindPlies_Fixture,
 
   // Expect
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   EXPECT_TRUE(returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
-              SquareId::BlackPawn);
+  EXPECT_EQ(returned_state.board_.Get(free_square)->GetId(),
+            SquareId::BlackPawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
 
@@ -119,20 +119,20 @@ TEST_F(BlackPawnFindPlies_Fixture,
           ->FindPlies(ToIdx(black_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 4);
+  EXPECT_EQ(returned_states.size(), 4);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
         returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
     EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
-              SquareId::BlackQueen);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
-              SquareId::BlackRook);
-  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
-              SquareId::BlackKnight);
-  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
-              SquareId::BlackBishop);
+  EXPECT_EQ(returned_states.at(0).board_.Get(promotion_square)->GetId(),
+            SquareId::BlackQueen);
+  EXPECT_EQ(returned_states.at(1).board_.Get(promotion_square)->GetId(),
+            SquareId::BlackRook);
+  EXPECT_EQ(returned_states.at(2).board_.Get(promotion_square)->GetId(),
+            SquareId::BlackKnight);
+  EXPECT_EQ(returned_states.at(3).board_.Get(promotion_square)->GetId(),
+            SquareId::BlackBishop);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture,
@@ -150,18 +150,18 @@ TEST_F(BlackPawnFindPlies_Fixture,
           ->FindPlies(ToIdx(black_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 2);
+  EXPECT_EQ(returned_states.size(), 2);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
         returned_state.board_.Get(location_behind_black_pawn)->IsEmpty());
     EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
-  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
-              SquareId::BlackPawn);
+  EXPECT_EQ(returned_states.at(0).board_.Get(single_step_target)->GetId(),
+            SquareId::BlackPawn);
   EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
-  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
-              SquareId::BlackPawn);
+  EXPECT_EQ(returned_states.at(1).board_.Get(double_step_target)->GetId(),
+            SquareId::BlackPawn);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
@@ -183,17 +183,14 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
 
   // Expect
   const State& returned_state = returned_states.front();
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   EXPECT_TRUE(returned_state.board_.Get(black_pawn_location)->IsEmpty());
-  EXPECT_TRUE(
-      returned_state.board_.Get(white_blocking_piece_location)->GetId() ==
-      SquareId::WhiteKing);
-  EXPECT_TRUE(
-      returned_state.board_.Get(white_hanging_piece_location)->GetId() ==
-      SquareId::BlackPawn);
-  EXPECT_TRUE(
-      returned_state.board_.Get(black_piece_on_caputre_location)->GetId() ==
-      SquareId::BlackKnight);
+  EXPECT_EQ(returned_state.board_.Get(white_blocking_piece_location)->GetId(),
+            SquareId::WhiteKing);
+  EXPECT_EQ(returned_state.board_.Get(white_hanging_piece_location)->GetId(),
+            SquareId::BlackPawn);
+  EXPECT_EQ(returned_state.board_.Get(black_piece_on_caputre_location)->GetId(),
+            SquareId::BlackKnight);
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -212,14 +209,14 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
       state_.board_.Get(black_pawn)->FindPlies(ToIdx(black_pawn), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
-              SquareId::BlackPawn);
-  EXPECT_TRUE(returned_state.board_.Get(white_blocking_piece)->GetId() ==
-              SquareId::WhiteKnight);
+  EXPECT_EQ(returned_state.board_.Get(en_passant)->GetId(),
+            SquareId::BlackPawn);
+  EXPECT_EQ(returned_state.board_.Get(white_blocking_piece)->GetId(),
+            SquareId::WhiteKnight);
 }
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
@@ -240,7 +237,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenNoFreeSquareInfront_ExpectNoPlies) {
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 0);
+  EXPECT_TRUE(returned_states.empty());
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenBlackPawn_ExpectNoPlies) {
@@ -254,7 +251,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenBlackPawn_ExpectNoPlies) {
           ->FindPlies(ToIdx(black_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 0);
+  EXPECT_TRUE(returned_states.empty());
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -271,12 +268,12 @@ TEST_F(WhitePawnFindPlies_Fixture,
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(free_square)->GetId() ==
-              SquareId::WhitePawn);
+  EXPECT_EQ(returned_state.board_.Get(free_square)->GetId(),
+            SquareId::WhitePawn);
   EXPECT_FALSE(returned_state.en_passant_);
 }
 
@@ -294,20 +291,20 @@ TEST_F(WhitePawnFindPlies_Fixture,
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 4);
+  EXPECT_EQ(returned_states.size(), 4);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
         returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
     EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   }
-  EXPECT_TRUE(returned_states.at(0).board_.Get(promotion_square)->GetId() ==
-              SquareId::WhiteQueen);
-  EXPECT_TRUE(returned_states.at(1).board_.Get(promotion_square)->GetId() ==
-              SquareId::WhiteRook);
-  EXPECT_TRUE(returned_states.at(2).board_.Get(promotion_square)->GetId() ==
-              SquareId::WhiteKnight);
-  EXPECT_TRUE(returned_states.at(3).board_.Get(promotion_square)->GetId() ==
-              SquareId::WhiteBishop);
+  EXPECT_EQ(returned_states.at(0).board_.Get(promotion_square)->GetId(),
+            SquareId::WhiteQueen);
+  EXPECT_EQ(returned_states.at(1).board_.Get(promotion_square)->GetId(),
+            SquareId::WhiteRook);
+  EXPECT_EQ(returned_states.at(2).board_.Get(promotion_square)->GetId(),
+            SquareId::WhiteKnight);
+  EXPECT_EQ(returned_states.at(3).board_.Get(promotion_square)->GetId(),
+            SquareId::WhiteBishop);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -325,18 +322,18 @@ TEST_F(WhitePawnFindPlies_Fixture,
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 2);
+  EXPECT_EQ(returned_states.size(), 2);
   for (const auto& returned_state : returned_states) {
     EXPECT_TRUE(
         returned_state.board_.Get(location_behind_white_pawn)->IsEmpty());
     EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
   }
   EXPECT_TRUE(returned_states.at(0).board_.Get(double_step_target)->IsEmpty());
-  EXPECT_TRUE(returned_states.at(0).board_.Get(single_step_target)->GetId() ==
-              SquareId::WhitePawn);
+  EXPECT_EQ(returned_states.at(0).board_.Get(single_step_target)->GetId(),
+            SquareId::WhitePawn);
   EXPECT_TRUE(returned_states.at(1).board_.Get(single_step_target)->IsEmpty());
-  EXPECT_TRUE(returned_states.at(1).board_.Get(double_step_target)->GetId() ==
-              SquareId::WhitePawn);
+  EXPECT_EQ(returned_states.at(1).board_.Get(double_step_target)->GetId(),
+            SquareId::WhitePawn);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -352,7 +349,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.at(1).en_passant_ == single_step_target);
+  EXPECT_EQ(returned_states.at(1).en_passant_, single_step_target);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
@@ -373,18 +370,15 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
           ->FindPlies(ToIdx(white_pawn_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_state.board_.Get(white_pawn_location)->IsEmpty());
-  EXPECT_TRUE(
-      returned_state.board_.Get(black_blocking_piece_location)->GetId() ==
-      SquareId::BlackKing);
-  EXPECT_TRUE(
-      returned_state.board_.Get(black_hanging_piece_location)->GetId() ==
-      SquareId::WhitePawn);
-  EXPECT_TRUE(
-      returned_state.board_.Get(white_piece_on_caputre_location)->GetId() ==
-      SquareId::WhiteKnight);
+  EXPECT_EQ(returned_state.board_.Get(black_blocking_piece_location)->GetId(),
+            SquareId::BlackKing);
+  EXPECT_EQ(returned_state.board_.Get(black_hanging_piece_location)->GetId(),
+            SquareId::WhitePawn);
+  EXPECT_EQ(returned_state.board_.Get(white_piece_on_caputre_location)->GetId(),
+            SquareId::WhiteKnight);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -403,14 +397,14 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
       state_.board_.Get(white_pawn)->FindPlies(ToIdx(white_pawn), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 1);
+  EXPECT_EQ(returned_states.size(), 1);
   const State& returned_state = returned_states.front();
   EXPECT_TRUE(returned_state.board_.Get(white_pawn)->IsEmpty());
   EXPECT_TRUE(returned_state.board_.Get(black_pawn)->IsEmpty());
-  EXPECT_TRUE(returned_state.board_.Get(en_passant)->GetId() ==
-              SquareId::WhitePawn);
-  EXPECT_TRUE(returned_state.board_.Get(black_blocking_piece)->GetId() ==
-              SquareId::BlackKnight);
+  EXPECT_EQ(returned_state.board_.Get(en_passant)->GetId(),
+            SquareId::WhitePawn);
+  EXPECT_EQ(returned_state.board_.Get(black_blocking_piece)->GetId(),
+            SquareId::BlackKnight);
 }
 
 class PiecePlies_Fixture : public testing::Test {
@@ -435,7 +429,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {
           ->FindPlies(ToIdx(knight_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 0);
+  EXPECT_TRUE(returned_states.empty());
 }
 
 TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightPlies) {
@@ -451,9 +445,9 @@ TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightPlies) {
   // Expect
   const int expected_plies = start_ply_ + 1;
   const int expected_static_plies = 1;
-  EXPECT_TRUE(returned_states.size() == 8);
-  EXPECT_TRUE(returned_states.front().plies_ == expected_plies);
-  EXPECT_TRUE(returned_states.front().static_plies_ == expected_static_plies);
+  EXPECT_EQ(returned_states.size(), 8);
+  EXPECT_EQ(returned_states.front().plies_, expected_plies);
+  EXPECT_EQ(returned_states.front().static_plies_, expected_static_plies);
 }
 
 TEST_F(PiecePlies_Fixture, GivenKnightInCorner_ExpectTwoPlies) {
@@ -467,7 +461,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightInCorner_ExpectTwoPlies) {
           ->FindPlies(ToIdx(knight_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 2);
+  EXPECT_EQ(returned_states.size(), 2);
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -488,9 +482,9 @@ TEST_F(PiecePlies_Fixture,
   // Expect
   const int expected_plies = start_ply_ + 1;
   const int expected_static_plies = 0;
-  EXPECT_TRUE(returned_states.size() == 1);
-  EXPECT_TRUE(returned_states.front().plies_ == expected_plies);
-  EXPECT_TRUE(returned_states.front().static_plies_ == expected_static_plies);
+  EXPECT_EQ(returned_states.size(), 1);
+  EXPECT_EQ(returned_states.front().plies_, expected_plies);
+  EXPECT_EQ(returned_states.front().static_plies_, expected_static_plies);
 }
 
 TEST_F(
@@ -510,7 +504,7 @@ TEST_F(
           ->FindPlies(ToIdx(bishop_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 9);
+  EXPECT_EQ(returned_states.size(), 9);
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -529,7 +523,7 @@ TEST_F(PiecePlies_Fixture,
           ->FindPlies(ToIdx(rook_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 10);
+  EXPECT_EQ(returned_states.size(), 10);
 }
 
 TEST_F(
@@ -549,7 +543,7 @@ TEST_F(
           ->FindPlies(ToIdx(queen_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 23);
+  EXPECT_EQ(returned_states.size(), 23);
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -568,7 +562,7 @@ TEST_F(PiecePlies_Fixture,
           ->FindPlies(ToIdx(king_location), state_)};
 
   // Expect
-  EXPECT_TRUE(returned_states.size() == 4);
+  EXPECT_EQ(returned_states.size(), 4);
 }
 
 }  // namespace
