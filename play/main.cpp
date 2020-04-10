@@ -21,7 +21,7 @@ void UserPause() {
 }
 
 int main() {
-  Chess::NodePtr node{std::make_unique<Chess::Node>(Chess::SetUpBoard())};
+  Chess::NodePtr node{std::make_unique<Chess::Node>()};
   populate(*node, 1);
   Chess::Board board_after_human_move;
 

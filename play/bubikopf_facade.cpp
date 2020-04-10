@@ -119,7 +119,7 @@ std::string ExtractUciMove(const NodePtr& root, const NodePtr& child) {
 
 std::string BubikopfFacade::StartGame(const bool play_as_white) {
   std::cout << "BubikopfFacade::StartGame" << std::endl;
-  NodePtr new_game{std::make_unique<Node>(SetUpBoard())};
+  NodePtr new_game{std::make_unique<Node>()};
   std::swap(node_, new_game);
 
   if (play_as_white) {

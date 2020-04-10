@@ -11,7 +11,7 @@ namespace {
 
 class Populate_Fixture : public testing::Test {
  public:
-  NodePtr node_{std::make_unique<Node>(SetUpBoard())};
+  NodePtr node_{std::make_unique<Node>()};
 };
 
 TEST_F(Populate_Fixture, GivenDepth1_Expect20children) {

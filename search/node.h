@@ -10,9 +10,9 @@ namespace Chess {
 
 class Node {
  public:
-  Node(State&& state) : state_(std::move(state)) {}
+  Node();
+  Node(const State& state);
 
-  Node() = delete;
   Node(const Node&) = delete;
   Node(Node&&) = delete;
   Node& operator=(Node) = delete;

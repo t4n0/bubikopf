@@ -9,6 +9,12 @@
 namespace Chess {
 namespace {
 
+TEST(Node, Given_DefaultCtor_ExpectStartPosition) {
+  const Node node{};
+  std::cout << node.state_.board_;
+  // check manually
+}
+
 TEST(CountNodesTest, GivenNoChildren_Expect1) {
   // Setup
   Node root_node{State{}};
