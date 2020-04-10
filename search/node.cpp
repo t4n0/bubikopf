@@ -43,6 +43,8 @@ Node::Node() { state_ = SetUpStartPosition(); }
 
 Node::Node(const State& state) : state_(state) {}
 
+Node::Node(State&& state) : state_(std::move(state)) {}
+
 int CountNodes(const Node& node) {
   if (node.children_.size()) {
     int sum{0};

@@ -9,8 +9,6 @@
 
 namespace Chess {
 
-std::vector<NodePtr> collect_plies_from_all_pieces(const Node&);
-
 void populate(Node& node, const int depth);
 
 }  // namespace Chess

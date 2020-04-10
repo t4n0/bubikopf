@@ -12,6 +12,7 @@ class Node {
  public:
   Node();
   Node(const State& state);
+  Node(State&& state);
 
   Node(const Node&) = delete;
   Node(Node&&) = delete;

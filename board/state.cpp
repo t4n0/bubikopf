@@ -98,6 +98,20 @@ State::State() {
   }
 }
 
+std::vector<State> State::FindPlies() const {
+  std::vector<State> collected_plies{};
+  for (std::size_t idx{0}; idx < board_.squares_.size(); ++idx) {
+    const ISquare& square = *board_.squares_.at(idx);
+    std::vector<State> new_plies = square.FindPlies(idx, *this);
+
+    collected_plies.insert(collected_plies.end(),
+                           std::make_move_iterator(new_plies.begin()),
+                           std::make_move_iterator(new_plies.end()));
+  }
+
+  return collected_plies;
+}
+
 Castling State::GetCastling(const Player player) const {
   return player == Player::max ? castling_white_ : castling_black_;
 }
