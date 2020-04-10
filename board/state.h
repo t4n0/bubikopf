@@ -24,6 +24,7 @@ class State {
   std::optional<Coordinate> en_passant_{};
 
   std::vector<State> FindPlies() const;
+  Player GetTurn() const;
   Castling GetCastling(const Player player) const;
   void SetCastling(const Player player, const Castling castling);
 

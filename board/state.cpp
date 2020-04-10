@@ -26,6 +26,8 @@ std::vector<State> State::FindPlies() const {
   return collected_plies;
 }
 
+Player State::GetTurn() const { return plies_ % 2 ? Player::min : Player::max; }
+
 Castling State::GetCastling(const Player player) const {
   return player == Player::max ? castling_white_ : castling_black_;
 }

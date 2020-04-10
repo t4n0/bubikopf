@@ -46,5 +46,25 @@ TEST(State, GivenDefaultCtor_ExpectBoardIsFilledWithEmptySquares) {
   }
 }
 
+TEST(State_GetTurn, GivenEvenPly_ExpectWhitesTurn) {
+  State state{};
+  state.plies_ = 0;
+  EXPECT_EQ(state.GetTurn(), Player::max);
+  state.plies_ = 2;
+  EXPECT_EQ(state.GetTurn(), Player::max);
+  state.plies_ = 4;
+  EXPECT_EQ(state.GetTurn(), Player::max);
+}
+
+TEST(State_GetTurn, GivenUnwvenPly_ExpectBlacksTurn) {
+  State state{};
+  state.plies_ = 1;
+  EXPECT_EQ(state.GetTurn(), Player::min);
+  state.plies_ = 3;
+  EXPECT_EQ(state.GetTurn(), Player::min);
+  state.plies_ = 5;
+  EXPECT_EQ(state.GetTurn(), Player::min);
+}
+
 }  // namespace
 }  // namespace Chess
