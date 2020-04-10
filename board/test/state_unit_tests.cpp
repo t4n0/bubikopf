@@ -29,7 +29,7 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
 }
 
 TEST(State, MemoryFootprint) {
-  EXPECT_EQ(sizeof(State), 536);
+  EXPECT_EQ(sizeof(State), 528);
   // consisting of
   EXPECT_EQ(sizeof(Board), 512);
   EXPECT_EQ(sizeof(int), 4);  // x2 = 8

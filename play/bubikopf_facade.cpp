@@ -80,16 +80,16 @@ std::string ExtractUciMove(const NodePtr& root, const NodePtr& child) {
 
   for (std::size_t idx{0}; idx < 64; idx++) {
     const bool occupied_by_active_player_at_root =
-        root->state_.board_.Get(idx)->IsOfSide(root->state_.turn_);
+        root->state_.board_.Get(idx)->IsOfSide(root->state_.GetTurn());
     const bool free_at_child = child->state_.board_.Get(idx)->IsEmpty();
     if (occupied_by_active_player_at_root && free_at_child) {
       start_square_idx = idx;
       std::cout << "start square " << start_square_idx << std::endl;
     }
     const bool not_occupied_by_active_player_at_root =
-        !root->state_.board_.Get(idx)->IsOfSide(root->state_.turn_);
+        !root->state_.board_.Get(idx)->IsOfSide(root->state_.GetTurn());
     const bool occupied_at_child =
-        child->state_.board_.Get(idx)->IsOfSide(root->state_.turn_);
+        child->state_.board_.Get(idx)->IsOfSide(root->state_.GetTurn());
     if (not_occupied_by_active_player_at_root && occupied_at_child) {
       target_square_idx = idx;
       std::cout << "target square " << target_square_idx << std::endl;
@@ -154,7 +154,7 @@ std::string BubikopfFacade::MakeMove() {
   }
 
   std::vector<Evaluation>::iterator chosen_move{};
-  if (node_->state_.turn_ == Player::max) {
+  if (node_->state_.GetTurn() == Player::max) {
     chosen_move =
         std::max_element(branch_evaluations.begin(), branch_evaluations.end());
   } else {
@@ -185,7 +185,7 @@ void BubikopfFacade::ConsiderTheirMove(const std::string& move) {
   const std::string target_square{move.substr(2, 2)};
   std::optional<SquareId> promotion{};
   if (move.size() == 5) {
-    const Player their_color = !node_->state_.turn_;
+    const Player their_color = !node_->state_.GetTurn();
     promotion = GetSquareId(move.at(5), their_color);
   }
 

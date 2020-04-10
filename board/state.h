@@ -20,7 +20,6 @@ class State {
   Board board_{};
   int static_plies_{0};
   int plies_{0};
-  Player turn_{Player::max};
   std::optional<Coordinate> en_passant_{};
 
   std::vector<State> FindPlies() const;

@@ -104,7 +104,6 @@ std::array<Coordinate, 2> GetCaptureBehaviourFor(const Player player) {
 State BaseStateAfterPly(const State& state) {
   State new_state = state;
   new_state.plies_++;
-  new_state.turn_ = !state.turn_;
   new_state.en_passant_.reset();
 
   return new_state;
@@ -128,7 +127,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
                                    const State& state) const {
   std::vector<State> new_plies{};
 
-  if (IsOfSide(state.turn_)) {
+  if (IsOfSide(state.GetTurn())) {
     const Coordinate location = ToCoor(idx);
 
     const Coordinate single_step_target = location + GetSingleStepFor(owner_);
@@ -204,7 +203,7 @@ std::vector<State> FindStraightLinePlies(
     const std::vector<Coordinate>& directions) {
   std::vector<State> new_plies{};
 
-  if (owner == state.turn_) {
+  if (owner == state.GetTurn()) {
     for (const Coordinate& direction : directions) {
       Coordinate target = ToCoor(location);
       target += direction;
@@ -253,7 +252,7 @@ std::vector<State> FindJumpStylePlies(const State& state,
                                       const std::vector<Coordinate>& jumps) {
   std::vector<State> new_plies{};
 
-  if (owner == state.turn_) {
+  if (owner == state.GetTurn()) {
     for (const Coordinate& jump : jumps) {
       const Coordinate target = ToCoor(location) + jump;
       if (IsOnTheBoard(target)) {

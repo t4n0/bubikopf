@@ -52,7 +52,7 @@ std::ostream& operator<<(std::ostream& stream, const Board& board) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const State& state) {
-  if (state.turn_ == Player::max) {
+  if (state.GetTurn() == Player::max) {
     stream << "White to move at ply " << state.plies_ << ":\n";
   } else {
     stream << "Black to move at ply " << state.plies_ << ":\n";

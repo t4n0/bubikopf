@@ -8,7 +8,9 @@ namespace {
 
 class BlackPawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = Player::min; }
+  void SetUp() override {
+    state_.plies_ = 1;  // make it blacks turn
+  }
   void TearDown() override {}
 
   State state_{};
@@ -222,9 +224,6 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = Player::max; }
-  void TearDown() override {}
-
   State state_{};
 };
 
@@ -416,10 +415,13 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
 
 class PiecePlies_Fixture : public testing::Test {
  public:
-  void SetUp() override { state_.turn_ = Player::min; }
+  void SetUp() override {
+    state_.plies_ = start_ply_;  // make it blacks turn
+  }
   void TearDown() override {}
 
   State state_{};
+  const int start_ply_{1};
 };
 
 TEST_F(PiecePlies_Fixture, GivenKnightOfPlayerWhoIsNotOnTurn_ExpectNoPlies) {
@@ -447,7 +449,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightInCenter_ExpectEightPlies) {
           ->FindPlies(ToIdx(knight_location), state_)};
 
   // Expect
-  const int expected_plies = 1;
+  const int expected_plies = start_ply_ + 1;
   const int expected_static_plies = 1;
   EXPECT_TRUE(returned_states.size() == 8);
   EXPECT_TRUE(returned_states.front().plies_ == expected_plies);
@@ -484,7 +486,7 @@ TEST_F(PiecePlies_Fixture,
           ->FindPlies(ToIdx(knight_location), state_)};
 
   // Expect
-  const int expected_plies = 1;
+  const int expected_plies = start_ply_ + 1;
   const int expected_static_plies = 0;
   EXPECT_TRUE(returned_states.size() == 1);
   EXPECT_TRUE(returned_states.front().plies_ == expected_plies);

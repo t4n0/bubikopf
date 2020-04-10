@@ -20,7 +20,7 @@ Evaluation minimax(const Node& node, const uint8_t depth,
   if ((depth == 0) || GameIsOver(node)) {
     return evaluate<Behaviour>(node.state_);
 
-  } else if (node.state_.turn_ == Player::max) {
+  } else if (node.state_.GetTurn() == Player::max) {
     Evaluation alpha{MIN_EVAL};
     for (const std::unique_ptr<Node>& child : node.children_) {
       Evaluation eval =

@@ -19,7 +19,7 @@ TEST_F(Puzzle_Fixture, GivenMateInOneForWhite_ExpectWhiteWin) {
   root_board_.Set(ToIdx('h', 1), King::OfSide(Player::max));
   root_board_.Set(ToIdx('b', 1), Rook::OfSide(Player::max));
   root_board_.Set(ToIdx('c', 2), Queen::OfSide(Player::max));
-  root_node_.state_.turn_ = Player::max;
+  root_node_.state_.plies_ = 4;
   std::cout << root_node_.state_ << '\n';
 
   const int DEPTH = 3;
@@ -42,7 +42,7 @@ TEST_F(Puzzle_Fixture, GivenMateInOneForBlack_ExpectBlackWin) {
   root_board_.Set(ToIdx('h', 1), King::OfSide(Player::min));
   root_board_.Set(ToIdx('b', 1), Rook::OfSide(Player::min));
   root_board_.Set(ToIdx('c', 2), Queen::OfSide(Player::min));
-  root_node_.state_.turn_ = Player::min;
+  root_node_.state_.plies_ = 1;  // make it blacks turn
   std::cout << root_node_.state_ << '\n';
 
   const int DEPTH = 3;

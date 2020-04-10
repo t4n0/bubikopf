@@ -11,8 +11,8 @@ static int GLOBAL_NODE_IDENTIFIER{0};
 std::unique_ptr<Node> MakeChildWithUniqueIdHiddenInPliesVariable(
     const Node& node) {
   std::unique_ptr<Node> child = std::make_unique<Node>(State{});
-  child->state_.plies_ = ++GLOBAL_NODE_IDENTIFIER;
-  child->state_.turn_ = !node.state_.turn_;
+  child->state_.static_plies_ = ++GLOBAL_NODE_IDENTIFIER;
+  child->state_.plies_ = node.state_.plies_ + 1;
   return child;
 }
 

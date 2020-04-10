@@ -50,9 +50,9 @@ TEST(Node, MemoryFootprint) {
   NodePtr node{std::make_unique<Node>(State{})};
   populate(*node, 1);
 
-  EXPECT_EQ(sizeof(Node), 560);
+  EXPECT_EQ(sizeof(Node), 552);
   // consisting of
-  EXPECT_EQ(sizeof(State), 536);
+  EXPECT_EQ(sizeof(State), 528);
   EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node>>), 24);
 }
 
