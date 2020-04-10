@@ -1,4 +1,4 @@
-#include "board/piece.h"
+#include "board/pieces.h"
 #include "evaluate/evaluate.h"
 #include "search/minimax.h"
 #include "search/populate.h"

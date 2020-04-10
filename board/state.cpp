@@ -1,5 +1,5 @@
 #include "board/state.h"
-#include "board/piece.h"
+#include "board/pieces.h"
 
 #include <algorithm>
 #include <memory>

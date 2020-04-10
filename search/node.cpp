@@ -1,5 +1,5 @@
 #include "search/node.h"
-#include "board/piece.h"
+#include "board/pieces.h"
 
 namespace Chess {
 

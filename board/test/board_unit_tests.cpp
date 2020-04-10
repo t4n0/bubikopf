@@ -1,6 +1,6 @@
 #include "board/board.h"
 
-#include "board/piece.h"
+#include "board/pieces.h"
 
 #include <gtest/gtest.h>
 

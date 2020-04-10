@@ -1,5 +1,5 @@
-#ifndef BOARD_PIECE_H
-#define BOARD_PIECE_H
+#ifndef BOARD_PIECES_H
+#define BOARD_PIECES_H
 
 #include "board/i_square.h"
 #include "board/state.h"
