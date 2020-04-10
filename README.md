@@ -17,7 +17,6 @@ A chess engine. Implements alpha/beta search.
 
 
 ### Optimizations
-- remove "turn" member from State an substitute with plies
 - remove "Player" variant from Evaluation and substitute with int max value
 
 ### Bugs
