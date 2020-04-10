@@ -75,13 +75,12 @@ int8_t GetPromotionRowFor(const Player player) {
   return player == Player::max ? white_start_row : black_start_row;
 }
 
-std::array<ISquarePtr, 4> GetPromotionOptionsFor(const State& state,
-                                                 const Player player) {
+std::array<ISquarePtr, 4> GetPromotionOptionsFor(const Player player) {
   std::array<ISquarePtr, 4> promotion_options{};
-  promotion_options.at(0) = state.pool_.GetQueen(player);
-  promotion_options.at(1) = state.pool_.GetRook(player);
-  promotion_options.at(2) = state.pool_.GetKnight(player);
-  promotion_options.at(3) = state.pool_.GetBishop(player);
+  promotion_options.at(0) = Queen::OfSide(player);
+  promotion_options.at(1) = Rook::OfSide(player);
+  promotion_options.at(2) = Knight::OfSide(player);
+  promotion_options.at(3) = Bishop::OfSide(player);
   return promotion_options;
 }
 
@@ -137,10 +136,10 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
         new_plies.emplace_back(std::move(new_ply));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
-            GetPromotionOptionsFor(state, owner_);
+            GetPromotionOptionsFor(owner_);
         for (auto& promotion_option : promotion_options) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
-          new_ply.board_.Set(idx, state.pool_.GetEmpty());
+          new_ply.board_.Set(idx, Empty::Make());
           new_ply.board_.Set(single_step_target, std::move(promotion_option));
           new_plies.emplace_back(std::move(new_ply));
         }
@@ -164,7 +163,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
         if (state.board_.Get(capture_target)->IsOfSide(!owner_)) {
           State new_ply = BaseStateAfterCaptureOrPawnPly(state);
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_ply.board_.Set(idx, state.pool_.GetEmpty());
+          new_ply.board_.Set(idx, Empty::Make());
           new_plies.emplace_back(std::move(new_ply));
         } else if (state.en_passant_ &&
                    state.en_passant_.value() == capture_target) {
@@ -172,7 +171,7 @@ std::vector<State> Pawn::FindPlies(const std::size_t idx,
           new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
           new_ply.board_.Set(
               ToIdx(state.en_passant_.value() + GetSingleStepFor(!owner_)),
-              state.pool_.GetEmpty());
+              Empty::Make());
           new_plies.emplace_back(std::move(new_ply));
         }
       }
@@ -193,7 +192,7 @@ State MakePieceCapture(const State& state, const std::size_t location,
                        const std::size_t target) {
   State new_ply = BaseStateAfterCaptureOrPawnPly(state);
   new_ply.board_.SwapSquares(location, target);
-  new_ply.board_.Set(location, state.pool_.GetEmpty());
+  new_ply.board_.Set(location, Empty::Make());
   return new_ply;
 }
 
@@ -342,23 +341,38 @@ std::ostream& King::print(std::ostream& stream) const {
   return stream;
 }
 
-ISquarePtr SquareBehaviourPool::GetEmpty() const { return &empty_square_; }
-ISquarePtr SquareBehaviourPool::GetPawn(const Player player) const {
+ISquarePtr Empty::Make() {
+  static const Empty empty_square_{};
+  return &empty_square_;
+}
+ISquarePtr Pawn::OfSide(const Player player) {
+  static const Pawn black_pawn_{Player::min};
+  static const Pawn white_pawn_{Player::max};
   return player == Player::max ? &white_pawn_ : &black_pawn_;
 }
-ISquarePtr SquareBehaviourPool::GetKnight(const Player player) const {
+ISquarePtr Knight::OfSide(const Player player) {
+  static const Knight black_knight_{Player::min};
+  static const Knight white_knight_{Player::max};
   return player == Player::max ? &white_knight_ : &black_knight_;
 }
-ISquarePtr SquareBehaviourPool::GetBishop(const Player player) const {
+ISquarePtr Bishop::OfSide(const Player player) {
+  static const Bishop black_bishop_{Player::min};
+  static const Bishop white_bishop_{Player::max};
   return player == Player::max ? &white_bishop_ : &black_bishop_;
 }
-ISquarePtr SquareBehaviourPool::GetRook(const Player player) const {
+ISquarePtr Rook::OfSide(const Player player) {
+  static const Rook black_rook_{Player::min};
+  static const Rook white_rook_{Player::max};
   return player == Player::max ? &white_rook_ : &black_rook_;
 }
-ISquarePtr SquareBehaviourPool::GetQueen(const Player player) const {
+ISquarePtr Queen::OfSide(const Player player) {
+  static const Queen black_queen_{Player::min};
+  static const Queen white_queen_{Player::max};
   return player == Player::max ? &white_queen_ : &black_queen_;
 }
-ISquarePtr SquareBehaviourPool::GetKing(const Player player) const {
+ISquarePtr King::OfSide(const Player player) {
+  static const King black_king_{Player::min};
+  static const King white_king_{Player::max};
   return player == Player::max ? &white_king_ : &black_king_;
 }
 

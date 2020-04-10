@@ -10,7 +10,13 @@
 namespace Chess {
 
 class Empty : public ISquare {
+ private:
+  Empty() {}
+
  public:
+  static ISquarePtr Make();
+  Empty(const Empty&) = delete;
+  Empty operator=(const Empty&) = delete;
   ~Empty() override final {}
 
   SquareId GetId() const override final;
@@ -31,8 +37,13 @@ class Piece : public ISquare {
 };
 
 class Pawn : public Piece {
- public:
+ private:
   Pawn(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  Pawn(const Pawn&) = delete;
+  Pawn operator=(const Pawn&) = delete;
   ~Pawn() override final {}
 
   SquareId GetId() const override final;
@@ -45,8 +56,13 @@ class Pawn : public Piece {
 };
 
 class Knight : public Piece {
- public:
+ private:
   Knight(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  Knight(const Knight&) = delete;
+  Knight operator=(const Knight&) = delete;
   ~Knight() override final {}
 
   SquareId GetId() const override final;
@@ -59,8 +75,13 @@ class Knight : public Piece {
 };
 
 class Bishop : public Piece {
- public:
+ private:
   Bishop(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  Bishop(const Bishop&) = delete;
+  Bishop operator=(const Bishop&) = delete;
   ~Bishop() override final {}
 
   SquareId GetId() const override final;
@@ -73,8 +94,13 @@ class Bishop : public Piece {
 };
 
 class Rook : public Piece {
- public:
+ private:
   Rook(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  Rook(const Rook&) = delete;
+  Rook operator=(const Rook&) = delete;
   ~Rook() override final {}
 
   SquareId GetId() const override final;
@@ -87,8 +113,13 @@ class Rook : public Piece {
 };
 
 class Queen : public Piece {
- public:
+ private:
   Queen(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  Queen(const Queen&) = delete;
+  Queen operator=(const Queen&) = delete;
   ~Queen() override final {}
 
   SquareId GetId() const override final;
@@ -101,8 +132,13 @@ class Queen : public Piece {
 };
 
 class King : public Piece {
- public:
+ private:
   King(const Player player) : Piece(player) {}
+
+ public:
+  static ISquarePtr OfSide(const Player player);
+  King(const King&) = delete;
+  King operator=(const King&) = delete;
   ~King() override final {}
 
   SquareId GetId() const override final;
@@ -112,32 +148,6 @@ class King : public Piece {
   std::vector<State> FindPlies(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
-};
-
-class SquareBehaviourPool {
- public:
-  ISquarePtr GetEmpty() const;
-  ISquarePtr GetPawn(const Player player) const;
-  ISquarePtr GetKnight(const Player player) const;
-  ISquarePtr GetBishop(const Player player) const;
-  ISquarePtr GetRook(const Player player) const;
-  ISquarePtr GetQueen(const Player player) const;
-  ISquarePtr GetKing(const Player player) const;
-
- private:
-  Empty empty_square_{};
-  Pawn black_pawn_{Player::min};
-  Knight black_knight_{Player::min};
-  Bishop black_bishop_{Player::min};
-  Rook black_rook_{Player::min};
-  Queen black_queen_{Player::min};
-  King black_king_{Player::min};
-  Pawn white_pawn_{Player::max};
-  Knight white_knight_{Player::max};
-  Bishop white_bishop_{Player::max};
-  Rook white_rook_{Player::max};
-  Queen white_queen_{Player::max};
-  King white_king_{Player::max};
 };
 
 }  // namespace Chess

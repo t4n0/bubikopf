@@ -34,8 +34,8 @@ TEST(PopulateSmokeTest,
   // Setup
   const int depth = 3;
   NodePtr node_{std::make_unique<Node>(SetUpEmptyBoard())};
-  node_->state_.board_.Set(0, node_->state_.pool_.GetKing(Player::max));
-  node_->state_.board_.Set(63, node_->state_.pool_.GetKing(Player::min));
+  node_->state_.board_.Set(0, King::OfSide(Player::max));
+  node_->state_.board_.Set(63, King::OfSide(Player::min));
   populate(*node_, depth);
 
   // Call
@@ -50,9 +50,9 @@ TEST(Node, MemoryFootprint) {
   NodePtr node{std::make_unique<Node>(SetUpEmptyBoard())};
   populate(*node, 1);
 
-  EXPECT_EQ(sizeof(Node), 568);
+  EXPECT_EQ(sizeof(Node), 560);
   // consisting of
-  EXPECT_EQ(sizeof(State), 544);
+  EXPECT_EQ(sizeof(State), 536);
   EXPECT_EQ(sizeof(std::vector<std::unique_ptr<Node>>), 24);
 }
 

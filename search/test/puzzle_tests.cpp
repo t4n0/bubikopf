@@ -11,15 +11,14 @@ namespace {
 struct Puzzle_Fixture : public ::testing::Test {
   Node root_node_{SetUpEmptyBoard()};
   Board& root_board_{root_node_.state_.board_};
-  const SquareBehaviourPool& pool_{root_node_.state_.pool_};
 };
 
 TEST_F(Puzzle_Fixture, GivenMateInOneForWhite_ExpectWhiteWin) {
   // Setup
-  root_board_.Set(ToIdx('a', 8), pool_.GetKing(Player::min));
-  root_board_.Set(ToIdx('h', 1), pool_.GetKing(Player::max));
-  root_board_.Set(ToIdx('b', 1), pool_.GetRook(Player::max));
-  root_board_.Set(ToIdx('c', 2), pool_.GetQueen(Player::max));
+  root_board_.Set(ToIdx('a', 8), King::OfSide(Player::min));
+  root_board_.Set(ToIdx('h', 1), King::OfSide(Player::max));
+  root_board_.Set(ToIdx('b', 1), Rook::OfSide(Player::max));
+  root_board_.Set(ToIdx('c', 2), Queen::OfSide(Player::max));
   root_node_.state_.turn_ = Player::max;
   std::cout << root_node_.state_ << '\n';
 
@@ -39,10 +38,10 @@ TEST_F(Puzzle_Fixture, GivenMateInOneForWhite_ExpectWhiteWin) {
 
 TEST_F(Puzzle_Fixture, GivenMateInOneForBlack_ExpectBlackWin) {
   // Setup
-  root_board_.Set(ToIdx('a', 8), pool_.GetKing(Player::max));
-  root_board_.Set(ToIdx('h', 1), pool_.GetKing(Player::min));
-  root_board_.Set(ToIdx('b', 1), pool_.GetRook(Player::min));
-  root_board_.Set(ToIdx('c', 2), pool_.GetQueen(Player::min));
+  root_board_.Set(ToIdx('a', 8), King::OfSide(Player::max));
+  root_board_.Set(ToIdx('h', 1), King::OfSide(Player::min));
+  root_board_.Set(ToIdx('b', 1), Rook::OfSide(Player::min));
+  root_board_.Set(ToIdx('c', 2), Queen::OfSide(Player::min));
   root_node_.state_.turn_ = Player::min;
   std::cout << root_node_.state_ << '\n';
 

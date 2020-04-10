@@ -8,7 +8,6 @@ namespace Chess {
 namespace {
 
 TEST(Board, Set_ExpectBoundsCheck) {
-  SquareBehaviourPool pool;
   Board board{};
   EXPECT_NO_THROW(board.Get({3, 3}));
   EXPECT_THROW(board.Get({-1, 3}), std::out_of_range);
@@ -17,15 +16,15 @@ TEST(Board, Set_ExpectBoundsCheck) {
   EXPECT_THROW(board.Get({3, 8}), std::out_of_range);
 
   constexpr Player player{Player::max};
-  EXPECT_NO_THROW(board.Set({3, 3}, pool.GetKnight(player)));
-  EXPECT_THROW(board.Set({-1, 3}, pool.GetKnight(player)), std::out_of_range);
-  EXPECT_THROW(board.Set({8, 3}, pool.GetKnight(player)), std::out_of_range);
-  EXPECT_THROW(board.Set({3, -1}, pool.GetKnight(player)), std::out_of_range);
-  EXPECT_THROW(board.Set({3, 8}, pool.GetKnight(player)), std::out_of_range);
+  EXPECT_NO_THROW(board.Set({3, 3}, Knight::OfSide(player)));
+  EXPECT_THROW(board.Set({-1, 3}, Knight::OfSide(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({8, 3}, Knight::OfSide(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({3, -1}, Knight::OfSide(player)), std::out_of_range);
+  EXPECT_THROW(board.Set({3, 8}, Knight::OfSide(player)), std::out_of_range);
 }
 
 TEST(Piece, StreamOutputOperator_MustNotThrow) {
-  EXPECT_NO_THROW(std::cout << Bishop{Player::max} << '\n');
+  EXPECT_NO_THROW(std::cout << Bishop::OfSide(Player::max) << '\n');
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
@@ -34,35 +33,35 @@ TEST(Board, StreamOutputOperator_MustNotThrow) {
 }
 
 TEST(IsAPieceOfSide, GivenBlacksTurn_ExpectBlackPiecesTrueRestFalse) {
-  EXPECT_TRUE(King{Player::min}.IsOfSide(Player::min));
-  EXPECT_TRUE(Queen{Player::min}.IsOfSide(Player::min));
-  EXPECT_TRUE(Rook{Player::min}.IsOfSide(Player::min));
-  EXPECT_TRUE(Bishop{Player::min}.IsOfSide(Player::min));
-  EXPECT_TRUE(Knight{Player::min}.IsOfSide(Player::min));
-  EXPECT_TRUE(Pawn{Player::min}.IsOfSide(Player::min));
-  EXPECT_FALSE(Empty{}.IsOfSide(Player::min));
-  EXPECT_FALSE(King{Player::max}.IsOfSide(Player::min));
-  EXPECT_FALSE(Queen{Player::max}.IsOfSide(Player::min));
-  EXPECT_FALSE(Rook{Player::max}.IsOfSide(Player::min));
-  EXPECT_FALSE(Bishop{Player::max}.IsOfSide(Player::min));
-  EXPECT_FALSE(Knight{Player::max}.IsOfSide(Player::min));
-  EXPECT_FALSE(Pawn{Player::max}.IsOfSide(Player::min));
+  EXPECT_TRUE(King::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Queen::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Rook::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Bishop::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Knight::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_TRUE(Pawn::OfSide(Player::min)->IsOfSide(Player::min));
+  EXPECT_FALSE(Empty::Make()->IsOfSide(Player::min));
+  EXPECT_FALSE(King::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Queen::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Rook::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Bishop::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Knight::OfSide(Player::max)->IsOfSide(Player::min));
+  EXPECT_FALSE(Pawn::OfSide(Player::max)->IsOfSide(Player::min));
 }
 
 TEST(IsAPieceOfSide, GivenWhitesTurn_ExpectWhitePiecesTrueRestFalse) {
-  EXPECT_FALSE(King{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Queen{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Rook{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Bishop{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Knight{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Pawn{Player::min}.IsOfSide(Player::max));
-  EXPECT_FALSE(Empty{}.IsOfSide(Player::max));
-  EXPECT_TRUE(King{Player::max}.IsOfSide(Player::max));
-  EXPECT_TRUE(Queen{Player::max}.IsOfSide(Player::max));
-  EXPECT_TRUE(Rook{Player::max}.IsOfSide(Player::max));
-  EXPECT_TRUE(Bishop{Player::max}.IsOfSide(Player::max));
-  EXPECT_TRUE(Knight{Player::max}.IsOfSide(Player::max));
-  EXPECT_TRUE(Pawn{Player::max}.IsOfSide(Player::max));
+  EXPECT_FALSE(King::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Queen::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Rook::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Bishop::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Knight::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Pawn::OfSide(Player::min)->IsOfSide(Player::max));
+  EXPECT_FALSE(Empty::Make()->IsOfSide(Player::max));
+  EXPECT_TRUE(King::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Queen::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Rook::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Bishop::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Knight::OfSide(Player::max)->IsOfSide(Player::max));
+  EXPECT_TRUE(Pawn::OfSide(Player::max)->IsOfSide(Player::max));
 }
 
 TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {
@@ -97,16 +96,14 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
 }
 
 TEST(State, MemoryFootprint) {
-  State state{SetUpEmptyBoard()};
-  EXPECT_EQ(sizeof(State), 544);
+  EXPECT_EQ(sizeof(State), 536);
   // consisting of
   EXPECT_EQ(sizeof(Board), 512);
-  EXPECT_EQ(sizeof(SquareBehaviourPool*), 8);
   EXPECT_EQ(sizeof(int), 4);  // x2 = 8
   EXPECT_EQ(sizeof(Player), 4);
   EXPECT_EQ(sizeof(std::optional<Coordinate>), 3);
   EXPECT_EQ(sizeof(Castling), 2);  // x2 = 4
-  // + 4 bytes of padding
+  // + padding
 }
 
 TEST(ToIdx, GivenSquareNotation_ExpectIndex) {
