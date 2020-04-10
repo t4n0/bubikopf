@@ -9,7 +9,6 @@ cc_library(
         "piece.h",
         "player.h",
         "state.h",
-        "utilities.h",
     ],
     visibility = [
         "//:__pkg__",
@@ -22,7 +21,6 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
-        "test/board_generator_unit_tests.cpp",
         "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
         "test/state_unit_tests.cpp",

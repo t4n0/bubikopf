@@ -1,6 +1,6 @@
 #include "evaluate/evaluate.h"
 
-#include "board/utilities.h"
+#include "board/piece.h"
 
 #include <gtest/gtest.h>
 

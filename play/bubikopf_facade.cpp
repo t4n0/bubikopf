@@ -1,6 +1,5 @@
 #include "bubikopf_facade.h"
 
-#include "board/utilities.h"
 #include "play/uci_utilities.h"
 #include "search/minimax.h"
 #include "search/populate.h"

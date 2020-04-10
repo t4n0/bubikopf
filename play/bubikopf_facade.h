@@ -1,7 +1,6 @@
 #ifndef PLAY_BUBIKOPF_FACADE_H
 #define PLAY_BUBIKOPF_FACADE_H
 
-#include "board/utilities.h"
 #include "search/node.h"
 
 #include <string>

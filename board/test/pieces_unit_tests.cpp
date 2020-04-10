@@ -1,7 +1,5 @@
 #include "board/piece.h"
 
-#include "board/utilities.h"
-
 #include <gtest/gtest.h>
 #include <vector>
 

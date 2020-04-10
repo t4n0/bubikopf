@@ -1,7 +1,5 @@
 #include "search/node.h"
 
-#include "board/utilities.h"
-
 #include <gtest/gtest.h>
 
 #include <algorithm>

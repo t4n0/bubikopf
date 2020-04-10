@@ -1,6 +1,5 @@
 #include "search/minimax.h"
 
-#include "board/utilities.h"
 #include "search/test/evaluate_mock.h"
 
 #include <gtest/gtest.h>

@@ -4,10 +4,7 @@ cc_binary(
     name = "command_line",
     srcs = ["main.cpp"],
     visibility = ["//:__pkg__"],
-    deps = [
-        "//board",
-        "//search",
-    ],
+    deps = ["//search"],
 )
 
 cc_library(
@@ -65,7 +62,6 @@ cc_library(
     visibility = ["//:__pkg__"],
     deps = [
         ":uci_utilities",
-        "//board",
         "//search",
     ],
 )
