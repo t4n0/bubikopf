@@ -36,7 +36,10 @@ float King::GetValue() const {
   return owner_ == Player::max ? 100.0F : -100.0F;
 }
 
-bool Empty::IsOfSide(const Player& /*unused*/) const { return false; }
+bool Empty::IsOfSide(const Player& player) const {
+  std::ignore = player;
+  return false;
+}
 bool Pawn::IsOfSide(const Player& side) const { return owner_ == side; }
 bool Knight::IsOfSide(const Player& side) const { return owner_ == side; }
 bool Bishop::IsOfSide(const Player& side) const { return owner_ == side; }

@@ -17,12 +17,12 @@ class Empty : public ISquare {
   static ISquarePtr Make();
   Empty(const Empty&) = delete;
   Empty operator=(const Empty&) = delete;
-  ~Empty() override final {}
+  ~Empty() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
   bool IsEmpty() const override final;
-  bool IsOfSide(const Player& /*unused*/) const override final;
+  bool IsOfSide(const Player&) const override final;
   std::vector<State> FindPlies(const std::size_t idx,
                                const State& state) const override final;
   std::ostream& print(std::ostream& stream) const override final;
@@ -44,7 +44,7 @@ class Pawn : public Piece {
   static ISquarePtr OfSide(const Player player);
   Pawn(const Pawn&) = delete;
   Pawn operator=(const Pawn&) = delete;
-  ~Pawn() override final {}
+  ~Pawn() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
@@ -63,7 +63,7 @@ class Knight : public Piece {
   static ISquarePtr OfSide(const Player player);
   Knight(const Knight&) = delete;
   Knight operator=(const Knight&) = delete;
-  ~Knight() override final {}
+  ~Knight() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
@@ -82,7 +82,7 @@ class Bishop : public Piece {
   static ISquarePtr OfSide(const Player player);
   Bishop(const Bishop&) = delete;
   Bishop operator=(const Bishop&) = delete;
-  ~Bishop() override final {}
+  ~Bishop() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
@@ -101,7 +101,7 @@ class Rook : public Piece {
   static ISquarePtr OfSide(const Player player);
   Rook(const Rook&) = delete;
   Rook operator=(const Rook&) = delete;
-  ~Rook() override final {}
+  ~Rook() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
@@ -120,7 +120,7 @@ class Queen : public Piece {
   static ISquarePtr OfSide(const Player player);
   Queen(const Queen&) = delete;
   Queen operator=(const Queen&) = delete;
-  ~Queen() override final {}
+  ~Queen() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
@@ -139,7 +139,7 @@ class King : public Piece {
   static ISquarePtr OfSide(const Player player);
   King(const King&) = delete;
   King operator=(const King&) = delete;
-  ~King() override final {}
+  ~King() override final = default;
 
   SquareId GetId() const override final;
   float GetValue() const override final;
