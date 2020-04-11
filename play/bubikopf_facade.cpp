@@ -30,90 +30,6 @@ void CheckPlausibility(const std::string& new_move) {
   }
 }
 
-SquareId GetSquareId(const char& uci_promotion_letter, const Player side) {
-  if (side == Player::max) {
-    const std::map<char, SquareId> map_to_white_square_id{
-        {'n', SquareId::WhiteKnight},
-        {'b', SquareId::WhiteBishop},
-        {'r', SquareId::WhiteRook},
-        {'q', SquareId::WhiteQueen},
-    };
-    return map_to_white_square_id.at(uci_promotion_letter);
-  } else {
-    const std::map<char, SquareId> map_to_black_square_id{
-        {'n', SquareId::BlackKnight},
-        {'b', SquareId::BlackBishop},
-        {'r', SquareId::BlackRook},
-        {'q', SquareId::BlackQueen},
-    };
-    return map_to_black_square_id.at(uci_promotion_letter);
-  }
-}
-
-bool IsCorrectPromotion(const std::optional<SquareId>& expected_promotion,
-                        const SquareId& target_square_piece_id) {
-  if (expected_promotion) {
-    return *expected_promotion == target_square_piece_id;
-  } else {
-    return true;
-  }
-}
-
-std::string GetPromotionNotation(std::optional<SquareId> promotion) {
-  const std::map<SquareId, char> map_to_promotion_notation{
-      {SquareId::WhiteKnight, 'n'}, {SquareId::WhiteBishop, 'b'},
-      {SquareId::WhiteRook, 'r'},   {SquareId::WhiteQueen, 'q'},
-      {SquareId::BlackKnight, 'n'}, {SquareId::BlackBishop, 'b'},
-      {SquareId::BlackRook, 'r'},   {SquareId::BlackQueen, 'q'},
-  };
-  std::string notation{};
-  if (promotion) {
-    notation.push_back(map_to_promotion_notation.at(*promotion));
-  }
-  return notation;
-}
-
-std::string ExtractUciMove(const NodePtr& root, const NodePtr& child) {
-  constexpr std::size_t INVALID{99};
-  std::size_t start_square_idx{INVALID};
-  std::size_t target_square_idx{INVALID};
-
-  for (std::size_t idx{0}; idx < 64; idx++) {
-    const bool occupied_by_active_player_at_root =
-        root->position_.board_.Get(idx)->IsOfSide(root->position_.GetTurn());
-    const bool free_at_child = child->position_.board_.Get(idx)->IsEmpty();
-    if (occupied_by_active_player_at_root && free_at_child) {
-      start_square_idx = idx;
-      std::cout << "start square " << start_square_idx << std::endl;
-    }
-    const bool not_occupied_by_active_player_at_root =
-        !root->position_.board_.Get(idx)->IsOfSide(root->position_.GetTurn());
-    const bool occupied_at_child =
-        child->position_.board_.Get(idx)->IsOfSide(root->position_.GetTurn());
-    if (not_occupied_by_active_player_at_root && occupied_at_child) {
-      target_square_idx = idx;
-      std::cout << "target square " << target_square_idx << std::endl;
-    }
-  }
-
-  if ((start_square_idx == INVALID) || (target_square_idx == INVALID)) {
-    std::cerr << "ExtractUciMove failed." << std::endl;
-    throw std::string{"ExtractUciMove failed."};
-  }
-
-  const bool piece_id_changes =
-      root->position_.board_.Get(start_square_idx)->GetId() !=
-      child->position_.board_.Get(target_square_idx)->GetId();
-  std::optional<SquareId> promotion{};
-  if (piece_id_changes) {
-    promotion = child->position_.board_.Get(target_square_idx)->GetId();
-  }
-
-  return std::string{ToUciSquare(start_square_idx) +
-                     ToUciSquare(target_square_idx) +
-                     GetPromotionNotation(promotion)};
-}
-
 }  // namespace
 
 std::string BubikopfFacade::StartGame(const bool play_as_white) {
@@ -166,7 +82,8 @@ std::string BubikopfFacade::MakeMove() {
   if (chosen_move != branch_evaluations.end()) {
     const std::size_t move_idx =
         static_cast<std::size_t>(chosen_move - branch_evaluations.begin());
-    last_moves_.push_back(ExtractUciMove(node_, node_->children_.at(move_idx)));
+    last_moves_.push_back(
+        node_->children_.at(move_idx)->position_.previous_move_);
     node_ = ChooseChild(move_idx, std::move(node_));
   } else {
     std::cerr << "Error during MakeMove" << std::endl;
@@ -181,24 +98,8 @@ std::string BubikopfFacade::MakeMove() {
 
 void BubikopfFacade::ConsiderTheirMove(const std::string& move) {
   std::cout << "BubikopfFacade::ConsiderTheirMove" << std::endl;
-  const std::string start_square{move.substr(0, 2)};
-  const std::string target_square{move.substr(2, 2)};
-  std::optional<SquareId> promotion{};
-  if (move.size() == 5) {
-    const Player their_color = !node_->position_.GetTurn();
-    promotion = GetSquareId(move.at(5), their_color);
-  }
-
   for (std::size_t idx{0}; idx < node_->children_.size(); ++idx) {
-    const auto& child = node_->children_.at(idx);
-    const bool start_square_is_empty =
-        child->position_.board_.Get(ToIdx(start_square))->IsEmpty();
-    const bool target_square_is_occupied =
-        !child->position_.board_.Get(ToIdx(target_square))->IsEmpty();
-    const bool correct_promotion = IsCorrectPromotion(
-        promotion, child->position_.board_.Get(ToIdx(target_square))->GetId());
-    if (start_square_is_empty && target_square_is_occupied &&
-        correct_promotion) {
+    if (move == node_->children_.at(idx)->position_.previous_move_) {
       node_ = ChooseChild(idx, std::move(node_));
       break;
     }
