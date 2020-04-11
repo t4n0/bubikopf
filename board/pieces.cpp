@@ -161,7 +161,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
           new_ply.board_.Set(location_idx, Empty::Make());
           new_plies.emplace_back(std::move(new_ply));
         } else if (position.en_passant_ &&
-                   position.en_passant_.value() == capture_target) {
+                   *position.en_passant_ == capture_target) {
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
           new_ply.board_.SwapSquares(location_idx, capture_target_idx);
           new_ply.board_.Set(

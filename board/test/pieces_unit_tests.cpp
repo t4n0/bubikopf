@@ -172,9 +172,9 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   const Coordinate black_pawn_location{3, 3};
   const Coordinate white_blocking_piece_location{3, 4};
   const Coordinate white_hanging_piece_location{4, 4};
-  const Coordinate black_piece_on_caputre_location{2, 4};
+  const Coordinate black_piece_on_capture_location{2, 4};
   position_.board_.Set(black_pawn_location, Pawn::OfSide(Player::min));
-  position_.board_.Set(black_piece_on_caputre_location,
+  position_.board_.Set(black_piece_on_capture_location,
                        Knight::OfSide(Player::min));
   position_.board_.Set(white_blocking_piece_location,
                        King::OfSide(Player::max));
@@ -195,7 +195,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_EQ(returned_position.board_.Get(white_hanging_piece_location)->GetId(),
             SquareId::BlackPawn);
   EXPECT_EQ(
-      returned_position.board_.Get(black_piece_on_caputre_location)->GetId(),
+      returned_position.board_.Get(black_piece_on_capture_location)->GetId(),
       SquareId::BlackKnight);
 }
 
@@ -367,9 +367,9 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   const Coordinate white_pawn_location{5, 5};
   const Coordinate black_blocking_piece_location{5, 4};
   const Coordinate black_hanging_piece_location{6, 4};
-  const Coordinate white_piece_on_caputre_location{4, 4};
+  const Coordinate white_piece_on_capture_location{4, 4};
   position_.board_.Set(white_pawn_location, Pawn::OfSide(Player::max));
-  position_.board_.Set(white_piece_on_caputre_location,
+  position_.board_.Set(white_piece_on_capture_location,
                        Knight::OfSide(Player::max));
   position_.board_.Set(black_blocking_piece_location,
                        King::OfSide(Player::min));
@@ -390,7 +390,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_EQ(returned_position.board_.Get(black_hanging_piece_location)->GetId(),
             SquareId::WhitePawn);
   EXPECT_EQ(
-      returned_position.board_.Get(white_piece_on_caputre_location)->GetId(),
+      returned_position.board_.Get(white_piece_on_capture_location)->GetId(),
       SquareId::WhiteKnight);
 }
 
