@@ -26,16 +26,6 @@ SquareId King::GetId() const {
   return owner_ == Player::min ? SquareId::BlackKing : SquareId::WhiteKing;
 }
 
-float Empty::GetValue() const { return 0.0F; }
-float Pawn::GetValue() const { return owner_ == Player::max ? 1.0F : -1.0F; }
-float Knight::GetValue() const { return owner_ == Player::max ? 3.0F : -3.0F; }
-float Bishop::GetValue() const { return owner_ == Player::max ? 3.0F : -3.0F; }
-float Rook::GetValue() const { return owner_ == Player::max ? 5.0F : -5.0F; }
-float Queen::GetValue() const { return owner_ == Player::max ? 9.0F : -9.0F; }
-float King::GetValue() const {
-  return owner_ == Player::max ? 100.0F : -100.0F;
-}
-
 bool Empty::IsOfSide(const Player& player) const {
   std::ignore = player;
   return false;

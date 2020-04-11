@@ -20,7 +20,6 @@ class Empty : public ISquare {
   ~Empty() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player&) const override final;
   std::vector<Position> FindPlies(
@@ -47,7 +46,6 @@ class Pawn : public Piece {
   ~Pawn() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(
@@ -66,7 +64,6 @@ class Knight : public Piece {
   ~Knight() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(
@@ -85,7 +82,6 @@ class Bishop : public Piece {
   ~Bishop() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(
@@ -104,7 +100,6 @@ class Rook : public Piece {
   ~Rook() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(
@@ -123,7 +118,6 @@ class Queen : public Piece {
   ~Queen() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(
@@ -142,7 +136,6 @@ class King : public Piece {
   ~King() override final = default;
 
   SquareId GetId() const override final;
-  float GetValue() const override final;
   bool IsEmpty() const override final;
   bool IsOfSide(const Player& player) const override final;
   std::vector<Position> FindPlies(

@@ -31,7 +31,6 @@ class ISquare {
   virtual ~ISquare() = default;
 
   virtual SquareId GetId() const = 0;
-  virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
   virtual bool IsOfSide(const Player& player) const = 0;
   virtual std::vector<Position> FindPlies(const std::size_t idx,
