@@ -7,6 +7,7 @@ cc_library(
     ],
     hdrs = [
         "board.h",
+        "evaluation.h",
         "i_square.h",
         "pieces.h",
         "player.h",
@@ -24,6 +25,7 @@ cc_test(
     name = "unit_tests",
     srcs = [
         "test/board_unit_tests.cpp",
+        "test/evaluation_unit_tests.cpp",
         "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
         "test/position_unit_tests.cpp",

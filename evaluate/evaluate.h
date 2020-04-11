@@ -1,8 +1,8 @@
 #ifndef EVALUATE_EVALUATE_H
 #define EVALUATE_EVALUATE_H
 
+#include "board/evaluation.h"
 #include "board/position.h"
-#include "evaluate/evaluation.h"
 
 #include <map>
 #include <type_traits>

@@ -1,9 +1,6 @@
 cc_library(
     name = "evaluate",
-    hdrs = [
-        "evaluate.h",
-        "evaluation.h",
-    ],
+    hdrs = ["evaluate.h"],
     visibility = [
         "//:__pkg__",
         "//play:__pkg__",
@@ -14,10 +11,7 @@ cc_library(
 
 cc_test(
     name = "unit_tests",
-    srcs = [
-        "test/evaluate_unit_tests.cpp",
-        "test/evaluation_unit_tests.cpp",
-    ],
+    srcs = ["test/evaluate_unit_tests.cpp"],
     visibility = ["//:__pkg__"],
     deps = [
         ":evaluate",
