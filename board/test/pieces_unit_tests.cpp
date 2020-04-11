@@ -104,6 +104,7 @@ TEST_F(BlackPawnFindPlies_Fixture,
   EXPECT_EQ(returned_position.board_.Get(free_square)->GetId(),
             SquareId::BlackPawn);
   EXPECT_FALSE(returned_position.en_passant_);
+  EXPECT_EQ(returned_position.previous_move_, "d4d3");
 }
 
 TEST_F(BlackPawnFindPlies_Fixture,
@@ -128,12 +129,16 @@ TEST_F(BlackPawnFindPlies_Fixture,
   }
   EXPECT_EQ(returned_positions.at(0).board_.Get(promotion_square)->GetId(),
             SquareId::BlackQueen);
+  EXPECT_EQ(returned_positions.at(0).previous_move_, "d2d1q");
   EXPECT_EQ(returned_positions.at(1).board_.Get(promotion_square)->GetId(),
             SquareId::BlackRook);
+  EXPECT_EQ(returned_positions.at(1).previous_move_, "d2d1r");
   EXPECT_EQ(returned_positions.at(2).board_.Get(promotion_square)->GetId(),
             SquareId::BlackKnight);
+  EXPECT_EQ(returned_positions.at(2).previous_move_, "d2d1n");
   EXPECT_EQ(returned_positions.at(3).board_.Get(promotion_square)->GetId(),
             SquareId::BlackBishop);
+  EXPECT_EQ(returned_positions.at(3).previous_move_, "d2d1b");
 }
 
 TEST_F(BlackPawnFindPlies_Fixture,
@@ -161,10 +166,12 @@ TEST_F(BlackPawnFindPlies_Fixture,
       returned_positions.at(0).board_.Get(double_step_target)->IsEmpty());
   EXPECT_EQ(returned_positions.at(0).board_.Get(single_step_target)->GetId(),
             SquareId::BlackPawn);
+  EXPECT_EQ(returned_positions.at(0).previous_move_, "e7e6");
   EXPECT_TRUE(
       returned_positions.at(1).board_.Get(single_step_target)->IsEmpty());
   EXPECT_EQ(returned_positions.at(1).board_.Get(double_step_target)->GetId(),
             SquareId::BlackPawn);
+  EXPECT_EQ(returned_positions.at(1).previous_move_, "e7e5");
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
@@ -197,6 +204,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_EQ(
       returned_position.board_.Get(black_piece_on_capture_location)->GetId(),
       SquareId::BlackKnight);
+  EXPECT_EQ(returned_position.previous_move_, "d5e4");
 }
 
 TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -224,6 +232,7 @@ TEST_F(BlackPawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
             SquareId::BlackPawn);
   EXPECT_EQ(returned_position.board_.Get(white_blocking_piece)->GetId(),
             SquareId::WhiteKnight);
+  EXPECT_EQ(returned_position.previous_move_, "f4e3");
 }
 
 class WhitePawnFindPlies_Fixture : public testing::Test {
@@ -283,6 +292,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
   EXPECT_EQ(returned_position.board_.Get(free_square)->GetId(),
             SquareId::WhitePawn);
   EXPECT_FALSE(returned_position.en_passant_);
+  EXPECT_EQ(returned_position.previous_move_, "d4d5");
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -307,12 +317,16 @@ TEST_F(WhitePawnFindPlies_Fixture,
   }
   EXPECT_EQ(returned_positions.at(0).board_.Get(promotion_square)->GetId(),
             SquareId::WhiteQueen);
+  EXPECT_EQ(returned_positions.at(0).previous_move_, "d7d8q");
   EXPECT_EQ(returned_positions.at(1).board_.Get(promotion_square)->GetId(),
             SquareId::WhiteRook);
+  EXPECT_EQ(returned_positions.at(1).previous_move_, "d7d8r");
   EXPECT_EQ(returned_positions.at(2).board_.Get(promotion_square)->GetId(),
             SquareId::WhiteKnight);
+  EXPECT_EQ(returned_positions.at(2).previous_move_, "d7d8n");
   EXPECT_EQ(returned_positions.at(3).board_.Get(promotion_square)->GetId(),
             SquareId::WhiteBishop);
+  EXPECT_EQ(returned_positions.at(3).previous_move_, "d7d8b");
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -340,10 +354,12 @@ TEST_F(WhitePawnFindPlies_Fixture,
       returned_positions.at(0).board_.Get(double_step_target)->IsEmpty());
   EXPECT_EQ(returned_positions.at(0).board_.Get(single_step_target)->GetId(),
             SquareId::WhitePawn);
+  EXPECT_EQ(returned_positions.at(0).previous_move_, "e2e3");
   EXPECT_TRUE(
       returned_positions.at(1).board_.Get(single_step_target)->IsEmpty());
   EXPECT_EQ(returned_positions.at(1).board_.Get(double_step_target)->GetId(),
             SquareId::WhitePawn);
+  EXPECT_EQ(returned_positions.at(1).previous_move_, "e2e4");
 }
 
 TEST_F(WhitePawnFindPlies_Fixture,
@@ -360,6 +376,7 @@ TEST_F(WhitePawnFindPlies_Fixture,
 
   // Expect
   EXPECT_EQ(returned_positions.at(1).en_passant_, single_step_target);
+  EXPECT_FALSE(returned_positions.at(0).en_passant_);
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
@@ -392,6 +409,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenOneCapturePossible_ExpectOnePly) {
   EXPECT_EQ(
       returned_position.board_.Get(white_piece_on_capture_location)->GetId(),
       SquareId::WhiteKnight);
+  EXPECT_EQ(returned_position.previous_move_, "f3g4");
 }
 
 TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
@@ -419,6 +437,7 @@ TEST_F(WhitePawnFindPlies_Fixture, GivenEnPassant_ExpectCapture) {
             SquareId::WhitePawn);
   EXPECT_EQ(returned_position.board_.Get(black_blocking_piece)->GetId(),
             SquareId::BlackKnight);
+  EXPECT_EQ(returned_position.previous_move_, "e5f6");
 }
 
 class PiecePlies_Fixture : public testing::Test {
@@ -476,6 +495,7 @@ TEST_F(PiecePlies_Fixture, GivenKnightInCorner_ExpectTwoPlies) {
 
   // Expect
   EXPECT_EQ(returned_positions.size(), 2);
+  EXPECT_EQ(returned_positions.front().previous_move_, "a8b6");
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -499,6 +519,7 @@ TEST_F(PiecePlies_Fixture,
   EXPECT_EQ(returned_positions.size(), 1);
   EXPECT_EQ(returned_positions.front().plies_, expected_plies);
   EXPECT_EQ(returned_positions.front().static_plies_, expected_static_plies);
+  EXPECT_EQ(returned_positions.front().previous_move_, "a8c7");
 }
 
 TEST_F(
@@ -519,6 +540,7 @@ TEST_F(
 
   // Expect
   EXPECT_EQ(returned_positions.size(), 9);
+  EXPECT_EQ(returned_positions.front().previous_move_, "d4e3");
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -538,6 +560,7 @@ TEST_F(PiecePlies_Fixture,
 
   // Expect
   EXPECT_EQ(returned_positions.size(), 10);
+  EXPECT_EQ(returned_positions.front().previous_move_, "d4e4");
 }
 
 TEST_F(
@@ -558,6 +581,7 @@ TEST_F(
 
   // Expect
   EXPECT_EQ(returned_positions.size(), 23);
+  EXPECT_EQ(returned_positions.front().previous_move_, "d4e3");
 }
 
 TEST_F(PiecePlies_Fixture,
@@ -577,6 +601,7 @@ TEST_F(PiecePlies_Fixture,
 
   // Expect
   EXPECT_EQ(returned_positions.size(), 4);
+  EXPECT_EQ(returned_positions.front().previous_move_, "a5b4");
 }
 
 }  // namespace

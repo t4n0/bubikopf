@@ -126,6 +126,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
       if (single_step_target.row != GetPromotionRowFor(owner_)) {
         Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
         new_ply.board_.SwapSquares(location_idx, single_step_target_idx);
+        new_ply.LogMove(location_idx, single_step_target_idx);
         new_plies.emplace_back(std::move(new_ply));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
@@ -134,6 +135,8 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
           new_ply.board_.Set(location_idx, Empty::Make());
           new_ply.board_.Set(single_step_target_idx, promotion_option);
+          new_ply.LogMove(location_idx, single_step_target_idx,
+                          promotion_option->GetId());
           new_plies.emplace_back(std::move(new_ply));
         }
       }
@@ -147,6 +150,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
       Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
       new_ply.board_.SwapSquares(location_idx, double_step_target_idx);
       new_ply.en_passant_ = single_step_target;
+      new_ply.LogMove(location_idx, double_step_target_idx);
       new_plies.emplace_back(std::move(new_ply));
     }
 
@@ -159,6 +163,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
           new_ply.board_.SwapSquares(location_idx, capture_target_idx);
           new_ply.board_.Set(location_idx, Empty::Make());
+          new_ply.LogMove(location_idx, capture_target_idx);
           new_plies.emplace_back(std::move(new_ply));
         } else if (position.en_passant_ &&
                    *position.en_passant_ == capture_target) {
@@ -167,6 +172,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
           new_ply.board_.Set(
               ToIdx(position.en_passant_.value() + GetSingleStepFor(!owner_)),
               Empty::Make());
+          new_ply.LogMove(location_idx, capture_target_idx);
           new_plies.emplace_back(std::move(new_ply));
         }
       }
@@ -180,6 +186,7 @@ Position MakePieceAdvance(const Position& position, const std::size_t location,
                           const std::size_t target) {
   Position new_ply = BasePositionAfterPiecePly(position);
   new_ply.board_.SwapSquares(location, target);
+  new_ply.LogMove(location, target);
   return new_ply;
 }
 
@@ -188,6 +195,7 @@ Position MakePieceCapture(const Position& position, const std::size_t location,
   Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
   new_ply.board_.SwapSquares(location, target);
   new_ply.board_.Set(location, Empty::Make());
+  new_ply.LogMove(location, target);
   return new_ply;
 }
 
