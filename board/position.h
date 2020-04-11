@@ -1,5 +1,5 @@
-#ifndef BOARD_STATE_H
-#define BOARD_STATE_H
+#ifndef BOARD_POSITION_H
+#define BOARD_POSITION_H
 
 #include "board/board.h"
 
@@ -13,16 +13,16 @@ struct Castling {
   bool kingside{true};
 };
 
-class State {
+class Position {
  public:
-  State();
+  Position();
 
   Board board_{};
   int static_plies_{0};
   int plies_{0};
   std::optional<Coordinate> en_passant_{};
 
-  std::vector<State> FindPlies() const;
+  std::vector<Position> FindPlies() const;
   Player GetTurn() const;
   Castling GetCastling(const Player player) const;
   void SetCastling(const Player player, const Castling castling);
@@ -32,7 +32,7 @@ class State {
   Castling castling_white_{true, true};
 };
 
-std::ostream& operator<<(std::ostream& stream, const State& state);
+std::ostream& operator<<(std::ostream& stream, const Position& position);
 
 }  // namespace Chess
 

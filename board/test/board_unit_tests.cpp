@@ -24,8 +24,8 @@ TEST(Board, Set_ExpectBoundsCheck) {
 }
 
 TEST(Board, StreamOutputOperator_MustNotThrow) {
-  const State state{};
-  EXPECT_NO_THROW(std::cout << state.board_ << '\n');
+  const Position position{};
+  EXPECT_NO_THROW(std::cout << position.board_ << '\n');
 }
 
 TEST(ToIdxAndToCoor, GivenAConversionThereAndBack_ExpectUnalteredValue) {

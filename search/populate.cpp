@@ -7,11 +7,11 @@ namespace Chess {
 void populate(Node& node, const int depth) {
   if (depth) {
     if (!node.children_.size()) {
-      std::vector<State> child_states = node.state_.FindPlies();
-      std::for_each(child_states.begin(), child_states.end(),
-                    [&node](State& state) {
+      std::vector<Position> child_positions = node.position_.FindPlies();
+      std::for_each(child_positions.begin(), child_positions.end(),
+                    [&node](Position& position) {
                       node.children_.emplace_back(
-                          std::make_unique<Node>(std::move(state)));
+                          std::make_unique<Node>(std::move(position)));
                     });
     }
 

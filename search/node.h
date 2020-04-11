@@ -1,7 +1,7 @@
 #ifndef SEARCH_NODE_H
 #define SEARCH_NODE_H
 
-#include "board/state.h"
+#include "board/position.h"
 
 #include <memory>
 #include <vector>
@@ -11,8 +11,8 @@ namespace Chess {
 class Node {
  public:
   Node();
-  Node(const State& state);
-  Node(State&& state);
+  Node(const Position& position);
+  Node(Position&& position);
 
   Node(const Node&) = delete;
   Node(Node&&) = delete;
@@ -21,7 +21,7 @@ class Node {
   ~Node() = default;
 
   std::vector<std::unique_ptr<Node>> children_{};
-  State state_;
+  Position position_;
 };
 
 using NodePtr = std::unique_ptr<Node>;

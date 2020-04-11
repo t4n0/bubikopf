@@ -3,14 +3,14 @@ cc_library(
     srcs = [
         "board.cpp",
         "pieces.cpp",
-        "state.cpp",
+        "position.cpp",
     ],
     hdrs = [
         "board.h",
         "i_square.h",
         "pieces.h",
         "player.h",
-        "state.h",
+        "position.h",
     ],
     visibility = [
         "//:__pkg__",
@@ -26,7 +26,7 @@ cc_test(
         "test/board_unit_tests.cpp",
         "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
-        "test/state_unit_tests.cpp",
+        "test/position_unit_tests.cpp",
     ],
     visibility = [
         "//:__pkg__",

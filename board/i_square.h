@@ -8,7 +8,7 @@
 
 namespace Chess {
 
-class State;
+class Position;
 
 enum class SquareId {
   WhitePawn,
@@ -34,8 +34,8 @@ class ISquare {
   virtual float GetValue() const = 0;
   virtual bool IsEmpty() const = 0;
   virtual bool IsOfSide(const Player& player) const = 0;
-  virtual std::vector<State> FindPlies(const std::size_t idx,
-                                       const State& state) const = 0;
+  virtual std::vector<Position> FindPlies(const std::size_t idx,
+                                          const Position& position) const = 0;
   virtual std::ostream& print(std::ostream& stream) const = 0;
 };
 

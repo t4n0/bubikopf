@@ -1,4 +1,4 @@
-#include "board/state.h"
+#include "board/position.h"
 #include "board/pieces.h"
 
 #include <algorithm>
@@ -6,17 +6,17 @@
 
 namespace Chess {
 
-State::State() {
+Position::Position() {
   for (auto& square : board_.squares_) {
     square = Empty::Make();
   }
 }
 
-std::vector<State> State::FindPlies() const {
-  std::vector<State> collected_plies{};
+std::vector<Position> Position::FindPlies() const {
+  std::vector<Position> collected_plies{};
   for (std::size_t idx{0}; idx < board_.squares_.size(); ++idx) {
     const ISquare& square = *board_.squares_.at(idx);
-    std::vector<State> new_plies = square.FindPlies(idx, *this);
+    std::vector<Position> new_plies = square.FindPlies(idx, *this);
 
     collected_plies.insert(collected_plies.end(),
                            std::make_move_iterator(new_plies.begin()),
@@ -26,13 +26,15 @@ std::vector<State> State::FindPlies() const {
   return collected_plies;
 }
 
-Player State::GetTurn() const { return plies_ % 2 ? Player::min : Player::max; }
+Player Position::GetTurn() const {
+  return plies_ % 2 ? Player::min : Player::max;
+}
 
-Castling State::GetCastling(const Player player) const {
+Castling Position::GetCastling(const Player player) const {
   return player == Player::max ? castling_white_ : castling_black_;
 }
 
-void State::SetCastling(const Player player, const Castling castling) {
+void Position::SetCastling(const Player player, const Castling castling) {
   if (player == Player::max) {
     castling_white_ = castling;
   } else {
@@ -51,14 +53,14 @@ std::ostream& operator<<(std::ostream& stream, const Board& board) {
   return stream;
 }
 
-std::ostream& operator<<(std::ostream& stream, const State& state) {
-  if (state.GetTurn() == Player::max) {
-    stream << "White to move at ply " << state.plies_ << ":\n";
+std::ostream& operator<<(std::ostream& stream, const Position& position) {
+  if (position.GetTurn() == Player::max) {
+    stream << "White to move at ply " << position.plies_ << ":\n";
   } else {
-    stream << "Black to move at ply " << state.plies_ << ":\n";
+    stream << "Black to move at ply " << position.plies_ << ":\n";
   }
 
-  stream << state.board_;
+  stream << position.board_;
   return stream;
 }
 

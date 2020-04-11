@@ -18,9 +18,9 @@ Evaluation minimax(const Node& node, const uint8_t depth,
                    const Evaluation alpha_parent,
                    const Evaluation beta_parent) {
   if ((depth == 0) || GameIsOver(node)) {
-    return evaluate<Behaviour>(node.state_);
+    return evaluate<Behaviour>(node.position_);
 
-  } else if (node.state_.GetTurn() == Player::max) {
+  } else if (node.position_.GetTurn() == Player::max) {
     Evaluation alpha{MIN_EVAL};
     for (const std::unique_ptr<Node>& child : node.children_) {
       Evaluation eval =

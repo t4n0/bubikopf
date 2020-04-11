@@ -29,12 +29,13 @@ int main() {
     std::cout << "\n\n\n\n\n\n";
     for (std::size_t idx{0}; idx < node->children_.size(); ++idx) {
       std::cout << "Option " << static_cast<int>(idx) << ":\n";
-      std::cout << node->children_.at(idx)->state_.board_;
+      std::cout << node->children_.at(idx)->position_.board_;
     }
-    if (node->state_.plies_) {
-      PrintBoardWithPlyCaption(board_after_human_move, node->state_.plies_ - 1);
+    if (node->position_.plies_) {
+      PrintBoardWithPlyCaption(board_after_human_move,
+                               node->position_.plies_ - 1);
     }
-    PrintBoardWithPlyCaption(node->state_.board_, node->state_.plies_);
+    PrintBoardWithPlyCaption(node->position_.board_, node->position_.plies_);
     std::size_t human_move_idx{std::numeric_limits<std::size_t>::max()};
     while (human_move_idx >= node->children_.size()) {
       std::cout << "Choose your move:\n";
@@ -42,7 +43,7 @@ int main() {
     }
     std::cout << "Option choosen: " << human_move_idx << '\n';
     node = Chess::ChooseChild(human_move_idx, std::move(node));
-    board_after_human_move = node->state_.board_;
+    board_after_human_move = node->position_.board_;
 
     // AI moves
     const int DEPTH{5};
@@ -53,7 +54,7 @@ int main() {
           *(node->children_.at(idx)), DEPTH, Chess::MIN_EVAL, Chess::MAX_EVAL);
       std::cout << "Option " << static_cast<int>(idx) << " with evaluation of "
                 << branch_evaluations.at(idx) << ":\n";
-      std::cout << node->children_.at(idx)->state_.board_;
+      std::cout << node->children_.at(idx)->position_.board_;
     }
     const auto min_element_itr =
         std::min_element(branch_evaluations.begin(), branch_evaluations.end());
@@ -62,7 +63,7 @@ int main() {
           min_element_itr - branch_evaluations.begin());
       std::cout << "Ai's choice with evaluation of "
                 << branch_evaluations.at(ai_move_idx) << ":\n";
-      std::cout << node->children_.at(ai_move_idx)->state_.board_;
+      std::cout << node->children_.at(ai_move_idx)->position_.board_;
       node = Chess::ChooseChild(ai_move_idx, std::move(node));
       std::cout << "Number of nodes: " << Chess::CountNodes(*node) << '\n';
       UserPause();
