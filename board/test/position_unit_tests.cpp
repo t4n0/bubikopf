@@ -28,17 +28,6 @@ TEST(SetGetCastling, ExpectRespectiveCastlingRights) {
               returned_castling_black.kingside);
 }
 
-TEST(Position, MemoryFootprint) {
-  EXPECT_EQ(sizeof(Position), 528);
-  // consisting of
-  EXPECT_EQ(sizeof(Board), 512);
-  EXPECT_EQ(sizeof(int), 4);  // x2 = 8
-  EXPECT_EQ(sizeof(Player), 4);
-  EXPECT_EQ(sizeof(std::optional<Coordinate>), 3);
-  EXPECT_EQ(sizeof(Castling), 2);  // x2 = 4
-  // + padding
-}
-
 TEST(Position, GivenDefaultCtor_ExpectBoardIsFilledWithEmptySquares) {
   const Position position{};
   for (const auto& square : position.board_.squares_) {
