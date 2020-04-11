@@ -123,37 +123,39 @@ Position BasePositionAfterPiecePly(const Position& position) {
   return new_position;
 }
 
-std::vector<Position> Pawn::FindPlies(const std::size_t idx,
+std::vector<Position> Pawn::FindPlies(const std::size_t location_idx,
                                       const Position& position) const {
   std::vector<Position> new_plies{};
 
   if (IsOfSide(position.GetTurn())) {
-    const Coordinate location = ToCoor(idx);
+    const Coordinate location = ToCoor(location_idx);
 
     const Coordinate single_step_target = location + GetSingleStepFor(owner_);
-    if (position.board_.Get(single_step_target)->IsEmpty()) {
+    const std::size_t single_step_target_idx = ToIdx(single_step_target);
+    if (position.board_.Get(single_step_target_idx)->IsEmpty()) {
       if (single_step_target.row != GetPromotionRowFor(owner_)) {
         Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
-        new_ply.board_.SwapSquares(idx, ToIdx(single_step_target));
+        new_ply.board_.SwapSquares(location_idx, single_step_target_idx);
         new_plies.emplace_back(std::move(new_ply));
       } else {
         std::array<ISquarePtr, 4> promotion_options =
             GetPromotionOptionsFor(owner_);
         for (auto& promotion_option : promotion_options) {
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
-          new_ply.board_.Set(idx, Empty::Make());
-          new_ply.board_.Set(single_step_target, promotion_option);
+          new_ply.board_.Set(location_idx, Empty::Make());
+          new_ply.board_.Set(single_step_target_idx, promotion_option);
           new_plies.emplace_back(std::move(new_ply));
         }
       }
     }
 
     const Coordinate double_step_target = location + GetDoubleStepFor(owner_);
+    const std::size_t double_step_target_idx = ToIdx(double_step_target);
     if (location.row == GetDoubleStepStartRowFor(owner_) &&
-        position.board_.Get(single_step_target)->IsEmpty() &&
-        position.board_.Get(double_step_target)->IsEmpty()) {
+        position.board_.Get(single_step_target_idx)->IsEmpty() &&
+        position.board_.Get(double_step_target_idx)->IsEmpty()) {
       Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
-      new_ply.board_.SwapSquares(idx, ToIdx(double_step_target));
+      new_ply.board_.SwapSquares(location_idx, double_step_target_idx);
       new_ply.en_passant_ = single_step_target;
       new_plies.emplace_back(std::move(new_ply));
     }
@@ -162,15 +164,16 @@ std::vector<Position> Pawn::FindPlies(const std::size_t idx,
     for (auto& capture_target : capture_targets) {
       capture_target += location;
       if (IsOnTheBoard(capture_target)) {
-        if (position.board_.Get(capture_target)->IsOfSide(!owner_)) {
+        const std::size_t capture_target_idx = ToIdx(capture_target);
+        if (position.board_.Get(capture_target_idx)->IsOfSide(!owner_)) {
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
-          new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
-          new_ply.board_.Set(idx, Empty::Make());
+          new_ply.board_.SwapSquares(location_idx, capture_target_idx);
+          new_ply.board_.Set(location_idx, Empty::Make());
           new_plies.emplace_back(std::move(new_ply));
         } else if (position.en_passant_ &&
                    position.en_passant_.value() == capture_target) {
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
-          new_ply.board_.SwapSquares(idx, ToIdx(capture_target));
+          new_ply.board_.SwapSquares(location_idx, capture_target_idx);
           new_ply.board_.Set(
               ToIdx(position.en_passant_.value() + GetSingleStepFor(!owner_)),
               Empty::Make());
@@ -199,22 +202,23 @@ Position MakePieceCapture(const Position& position, const std::size_t location,
 }
 
 std::vector<Position> FindStraightLinePlies(
-    const Position& position, const std::size_t location, const Player owner,
-    const std::vector<Coordinate>& directions) {
+    const Position& position, const std::size_t location_idx,
+    const Player owner, const std::vector<Coordinate>& directions) {
   std::vector<Position> new_plies{};
 
   if (owner == position.GetTurn()) {
     for (const Coordinate& direction : directions) {
-      Coordinate target = ToCoor(location);
+      Coordinate target = ToCoor(location_idx);
       target += direction;
       while (IsOnTheBoard(target) &&
              !position.board_.Get(target)->IsOfSide(owner)) {
-        if (position.board_.Get(target)->IsEmpty()) {
+        const std::size_t target_idx = ToIdx(target);
+        if (position.board_.Get(target_idx)->IsEmpty()) {
           new_plies.emplace_back(
-              MakePieceAdvance(position, location, ToIdx(target)));
-        } else if (!position.board_.Get(target)->IsOfSide(owner)) {
+              MakePieceAdvance(position, location_idx, target_idx));
+        } else if (!position.board_.Get(target_idx)->IsOfSide(owner)) {
           new_plies.emplace_back(
-              MakePieceCapture(position, location, ToIdx(target)));
+              MakePieceCapture(position, location_idx, target_idx));
           break;
         }
         target += direction;
@@ -247,21 +251,22 @@ std::vector<Position> Queen::FindPlies(const std::size_t idx,
 }
 
 std::vector<Position> FindJumpStylePlies(const Position& position,
-                                         const std::size_t location,
+                                         const std::size_t location_idx,
                                          const Player owner,
                                          const std::vector<Coordinate>& jumps) {
   std::vector<Position> new_plies{};
 
   if (owner == position.GetTurn()) {
     for (const Coordinate& jump : jumps) {
-      const Coordinate target = ToCoor(location) + jump;
+      const Coordinate target = ToCoor(location_idx) + jump;
       if (IsOnTheBoard(target)) {
+        const std::size_t target_idx = ToIdx(target);
         if (position.board_.Get(target)->IsEmpty()) {
           new_plies.emplace_back(
-              MakePieceAdvance(position, location, ToIdx(target)));
+              MakePieceAdvance(position, location_idx, target_idx));
         } else if (!position.board_.Get(target)->IsOfSide(owner)) {
           new_plies.emplace_back(
-              MakePieceCapture(position, location, ToIdx(target)));
+              MakePieceCapture(position, location_idx, target_idx));
         }
       }
     }
