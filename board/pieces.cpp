@@ -142,7 +142,7 @@ std::vector<Position> Pawn::FindPlies(const std::size_t idx,
         for (auto& promotion_option : promotion_options) {
           Position new_ply = BasePositionAfterCaptureOrPawnPly(position);
           new_ply.board_.Set(idx, Empty::Make());
-          new_ply.board_.Set(single_step_target, std::move(promotion_option));
+          new_ply.board_.Set(single_step_target, promotion_option);
           new_plies.emplace_back(std::move(new_ply));
         }
       }
