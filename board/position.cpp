@@ -2,9 +2,29 @@
 #include "board/pieces.h"
 
 #include <algorithm>
+#include <map>
 #include <memory>
+#include <string>
 
 namespace Chess {
+
+namespace {
+
+std::string GetPromotionNotation(std::optional<SquareId> promotion) {
+  const std::map<SquareId, char> map_to_promotion_notation{
+      {SquareId::WhiteKnight, 'n'}, {SquareId::WhiteBishop, 'b'},
+      {SquareId::WhiteRook, 'r'},   {SquareId::WhiteQueen, 'q'},
+      {SquareId::BlackKnight, 'n'}, {SquareId::BlackBishop, 'b'},
+      {SquareId::BlackRook, 'r'},   {SquareId::BlackQueen, 'q'},
+  };
+  std::string notation{};
+  if (promotion) {
+    notation.push_back(map_to_promotion_notation.at(*promotion));
+  }
+  return notation;
+}
+
+}  // namespace
 
 Position::Position() {
   for (auto& square : board_.squares_) {
@@ -24,6 +44,12 @@ std::vector<Position> Position::FindPlies() const {
   }
 
   return collected_plies;
+}
+
+void Position::LogMove(const std::size_t source, const std::size_t target,
+                       const std::optional<SquareId> promotion) {
+  previous_move_ = ToUciSquare(source) + ToUciSquare(target) +
+                   GetPromotionNotation(promotion);
 }
 
 Player Position::GetTurn() const {

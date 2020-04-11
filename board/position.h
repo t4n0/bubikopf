@@ -21,8 +21,11 @@ class Position {
   int static_plies_{0};
   int plies_{0};
   std::optional<Coordinate> en_passant_{};
+  std::string previous_move_{};
 
   std::vector<Position> FindPlies() const;
+  void LogMove(const std::size_t source, const std::size_t target,
+               const std::optional<SquareId> promotion = {});
   Player GetTurn() const;
   Castling GetCastling(const Player player) const;
   void SetCastling(const Player player, const Castling castling);
