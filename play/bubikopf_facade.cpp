@@ -65,23 +65,26 @@ std::string BubikopfFacade::RespondTo(const std::string& moves) {
 std::string BubikopfFacade::MakeMove() {
   std::cout << "BubikopfFacade::MakeMove" << std::endl;
   populate(*node_, DEPTH_);
-  std::vector<Evaluation> branch_evaluations{};
-  for (const auto& child : node_->children_) {
-    branch_evaluations.push_back(minimax(*child, DEPTH_, MIN_EVAL, MAX_EVAL));
-  }
+  minimax(*node_, DEPTH_, MIN_EVAL, MAX_EVAL);
 
-  std::vector<Evaluation>::iterator chosen_move{};
+  std::vector<NodePtr>::iterator chosen_move{};
   if (node_->position_.GetTurn() == Player::max) {
-    chosen_move =
-        std::max_element(branch_evaluations.begin(), branch_evaluations.end());
+    chosen_move = std::max_element(
+        node_->children_.begin(), node_->children_.end(),
+        [](const auto& lhs, const auto& rhs) {
+          return lhs->position_.evaluation_ > rhs->position_.evaluation_;
+        });
   } else {
-    chosen_move =
-        std::min_element(branch_evaluations.begin(), branch_evaluations.end());
+    chosen_move = std::min_element(
+        node_->children_.begin(), node_->children_.end(),
+        [](const auto& lhs, const auto& rhs) {
+          return lhs->position_.evaluation_ < rhs->position_.evaluation_;
+        });
   }
 
-  if (chosen_move != branch_evaluations.end()) {
+  if (chosen_move != node_->children_.end()) {
     const std::size_t move_idx =
-        static_cast<std::size_t>(chosen_move - branch_evaluations.begin());
+        static_cast<std::size_t>(chosen_move - node_->children_.begin());
     last_moves_.push_back(
         node_->children_.at(move_idx)->position_.previous_move_);
     node_ = ChooseChild(move_idx, std::move(node_));

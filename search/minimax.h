@@ -14,11 +14,12 @@ bool GameIsOver(const Node& node) { return node.children_.size() == 0; }
 }  // namespace
 
 template <typename Behaviour = Production>
-Evaluation minimax(const Node& node, const uint8_t depth,
+Evaluation minimax(Node& node, const uint8_t depth,
                    const Evaluation alpha_parent,
                    const Evaluation beta_parent) {
   if ((depth == 0) || GameIsOver(node)) {
-    return evaluate<Behaviour>(node.position_);
+    node.position_.evaluation_ = evaluate<Behaviour>(node.position_);
+    return *node.position_.evaluation_;
 
   } else if (node.position_.GetTurn() == Player::max) {
     Evaluation alpha{MIN_EVAL};
@@ -30,6 +31,7 @@ Evaluation minimax(const Node& node, const uint8_t depth,
         break;
       }
     }
+    node.position_.evaluation_ = alpha;
     return alpha;
 
   } else {
@@ -42,6 +44,7 @@ Evaluation minimax(const Node& node, const uint8_t depth,
         break;
       }
     }
+    node.position_.evaluation_ = beta;
     return beta;
   }
 }
