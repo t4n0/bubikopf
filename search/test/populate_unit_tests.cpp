@@ -1,3 +1,4 @@
+#include "search/minimax.h"
 #include "search/populate.h"
 
 #include "board/pieces.h"
@@ -16,15 +17,29 @@ class Populate_Fixture : public testing::Test {
 
 TEST_F(Populate_Fixture, GivenDepth1_Expect20children) {
   const int depth{1};
-  const auto t1 = std::chrono::high_resolution_clock::now();
+
+  const auto t1 = std::chrono::steady_clock::now();
   populate(*node_, depth);
-  const auto t2 = std::chrono::high_resolution_clock::now();
+  const auto t2 = std::chrono::steady_clock::now();
+  minimax(*node_, depth, MIN_EVAL, MAX_EVAL);
+  const auto t3 = std::chrono::steady_clock::now();
 
-  auto duration =
-      std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();
-
-  std::cout << "Populating with depth " << depth << " took " << duration
-            << " microsec\n";
+  const auto duration_populate =
+      std::chrono::duration<double, std::milli>(t2 - t1);
+  const auto duration_minimax =
+      std::chrono::duration<double, std::milli>(t3 - t2);
+  const int number_of_nodes = CountNodes(*node_);
+  const std::chrono::duration<double, std::micro> duration_populate_per_node =
+      duration_populate / number_of_nodes;
+  const std::chrono::duration<double, std::micro> duration_minimax_per_node =
+      duration_minimax / number_of_nodes;
+  std::cout << "Populating with depth " << depth << " took "
+            << duration_populate.count() << " millisec\n";
+  std::cout << "Minimax with depth " << depth << " took "
+            << duration_minimax.count() << " millisec\n";
+  std::cout << "Per node: " << duration_populate_per_node.count()
+            << " microsec populate and " << duration_minimax_per_node.count()
+            << " microsec minimax\n";
 
   EXPECT_TRUE(node_->children_.size() == 20);
 }
