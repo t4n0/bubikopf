@@ -1,15 +1,15 @@
 #ifndef BITBOARD_MOVE_GENERATION_H
 #define BITBOARD_MOVE_GENERATION_H
 
-#include "bitboard/move_list.h"
 #include "bitboard/position.h"
 
 #include <type_traits>
 
 namespace Chess {
 
-struct FindAllLegalMoves {
-  static constexpr bool find_all_legal_moves{true};
+/// @brief Type to preallocate array for move generation
+using move_list_t = std::array<move_t, 1000>;
+
 };
 
 /// @brief Generates all legal moves from position
