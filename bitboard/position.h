@@ -45,6 +45,9 @@ class PositionWithBitboards {
   void UnmakeMove(move_t move);
   bool WhiteToMove();
 
+  bitboard_t& operator[](const std::size_t index);
+  bitboard_t operator[](const std::size_t index) const;
+
   std::array<bitboard_t, 16> boards;
 };
 

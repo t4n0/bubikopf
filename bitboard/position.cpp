@@ -1,5 +1,7 @@
 #include "bitboard/position.h"
 
+#include <iostream>
+
 namespace Chess {
 
 bool PositionWithBitboards::WhiteToMove() {
@@ -12,6 +14,14 @@ void PositionWithBitboards::MakeMove(move_t /*unused*/) {
 
 void PositionWithBitboards::UnmakeMove(move_t /*unused*/) {
   // TODO: implement
+}
+
+bitboard_t& PositionWithBitboards::operator[](const std::size_t index) {
+  return boards[index];
+}
+
+bitboard_t PositionWithBitboards::operator[](const std::size_t index) const {
+  return boards[index];
 }
 
 }  // namespace Chess
