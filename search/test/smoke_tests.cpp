@@ -1,4 +1,6 @@
-#include "search/minimax.h"
+#include "search/test/evaluate_mock.h"
+#include "search/test/minimax_mock.h"
+#include "search/test/move_generation_mock.h"
 
 #include <gtest/gtest.h>
 
@@ -7,7 +9,7 @@
 namespace Chess {
 namespace {
 
-TEST(MinimaxBitBoardTest,
+TEST(MoveListTest,
      GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList) {
   // Setup
   PositionWithBitboards position{};

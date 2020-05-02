@@ -18,6 +18,16 @@ std::enable_if_t<Behaviour::is_mock, Evaluation> evaluate(
   return Behaviour::GetNodeValue(hidden_node_identifier);
 };
 
+struct EvaluteToZero {
+  static constexpr bool evaluate_to_zero{true};
+};
+
+template <typename Behaviour>
+std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(
+    const PositionWithBitboards& /*unused*/) {
+  return 0.0F;
+}
+
 }  // namespace Chess
 
 #endif

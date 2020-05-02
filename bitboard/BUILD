@@ -2,8 +2,8 @@ cc_library(
     name = "bitboard",
     srcs = [
         "move.h",
-        "position.h",
         "position.cpp",
+        "position.h",
     ],
     hdrs = [
         "move_generation.h",
