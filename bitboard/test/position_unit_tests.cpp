@@ -75,5 +75,25 @@ TEST(BoardIndxesTest,
   }
 }
 
+TEST(PositionWhiteToMove, GivenWhitesTurn_ExpectTrue) {
+  // Setup
+  PositionWithBitboards position{};
+  position.boards[BOARD_IDX_EXTRAS] = BOARD_ZEROS;
+  position.boards[BOARD_IDX_EXTRAS] |= BOARD_MASK_WHITE_TURN;
+
+  // Call & Expect
+  EXPECT_TRUE(position.WhiteToMove());
+}
+
+TEST(PositionWhiteToMove, GivenBlacksTurn_ExpectFalse) {
+  // Setup
+  PositionWithBitboards position{};
+  position.boards[BOARD_IDX_EXTRAS] = BOARD_ONES;
+  position.boards[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
+
+  // Call & Expect
+  EXPECT_FALSE(position.WhiteToMove());
+}
+
 }  // namespace
 }  // namespace Chess

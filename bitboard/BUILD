@@ -4,6 +4,7 @@ cc_library(
         "move.h",
         "move_list.h",
         "position.h",
+        "position.cpp",
     ],
     hdrs = [
         "move_generation.h",
