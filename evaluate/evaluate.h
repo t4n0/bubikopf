@@ -33,12 +33,12 @@ std::enable_if_t<Behaviour::is_concrete, Evaluation> evaluate(
   return evaluation;
 }
 
-struct AlwaysReturnZero {
-  static constexpr bool always_return_zero{true};
+struct EvaluteToZero {
+  static constexpr bool evaluate_to_zero{true};
 };
 
-template <typename Behaviour = AlwaysReturnZero>
-std::enable_if_t<Behaviour::always_return_zero, Evaluation> evaluate(
+template <typename Behaviour = EvaluteToZero>
+std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(
     const PositionWithBitboards& /*unused*/) {
   return 0.0F;
 }

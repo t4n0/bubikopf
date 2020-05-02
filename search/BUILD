@@ -14,6 +14,7 @@ cc_library(
         "//play:__pkg__",
     ],
     deps = [
+        "//bitboard",
         "//board",
         "//evaluate",
     ],
@@ -23,7 +24,8 @@ cc_test(
     name = "unit_tests",
     srcs = [
         "test/evaluate_mock.h",
-        "test/minimax_unit_tests.cpp",
+        "test/minimax_bitboard_unit_tests.cpp",
+        "test/minimax_unit_tests.cpp",        
         "test/node_unit_tests.cpp",
         "test/populate_unit_tests.cpp",
         "test/puzzle_tests.cpp",

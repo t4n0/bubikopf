@@ -22,19 +22,21 @@ GenerateMoves(const PositionWithBitboards& /*unused*/,
   return end_iterator_before_move_generation;
 }
 
-struct CreateTwoNullMoves {
-  static constexpr bool create_two_null_moves{true};
+struct GenerateTwoMovesWithUniqueDebugId {
+  static constexpr bool generate_two_moves_with_unique_debug_id{true};
 };
 
-template <typename Behavior = CreateTwoNullMoves>
-std::enable_if_t<Behavior::create_two_null_moves, move_list_t::iterator>
+template <typename Behavior = GenerateTwoMovesWithUniqueDebugId>
+std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id,
+                 move_list_t::iterator>
 GenerateMoves(const PositionWithBitboards& /*unused*/,
               const move_list_t::iterator end_iterator_before_move_generation) {
+  static move_t unique_id{1};
   move_list_t::iterator next_to_insert_iterator =
       end_iterator_before_move_generation;
-  *next_to_insert_iterator = move_t{1};
+  *next_to_insert_iterator = unique_id++;
   next_to_insert_iterator++;
-  *next_to_insert_iterator = move_t{1};
+  *next_to_insert_iterator = unique_id++;
   next_to_insert_iterator++;
   return next_to_insert_iterator;
 }
