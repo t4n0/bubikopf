@@ -11,15 +11,12 @@
 
 namespace Chess {
 
-namespace {
-bool GameIsOver(const Node& node) { return node.children_.size() == 0; }
-}  // namespace
-
 template <typename Behaviour = Production>
 Evaluation minimax(Node& node, const uint8_t depth,
                    const Evaluation alpha_parent,
                    const Evaluation beta_parent) {
-  if ((depth == 0) || GameIsOver(node)) {
+  const bool game_is_over = node.children_.size() == 0;
+  if ((depth == 0) || game_is_over) {
     node.position_.evaluation_ = evaluate<Behaviour>(node.position_);
     return *node.position_.evaluation_;
 
