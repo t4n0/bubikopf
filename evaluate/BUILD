@@ -6,7 +6,10 @@ cc_library(
         "//play:__pkg__",
         "//search:__pkg__",
     ],
-    deps = ["//board"],
+    deps = [
+        "//bitboard",
+        "//board",
+    ],
 )
 
 cc_test(

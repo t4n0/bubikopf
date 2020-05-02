@@ -1,6 +1,7 @@
 #ifndef EVALUATE_EVALUATE_H
 #define EVALUATE_EVALUATE_H
 
+#include "bitboard/position.h"
 #include "board/evaluation.h"
 #include "board/position.h"
 
@@ -30,6 +31,16 @@ std::enable_if_t<Behaviour::is_concrete, Evaluation> evaluate(
     evaluation += piece_values.at(square->GetId());
   }
   return evaluation;
+}
+
+struct AlwaysReturnZero {
+  static constexpr bool always_return_zero{true};
+};
+
+template <typename Behaviour = AlwaysReturnZero>
+std::enable_if_t<Behaviour::always_return_zero, Evaluation> evaluate(
+    const PositionWithBitboards& /*unused*/) {
+  return 0.0F;
 }
 
 }  // namespace Chess
