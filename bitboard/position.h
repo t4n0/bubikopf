@@ -2,6 +2,7 @@
 #define BITBOARD_POSITION_H
 
 #include "bitboard/move.h"
+#include "bitboard/pieces.h"
 
 #include <array>
 #include <cstdint>
@@ -15,14 +16,9 @@ constexpr bitboard_t BOARD_ONES = std::numeric_limits<bitboard_t>::max();
 constexpr bitboard_t BOARD_ZEROS = 0;
 
 constexpr std::size_t BOARD_IDX_EXTRAS = 0;
-constexpr std::size_t BOARD_IDX_WHITE = 1;
+constexpr std::size_t BOARD_IDX_WHITE =
+    1;  // Add to piece constant (e.g. PAWN) to get actual bitboard index
 constexpr std::size_t BOARD_IDX_BLACK = 9;
-constexpr std::size_t BOARD_IDX_PAWNS = 1;
-constexpr std::size_t BOARD_IDX_KNIGHTS = 2;
-constexpr std::size_t BOARD_IDX_BISHOPS = 3;
-constexpr std::size_t BOARD_IDX_ROOKS = 4;
-constexpr std::size_t BOARD_IDX_QUEENS = 5;
-constexpr std::size_t BOARD_IDX_KINGS = 6;
 constexpr std::size_t BOARD_IDX_ATTACK = 7;
 
 constexpr bitboard_t BOARD_MASK_STATIC_PLIES =

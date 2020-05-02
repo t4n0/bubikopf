@@ -1,5 +1,7 @@
 #include "bitboard/position.h"
 
+#include "bitboard/pieces.h"
+
 #include <iostream>
 
 namespace Chess {
