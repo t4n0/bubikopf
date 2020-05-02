@@ -58,5 +58,57 @@ TEST(Evaluate, GivenSamples_ExpectAllHold) {
   EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
 };
 
+TEST(EvaluteMaterial, GivenSamples_ExpectAllHold) {
+  PositionWithBitboards position{};
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_PAWNS] = 1;
+  Evaluation returned_evaluation{evaluate(position)};
+  EXPECT_EQ(std::get<float>(returned_evaluation), -1.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_PAWNS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_KNIGHTS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -3.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_KNIGHTS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_BISHOPS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -3.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_BISHOPS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_ROOKS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -5.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_ROOKS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_QUEENS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -9.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_QUEENS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+
+  position[BOARD_IDX_BLACK + BOARD_IDX_KINGS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), -100.0F);
+
+  position[BOARD_IDX_WHITE + BOARD_IDX_KINGS] = 1;
+  returned_evaluation = evaluate(position);
+  EXPECT_EQ(std::get<float>(returned_evaluation), 0.0F);
+};
+
 }  // namespace
 }  // namespace Chess

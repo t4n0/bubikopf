@@ -4,6 +4,7 @@
 #include "bitboard/position.h"
 #include "board/evaluation.h"
 #include "board/position.h"
+#include "hardware/population_count.h"
 
 #include <map>
 #include <type_traits>
@@ -39,9 +40,24 @@ struct EvaluteMaterial {
 
 template <typename Behaviour = EvaluteMaterial>
 std::enable_if_t<Behaviour::evaluate_material, Evaluation> evaluate(
-    const PositionWithBitboards& /*unused*/) {
-  // TODO: implement
-  return 0.0F;
+    const PositionWithBitboards& position) {
+  float evaluation = 0.0F;
+  // clang-format off
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_PAWNS])     * 1.0F;
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_KNIGHTS])   * 3.0F;
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_BISHOPS])   * 3.0F;
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_ROOKS])     * 5.0F;
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_QUEENS])    * 9.0F;
+  evaluation += popcnt(position[BOARD_IDX_WHITE + BOARD_IDX_KINGS])   * 100.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_PAWNS])    * -1.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_KNIGHTS])  * -3.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_BISHOPS])  * -3.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_ROOKS])    * -5.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_QUEENS])   * -9.0F;
+  evaluation += popcnt(position[BOARD_IDX_BLACK + BOARD_IDX_KINGS])  * -100.0F;
+  // clang-format on
+
+  return Evaluation{evaluation};
 }
 
 }  // namespace Chess

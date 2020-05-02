@@ -9,6 +9,7 @@ cc_library(
     deps = [
         "//bitboard",
         "//board",
+        "//hardware",
     ],
 )
 
