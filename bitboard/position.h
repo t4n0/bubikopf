@@ -11,12 +11,12 @@
 
 namespace Chess {
 
-constexpr bitboard_t BOARD_ONES = std::numeric_limits<bitboard_t>::max();
 constexpr bitboard_t BOARD_ZEROS = 0;
+constexpr bitboard_t BOARD_ONE = 1;
+constexpr bitboard_t BOARD_ONES = std::numeric_limits<bitboard_t>::max();
 
 constexpr std::size_t BOARD_IDX_EXTRAS = 0;
-constexpr std::size_t BOARD_IDX_BLACK =
-    1;  // Add to piece constant (e.g. PAWN) to get actual bitboard index
+constexpr std::size_t BOARD_IDX_BLACK = 1;
 constexpr std::size_t BOARD_IDX_WHITE = 9;
 constexpr std::size_t BOARD_IDX_ATTACK = 7;
 
