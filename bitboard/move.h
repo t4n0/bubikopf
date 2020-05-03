@@ -1,12 +1,12 @@
 #ifndef BITBOARD_MOVE_H
 #define BITBOARD_MOVE_H
 
+#include "bitboard/basic_type_declarations.h"
+
 #include <cstdint>
 #include <limits>
 
 namespace Chess {
-
-using move_t = uint32_t;
 
 /// All bits set to one for move_t
 constexpr move_t MOVE_ONES = std::numeric_limits<move_t>::max();

@@ -1,6 +1,7 @@
 #ifndef BITBOARD_POSITION_H
 #define BITBOARD_POSITION_H
 
+#include "bitboard/basic_type_declarations.h"
 #include "bitboard/move.h"
 #include "bitboard/pieces.h"
 
@@ -9,8 +10,6 @@
 #include <limits>
 
 namespace Chess {
-
-using bitboard_t = uint64_t;
 
 constexpr bitboard_t BOARD_ONES = std::numeric_limits<bitboard_t>::max();
 constexpr bitboard_t BOARD_ZEROS = 0;
