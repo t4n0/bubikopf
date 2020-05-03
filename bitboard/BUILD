@@ -6,6 +6,7 @@ cc_library(
         "pieces.h",
         "position.cpp",
         "position.h",
+        "squares.h",
     ],
     hdrs = [
         "move_generation.h",
@@ -22,6 +23,7 @@ cc_test(
     srcs = [
         "test/move_unit_tests.cpp",
         "test/position_unit_tests.cpp",
+        "test/squares_unit_tests.cpp",
     ],
     visibility = ["//:__pkg__"],
     deps = [
