@@ -93,7 +93,7 @@ TEST(PositionWhiteToMove, GivenBlacksTurn_ExpectFalse) {
   // Setup
   PositionWithBitboards position{};
   position.boards[BOARD_IDX_EXTRAS] = BOARD_ONES;
-  position.boards[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
+  position.boards[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_WHITE_TURN;
 
   // Call & Expect
   EXPECT_FALSE(position.WhiteToMove());
