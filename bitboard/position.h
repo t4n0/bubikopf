@@ -33,7 +33,6 @@ constexpr bitboard_t BOARD_MASK_UNUSED =
 
 constexpr int BOARD_SHIFT_EN_PASSENT = 8;
 constexpr int BOARD_SHIFT_CASTLING = 16;
-constexpr int BOARD_SHIFT_WHITE_TURN = 24;
 
 class PositionWithBitboards {
  public:

@@ -47,10 +47,6 @@ TEST(BoardShiftCastlingTest, GivenOnAllOnes_Expect4) {
             0b00001111);
 }
 
-TEST(BoardShiftWhiteTurnTest, GivenOnAllOnes_Expect8) {
-  EXPECT_EQ((BOARD_ONES & BOARD_MASK_WHITE_TURN) >> BOARD_SHIFT_WHITE_TURN, 8);
-}
-
 TEST(BoardIndxesTest,
      GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumber) {
   PositionWithBitboards unit{};
