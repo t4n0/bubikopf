@@ -19,6 +19,8 @@ constexpr std::size_t BOARD_IDX_EXTRAS = 0;
 constexpr std::size_t BOARD_IDX_BLACK = 1;
 constexpr std::size_t BOARD_IDX_WHITE = 9;
 constexpr std::size_t BOARD_IDX_ATTACK = 7;
+constexpr std::size_t BOARD_IDX_BLACK_AND_WHITE_ADDED =
+    BOARD_IDX_BLACK + BOARD_IDX_WHITE;
 
 constexpr bitboard_t BOARD_MASK_STATIC_PLIES =
     0b00000000'00000000'00000000'00000000'00000000'00000000'00000000'00111111;
@@ -27,9 +29,9 @@ constexpr bitboard_t BOARD_MASK_EN_PASSENT =
 constexpr bitboard_t BOARD_MASK_CASTLING =
     0b00000000'00000000'00000000'00000000'00000000'00001111'00000000'00000000;
 constexpr bitboard_t BOARD_MASK_WHITE_TURN =
-    0b00000000'00000000'00000000'00000000'00001000'00000000'00000000'00000000;
+    0b00000000'00000000'00000000'00000000'00000001'00000000'00000000'00000000;
 constexpr bitboard_t BOARD_MASK_UNUSED =
-    0b11111111'11111111'11111111'11111111'11110111'11110000'11000000'11000000;
+    0b11111111'11111111'11111111'11111111'11111110'11110000'11000000'11000000;
 
 constexpr int BOARD_SHIFT_EN_PASSENT = 8;
 constexpr int BOARD_SHIFT_CASTLING = 16;
@@ -44,6 +46,11 @@ class PositionWithBitboards {
   bitboard_t operator[](const std::size_t index) const;
 
   std::array<bitboard_t, 16> boards;
+
+ private:
+  std::array<bitboard_t, 40> extras_history;
+  std::array<bitboard_t, 40>::iterator extras_history_insertion_iterator{
+      extras_history.begin()};
 };
 
 }  // namespace Chess
