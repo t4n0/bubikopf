@@ -1,6 +1,8 @@
 cc_library(
     name = "hardware",
-    hdrs = ["population_count.h"],
-    copts = ["-mpopcnt"],
+    hdrs = [
+        "population_count.h",
+        "trailing_zeros_count.h",
+    ],
     visibility = ["//visibility:public"],
 )
