@@ -34,7 +34,7 @@ minimax(const uint8_t depth, PositionWithBitboards& position,
     return position.WhiteToMove() ? MIN_EVAL : MAX_EVAL;
   }
 
-  else if (position.WhiteToMove()) {
+  if (position.WhiteToMove()) {
     Evaluation max_eval{MIN_EVAL};
     for (move_list_t::iterator child_move_iterator =
              end_iterator_before_move_generation;
