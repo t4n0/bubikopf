@@ -16,12 +16,14 @@ cc_library(
         "//evaluate:__pkg__",
         "//search:__pkg__",
     ],
+    deps = ["//hardware"],
 )
 
 cc_test(
     name = "unit_tests",
     srcs = [
         "test/move_unit_tests.cpp",
+        "test/position_make_unmake_unit_tests.cpp",
         "test/position_unit_tests.cpp",
         "test/squares_unit_tests.cpp",
     ],

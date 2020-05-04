@@ -16,8 +16,8 @@ void PositionWithBitboards::MakeMove(move_t move) {
   extras_history_insertion_iterator_++;
 
   const std::size_t board_idx_attacking_side =
-      boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN ? BOARD_IDX_BLACK
-                                                        : BOARD_IDX_WHITE;
+      boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN ? BOARD_IDX_WHITE
+                                                        : BOARD_IDX_BLACK;
   const std::size_t board_idx_attacking_piece_kind =
       board_idx_attacking_side +
       ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
@@ -25,7 +25,7 @@ void PositionWithBitboards::MakeMove(move_t move) {
   const bitboard_t source = BOARD_ONE << (move & MOVE_MASK_SOURCE);
   const bitboard_t target = BOARD_ONE
                             << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
-  const bitboard_t source_and_target = source ^ target;
+  const bitboard_t source_and_target = source | target;
 
   boards_[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
   boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSENT;
@@ -57,49 +57,75 @@ void PositionWithBitboards::MakeMove(move_t move) {
     }
     case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
       boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-      boards_[BOARD_IDX_EXTRAS] |= (source_and_target >> 1)  // source+target/2
-                                   << BOARD_SHIFT_EN_PASSENT;
+      const move_t source_bit = move & MOVE_MASK_SOURCE;
+      const move_t target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
+      boards_[BOARD_IDX_EXTRAS] |=
+          ((source_bit + target_bit) >> 1)
+          << BOARD_SHIFT_EN_PASSENT;  // (source_bit+target_bit)/2
       boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
       return;
     }
     case MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE: {
       const std::size_t board_idx_harmed_side =
           BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
-      const std::size_t board_idx_captured_piece_kind =
-          board_idx_harmed_side +
-          ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
       const bitboard_t en_passant_victim =
-          (source ^ (source << 1) ^ (source >> 1)) &
-          (target ^ (target << 8) ^
-           ((target >> 8)));  // intersection of vertical and horizontal
+          BOARD_ONE
+          << ((*(extras_history_insertion_iterator_ - 1) &
+               BOARD_MASK_EN_PASSENT) >>
+              BOARD_SHIFT_EN_PASSENT);  // En-passent bit mask erased at
+                                        // function entry. Get from history.
       boards_[board_idx_attacking_piece_kind] ^= source_and_target;
       boards_[board_idx_harmed_side] &= ~en_passant_victim;
-      boards_[board_idx_captured_piece_kind] &= ~en_passant_victim;
+      boards_[board_idx_harmed_side + PAWN] &= ~en_passant_victim;
       boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
       return;
     }
-    case MOVE_VALUE_TYPE_KINGSIDE: {
-      constexpr bitboard_t source_and_target_rook_jump_white = F1 ^ H1;
-      constexpr bitboard_t source_and_target_rook_jump_black = F8 ^ H8;
-      const bitboard_t source_and_target_rook_jump =
+    case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
+      const bitboard_t source_rook = target >> 1;
+      const bitboard_t target_rook = target << 1;
+      const bitboard_t source_and_target_rook_jump = source_rook | target_rook;
+      const bitboard_t board_mask_castling =
           board_idx_attacking_side == BOARD_IDX_WHITE
-              ? source_and_target_rook_jump_white
-              : source_and_target_rook_jump_black;
+              ? BOARD_VALUE_CASTLING_WHITE_KINGSIDE
+              : BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
       boards_[board_idx_attacking_piece_kind] ^= source_and_target;
       boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
       boards_[BOARD_IDX_EXTRAS]++;
+      boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
       return;
     }
-    case MOVE_VALUE_TYPE_QUEENSIDE: {
-      constexpr bitboard_t source_and_target_rook_jump_white = A1 ^ D1;
-      constexpr bitboard_t source_and_target_rook_jump_black = A8 ^ D8;
-      const bitboard_t source_and_target_rook_jump =
+    case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
+      const bitboard_t source_rook = target << 2;
+      const bitboard_t target_rook = target >> 1;
+      const bitboard_t source_and_target_rook_jump = source_rook | target_rook;
+      const bitboard_t board_mask_castling =
           board_idx_attacking_side == BOARD_IDX_WHITE
-              ? source_and_target_rook_jump_white
-              : source_and_target_rook_jump_black;
+              ? BOARD_VALUE_CASTLING_WHITE_QUEENSIDE
+              : BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
       boards_[board_idx_attacking_piece_kind] ^= source_and_target;
       boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
       boards_[BOARD_IDX_EXTRAS]++;
+      boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
+      return;
+    }
+    case MOVE_VALUE_TYPE_KINGSIDE_ROOK: {
+      const bitboard_t board_mask_castling =
+          board_idx_attacking_side == BOARD_IDX_WHITE
+              ? BOARD_VALUE_CASTLING_WHITE_KINGSIDE
+              : BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
+      boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+      boards_[BOARD_IDX_EXTRAS]++;
+      boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
+      return;
+    }
+    case MOVE_VALUE_TYPE_QUEENSIDE_ROOK: {
+      const bitboard_t board_mask_castling =
+          board_idx_attacking_side == BOARD_IDX_WHITE
+              ? BOARD_VALUE_CASTLING_WHITE_QUEENSIDE
+              : BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+      boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+      boards_[BOARD_IDX_EXTRAS]++;
+      boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
       return;
     }
     case MOVE_VALUE_TYPE_PROMOTION: {
@@ -107,24 +133,17 @@ void PositionWithBitboards::MakeMove(move_t move) {
           board_idx_attacking_side +
           ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
       boards_[board_idx_attacking_piece_kind] &= ~source;
-      boards_[board_idx_added_piece_kind] ^= target;
+      boards_[board_idx_added_piece_kind] |= target;
       boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
-      return;
-    }
-    case MOVE_VALUE_TYPE_PROMOTION_CAPTURE: {
-      const std::size_t board_idx_harmed_side =
-          BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
-      const std::size_t board_idx_captured_piece_kind =
-          board_idx_harmed_side +
-          ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
-      const std::size_t board_idx_added_piece_kind =
-          board_idx_attacking_side +
-          ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
-      boards_[board_idx_attacking_piece_kind] &= ~source;
-      boards_[board_idx_added_piece_kind] ^= target;
-      boards_[board_idx_harmed_side] &= ~target;
-      boards_[board_idx_captured_piece_kind] &= ~target;
-      boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
+      const move_t capture = move & MOVE_MASK_CAPTURED_PIECE;
+      if (capture) {
+        const std::size_t board_idx_harmed_side =
+            BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+        const std::size_t board_idx_captured_piece_kind =
+            board_idx_harmed_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
+        boards_[board_idx_harmed_side] &= ~target;
+        boards_[board_idx_captured_piece_kind] &= ~target;
+      }
       return;
     }
   }
