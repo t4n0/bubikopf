@@ -38,6 +38,9 @@ constexpr int BOARD_SHIFT_CASTLING = 16;
 
 class PositionWithBitboards {
  public:
+  PositionWithBitboards() {}
+  PositionWithBitboards(const std::array<bitboard_t, 16>& boards)
+      : boards_(boards) {}
   void MakeMove(move_t move);
   void UnmakeMove(move_t move);
   bool WhiteToMove();
@@ -45,10 +48,8 @@ class PositionWithBitboards {
   bitboard_t& operator[](const std::size_t index);
   bitboard_t operator[](const std::size_t index) const;
 
-  std::array<bitboard_t, 16> boards_;
-
- private:
-  std::array<bitboard_t, 40> extras_history_;
+  std::array<bitboard_t, 16> boards_{};
+  std::array<bitboard_t, 40> extras_history_{};
   std::array<bitboard_t, 40>::iterator extras_history_insertion_iterator_{
       extras_history_.begin()};
 };
