@@ -45,12 +45,12 @@ class PositionWithBitboards {
   bitboard_t& operator[](const std::size_t index);
   bitboard_t operator[](const std::size_t index) const;
 
-  std::array<bitboard_t, 16> boards;
+  std::array<bitboard_t, 16> boards_;
 
  private:
-  std::array<bitboard_t, 40> extras_history;
-  std::array<bitboard_t, 40>::iterator extras_history_insertion_iterator{
-      extras_history.begin()};
+  std::array<bitboard_t, 40> extras_history_;
+  std::array<bitboard_t, 40>::iterator extras_history_insertion_iterator_{
+      extras_history_.begin()};
 };
 
 }  // namespace Chess
