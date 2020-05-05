@@ -8,10 +8,10 @@
 namespace Chess {
 namespace {
 
-constexpr std::array<move_t, 8> ALL_MOVE_MASKS{
-    MOVE_MASK_SOURCE,      MOVE_MASK_TARGET,         MOVE_MASK_STATIC,
-    MOVE_MASK_MOVED_PIECE, MOVE_MASK_CAPTURED_PIECE, MOVE_MASK_PROMOTION,
-    MOVE_MASK_TYPE,        MOVE_MASK_UNUSED,
+constexpr std::array<move_t, 7> ALL_MOVE_MASKS{
+    MOVE_MASK_SOURCE,         MOVE_MASK_TARGET,    MOVE_MASK_MOVED_PIECE,
+    MOVE_MASK_CAPTURED_PIECE, MOVE_MASK_PROMOTION, MOVE_MASK_TYPE,
+    MOVE_MASK_UNUSED,
 };
 
 // Mask tests
@@ -70,10 +70,6 @@ INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture,
 // Shift tests
 TEST(MoveShiftTargetTest, GivenOnAllOnes_Expect64) {
   EXPECT_EQ((MOVE_ONES & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET, 0b00111111);
-}
-
-TEST(MoveShiftStaticTest, GivenOnAllOnes_Expect64) {
-  EXPECT_EQ((MOVE_ONES & MOVE_MASK_STATIC) >> MOVE_SHIFT_STATIC, 0b00111111);
 }
 
 TEST(MoveShiftExtrasCapturedPieceTest, GivenOnAllOnes_Expect64) {

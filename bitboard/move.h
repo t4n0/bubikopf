@@ -13,12 +13,11 @@ constexpr move_t MOVE_ONES = std::numeric_limits<move_t>::max();
 // clang-format off
 constexpr move_t MOVE_MASK_SOURCE =                   0b00000000'00000000'00000000'00111111;
 constexpr move_t MOVE_MASK_TARGET =                   0b00000000'00000000'00001111'11000000;
-constexpr move_t MOVE_MASK_STATIC =                   0b00000000'00000011'11110000'00000000;
 constexpr move_t MOVE_MASK_MOVED_PIECE =              0b00000000'00011100'00000000'00000000;
 constexpr move_t MOVE_MASK_CAPTURED_PIECE =           0b00000000'11100000'00000000'00000000;
 constexpr move_t MOVE_MASK_PROMOTION =                0b00000111'00000000'00000000'00000000;
 constexpr move_t MOVE_MASK_TYPE =                     0b01111000'00000000'00000000'00000000;
-constexpr move_t MOVE_MASK_UNUSED =                   0b10000000'00000000'00000000'00000000;
+constexpr move_t MOVE_MASK_UNUSED =                   0b10000000'00000011'11110000'00000000;
 
 constexpr move_t MOVE_VALUE_TYPE_QUIET_NON_PAWN =     0b00000000'00000000'00000000'00000000;
 constexpr move_t MOVE_VALUE_TYPE_CAPTURE =            0b00001000'00000000'00000000'00000000;
