@@ -7,26 +7,26 @@
 namespace Chess {
 namespace {
 
-constexpr std::array<bitboard_t, 5> ALL_BOARD_MASKS{
+constexpr std::array<Bitboard, 5> ALL_BOARD_MASKS{
     BOARD_MASK_STATIC_PLIES, BOARD_MASK_EN_PASSENT, BOARD_MASK_CASTLING,
     BOARD_MASK_WHITE_TURN,   BOARD_MASK_UNUSED,
 };
 
 TEST(BoardMaskTest,
      GivenAllBoardMasks_ExpectEntireRangeOfUnderlyingTypeIsUtilized) {
-  bitboard_t covered_fields = 0;
-  for (const bitboard_t mask : ALL_BOARD_MASKS) {
+  Bitboard covered_fields = 0;
+  for (const Bitboard mask : ALL_BOARD_MASKS) {
     covered_fields |= mask;
   }
-  EXPECT_EQ(covered_fields, std::numeric_limits<bitboard_t>::max());
+  EXPECT_EQ(covered_fields, std::numeric_limits<Bitboard>::max());
 }
 
 class BoardMaskFixture
-    : public ::testing::TestWithParam<std::tuple<bitboard_t, bitboard_t>> {};
+    : public ::testing::TestWithParam<std::tuple<Bitboard, Bitboard>> {};
 
 TEST_P(BoardMaskFixture, GivenTwoDifferentMoveMasks_ExpectNoOverlap) {
-  const bitboard_t first = std::get<0>(GetParam());
-  const bitboard_t second = std::get<1>(GetParam());
+  const Bitboard first = std::get<0>(GetParam());
+  const Bitboard second = std::get<1>(GetParam());
   if (first != second) {  // only check permutations with different masks
     EXPECT_FALSE(first & second);
   }
@@ -68,8 +68,8 @@ TEST(BoardIndxesTest,
   unit.boards_[BOARD_IDX_WHITE + KING] = 16;
   unit.boards_[BOARD_IDX_WHITE + BOARD_IDX_ATTACK] = 17;
 
-  bitboard_t expected_unique_number = 1;
-  for (bitboard_t board : unit.boards_) {
+  Bitboard expected_unique_number = 1;
+  for (Bitboard board : unit.boards_) {
     EXPECT_EQ(board, expected_unique_number);
     expected_unique_number++;
   }

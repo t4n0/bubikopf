@@ -16,7 +16,7 @@ std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id,
                  move_list_t::iterator>
 GenerateMoves(const PositionWithBitboards& /*unused*/,
               const move_list_t::iterator end_iterator_before_move_generation) {
-  static move_t unique_id{1};
+  static Bitmove unique_id{1};
   move_list_t::iterator next_to_insert_iterator =
       end_iterator_before_move_generation;
   *next_to_insert_iterator = unique_id++;

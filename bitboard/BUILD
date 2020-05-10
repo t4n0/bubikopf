@@ -2,6 +2,7 @@ cc_library(
     name = "bitboard",
     srcs = [
         "basic_type_declarations.h",
+        "board.h",
         "move.h",
         "pieces.h",
         "position.cpp",

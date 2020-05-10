@@ -8,7 +8,7 @@
 namespace Chess {
 
 /// @brief Type to preallocate array for move generation
-using move_list_t = std::array<move_t, 1000>;
+using move_list_t = std::array<Bitmove, 1000>;
 
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///

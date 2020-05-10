@@ -30,16 +30,16 @@ TEST(
     PositionMakeMoveFixture,
     GivenAnyMove_ExpectSideSwitchedAndHistoryAppendedAndEnPassentClearedAndAttackingPieceMoved) {
   // Setup
-  const bitboard_t source = C3;
-  const bitboard_t target = E5;
-  const bitboard_t extras = BOARD_MASK_WHITE_TURN;
+  const Bitboard source = C3;
+  const Bitboard target = E5;
+  const Bitboard extras = BOARD_MASK_WHITE_TURN;
   PositionWithBitboards position{
       {extras, 1, 2, 3, 4, 5, 6, 7, 8, source, 10, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t any_move = source_bit | (target_bit << MOVE_SHIFT_TARGET) |
-                          (BISHOP << MOVE_SHIFT_MOVED_PIECE);
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove any_move = source_bit | (target_bit << MOVE_SHIFT_TARGET) |
+                           (BISHOP << MOVE_SHIFT_MOVED_PIECE);
 
   const PositionWithBitboards position_prior_make_move{position};
 
@@ -64,16 +64,16 @@ TEST(
     PositionMakeMoveFixture,
     GivenQuietNonPawn_ExpectAttackingPieceMovedAndIncrementedStaticPliesCount) {
   // Setup
-  const bitboard_t source = H1;
-  const bitboard_t target = G3;
-  const bitboard_t static_plies = 7;
-  const bitboard_t extras = BOARD_MASK_WHITE_TURN | static_plies;
+  const Bitboard source = H1;
+  const Bitboard target = G3;
+  const Bitboard static_plies = 7;
+  const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies;
   PositionWithBitboards position{
       {extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, source, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t quiet_non_pawn_move =
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove quiet_non_pawn_move =
       MOVE_VALUE_TYPE_QUIET_NON_PAWN | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KNIGHT << MOVE_SHIFT_MOVED_PIECE);
 
@@ -99,16 +99,16 @@ TEST(
     PositionMakeMoveFixture,
     GivenCapture_ExpectAttackingPieceMovedAndHarmedPieceRemovedAndStaticPliesCountReset) {
   // Setup
-  const bitboard_t static_plies = 8;
-  const bitboard_t source = D1;
-  const bitboard_t target = D5;
-  const bitboard_t extras = static_plies;
+  const Bitboard static_plies = 8;
+  const Bitboard source = D1;
+  const Bitboard target = D5;
+  const Bitboard extras = static_plies;
   PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, source, 7, 8, target,
                                   target, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t capture_move =
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove capture_move =
       MOVE_VALUE_TYPE_CAPTURE | source_bit | (target_bit << MOVE_SHIFT_TARGET) |
       (QUEEN << MOVE_SHIFT_MOVED_PIECE) | (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
 
@@ -134,18 +134,18 @@ TEST(
 TEST(PositionMakeMoveFixture,
      GivenPawnPush_ExpectAttackingPieceMovedAndStaticPliesCountReset) {
   // Setup
-  const bitboard_t source = F2;
-  const bitboard_t target = F3;
-  const bitboard_t static_plies = 9;
-  const bitboard_t extras = static_plies;
+  const Bitboard source = F2;
+  const Bitboard target = F3;
+  const Bitboard static_plies = 9;
+  const Bitboard extras = static_plies;
   PositionWithBitboards position{{extras, source, source, 3, 4, 5, 6, 7, 8, 9,
                                   10, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t single_push = MOVE_VALUE_TYPE_PAWN_PUSH | source_bit |
-                             (target_bit << MOVE_SHIFT_TARGET) |
-                             (PAWN << MOVE_SHIFT_MOVED_PIECE);
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove single_push = MOVE_VALUE_TYPE_PAWN_PUSH | source_bit |
+                              (target_bit << MOVE_SHIFT_TARGET) |
+                              (PAWN << MOVE_SHIFT_MOVED_PIECE);
 
   const PositionWithBitboards position_prior_make_move{position};
 
@@ -168,19 +168,19 @@ TEST(
     PositionMakeMoveFixture,
     GivenPawnDoublePush_ExpectAttackingPieceMovedAndStaticPliesCountResetAndEnpassentSet) {
   // Setup
-  const bitboard_t source = F2;
-  const bitboard_t target = F4;
-  const bitboard_t static_plies = 10;
-  const bitboard_t extras = BOARD_MASK_WHITE_TURN | static_plies;
+  const Bitboard source = F2;
+  const Bitboard target = F4;
+  const Bitboard static_plies = 10;
+  const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies;
   PositionWithBitboards position{
       {extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, source, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t en_passent_bit = tzcnt(F3);
-  const move_t double_push = MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH | source_bit |
-                             (target_bit << MOVE_SHIFT_TARGET) |
-                             (PAWN << MOVE_SHIFT_MOVED_PIECE);
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove en_passent_bit = tzcnt(F3);
+  const Bitmove double_push = MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH | source_bit |
+                              (target_bit << MOVE_SHIFT_TARGET) |
+                              (PAWN << MOVE_SHIFT_MOVED_PIECE);
 
   const PositionWithBitboards position_prior_make_move{position};
 
@@ -206,19 +206,19 @@ TEST(
     PositionMakeMoveFixture,
     GivenEnPassentCapture_ExpectAttackingPieceMovedAndHarmedPawnRemovedAndStaticPliesCountReset) {
   // Setup
-  const bitboard_t source = H6;
-  const bitboard_t target = G7;
-  const bitboard_t harmed = G6;
-  const bitboard_t harmed_bit = tzcnt(harmed);
-  const bitboard_t static_plies = 11;
-  const bitboard_t extras = BOARD_MASK_WHITE_TURN | static_plies |
-                            (harmed_bit << BOARD_SHIFT_EN_PASSENT);
+  const Bitboard source = H6;
+  const Bitboard target = G7;
+  const Bitboard harmed = G6;
+  const Bitboard harmed_bit = tzcnt(harmed);
+  const Bitboard static_plies = 11;
+  const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies |
+                          (harmed_bit << BOARD_SHIFT_EN_PASSENT);
   PositionWithBitboards position{{extras, harmed, harmed, 3, 4, 5, 6, 7, 8, 9,
                                   source, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t en_passent_capture =
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove en_passent_capture =
       MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE) |
       (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
@@ -247,19 +247,19 @@ TEST(
     PositionMakeMoveFixture,
     GivenKingsideCastling_ExpectKingAndRookMovedAndStaticPliesIncrementedAndCastlingRightsRevoked) {
   // Setup
-  const bitboard_t source_king = E1;
-  const bitboard_t target_king = G1;
-  const bitboard_t source_rook = H1;
-  const bitboard_t target_rook = F1;
-  const bitboard_t static_plies = 12;
-  const bitboard_t extras = static_plies | BOARD_MASK_WHITE_TURN |
-                            BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
+  const Bitboard source_king = E1;
+  const Bitboard target_king = G1;
+  const Bitboard source_rook = H1;
+  const Bitboard target_rook = F1;
+  const Bitboard static_plies = 12;
+  const Bitboard extras = static_plies | BOARD_MASK_WHITE_TURN |
+                          BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
   PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                                   source_rook, 14, source_king, 16}};
 
-  const move_t source_bit = tzcnt(source_king);
-  const move_t target_bit = tzcnt(target_king);
-  const move_t kingside_castling =
+  const Bitmove source_bit = tzcnt(source_king);
+  const Bitmove target_bit = tzcnt(target_king);
+  const Bitmove kingside_castling =
       MOVE_VALUE_TYPE_KINGSIDE_CASTLING | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KING << MOVE_SHIFT_MOVED_PIECE);
 
@@ -288,19 +288,19 @@ TEST(
     PositionMakeMoveFixture,
     GivenQueensideCastling_ExpectKingAndRookMovedAndStaticPliesIncrementedAndCastlingRightsRevoked) {
   // Setup
-  const bitboard_t source_king = E8;
-  const bitboard_t target_king = C8;
-  const bitboard_t source_rook = A8;
-  const bitboard_t target_rook = D8;
-  const bitboard_t static_plies = 13;
-  const bitboard_t extras = static_plies | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+  const Bitboard source_king = E8;
+  const Bitboard target_king = C8;
+  const Bitboard source_rook = A8;
+  const Bitboard target_rook = D8;
+  const Bitboard static_plies = 13;
+  const Bitboard extras = static_plies | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
   PositionWithBitboards position{{extras, 1, 2, 3, 4, source_rook, 6,
                                   source_king, 8, 9, 10, 11, 12, 13, 14, 15,
                                   16}};
 
-  const move_t source_bit = tzcnt(source_king);
-  const move_t target_bit = tzcnt(target_king);
-  const move_t queenside_castling =
+  const Bitmove source_bit = tzcnt(source_king);
+  const Bitmove target_bit = tzcnt(target_king);
+  const Bitmove queenside_castling =
       MOVE_VALUE_TYPE_QUEENSIDE_CASTLING | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KING << MOVE_SHIFT_MOVED_PIECE);
 
@@ -329,19 +329,19 @@ TEST(
     PositionMakeMoveFixture,
     GivenKingsideRook_ExpectPieceMovedAndIncrementedStaticPliesCountAndCastlingRightsRevoked) {
   // Setup
-  const bitboard_t source = H1;
-  const bitboard_t target = G1;
-  const bitboard_t static_plies = 20;
-  const bitboard_t extras = BOARD_MASK_WHITE_TURN | static_plies |
-                            BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
+  const Bitboard source = H1;
+  const Bitboard target = G1;
+  const Bitboard static_plies = 20;
+  const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies |
+                          BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
   PositionWithBitboards position{
       {extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, source, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t kingside_rook_move = MOVE_VALUE_TYPE_KINGSIDE_ROOK | source_bit |
-                                    (target_bit << MOVE_SHIFT_TARGET) |
-                                    (ROOK << MOVE_SHIFT_MOVED_PIECE);
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove kingside_rook_move =
+      MOVE_VALUE_TYPE_KINGSIDE_ROOK | source_bit |
+      (target_bit << MOVE_SHIFT_TARGET) | (ROOK << MOVE_SHIFT_MOVED_PIECE);
 
   const PositionWithBitboards position_prior_make_move{position};
 
@@ -367,16 +367,16 @@ TEST(
     PositionMakeMoveFixture,
     GivenQueensideRook_ExpectPieceMovedAndIncrementedStaticPliesCountAndCastlingRightsRevoked) {
   // Setup
-  const bitboard_t source = H1;
-  const bitboard_t target = G1;
-  const bitboard_t static_plies = 20;
-  const bitboard_t extras = static_plies | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+  const Bitboard source = H1;
+  const Bitboard target = G1;
+  const Bitboard static_plies = 20;
+  const Bitboard extras = static_plies | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
   PositionWithBitboards position{
       {extras, 1, 2, 3, 4, source, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t queenside_rook_move =
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove queenside_rook_move =
       MOVE_VALUE_TYPE_QUEENSIDE_ROOK | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (ROOK << MOVE_SHIFT_MOVED_PIECE);
 
@@ -403,19 +403,19 @@ TEST(
 TEST(PositionMakeMoveFixture,
      GivenPromotion_ExpectPieceMovedAndStaticPliesReset) {
   // Setup
-  const bitboard_t source = H2;
-  const bitboard_t target = H1;
-  const bitboard_t static_plies = 30;
-  const bitboard_t extras = static_plies;
+  const Bitboard source = H2;
+  const Bitboard target = H1;
+  const Bitboard static_plies = 30;
+  const Bitboard extras = static_plies;
   PositionWithBitboards position{
       {extras, 1, source, 3, 4, 5, 0, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t promotion_move = MOVE_VALUE_TYPE_PROMOTION | source_bit |
-                                (target_bit << MOVE_SHIFT_TARGET) |
-                                (PAWN << MOVE_SHIFT_MOVED_PIECE) |
-                                (QUEEN << MOVE_SHIFT_PROMOTION);
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove promotion_move = MOVE_VALUE_TYPE_PROMOTION | source_bit |
+                                 (target_bit << MOVE_SHIFT_TARGET) |
+                                 (PAWN << MOVE_SHIFT_MOVED_PIECE) |
+                                 (QUEEN << MOVE_SHIFT_PROMOTION);
 
   const PositionWithBitboards position_prior_make_move{position};
 
@@ -438,16 +438,16 @@ TEST(PositionMakeMoveFixture,
 TEST(PositionMakeMoveFixture,
      GivenPromotionCapture_ExpectPieceMovedAndStaticPliesReset) {
   // Setup
-  const bitboard_t source = B7;
-  const bitboard_t target = B8;
-  const bitboard_t static_plies = 31;
-  const bitboard_t extras = static_plies | BOARD_MASK_WHITE_TURN;
+  const Bitboard source = B7;
+  const Bitboard target = B8;
+  const Bitboard static_plies = 31;
+  const Bitboard extras = static_plies | BOARD_MASK_WHITE_TURN;
   PositionWithBitboards position{{extras, target, 2, 3, target, 5, 6, 7, 8, 9,
                                   source, 11, 12, 13, BOARD_ZEROS, 15, 16}};
 
-  const move_t source_bit = tzcnt(source);
-  const move_t target_bit = tzcnt(target);
-  const move_t promotion_capture_move =
+  const Bitmove source_bit = tzcnt(source);
+  const Bitmove target_bit = tzcnt(target);
+  const Bitmove promotion_capture_move =
       MOVE_VALUE_TYPE_PROMOTION | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE) |
       (QUEEN << MOVE_SHIFT_PROMOTION) | (BISHOP << MOVE_SHIFT_CAPTURED_PIECE);

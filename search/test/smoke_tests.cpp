@@ -21,7 +21,7 @@ TEST(MoveListTest,
           EvaluteToZero>(DEPTH, position, move_list.begin());
 
   // Expect
-  const std::array<move_t, 6> expexted_debugging_ids{
+  const std::array<Bitmove, 6> expexted_debugging_ids{
       1, 2, 9, 10, 13, 14};  // worked out by hand
   for (std::size_t idx{0}; idx < expexted_debugging_ids.size(); idx++) {
     EXPECT_EQ(expexted_debugging_ids.at(idx), move_list.at(idx));
