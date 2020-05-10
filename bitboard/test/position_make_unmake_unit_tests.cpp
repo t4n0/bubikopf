@@ -41,6 +41,8 @@ TEST(
   const move_t any_move = source_bit | (target_bit << MOVE_SHIFT_TARGET) |
                           (BISHOP << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(any_move);
 
@@ -50,6 +52,12 @@ TEST(
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT);
   EXPECT_EQ(position[BOARD_IDX_WHITE], target);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 12}));
+
+  // Call
+  position.UnmakeMove(any_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -69,6 +77,8 @@ TEST(
       MOVE_VALUE_TYPE_QUIET_NON_PAWN | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KNIGHT << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(quiet_non_pawn_move);
 
@@ -77,6 +87,12 @@ TEST(
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES,
             static_plies + 1);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 11}));
+
+  // Call
+  position.UnmakeMove(quiet_non_pawn_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -96,6 +112,8 @@ TEST(
       MOVE_VALUE_TYPE_CAPTURE | source_bit | (target_bit << MOVE_SHIFT_TARGET) |
       (QUEEN << MOVE_SHIFT_MOVED_PIECE) | (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(capture_move);
 
@@ -105,6 +123,12 @@ TEST(
   EXPECT_EQ(position[BOARD_IDX_WHITE + PAWN], 0);
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 6, 9, 10}));
+
+  // Call
+  position.UnmakeMove(capture_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(PositionMakeMoveFixture,
@@ -123,6 +147,8 @@ TEST(PositionMakeMoveFixture,
                              (target_bit << MOVE_SHIFT_TARGET) |
                              (PAWN << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(single_push);
 
@@ -130,6 +156,12 @@ TEST(PositionMakeMoveFixture,
   EXPECT_EQ(position[BOARD_IDX_BLACK + PAWN], target);
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 2}));
+
+  // Call
+  position.UnmakeMove(single_push);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -150,6 +182,8 @@ TEST(
                              (target_bit << MOVE_SHIFT_TARGET) |
                              (PAWN << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(double_push);
 
@@ -160,6 +194,12 @@ TEST(
                 BOARD_SHIFT_EN_PASSENT,
             en_passent_bit);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 10}));
+
+  // Call
+  position.UnmakeMove(double_push);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -183,6 +223,8 @@ TEST(
       (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE) |
       (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(en_passent_capture);
 
@@ -193,6 +235,12 @@ TEST(
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
 
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 2, 9, 10}));
+
+  // Call
+  position.UnmakeMove(en_passent_capture);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -215,6 +263,8 @@ TEST(
       MOVE_VALUE_TYPE_KINGSIDE_CASTLING | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KING << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(kingside_castling);
 
@@ -226,6 +276,12 @@ TEST(
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] &
                BOARD_VALUE_CASTLING_WHITE_KINGSIDE);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 13, 15}));
+
+  // Call
+  position.UnmakeMove(kingside_castling);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -248,6 +304,8 @@ TEST(
       MOVE_VALUE_TYPE_QUEENSIDE_CASTLING | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (KING << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(queenside_castling);
 
@@ -259,6 +317,12 @@ TEST(
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] &
                BOARD_VALUE_CASTLING_BLACK_QUEENSIDE);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 5, 7}));
+
+  // Call
+  position.UnmakeMove(queenside_castling);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -279,6 +343,8 @@ TEST(
                                     (target_bit << MOVE_SHIFT_TARGET) |
                                     (ROOK << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(kingside_rook_move);
 
@@ -289,6 +355,12 @@ TEST(
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] &
                BOARD_VALUE_CASTLING_WHITE_KINGSIDE);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 13}));
+
+  // Call
+  position.UnmakeMove(kingside_rook_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(
@@ -308,6 +380,8 @@ TEST(
       MOVE_VALUE_TYPE_QUEENSIDE_ROOK | source_bit |
       (target_bit << MOVE_SHIFT_TARGET) | (ROOK << MOVE_SHIFT_MOVED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(queenside_rook_move);
 
@@ -318,6 +392,12 @@ TEST(
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] &
                BOARD_VALUE_CASTLING_BLACK_QUEENSIDE);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 5}));
+
+  // Call
+  position.UnmakeMove(queenside_rook_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(PositionMakeMoveFixture,
@@ -337,6 +417,8 @@ TEST(PositionMakeMoveFixture,
                                 (PAWN << MOVE_SHIFT_MOVED_PIECE) |
                                 (QUEEN << MOVE_SHIFT_PROMOTION);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(promotion_move);
 
@@ -345,6 +427,12 @@ TEST(PositionMakeMoveFixture,
   EXPECT_EQ(position[BOARD_IDX_BLACK + QUEEN], target);
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 2, 6}));
+
+  // Call
+  position.UnmakeMove(promotion_move);
+
+  // Expect
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 TEST(PositionMakeMoveFixture,
@@ -354,8 +442,8 @@ TEST(PositionMakeMoveFixture,
   const bitboard_t target = B8;
   const bitboard_t static_plies = 31;
   const bitboard_t extras = static_plies | BOARD_MASK_WHITE_TURN;
-  PositionWithBitboards position{
-      {extras, 1, 2, 3, target, 5, 6, 7, 8, 9, source, 11, 12, 13, 0, 15, 16}};
+  PositionWithBitboards position{{extras, target, 2, 3, target, 5, 6, 7, 8, 9,
+                                  source, 11, 12, 13, BOARD_ZEROS, 15, 16}};
 
   const move_t source_bit = tzcnt(source);
   const move_t target_bit = tzcnt(target);
@@ -364,6 +452,8 @@ TEST(PositionMakeMoveFixture,
       (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE) |
       (QUEEN << MOVE_SHIFT_PROMOTION) | (BISHOP << MOVE_SHIFT_CAPTURED_PIECE);
 
+  const PositionWithBitboards position_prior_make_move{position};
+
   // Call
   position.MakeMove(promotion_capture_move);
 
@@ -371,8 +461,17 @@ TEST(PositionMakeMoveFixture,
   EXPECT_EQ(position[BOARD_IDX_WHITE + PAWN], BOARD_ZEROS);
   EXPECT_EQ(position[BOARD_IDX_WHITE + QUEEN], target);
   EXPECT_EQ(position[BOARD_IDX_BLACK + BISHOP], BOARD_ZEROS);
+  EXPECT_EQ(position[BOARD_IDX_BLACK], BOARD_ZEROS);
   EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
-  EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 4, 9, 10, 14}));
+  EXPECT_TRUE(
+      BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 4, 9, 10, 14}));
+
+  // Call
+  position.UnmakeMove(promotion_capture_move);
+
+  // Expect
+  EXPECT_EQ(position.boards_, position_prior_make_move.boards_);
+  EXPECT_EQ(position, position_prior_make_move);
 }
 
 }  // namespace
