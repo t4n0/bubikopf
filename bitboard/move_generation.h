@@ -10,7 +10,7 @@ namespace Chess {
 /// @brief Type to preallocate array for move generation
 using move_list_t = std::array<move_t, 1000>;
 
-/// @brief Type to configure behavior of GenerateMoves to at compile time
+/// @brief Type to configure behavior of GenerateMoves at compile time
 ///
 /// This class is substitutet for a moock in some tests
 struct GenerateAllLegalMoves {
