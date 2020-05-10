@@ -12,8 +12,8 @@ bool PositionWithBitboards::WhiteToMove() {
 }
 
 void PositionWithBitboards::MakeMove(move_t move) {
-  *extras_history_insertion_iterator_ = boards_[BOARD_IDX_EXTRAS];
-  extras_history_insertion_iterator_++;
+  extras_history_[extras_history_insertion_index_] = boards_[BOARD_IDX_EXTRAS];
+  extras_history_insertion_index_++;
 
   const std::size_t board_idx_attacking_side =
       boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN ? BOARD_IDX_WHITE
@@ -70,7 +70,7 @@ void PositionWithBitboards::MakeMove(move_t move) {
           BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
       const bitboard_t en_passant_victim =
           BOARD_ONE
-          << ((*(extras_history_insertion_iterator_ - 1) &
+          << ((extras_history_[extras_history_insertion_index_ - 1] &
                BOARD_MASK_EN_PASSENT) >>
               BOARD_SHIFT_EN_PASSENT);  // En-passent bit mask erased at
                                         // function entry. Get from history.
@@ -159,6 +159,20 @@ bitboard_t& PositionWithBitboards::operator[](const std::size_t index) {
 
 bitboard_t PositionWithBitboards::operator[](const std::size_t index) const {
   return boards_[index];
+}
+
+bool operator==(const PositionWithBitboards& a,
+                const PositionWithBitboards& b) {
+  const bool boards_are_equal = a.boards_ == b.boards_;
+  const bool iterators_are_equal =
+      a.extras_history_insertion_index_ == b.extras_history_insertion_index_;
+  const bool histories_are_equal =
+      std::equal(begin(a.extras_history_),
+                 begin(a.extras_history_) + a.extras_history_insertion_index_,
+                 begin(b.extras_history_));  // Don't consider obsolete data at
+                                             // insertion index and beyond
+
+  return boards_are_equal && iterators_are_equal && histories_are_equal;
 }
 
 }  // namespace Chess

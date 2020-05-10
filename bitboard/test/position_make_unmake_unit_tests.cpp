@@ -46,8 +46,7 @@ TEST(
 
   // Expect
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN);
-  EXPECT_TRUE(std::distance(position.extras_history_.begin(),
-                            position.extras_history_insertion_iterator_) == 1);
+  EXPECT_TRUE(position.extras_history_insertion_index_ == 1);
   EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT);
   EXPECT_EQ(position[BOARD_IDX_WHITE], target);
   EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 12}));

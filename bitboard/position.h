@@ -59,9 +59,10 @@ class PositionWithBitboards {
 
   std::array<bitboard_t, 17> boards_{};
   std::array<bitboard_t, 40> extras_history_{};
-  std::array<bitboard_t, 40>::iterator extras_history_insertion_iterator_{
-      extras_history_.begin()};
+  std::size_t extras_history_insertion_index_{0};
 };
+
+bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b);
 
 }  // namespace Chess
 
