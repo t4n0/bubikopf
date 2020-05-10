@@ -3,8 +3,6 @@
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
 
-#include <iostream>
-
 namespace Chess {
 
 bool PositionWithBitboards::WhiteToMove() {
