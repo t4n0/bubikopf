@@ -5,7 +5,7 @@
 
 namespace Chess {
 
-bool PositionWithBitboards::WhiteToMove() {
+bool PositionWithBitboards::WhiteToMove() const {
   return boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN;
 }
 
@@ -14,8 +14,7 @@ void PositionWithBitboards::MakeMove(Bitmove move) {
   extras_history_insertion_index_++;
 
   const std::size_t board_idx_attacking_side =
-      boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN ? BOARD_IDX_WHITE
-                                                        : BOARD_IDX_BLACK;
+      WhiteToMove() ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
   const std::size_t board_idx_attacking_piece_kind =
       board_idx_attacking_side +
       ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
@@ -152,8 +151,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move) {
   boards_[BOARD_IDX_EXTRAS] = extras_history_[extras_history_insertion_index_];
 
   const std::size_t board_idx_attacking_side =
-      boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN ? BOARD_IDX_WHITE
-                                                        : BOARD_IDX_BLACK;
+      WhiteToMove() ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
   const std::size_t board_idx_attacking_piece_kind =
       board_idx_attacking_side +
       ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
