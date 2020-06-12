@@ -13,7 +13,7 @@ TEST(MoveListTest,
      GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList) {
   // Setup
   PositionWithBitboards position{};
-  move_list_t move_list{};
+  MoveList move_list{};
   const int DEPTH{3};
 
   // Call

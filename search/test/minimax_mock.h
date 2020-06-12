@@ -18,12 +18,12 @@ template <typename SearchBehaviour, typename GenerateBehavior,
 std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning,
                  Evaluation>
 minimax(const uint8_t depth, PositionWithBitboards& position,
-        const move_list_t::iterator& end_iterator_before_move_generation) {
+        const MoveList::iterator& end_iterator_before_move_generation) {
   if (depth == 0) {
     return evaluate<EvaluateBehavior>(position);
   }
 
-  const move_list_t::iterator end_iterator_after_move_generation =
+  const MoveList::iterator end_iterator_after_move_generation =
       GenerateMoves<GenerateBehavior>(position,
                                       end_iterator_before_move_generation);
 
@@ -36,7 +36,7 @@ minimax(const uint8_t depth, PositionWithBitboards& position,
 
   if (position.WhiteToMove()) {
     Evaluation max_eval{MIN_EVAL};
-    for (move_list_t::iterator child_move_iterator =
+    for (MoveList::iterator child_move_iterator =
              end_iterator_before_move_generation;
          child_move_iterator != end_iterator_after_move_generation;
          child_move_iterator++) {
@@ -50,7 +50,7 @@ minimax(const uint8_t depth, PositionWithBitboards& position,
     return max_eval;
   } else {
     Evaluation min_eval{MAX_EVAL};
-    for (move_list_t::iterator child_move_iterator =
+    for (MoveList::iterator child_move_iterator =
              end_iterator_before_move_generation;
          child_move_iterator != end_iterator_after_move_generation;
          child_move_iterator++) {
