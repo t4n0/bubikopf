@@ -16,8 +16,10 @@ constexpr std::size_t BOARD_IDX_EXTRAS = 0;
 constexpr std::size_t BOARD_IDX_BLACK = 1;
 constexpr std::size_t BOARD_IDX_WHITE = 9;
 constexpr std::size_t BOARD_IDX_ATTACK = 7;
-constexpr std::size_t BOARD_IDX_BLACK_AND_WHITE_ADDED =
+constexpr std::size_t BOARD_IDX_BLACK_WHITE_SUM =
     BOARD_IDX_BLACK + BOARD_IDX_WHITE;
+constexpr std::size_t BOARD_IDX_BLACK_WHITE_DIFF =
+    BOARD_IDX_WHITE - BOARD_IDX_BLACK;
 
 constexpr Bitboard BOARD_MASK_STATIC_PLIES =
     0b00000000'00000000'00000000'00000000'00000000'00000000'00000000'00111111;

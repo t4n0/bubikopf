@@ -38,7 +38,7 @@ void PositionWithBitboards::MakeMove(Bitmove move) {
     }
     case MOVE_VALUE_TYPE_CAPTURE: {
       const std::size_t board_idx_harmed_side =
-          BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+          BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
       const std::size_t board_idx_captured_piece_kind =
           board_idx_harmed_side +
           ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
@@ -65,7 +65,7 @@ void PositionWithBitboards::MakeMove(Bitmove move) {
     }
     case MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE: {
       const std::size_t board_idx_harmed_side =
-          BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+          BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
       const Bitboard en_passant_victim =
           BOARD_ONE
           << ((extras_history_[extras_history_insertion_index_ - 1] &
@@ -136,7 +136,7 @@ void PositionWithBitboards::MakeMove(Bitmove move) {
       const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
       if (capture) {
         const std::size_t board_idx_harmed_side =
-            BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+            BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
         const std::size_t board_idx_captured_piece_kind =
             board_idx_harmed_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
         boards_[board_idx_harmed_side] &= ~target;
@@ -173,7 +173,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move) {
     }
     case MOVE_VALUE_TYPE_CAPTURE: {
       const std::size_t board_idx_harmed_side =
-          BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+          BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
       const std::size_t board_idx_captured_piece_kind =
           board_idx_harmed_side +
           ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
@@ -192,7 +192,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move) {
     }
     case MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE: {
       const std::size_t board_idx_harmed_side =
-          BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+          BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
       const Bitboard en_passant_victim =
           BOARD_ONE
           << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT) >>
@@ -236,7 +236,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move) {
       const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
       if (capture) {
         const std::size_t board_idx_harmed_side =
-            BOARD_IDX_BLACK_AND_WHITE_ADDED - board_idx_attacking_side;
+            BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
         const std::size_t board_idx_captured_piece_kind =
             board_idx_harmed_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
         boards_[board_idx_harmed_side] |= target;
