@@ -15,6 +15,7 @@ class PositionWithBitboards {
   PositionWithBitboards() {}
   PositionWithBitboards(const std::array<Bitboard, 17>& boards)
       : boards_(boards) {}
+
   void MakeMove(Bitmove move);
   void UnmakeMove(Bitmove move);
 

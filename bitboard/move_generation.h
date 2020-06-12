@@ -12,12 +12,13 @@ using MoveList = std::array<Bitmove, 1000>;
 
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
-/// This class is substitutet for a moock in some tests
+/// This class is substituted for a mock in tests.
 struct GenerateAllLegalMoves {
   static constexpr bool generate_all_legal_moves{true};
 };
 
 /// @brief Generates all legal moves from position
+///
 /// @returns An iterator pointing to the element past the last generated move
 template <typename Behavior = GenerateAllLegalMoves>
 std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator>
