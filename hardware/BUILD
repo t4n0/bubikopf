@@ -6,3 +6,13 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_test(
+    name = "unit_tests",
+    srcs = ["test/trailing_zeros_count_unit_tests.cpp"],
+    deps = [
+        ":hardware",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

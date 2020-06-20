@@ -7,8 +7,8 @@
 
 namespace Chess {
 
-inline long long popcnt(const std::uint64_t board) {
-  return _mm_popcnt_u64(board);
+inline int popcnt(const std::uint64_t board) {
+  return static_cast<int>(_mm_popcnt_u64(board));
 }
 
 }  // namespace Chess
