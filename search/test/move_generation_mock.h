@@ -15,15 +15,11 @@ template <typename Behavior = GenerateTwoMovesWithUniqueDebugId>
 std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id,
                  MoveList::iterator>
 GenerateMoves(const PositionWithBitboards& /*unused*/,
-              const MoveList::iterator end_iterator_before_move_generation) {
+              MoveList::iterator move_generation_insertion_iterator) {
   static Bitmove unique_id{1};
-  MoveList::iterator next_to_insert_iterator =
-      end_iterator_before_move_generation;
-  *next_to_insert_iterator = unique_id++;
-  next_to_insert_iterator++;
-  *next_to_insert_iterator = unique_id++;
-  next_to_insert_iterator++;
-  return next_to_insert_iterator;
+  *move_generation_insertion_iterator++ = unique_id++;
+  *move_generation_insertion_iterator++ = unique_id++;
+  return move_generation_insertion_iterator;
 }
 
 }  // namespace Chess

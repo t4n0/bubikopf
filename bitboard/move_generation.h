@@ -23,9 +23,9 @@ struct GenerateAllLegalMoves {
 template <typename Behavior = GenerateAllLegalMoves>
 std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator>
 GenerateMoves(const PositionWithBitboards& /*unused*/,
-              const MoveList::iterator end_iterator_before_move_generation) {
+              MoveList::iterator move_generation_insertion_iterator) {
   // TODO: implement
-  return end_iterator_before_move_generation;
+  return move_generation_insertion_iterator;
 }
 
 }  // namespace Chess
