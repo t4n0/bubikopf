@@ -3,12 +3,10 @@
 
 #include <immintrin.h>
 
-#include <cstdint>
-
 namespace Chess {
 
-inline unsigned long tzcnt(const std::uint64_t board) {
-  return _tzcnt_u64(board);
+inline unsigned long tzcnt(const unsigned long long board) {
+  return static_cast<unsigned long>(_tzcnt_u64(board));
 }
 
 }  // namespace Chess

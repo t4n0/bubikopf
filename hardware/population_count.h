@@ -3,11 +3,9 @@
 
 #include <nmmintrin.h>
 
-#include <cstdint>
-
 namespace Chess {
 
-inline int popcnt(const std::uint64_t board) {
+inline int popcnt(const unsigned long long board) {
   return static_cast<int>(_mm_popcnt_u64(board));
 }
 
