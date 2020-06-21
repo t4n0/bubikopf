@@ -4,6 +4,7 @@ cc_library(
         "basic_type_declarations.h",
         "board.h",
         "move.h",
+        "move_generation.h",
         "pieces.h",
         "position.cpp",
         "position.h",
@@ -24,6 +25,7 @@ cc_test(
     name = "unit_tests",
     srcs = [
         "test/board_unit_tests.cpp",
+        "test/move_generation_unit_tests.cpp",
         "test/move_unit_tests.cpp",
         "test/position_unit_tests.cpp",
         "test/squares_unit_tests.cpp",

@@ -16,6 +16,9 @@ constexpr std::size_t ROOK = 4;
 constexpr std::size_t QUEEN = 5;
 constexpr std::size_t KING = 6;
 
+constexpr std::size_t NO_PIECE = 0;
+constexpr std::size_t NO_PROMOTION = 0;
+
 }  // namespace Chess
 
 #endif
