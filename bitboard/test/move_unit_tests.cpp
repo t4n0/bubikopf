@@ -68,21 +68,21 @@ INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture,
                          ::testing::ValuesIn(ALL_MOVE_VALUES));
 
 // Shift tests
-TEST(MoveShiftTargetTest, GivenOnAllOnes_Expect64) {
+TEST(MoveShiftTargetTest, GivenOnAllOnes_Expect63) {
   EXPECT_EQ((MOVE_ONES & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET, 0b00111111);
 }
 
-TEST(MoveShiftExtrasCapturedPieceTest, GivenOnAllOnes_Expect64) {
+TEST(MoveShiftCapturedPieceTest, GivenOnAllOnes_Expect7) {
   EXPECT_EQ((MOVE_ONES & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE,
             0b00000111);
 }
 
-TEST(MoveShiftExtrasMovedPieceTest, GivenOnAllOnes_Expect64) {
+TEST(MoveShiftMovedPieceTest, GivenOnAllOnes_Expect7) {
   EXPECT_EQ((MOVE_ONES & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE,
             0b00000111);
 }
 
-TEST(MoveShiftExtrasPromotionTest, GivenOnAllOnes_Expect64) {
+TEST(MoveShiftPromotionTest, GivenOnAllOnes_Expect7) {
   EXPECT_EQ((MOVE_ONES & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION,
             0b00000111);
 }
