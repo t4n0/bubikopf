@@ -35,6 +35,7 @@ constexpr int MOVE_SHIFT_STATIC = 12;
 constexpr int MOVE_SHIFT_MOVED_PIECE = 18;
 constexpr int MOVE_SHIFT_CAPTURED_PIECE = 21;
 constexpr int MOVE_SHIFT_PROMOTION = 24;
+constexpr int MOVE_SHIFT_TYPE = 27;
 
 }  // namespace Chess
 

@@ -87,5 +87,9 @@ TEST(MoveShiftExtrasPromotionTest, GivenOnAllOnes_Expect64) {
             0b00000111);
 }
 
+TEST(MoveShiftTypeTest, GivenOnAllOnes_Expect15) {
+  EXPECT_EQ((MOVE_ONES & MOVE_MASK_TYPE) >> MOVE_SHIFT_TYPE, 0b00001111);
+}
+
 }  // namespace
 }  // namespace Chess
