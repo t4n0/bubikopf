@@ -61,5 +61,39 @@ TEST_F(MoveGeneration_Fixture,
             0);
 }
 
+TEST_F(
+    MoveGeneration_Fixture,
+    GivenWhitePawnOnStartingRowWithTwoFreeSquaresInfront_ExpectDoublePawnPush) {
+  position_[BOARD_IDX_WHITE] = E2;
+  position_[BOARD_IDX_WHITE + PAWN] = E2;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            2);
+  for (const auto& move : move_list_) {
+    if ((move & MOVE_MASK_TYPE) == MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH) {
+      CheckMove(move, E2, E4, PAWN, NO_PIECE, NO_PROMOTION,
+                MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
+      break;
+    }
+  }
+}
+
+TEST_F(MoveGeneration_Fixture,
+       GivenWhitePawnOnStartingRowWithNoFreeSquaresInfront_ExpectNoMove) {
+  position_[BOARD_IDX_WHITE] = A2;
+  position_[BOARD_IDX_WHITE + PAWN] = A2;
+  position_[BOARD_IDX_BLACK] = A3;
+  position_[BOARD_IDX_BLACK + KNIGHT] = A3;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            0);
+}
+
 }  // namespace
 }  // namespace Chess

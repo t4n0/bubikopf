@@ -2,6 +2,7 @@
 #define BITBOARD_MOVE_GENERATION_H
 
 #include "bitboard/position.h"
+#include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
 #include <array>
@@ -46,9 +47,7 @@ GenerateMoves(const PositionWithBitboards& position,
   const std::size_t board_idx_defending_side =
       BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
 
-  // swap boards for black pawns?
-
-  // pawns
+  // pawn moves
   Bitboard pawn_board = position[board_idx_attacking_side + PAWN];
   Bitmove source_bit = tzcnt(pawn_board);
   while (source_bit < 64) {
@@ -57,7 +56,6 @@ GenerateMoves(const PositionWithBitboards& position,
 
     // capture
     // en passent
-    // double push
 
     // single push
     const Bitboard target_single_push = source << 8;
@@ -71,20 +69,36 @@ GenerateMoves(const PositionWithBitboards& position,
                       NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
     }
 
+    // double push
+    constexpr Bitboard start_row_white = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
+    const bool source_is_on_start_row = source & start_row_white;
+    if (source_is_on_start_row) {
+      const Bitboard target_double_push = source << 16;
+      const bool target_double_push_is_occupied =
+          (position[board_idx_attacking_side] & target_double_push) ||
+          (position[board_idx_defending_side] & target_double_push);
+      if (!target_single_push_is_occupied && !target_double_push_is_occupied) {
+        const Bitmove target_bit_double_push = source_bit + 16;
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, target_bit_double_push, PAWN, NO_PIECE,
+                        NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
+      }
+    }
+
+    // promotion
+
     source_bit = tzcnt(pawn_board);
   }
 
-  // swap boards for black pawns?
+  // knight moves
 
-  // knight
+  // bishop moves
 
-  // bishop
+  // rook moves
 
-  // rook
+  // queen moves
 
-  // queen
-
-  // king
+  // king moves
 
   return move_generation_insertion_iterator;
 }
