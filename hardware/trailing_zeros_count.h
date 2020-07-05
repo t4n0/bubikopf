@@ -5,8 +5,8 @@
 
 namespace Chess {
 
-inline unsigned long tzcnt(const unsigned long long board) {
-  return static_cast<unsigned long>(_tzcnt_u64(board));
+inline unsigned int tzcnt(const unsigned long long board) {
+  return static_cast<unsigned int>(_tzcnt_u64(board));
 }
 
 }  // namespace Chess
