@@ -1,6 +1,7 @@
 #ifndef BITBOARD_MOVE_GENERATION_H
 #define BITBOARD_MOVE_GENERATION_H
 
+#include "bitboard/move_lookup_table.h"
 #include "bitboard/position.h"
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
@@ -52,20 +53,39 @@ GenerateMoves(const PositionWithBitboards& position,
   Bitmove source_bit = tzcnt(pawn_board);
   while (source_bit < 64) {
     const Bitboard source = 1ULL << source_bit;
-    pawn_board &= ~source;
+    const Bitboard target_capture1_white =
+        pawn_capture_lookup_table_white[source_bit];
+    const Bitmove target_bit_capture1_white = tzcnt(target_capture1_white);
+    const Bitboard target_capture2_white = pawn_capture_lookup_table_white
+        [source_bit + pawn_capture_lookup_table_offset_for_second_option];
+    const Bitmove target_bit_capture2_white = tzcnt(target_capture2_white);
+    const Bitboard target_single_push = source << 8;
 
-    // capture
+    // captures
+    if (position[board_idx_defending_side] & target_capture1_white) {
+      const Bitmove captured_piece = position.GetPieceKind(
+          board_idx_defending_side, target_capture1_white);
+      *move_generation_insertion_iterator++ =
+          ComposeMove(source_bit, target_bit_capture1_white, PAWN,
+                      captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+    }
+    if (position[board_idx_defending_side] & target_capture2_white) {
+      const Bitmove captured_piece = position.GetPieceKind(
+          board_idx_defending_side, target_capture2_white);
+      *move_generation_insertion_iterator++ =
+          ComposeMove(source_bit, target_bit_capture2_white, PAWN,
+                      captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+    }
+
     // en passent
 
     // single push
-    const Bitboard target_single_push = source << 8;
     const bool target_single_push_is_occupied =
         (position[board_idx_attacking_side] & target_single_push) ||
         (position[board_idx_defending_side] & target_single_push);
     if (!target_single_push_is_occupied) {
-      const Bitmove target_bit_single_push = source_bit + 8;
       *move_generation_insertion_iterator++ =
-          ComposeMove(source_bit, target_bit_single_push, PAWN, NO_PIECE,
+          ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_PIECE,
                       NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
     }
 
@@ -78,15 +98,16 @@ GenerateMoves(const PositionWithBitboards& position,
           (position[board_idx_attacking_side] & target_double_push) ||
           (position[board_idx_defending_side] & target_double_push);
       if (!target_single_push_is_occupied && !target_double_push_is_occupied) {
-        const Bitmove target_bit_double_push = source_bit + 16;
         *move_generation_insertion_iterator++ =
-            ComposeMove(source_bit, target_bit_double_push, PAWN, NO_PIECE,
+            ComposeMove(source_bit, tzcnt(target_double_push), PAWN, NO_PIECE,
                         NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
       }
     }
 
     // promotion
 
+    // prepare next iteration
+    pawn_board &= ~source;
     source_bit = tzcnt(pawn_board);
   }
 

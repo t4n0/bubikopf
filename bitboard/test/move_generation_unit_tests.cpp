@@ -95,5 +95,37 @@ TEST_F(MoveGeneration_Fixture,
             0);
 }
 
+TEST_F(MoveGeneration_Fixture, GivenBlackKnightHanging_ExpectPawnCapture) {
+  position_[BOARD_IDX_WHITE] = C5;
+  position_[BOARD_IDX_WHITE + PAWN] = C5;
+  position_[BOARD_IDX_BLACK] = B6 | C6;
+  position_[BOARD_IDX_BLACK + KNIGHT] = B6 | C6;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            1);
+  const Bitmove& returned_move = *move_list_.begin();
+  CheckMove(returned_move, C5, B6, PAWN, KNIGHT, NO_PROMOTION,
+            MOVE_VALUE_TYPE_CAPTURE);
+}
+
+TEST_F(MoveGeneration_Fixture, GivenBlackRookHanging_ExpectPawnCapture) {
+  position_[BOARD_IDX_WHITE] = D3;
+  position_[BOARD_IDX_WHITE + PAWN] = D3;
+  position_[BOARD_IDX_BLACK] = D4 | E4;
+  position_[BOARD_IDX_BLACK + ROOK] = D4 | E4;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            1);
+  const Bitmove& returned_move = *move_list_.begin();
+  CheckMove(returned_move, D3, E4, PAWN, ROOK, NO_PROMOTION,
+            MOVE_VALUE_TYPE_CAPTURE);
+}
+
 }  // namespace
 }  // namespace Chess

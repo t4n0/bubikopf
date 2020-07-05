@@ -7,7 +7,7 @@
 
 namespace Chess {
 
-constexpr Bitboard XX = std::numeric_limits<Bitboard>::max();  // invalid square
+constexpr Bitboard XX = 0;  // empty bitboard
 
 constexpr Bitboard H1 = 1ULL << 0;
 constexpr Bitboard G1 = 1ULL << 1;
