@@ -3,7 +3,11 @@
 
 #include "bitboard/basic_type_declarations.h"
 
+#include <limits>
+
 namespace Chess {
+
+constexpr Bitboard XX = std::numeric_limits<Bitboard>::max();  // invalid square
 
 constexpr Bitboard H1 = 1ULL << 0;
 constexpr Bitboard G1 = 1ULL << 1;
