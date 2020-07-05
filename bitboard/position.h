@@ -20,6 +20,7 @@ class PositionWithBitboards {
   void UnmakeMove(Bitmove move);
 
   bool WhiteToMove() const;
+  Bitmove GetPieceKind(const std::size_t side, const Bitboard location) const;
 
   Bitboard& operator[](const std::size_t index);
   Bitboard operator[](const std::size_t index) const;

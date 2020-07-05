@@ -3,10 +3,35 @@
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
 
+#include <exception>
+
 namespace Chess {
 
 bool PositionWithBitboards::WhiteToMove() const {
   return boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN;
+}
+
+Bitmove PositionWithBitboards::GetPieceKind(const std::size_t side,
+                                            const Bitboard location) const {
+  if (boards_[side + PAWN] & location) {
+    return PAWN;
+  }
+  if (boards_[side + KNIGHT] & location) {
+    return KNIGHT;
+  }
+  if (boards_[side + BISHOP] & location) {
+    return BISHOP;
+  }
+  if (boards_[side + ROOK] & location) {
+    return ROOK;
+  }
+  if (boards_[side + QUEEN] & location) {
+    return QUEEN;
+  }
+  if (boards_[side + KING] & location) {
+    return KING;
+  }
+  throw std::runtime_error{"Querry for piece kind failed."};
 }
 
 void PositionWithBitboards::MakeMove(Bitmove move) {
