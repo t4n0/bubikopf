@@ -32,14 +32,16 @@ using MoveList = std::array<Bitmove, 1000>;
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
 /// This class is substituted for a mock in tests.
-struct GenerateAllLegalMoves {
+struct GenerateAllPseudoLegalMoves {
   static constexpr bool generate_all_legal_moves{true};
 };
 
 /// @brief Generates all pseudo legal moves from position
 ///
+/// "Pseudo" in the sense that own king may be in check after generated move.
+///
 /// @returns An iterator pointing to the element past the last generated move
-template <typename Behavior = GenerateAllLegalMoves>
+template <typename Behavior = GenerateAllPseudoLegalMoves>
 std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator>
 GenerateMoves(const PositionWithBitboards& position,
               MoveList::iterator move_generation_insertion_iterator) {
