@@ -37,6 +37,9 @@ constexpr int MOVE_SHIFT_CAPTURED_PIECE = 21;
 constexpr int MOVE_SHIFT_PROMOTION = 24;
 constexpr int MOVE_SHIFT_TYPE = 27;
 
+constexpr std::size_t NO_CAPTURE = 0;
+constexpr std::size_t NO_PROMOTION = 0;
+
 }  // namespace Chess
 
 #endif

@@ -131,12 +131,12 @@ GenerateMoves(const PositionWithBitboards& position,
       const bool is_promotion = target_single_push & PROMOTION_RANKS;
       if (!is_promotion) {
         *move_generation_insertion_iterator++ =
-            ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_PIECE,
+            ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_CAPTURE,
                         NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
       } else {
         // promotion (without capture)
         PushBackAllPromotions(move_generation_insertion_iterator, source_bit,
-                              tzcnt(target_single_push), NO_PIECE);
+                              tzcnt(target_single_push), NO_CAPTURE);
       }
     }
 
@@ -149,7 +149,7 @@ GenerateMoves(const PositionWithBitboards& position,
           (position[board_idx_defending_side] & target_double_push);
       if (!target_single_push_is_occupied && !target_double_push_is_occupied) {
         *move_generation_insertion_iterator++ =
-            ComposeMove(source_bit, tzcnt(target_double_push), PAWN, NO_PIECE,
+            ComposeMove(source_bit, tzcnt(target_double_push), PAWN, NO_CAPTURE,
                         NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
       }
     }

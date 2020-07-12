@@ -43,7 +43,7 @@ TEST_F(
 
   EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
             1);
-  CheckMove(returned_move, F5, F6, PAWN, NO_PIECE, NO_PROMOTION,
+  CheckMove(returned_move, F5, F6, PAWN, NO_CAPTURE, NO_PROMOTION,
             MOVE_VALUE_TYPE_PAWN_PUSH);
 }
 
@@ -74,7 +74,7 @@ TEST_F(
             2);
   for (const auto& move : move_list_) {
     if ((move & MOVE_MASK_TYPE) == MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH) {
-      CheckMove(move, E2, E4, PAWN, NO_PIECE, NO_PROMOTION,
+      CheckMove(move, E2, E4, PAWN, NO_CAPTURE, NO_PROMOTION,
                 MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
       break;
     }
@@ -172,13 +172,13 @@ TEST_F(MoveGeneration_Fixture, GivenPawnPushToPromotionRank_ExpectPromotion) {
 
   EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
             4);
-  CheckMove(move_list_.at(0), E7, E8, PAWN, NO_PIECE, QUEEN,
+  CheckMove(move_list_.at(0), E7, E8, PAWN, NO_CAPTURE, QUEEN,
             MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(1), E7, E8, PAWN, NO_PIECE, ROOK,
+  CheckMove(move_list_.at(1), E7, E8, PAWN, NO_CAPTURE, ROOK,
             MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(2), E7, E8, PAWN, NO_PIECE, KNIGHT,
+  CheckMove(move_list_.at(2), E7, E8, PAWN, NO_CAPTURE, KNIGHT,
             MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(3), E7, E8, PAWN, NO_PIECE, BISHOP,
+  CheckMove(move_list_.at(3), E7, E8, PAWN, NO_CAPTURE, BISHOP,
             MOVE_VALUE_TYPE_PROMOTION);
 }
 
