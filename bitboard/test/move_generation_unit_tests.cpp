@@ -182,5 +182,37 @@ TEST_F(MoveGeneration_Fixture, GivenPawnPushToPromotionRank_ExpectPromotion) {
             MOVE_VALUE_TYPE_PROMOTION);
 }
 
+TEST_F(MoveGeneration_Fixture,
+       GivenPawnCaptureOntoPromotionRank_ExpectPromotion) {
+  position_[BOARD_IDX_WHITE] = D7;
+  position_[BOARD_IDX_WHITE + PAWN] = D7;
+  position_[BOARD_IDX_BLACK] = C8 | D8 | E8;
+  position_[BOARD_IDX_BLACK + BISHOP] = C8;
+  position_[BOARD_IDX_BLACK + KING] = D8;
+  position_[BOARD_IDX_BLACK + KNIGHT] = E8;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  ASSERT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            8);
+  CheckMove(move_list_.at(0), D7, C8, PAWN, BISHOP, QUEEN,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(1), D7, C8, PAWN, BISHOP, ROOK,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(2), D7, C8, PAWN, BISHOP, KNIGHT,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(3), D7, C8, PAWN, BISHOP, BISHOP,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(4), D7, E8, PAWN, KNIGHT, QUEEN,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(5), D7, E8, PAWN, KNIGHT, ROOK,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(6), D7, E8, PAWN, KNIGHT, KNIGHT,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(7), D7, E8, PAWN, KNIGHT, BISHOP,
+            MOVE_VALUE_TYPE_PROMOTION);
+}
+
 }  // namespace
 }  // namespace Chess

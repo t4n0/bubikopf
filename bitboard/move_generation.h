@@ -80,16 +80,30 @@ GenerateMoves(const PositionWithBitboards& position,
     if (position[board_idx_defending_side] & target_capture1_white) {
       const Bitmove captured_piece = position.GetPieceKind(
           board_idx_defending_side, target_capture1_white);
-      *move_generation_insertion_iterator++ =
-          ComposeMove(source_bit, target_bit_capture1_white, PAWN,
-                      captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+      const bool is_promotion = target_capture1_white & PROMOTION_RANKS;
+      if (!is_promotion) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, target_bit_capture1_white, PAWN,
+                        captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+      } else {
+        // promotion (with capture)
+        PushBackAllPromotions(move_generation_insertion_iterator, source_bit,
+                              tzcnt(target_capture1_white), captured_piece);
+      }
     }
     if (position[board_idx_defending_side] & target_capture2_white) {
       const Bitmove captured_piece = position.GetPieceKind(
           board_idx_defending_side, target_capture2_white);
-      *move_generation_insertion_iterator++ =
-          ComposeMove(source_bit, target_bit_capture2_white, PAWN,
-                      captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+      const bool is_promotion = target_capture2_white & PROMOTION_RANKS;
+      if (!is_promotion) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, target_bit_capture2_white, PAWN,
+                        captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+      } else {
+        // promotion (with capture)
+        PushBackAllPromotions(move_generation_insertion_iterator, source_bit,
+                              tzcnt(target_capture2_white), captured_piece);
+      }
     }
 
     // en passent
@@ -111,13 +125,10 @@ GenerateMoves(const PositionWithBitboards& position,
 
     // single push
     const bool target_single_push_is_occupied =
-        (position[board_idx_attacking_side] & target_single_push) ||
-        (position[board_idx_defending_side] & target_single_push);
+        (position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]) &
+        target_single_push;
     if (!target_single_push_is_occupied) {
-      constexpr Bitboard promotion_ranks = A8 | B8 | C8 | D8 | E8 | F8 | G8 |
-                                           H8 | A1 | B1 | C1 | D1 | E1 | F1 |
-                                           G1 | H1;
-      const bool is_promotion = target_single_push & promotion_ranks;
+      const bool is_promotion = target_single_push & PROMOTION_RANKS;
       if (!is_promotion) {
         *move_generation_insertion_iterator++ =
             ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_PIECE,
@@ -130,9 +141,7 @@ GenerateMoves(const PositionWithBitboards& position,
     }
 
     // double push
-    constexpr Bitboard start_rank_white = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
-    const bool source_is_on_start_row = source & start_row_white;
-    const bool source_is_on_start_row = source & start_rank_white;
+    const bool source_is_on_start_row = source & START_RANK_WHITE;
     if (source_is_on_start_row) {
       const Bitboard target_double_push = source << 16;
       const bool target_double_push_is_occupied =
