@@ -80,6 +80,21 @@ GenerateMoves(const PositionWithBitboards& position,
     }
 
     // en passent
+    const Bitboard en_passent_mask =
+        (position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT);
+    if (en_passent_mask) {
+      const Bitboard en_passent_bit = en_passent_mask >> BOARD_SHIFT_EN_PASSENT;
+      if (en_passent_bit == target_bit_capture1_white) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, target_bit_capture1_white, PAWN, PAWN,
+                        NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+      }
+      if (en_passent_bit == target_bit_capture2_white) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, target_bit_capture2_white, PAWN, PAWN,
+                        NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+      }
+    }
 
     // single push
     const bool target_single_push_is_occupied =

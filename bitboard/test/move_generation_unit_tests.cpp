@@ -127,5 +127,41 @@ TEST_F(MoveGeneration_Fixture, GivenBlackRookHanging_ExpectPawnCapture) {
             MOVE_VALUE_TYPE_CAPTURE);
 }
 
+TEST_F(MoveGeneration_Fixture, GivenEnPassent1_ExpectCapture) {
+  position_[BOARD_IDX_WHITE] = E5;
+  position_[BOARD_IDX_WHITE + PAWN] = E5;
+  position_[BOARD_IDX_BLACK] = E6 | F5;
+  position_[BOARD_IDX_BLACK + PAWN] = E6 | F5;
+  position_[BOARD_IDX_EXTRAS] |= static_cast<Bitboard>(tzcnt(F6))
+                                 << BOARD_SHIFT_EN_PASSENT;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            1);
+  const Bitmove& returned_move = *move_list_.begin();
+  CheckMove(returned_move, E5, F6, PAWN, PAWN, NO_PROMOTION,
+            MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+}
+
+TEST_F(MoveGeneration_Fixture, GivenEnPassent2_ExpectCapture) {
+  position_[BOARD_IDX_WHITE] = E5;
+  position_[BOARD_IDX_WHITE + PAWN] = E5;
+  position_[BOARD_IDX_BLACK] = E6 | D5;
+  position_[BOARD_IDX_BLACK + PAWN] = E6 | D5;
+  position_[BOARD_IDX_EXTRAS] |= static_cast<Bitboard>(tzcnt(D6))
+                                 << BOARD_SHIFT_EN_PASSENT;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            1);
+  const Bitmove& returned_move = *move_list_.begin();
+  CheckMove(returned_move, E5, D6, PAWN, PAWN, NO_PROMOTION,
+            MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+}
+
 }  // namespace
 }  // namespace Chess
