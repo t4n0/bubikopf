@@ -11,6 +11,9 @@
 
 namespace Chess {
 
+/// @brief Type to preallocate array for move generation
+using MoveList = std::array<Bitmove, 1000>;
+
 namespace {
 
 Bitmove ComposeMove(const Bitmove source, const Bitmove target,
@@ -24,10 +27,20 @@ Bitmove ComposeMove(const Bitmove source, const Bitmove target,
          move_type;
 }
 
-}  // namespace
+void PushBackAllPromotions(
+    MoveList::iterator& move_generation_insertion_iterator,
+    const Bitmove source, const Bitmove target, const Bitmove captured_piece) {
+  *move_generation_insertion_iterator++ = ComposeMove(
+      source, target, PAWN, captured_piece, QUEEN, MOVE_VALUE_TYPE_PROMOTION);
+  *move_generation_insertion_iterator++ = ComposeMove(
+      source, target, PAWN, captured_piece, ROOK, MOVE_VALUE_TYPE_PROMOTION);
+  *move_generation_insertion_iterator++ = ComposeMove(
+      source, target, PAWN, captured_piece, KNIGHT, MOVE_VALUE_TYPE_PROMOTION);
+  *move_generation_insertion_iterator++ = ComposeMove(
+      source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
+}
 
-/// @brief Type to preallocate array for move generation
-using MoveList = std::array<Bitmove, 1000>;
+}  // namespace
 
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
@@ -101,14 +114,25 @@ GenerateMoves(const PositionWithBitboards& position,
         (position[board_idx_attacking_side] & target_single_push) ||
         (position[board_idx_defending_side] & target_single_push);
     if (!target_single_push_is_occupied) {
-      *move_generation_insertion_iterator++ =
-          ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_PIECE,
-                      NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
+      constexpr Bitboard promotion_ranks = A8 | B8 | C8 | D8 | E8 | F8 | G8 |
+                                           H8 | A1 | B1 | C1 | D1 | E1 | F1 |
+                                           G1 | H1;
+      const bool is_promotion = target_single_push & promotion_ranks;
+      if (!is_promotion) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source_bit, tzcnt(target_single_push), PAWN, NO_PIECE,
+                        NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
+      } else {
+        // promotion (without capture)
+        PushBackAllPromotions(move_generation_insertion_iterator, source_bit,
+                              tzcnt(target_single_push), NO_PIECE);
+      }
     }
 
     // double push
-    constexpr Bitboard start_row_white = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
+    constexpr Bitboard start_rank_white = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
     const bool source_is_on_start_row = source & start_row_white;
+    const bool source_is_on_start_row = source & start_rank_white;
     if (source_is_on_start_row) {
       const Bitboard target_double_push = source << 16;
       const bool target_double_push_is_occupied =
@@ -120,8 +144,6 @@ GenerateMoves(const PositionWithBitboards& position,
                         NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
       }
     }
-
-    // promotion
 
     // prepare next iteration
     pawn_board &= ~source;

@@ -163,5 +163,24 @@ TEST_F(MoveGeneration_Fixture, GivenEnPassent2_ExpectCapture) {
             MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
 }
 
+TEST_F(MoveGeneration_Fixture, GivenPawnPushToPromotionRank_ExpectPromotion) {
+  position_[BOARD_IDX_WHITE] = E7;
+  position_[BOARD_IDX_WHITE + PAWN] = E7;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            4);
+  CheckMove(move_list_.at(0), E7, E8, PAWN, NO_PIECE, QUEEN,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(1), E7, E8, PAWN, NO_PIECE, ROOK,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(2), E7, E8, PAWN, NO_PIECE, KNIGHT,
+            MOVE_VALUE_TYPE_PROMOTION);
+  CheckMove(move_list_.at(3), E7, E8, PAWN, NO_PIECE, BISHOP,
+            MOVE_VALUE_TYPE_PROMOTION);
+}
+
 }  // namespace
 }  // namespace Chess
