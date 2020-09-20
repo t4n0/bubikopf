@@ -21,7 +21,7 @@ void CheckMove(const Bitmove move, const Bitboard source, const Bitboard target,
   EXPECT_EQ(move & MOVE_MASK_TYPE, move_type);
 }
 
-class MoveGeneration_Fixture : public ::testing::Test {
+class WhitePawnMoveGenerationFixture : public ::testing::Test {
  public:
   void SetUp() override {
     position_[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING | BOARD_MASK_WHITE_TURN;
@@ -31,9 +31,8 @@ class MoveGeneration_Fixture : public ::testing::Test {
   MoveList move_list_{};
 };
 
-TEST_F(
-    MoveGeneration_Fixture,
-    GivenWhitePawnWithFreeSquareInfrontAndNotOnStartingRow_ExpectSinglePawnPush) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenFreeSquareInfrontAndNotOnStartingRow_ExpectSinglePawnPush) {
   position_[BOARD_IDX_WHITE] = F5;
   position_[BOARD_IDX_WHITE + PAWN] = F5;
 
@@ -47,8 +46,7 @@ TEST_F(
             MOVE_VALUE_TYPE_PAWN_PUSH);
 }
 
-TEST_F(MoveGeneration_Fixture,
-       GivenWhitePawnWithNoFreeSquareInfront_ExpectNoMove) {
+TEST_F(WhitePawnMoveGenerationFixture, GivenNoFreeSquareInfront_ExpectNoMove) {
   position_[BOARD_IDX_WHITE] = F6;
   position_[BOARD_IDX_WHITE + PAWN] = F6;
   position_[BOARD_IDX_BLACK] = F7;
@@ -61,9 +59,8 @@ TEST_F(MoveGeneration_Fixture,
             0);
 }
 
-TEST_F(
-    MoveGeneration_Fixture,
-    GivenWhitePawnOnStartingRowWithTwoFreeSquaresInfront_ExpectDoublePawnPush) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenOnStartingRowWithTwoFreeSquaresInfront_ExpectDoublePawnPush) {
   position_[BOARD_IDX_WHITE] = E2;
   position_[BOARD_IDX_WHITE + PAWN] = E2;
 
@@ -81,8 +78,8 @@ TEST_F(
   }
 }
 
-TEST_F(MoveGeneration_Fixture,
-       GivenWhitePawnOnStartingRowWithNoFreeSquaresInfront_ExpectNoMove) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenOnStartingRowWithNoFreeSquaresInfront_ExpectNoMove) {
   position_[BOARD_IDX_WHITE] = A2;
   position_[BOARD_IDX_WHITE + PAWN] = A2;
   position_[BOARD_IDX_BLACK] = A3;
@@ -95,7 +92,8 @@ TEST_F(MoveGeneration_Fixture,
             0);
 }
 
-TEST_F(MoveGeneration_Fixture, GivenBlackKnightHanging_ExpectPawnCapture) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenBlackKnightHanging_ExpectPawnCapture) {
   position_[BOARD_IDX_WHITE] = C5;
   position_[BOARD_IDX_WHITE + PAWN] = C5;
   position_[BOARD_IDX_BLACK] = B6 | C6;
@@ -111,7 +109,8 @@ TEST_F(MoveGeneration_Fixture, GivenBlackKnightHanging_ExpectPawnCapture) {
             MOVE_VALUE_TYPE_CAPTURE);
 }
 
-TEST_F(MoveGeneration_Fixture, GivenBlackRookHanging_ExpectPawnCapture) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenBlackRookHanging_ExpectPawnCapture) {
   position_[BOARD_IDX_WHITE] = D3;
   position_[BOARD_IDX_WHITE + PAWN] = D3;
   position_[BOARD_IDX_BLACK] = D4 | E4;
@@ -127,7 +126,7 @@ TEST_F(MoveGeneration_Fixture, GivenBlackRookHanging_ExpectPawnCapture) {
             MOVE_VALUE_TYPE_CAPTURE);
 }
 
-TEST_F(MoveGeneration_Fixture, GivenEnPassent1_ExpectCapture) {
+TEST_F(WhitePawnMoveGenerationFixture, GivenEnPassent1_ExpectCapture) {
   position_[BOARD_IDX_WHITE] = E5;
   position_[BOARD_IDX_WHITE + PAWN] = E5;
   position_[BOARD_IDX_BLACK] = E6 | F5;
@@ -145,7 +144,7 @@ TEST_F(MoveGeneration_Fixture, GivenEnPassent1_ExpectCapture) {
             MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
 }
 
-TEST_F(MoveGeneration_Fixture, GivenEnPassent2_ExpectCapture) {
+TEST_F(WhitePawnMoveGenerationFixture, GivenEnPassent2_ExpectCapture) {
   position_[BOARD_IDX_WHITE] = E5;
   position_[BOARD_IDX_WHITE + PAWN] = E5;
   position_[BOARD_IDX_BLACK] = E6 | D5;
@@ -163,7 +162,8 @@ TEST_F(MoveGeneration_Fixture, GivenEnPassent2_ExpectCapture) {
             MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
 }
 
-TEST_F(MoveGeneration_Fixture, GivenPawnPushToPromotionRank_ExpectPromotion) {
+TEST_F(WhitePawnMoveGenerationFixture,
+       GivenPawnPushToPromotionRank_ExpectPromotion) {
   position_[BOARD_IDX_WHITE] = E7;
   position_[BOARD_IDX_WHITE + PAWN] = E7;
 
@@ -182,7 +182,7 @@ TEST_F(MoveGeneration_Fixture, GivenPawnPushToPromotionRank_ExpectPromotion) {
             MOVE_VALUE_TYPE_PROMOTION);
 }
 
-TEST_F(MoveGeneration_Fixture,
+TEST_F(WhitePawnMoveGenerationFixture,
        GivenPawnCaptureOntoPromotionRank_ExpectPromotion) {
   position_[BOARD_IDX_WHITE] = D7;
   position_[BOARD_IDX_WHITE + PAWN] = D7;
