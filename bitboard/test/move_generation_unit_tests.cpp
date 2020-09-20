@@ -3,7 +3,7 @@
 #include "hardware/population_count.h"
 #include "hardware/trailing_zeros_count.h"
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 namespace Chess {
 namespace {
@@ -69,13 +69,13 @@ TEST_F(WhitePawnMoveGenerationFixture,
 
   EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
             2);
-  for (const auto& move : move_list_) {
-    if ((move & MOVE_MASK_TYPE) == MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH) {
-      CheckMove(move, E2, E4, PAWN, NO_CAPTURE, NO_PROMOTION,
-                MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
-      break;
-    }
-  }
+  std::array<Bitmove, 2> returned_moves{};
+  std::copy_n(move_list_.begin(), 2, returned_moves.begin());
+
+  EXPECT_THAT(returned_moves,
+              ::testing::Contains(
+                  ComposeMove(tzcnt(E2), tzcnt(E4), PAWN, NO_CAPTURE,
+                              NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH)));
 }
 
 TEST_F(WhitePawnMoveGenerationFixture,
@@ -170,16 +170,21 @@ TEST_F(WhitePawnMoveGenerationFixture,
   const MoveList::iterator returned_move_insertion_iterator =
       GenerateMoves(position_, move_list_.begin());
 
-  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+  ASSERT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
             4);
-  CheckMove(move_list_.at(0), E7, E8, PAWN, NO_CAPTURE, QUEEN,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(1), E7, E8, PAWN, NO_CAPTURE, ROOK,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(2), E7, E8, PAWN, NO_CAPTURE, KNIGHT,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(3), E7, E8, PAWN, NO_CAPTURE, BISHOP,
-            MOVE_VALUE_TYPE_PROMOTION);
+  std::array<Bitmove, 4> returned_moves{};
+  std::copy_n(move_list_.begin(), 4, returned_moves.begin());
+
+  const Bitmove base_move =
+      ComposeMove(tzcnt(E7), tzcnt(E8), PAWN, NO_CAPTURE, NO_PROMOTION,
+                  MOVE_VALUE_TYPE_PROMOTION);
+  const Bitmove queen_promotion = base_move | (QUEEN << MOVE_SHIFT_PROMOTION);
+  const Bitmove rook_promotion = base_move | (ROOK << MOVE_SHIFT_PROMOTION);
+  const Bitmove knight_promotion = base_move | (KNIGHT << MOVE_SHIFT_PROMOTION);
+  const Bitmove bishop_promotion = base_move | (BISHOP << MOVE_SHIFT_PROMOTION);
+  EXPECT_THAT(returned_moves, ::testing::UnorderedElementsAre(
+                                  queen_promotion, rook_promotion,
+                                  knight_promotion, bishop_promotion));
 }
 
 TEST_F(WhitePawnMoveGenerationFixture,
@@ -196,22 +201,39 @@ TEST_F(WhitePawnMoveGenerationFixture,
 
   ASSERT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
             8);
-  CheckMove(move_list_.at(0), D7, C8, PAWN, BISHOP, QUEEN,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(1), D7, C8, PAWN, BISHOP, ROOK,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(2), D7, C8, PAWN, BISHOP, KNIGHT,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(3), D7, C8, PAWN, BISHOP, BISHOP,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(4), D7, E8, PAWN, KNIGHT, QUEEN,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(5), D7, E8, PAWN, KNIGHT, ROOK,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(6), D7, E8, PAWN, KNIGHT, KNIGHT,
-            MOVE_VALUE_TYPE_PROMOTION);
-  CheckMove(move_list_.at(7), D7, E8, PAWN, KNIGHT, BISHOP,
-            MOVE_VALUE_TYPE_PROMOTION);
+  std::array<Bitmove, 8> returned_moves{};
+  std::copy_n(move_list_.begin(), 8, returned_moves.begin());
+
+  const Bitmove base_move_left =
+      ComposeMove(tzcnt(D7), tzcnt(C8), PAWN, BISHOP, NO_PROMOTION,
+                  MOVE_VALUE_TYPE_PROMOTION);
+  const Bitmove queen_promotion_capture_left =
+      base_move_left | (QUEEN << MOVE_SHIFT_PROMOTION);
+  const Bitmove rook_promotion_capture_left =
+      base_move_left | (ROOK << MOVE_SHIFT_PROMOTION);
+  const Bitmove knight_promotion_capture_left =
+      base_move_left | (KNIGHT << MOVE_SHIFT_PROMOTION);
+  const Bitmove bishop_promotion_capture_left =
+      base_move_left | (BISHOP << MOVE_SHIFT_PROMOTION);
+  const Bitmove base_move_right =
+      ComposeMove(tzcnt(D7), tzcnt(E8), PAWN, KNIGHT, NO_PROMOTION,
+                  MOVE_VALUE_TYPE_PROMOTION);
+  const Bitmove queen_promotion_capture_right =
+      base_move_right | (QUEEN << MOVE_SHIFT_PROMOTION);
+  const Bitmove rook_promotion_capture_right =
+      base_move_right | (ROOK << MOVE_SHIFT_PROMOTION);
+  const Bitmove knight_promotion_capture_right =
+      base_move_right | (KNIGHT << MOVE_SHIFT_PROMOTION);
+  const Bitmove bishop_promotion_capture_right =
+      base_move_right | (BISHOP << MOVE_SHIFT_PROMOTION);
+  EXPECT_THAT(
+      returned_moves,
+      ::testing::UnorderedElementsAre(
+          queen_promotion_capture_left, rook_promotion_capture_left,
+          knight_promotion_capture_left, bishop_promotion_capture_left,
+          queen_promotion_capture_right, rook_promotion_capture_right,
+          knight_promotion_capture_right, bishop_promotion_capture_right));
+}
 }
 
 }  // namespace
