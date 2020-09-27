@@ -78,8 +78,8 @@ GenerateMoves(const PositionWithBitboards& position,
         [pawn_capture_lookup_index_first_option +
          PAWN_CAPTURE_LOOKUP_TABLE_OFFSET_FOR_SECOND_OPTION];
     const Bitmove target_bit_capture2 = tzcnt(target_capture2);
-    const Bitboard target_single_push = source
-                                        << (8 - 16 * !position.WhiteToMove());
+    const Bitboard target_single_push =
+        position.WhiteToMove() ? source << 8 : source >> 8;
 
     // captures
     if (position[board_idx_defending_side] & target_capture1) {
@@ -146,10 +146,12 @@ GenerateMoves(const PositionWithBitboards& position,
     }
 
     // double push
-    const bool source_is_on_start_row = source & START_RANK_WHITE;
+    const bool source_is_on_start_row =
+        (position.WhiteToMove() && (source & START_RANK_WHITE)) ||
+        (!position.WhiteToMove() && (source & START_RANK_BLACK));
     if (source_is_on_start_row) {
       const Bitboard target_double_push =
-          source << (16 - 32 * !position.WhiteToMove());
+          position.WhiteToMove() ? source << 16 : source >> 16;
       const bool target_double_push_is_occupied =
           (position[board_idx_attacking_side] & target_double_push) ||
           (position[board_idx_defending_side] & target_double_push);

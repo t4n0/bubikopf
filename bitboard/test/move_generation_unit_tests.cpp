@@ -234,6 +234,62 @@ TEST_F(WhitePawnMoveGenerationFixture,
           queen_promotion_capture_right, rook_promotion_capture_right,
           knight_promotion_capture_right, bishop_promotion_capture_right));
 }
+
+class BlackPawnMoveGenerationFixture : public ::testing::Test {
+ public:
+  void SetUp() override {
+    position_[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING;  // black to move
+  }
+
+  PositionWithBitboards position_{};
+  MoveList move_list_{};
+};
+
+TEST_F(BlackPawnMoveGenerationFixture,
+       GivenFreeSquareInfrontAndNotOnStartingRow_ExpectSinglePawnPush) {
+  position_[BOARD_IDX_BLACK] = F5;
+  position_[BOARD_IDX_BLACK + PAWN] = F5;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+  const Bitmove& returned_move = *move_list_.begin();
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            1);
+  CheckMove(returned_move, F5, F4, PAWN, NO_CAPTURE, NO_PROMOTION,
+            MOVE_VALUE_TYPE_PAWN_PUSH);
+}
+
+TEST_F(BlackPawnMoveGenerationFixture, GivenNoFreeSquareInfront_ExpectNoMove) {
+  position_[BOARD_IDX_BLACK] = F6;
+  position_[BOARD_IDX_BLACK + PAWN] = F6;
+  position_[BOARD_IDX_WHITE] = F5;
+  position_[BOARD_IDX_WHITE + PAWN] = F5;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            0);
+}
+
+TEST_F(BlackPawnMoveGenerationFixture,
+       GivenOnStartingRowWithTwoFreeSquaresInfront_ExpectDoublePawnPush) {
+  position_[BOARD_IDX_BLACK] = G7;
+  position_[BOARD_IDX_BLACK + PAWN] = G7;
+
+  const MoveList::iterator returned_move_insertion_iterator =
+      GenerateMoves(position_, move_list_.begin());
+
+  EXPECT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator),
+            2);
+  std::array<Bitmove, 2> returned_moves{};
+  std::copy_n(move_list_.begin(), 2, returned_moves.begin());
+
+  EXPECT_THAT(returned_moves,
+              ::testing::Contains(
+                  ComposeMove(tzcnt(G7), tzcnt(G5), PAWN, NO_CAPTURE,
+                              NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH)));
 }
 
 }  // namespace
