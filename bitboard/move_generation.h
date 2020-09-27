@@ -49,9 +49,9 @@ struct GenerateAllPseudoLegalMoves {
   static constexpr bool generate_all_legal_moves{true};
 };
 
-/// @brief Generates all pseudo legal moves from position
+/// @brief Generates all pseudo legal moves from given position
 ///
-/// "Pseudo" in the sense that own king may be in check after generated move.
+/// "Pseudo" in the sense that the king may be in check after generated move.
 ///
 /// @returns An iterator pointing to the element past the last generated move
 template <typename Behavior = GenerateAllPseudoLegalMoves>
