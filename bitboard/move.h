@@ -5,7 +5,8 @@
 
 #include <limits>
 
-namespace Chess {
+namespace Chess
+{
 
 constexpr Bitmove MOVE_ONES = std::numeric_limits<Bitmove>::max();
 

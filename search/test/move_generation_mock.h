@@ -5,21 +5,23 @@
 
 #include <type_traits>
 
-namespace Chess {
+namespace Chess
+{
 
-struct GenerateTwoMovesWithUniqueDebugId {
-  static constexpr bool generate_two_moves_with_unique_debug_id{true};
+struct GenerateTwoMovesWithUniqueDebugId
+{
+    static constexpr bool generate_two_moves_with_unique_debug_id{true};
 };
 
 template <typename Behavior = GenerateTwoMovesWithUniqueDebugId>
-std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id,
-                 MoveList::iterator>
-GenerateMoves(const PositionWithBitboards& /*unused*/,
-              MoveList::iterator move_generation_insertion_iterator) {
-  static Bitmove unique_id{1};
-  *move_generation_insertion_iterator++ = unique_id++;
-  *move_generation_insertion_iterator++ = unique_id++;
-  return move_generation_insertion_iterator;
+std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id, MoveList::iterator> GenerateMoves(
+    const PositionWithBitboards& /*unused*/,
+    MoveList::iterator move_generation_insertion_iterator)
+{
+    static Bitmove unique_id{1};
+    *move_generation_insertion_iterator++ = unique_id++;
+    *move_generation_insertion_iterator++ = unique_id++;
+    return move_generation_insertion_iterator;
 }
 
 }  // namespace Chess

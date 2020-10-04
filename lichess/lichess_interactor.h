@@ -6,17 +6,19 @@
 #include <iostream>
 #include <string>
 
-namespace Chess {
+namespace Chess
+{
 
-class LichessInteractor {
- public:
-  LichessInteractor() {}
+class LichessInteractor
+{
+  public:
+    LichessInteractor() {}
 
-  std::string StartGame(const bool play_as_white);
-  std::string RespondTo(const std::string& moves);
+    std::string StartGame(const bool play_as_white);
+    std::string RespondTo(const std::string& moves);
 
- private:
-  BubikopfFacade& bubikopf{BubikopfFacade::GetInstance()};
+  private:
+    BubikopfFacade& bubikopf{BubikopfFacade::GetInstance()};
 };
 
 }  // namespace Chess

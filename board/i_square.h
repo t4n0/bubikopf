@@ -6,40 +6,43 @@
 #include <memory>
 #include <vector>
 
-namespace Chess {
+namespace Chess
+{
 
 class Position;
 
-enum class SquareId {
-  WhitePawn,
-  WhiteKnight,
-  WhiteBishop,
-  WhiteRook,
-  WhiteQueen,
-  WhiteKing,
-  BlackPawn,
-  BlackKnight,
-  BlackBishop,
-  BlackRook,
-  BlackQueen,
-  BlackKing,
-  Empty,
+enum class SquareId
+{
+    WhitePawn,
+    WhiteKnight,
+    WhiteBishop,
+    WhiteRook,
+    WhiteQueen,
+    WhiteKing,
+    BlackPawn,
+    BlackKnight,
+    BlackBishop,
+    BlackRook,
+    BlackQueen,
+    BlackKing,
+    Empty,
 };
 
-class ISquare {
- public:
-  virtual ~ISquare() = default;
+class ISquare
+{
+  public:
+    virtual ~ISquare() = default;
 
-  virtual SquareId GetId() const = 0;
-  virtual bool IsEmpty() const = 0;
-  virtual bool IsOfSide(const Player& player) const = 0;
-  virtual std::vector<Position> FindPlies(const std::size_t idx,
-                                          const Position& position) const = 0;
-  virtual std::ostream& print(std::ostream& stream) const = 0;
+    virtual SquareId GetId() const = 0;
+    virtual bool IsEmpty() const = 0;
+    virtual bool IsOfSide(const Player& player) const = 0;
+    virtual std::vector<Position> FindPlies(const std::size_t idx, const Position& position) const = 0;
+    virtual std::ostream& print(std::ostream& stream) const = 0;
 };
 
-inline std::ostream& operator<<(std::ostream& stream, const ISquare& square) {
-  return square.print(stream);
+inline std::ostream& operator<<(std::ostream& stream, const ISquare& square)
+{
+    return square.print(stream);
 }
 
 using ISquarePtr = const ISquare*;

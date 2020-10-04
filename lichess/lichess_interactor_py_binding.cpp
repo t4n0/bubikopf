@@ -2,9 +2,9 @@
 
 #include <boost/python.hpp>
 
-BOOST_PYTHON_MODULE(bubikopf) {
-  boost::python::class_<Chess::LichessInteractor>("LichessInteractor",
-                                                  boost::python::init<>())
-      .def("StartGame", &Chess::LichessInteractor::StartGame)
-      .def("RespondTo", &Chess::LichessInteractor::RespondTo);
+BOOST_PYTHON_MODULE(bubikopf)
+{
+    boost::python::class_<Chess::LichessInteractor>("LichessInteractor", boost::python::init<>())
+        .def("StartGame", &Chess::LichessInteractor::StartGame)
+        .def("RespondTo", &Chess::LichessInteractor::RespondTo);
 }

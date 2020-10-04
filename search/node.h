@@ -6,22 +6,24 @@
 #include <memory>
 #include <vector>
 
-namespace Chess {
+namespace Chess
+{
 
-class Node {
- public:
-  Node();
-  Node(const Position& position);
-  Node(Position&& position);
+class Node
+{
+  public:
+    Node();
+    Node(const Position& position);
+    Node(Position&& position);
 
-  Node(const Node&) = delete;
-  Node(Node&&) = delete;
-  Node& operator=(Node) = delete;
-  Node& operator=(Node&&) = delete;
-  ~Node() = default;
+    Node(const Node&) = delete;
+    Node(Node&&) = delete;
+    Node& operator=(Node) = delete;
+    Node& operator=(Node&&) = delete;
+    ~Node() = default;
 
-  std::vector<std::unique_ptr<Node>> children_{};
-  Position position_;
+    std::vector<std::unique_ptr<Node>> children_{};
+    Position position_;
 };
 
 using NodePtr = std::unique_ptr<Node>;

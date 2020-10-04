@@ -7,14 +7,16 @@
 #include <iostream>
 #include <vector>
 
-namespace Chess {
+namespace Chess
+{
 
-struct Coordinate {
-  int8_t col{};
-  int8_t row{};
+struct Coordinate
+{
+    int8_t col{};
+    int8_t row{};
 
-  Coordinate& operator+=(const Coordinate& rhs);
-  Coordinate& operator-=(const Coordinate& rhs);
+    Coordinate& operator+=(const Coordinate& rhs);
+    Coordinate& operator-=(const Coordinate& rhs);
 };
 using Coordinates = std::vector<Coordinate>;
 
@@ -31,15 +33,16 @@ Coordinate ToCoor(const std::size_t idx);
 std::string ToUciSquare(const std::size_t idx);
 bool IsOnTheBoard(const Coordinate coordinate);
 
-class Board {
- public:
-  ISquarePtr Get(const Coordinate coor) const;
-  ISquarePtr Get(const std::size_t idx) const;
-  void Set(const Coordinate coor, const ISquarePtr square);
-  void Set(const std::size_t idx, const ISquarePtr square);
-  void SwapSquares(const std::size_t a, const std::size_t b);
+class Board
+{
+  public:
+    ISquarePtr Get(const Coordinate coor) const;
+    ISquarePtr Get(const std::size_t idx) const;
+    void Set(const Coordinate coor, const ISquarePtr square);
+    void Set(const std::size_t idx, const ISquarePtr square);
+    void SwapSquares(const std::size_t a, const std::size_t b);
 
-  std::array<ISquarePtr, 64> squares_{};
+    std::array<ISquarePtr, 64> squares_{};
 };
 
 std::ostream& operator<<(std::ostream& stream, const Board& piece);

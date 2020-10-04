@@ -5,7 +5,8 @@
 
 #include <limits>
 
-namespace Chess {
+namespace Chess
+{
 
 constexpr Bitboard XX = 0;  // empty bitboard
 
@@ -83,8 +84,7 @@ constexpr Bitboard A8 = 1ULL << 63;
 
 constexpr Bitboard START_RANK_WHITE = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
 constexpr Bitboard START_RANK_BLACK = A7 | B7 | C7 | D7 | E7 | F7 | G7 | H7;
-constexpr Bitboard PROMOTION_RANKS = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8 |
-                                     A1 | B1 | C1 | D1 | E1 | F1 | G1 | H1;
+constexpr Bitboard PROMOTION_RANKS = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8 | A1 | B1 | C1 | D1 | E1 | F1 | G1 | H1;
 
 }  // namespace Chess
 

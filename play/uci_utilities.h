@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-namespace Chess {
+namespace Chess
+{
 
 std::vector<std::string> SeparateEachMove(const std::string& moves);
 

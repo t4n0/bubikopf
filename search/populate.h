@@ -7,7 +7,8 @@
 #include <memory>
 #include <vector>
 
-namespace Chess {
+namespace Chess
+{
 
 void populate(Node& node, const int depth);
 

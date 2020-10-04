@@ -6,7 +6,8 @@
 
 #include <array>
 
-namespace Chess {
+namespace Chess
+{
 
 constexpr std::size_t PAWN_CAPTURE_LOOKUP_TABLE_OFFSET_FOR_SECOND_OPTION = 56;
 constexpr std::size_t PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK =

@@ -2,13 +2,16 @@
 
 #include <gtest/gtest.h>
 
-namespace Chess {
-namespace {
+namespace Chess
+{
+namespace
+{
 
-TEST(TrailingZeroCountTest, GivenAllZeros_Expect64) {
-  constexpr std::uint64_t all_zeros{0};
-  const int expected_bit{64};
-  EXPECT_EQ(tzcnt(all_zeros), expected_bit);
+TEST(TrailingZeroCountTest, GivenAllZeros_Expect64)
+{
+    constexpr std::uint64_t all_zeros{0};
+    const int expected_bit{64};
+    EXPECT_EQ(tzcnt(all_zeros), expected_bit);
 }
 
 }  // namespace

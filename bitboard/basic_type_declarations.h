@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-namespace Chess {
+namespace Chess
+{
 
 using Bitmove = uint32_t;
 using Bitboard = uint64_t;

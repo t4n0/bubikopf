@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-namespace Chess {
+namespace Chess
+{
 
 /// @brief Numbers to refer to pieces in different contexts
 ///

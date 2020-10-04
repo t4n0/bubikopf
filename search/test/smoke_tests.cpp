@@ -6,26 +6,28 @@
 
 #include <iostream>
 
-namespace Chess {
-namespace {
+namespace Chess
+{
+namespace
+{
 
-TEST(MoveListTest,
-     GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList) {
-  // Setup
-  PositionWithBitboards position{};
-  MoveList move_list{};
-  const int DEPTH{3};
+TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
+{
+    // Setup
+    PositionWithBitboards position{};
+    MoveList move_list{};
+    const int DEPTH{3};
 
-  // Call
-  minimax<SearchAllBranchesWithoutPruning, GenerateTwoMovesWithUniqueDebugId,
-          EvaluteToZero>(DEPTH, position, move_list.begin());
+    // Call
+    minimax<SearchAllBranchesWithoutPruning, GenerateTwoMovesWithUniqueDebugId, EvaluteToZero>(
+        DEPTH, position, move_list.begin());
 
-  // Expect
-  const std::array<Bitmove, 6> expexted_debugging_ids{
-      1, 2, 9, 10, 13, 14};  // worked out by hand
-  for (std::size_t idx{0}; idx < expexted_debugging_ids.size(); idx++) {
-    EXPECT_EQ(expexted_debugging_ids.at(idx), move_list.at(idx));
-  }
+    // Expect
+    const std::array<Bitmove, 6> expexted_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
+    for (std::size_t idx{0}; idx < expexted_debugging_ids.size(); idx++)
+    {
+        EXPECT_EQ(expexted_debugging_ids.at(idx), move_list.at(idx));
+    }
 }
 
 }  // namespace

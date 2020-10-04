@@ -3,10 +3,12 @@
 
 #include <nmmintrin.h>
 
-namespace Chess {
+namespace Chess
+{
 
-inline int popcnt(const unsigned long long board) {
-  return static_cast<int>(_mm_popcnt_u64(board));
+inline int popcnt(const unsigned long long board)
+{
+    return static_cast<int>(_mm_popcnt_u64(board));
 }
 
 }  // namespace Chess
