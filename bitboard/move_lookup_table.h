@@ -13,7 +13,7 @@ constexpr std::size_t PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK =
     104;  // This is actually less than the actual number of elements for white
           // move options. 8 less exactly. This exploits the fact that black
           // pawns never occupy the first rank. So the actually accessed indeces
-          // for black only start from 8 onwards .
+          // for black only start from 8 onwards.
 
 /// Index corresponds to source bit. I.e. value at(0) corresponds to "first
 /// target bitboard for white pawn on H1".
