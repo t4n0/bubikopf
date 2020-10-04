@@ -1,9 +1,7 @@
 # bubikopf
 A chess engine. Implements alpha/beta search.
 
-## Todos
-
-### Missing Features
+## missing features
 - Test for checkmate
 - Is king in check?
 - Is king still in check after move?
@@ -15,10 +13,6 @@ A chess engine. Implements alpha/beta search.
 - Draw due to 50 move rule
 - Draw due to threefold repitition
 
-
-### Optimizations
-- remove "Player" variant from Evaluation and substitute with int max value
-
-### Bugs
+## known issues
 - local repositories
 - local change to simplejson
