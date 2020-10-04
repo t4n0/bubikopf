@@ -21,5 +21,4 @@ A chess engine. Implements alpha/beta search.
 
 ### Bugs
 - local repositories
-- bazel test //... not working because of compile commands
 - local change to simplejson

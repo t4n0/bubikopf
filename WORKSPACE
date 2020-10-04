@@ -7,12 +7,6 @@ git_repository(
 )
 
 git_repository(
-    name = "compilecommands",
-    remote = "https://github.com/grailbio/bazel-compilation-database",
-    tag = "0.4.2",
-)
-
-git_repository(
     name = "rules_python",
     remote = "https://github.com/bazelbuild/rules_python",
     commit = "748aa53d7701e71101dfd15d800e100f6ff8e5d1",
