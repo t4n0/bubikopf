@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@bubikopf_deps//:requirements.bzl", "requirement")
 
 cc_library(

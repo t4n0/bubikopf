@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
 cc_test(
     name = "test",
     srcs = ["uci_utilities_unit_tests.cpp"],
