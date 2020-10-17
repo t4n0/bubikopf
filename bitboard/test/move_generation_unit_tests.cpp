@@ -107,36 +107,36 @@ const MoveGenerationTestParameter kWhitePawnPushToPromotionWithCapture{
 
 // black pawn moves
 const MoveGenerationTestParameter kBlackPawnSinglePush{
-    {},
+    BOARD_MASK_BLACK_TURN,
     {},
     {{PAWN, E5}},
     {ComposeMove(tzcnt(E5), tzcnt(E4), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH)}};
-const MoveGenerationTestParameter kBlackPawnBlockedMidfield{{}, {{PAWN, D5}}, {{PAWN, D6}}, {}};
+const MoveGenerationTestParameter kBlackPawnBlockedMidfield{BOARD_MASK_BLACK_TURN, {{PAWN, D5}}, {{PAWN, D6}}, {}};
 const MoveGenerationTestParameter kBlackPawnOnStartRow{
-    {},
+    BOARD_MASK_BLACK_TURN,
     {},
     {{PAWN, G7}},
     {ComposeMove(tzcnt(G7), tzcnt(G6), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH),
      ComposeMove(tzcnt(G7), tzcnt(G5), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH)}};
-const MoveGenerationTestParameter kBlackPawnBlockedOnStartRow{{}, {{PAWN, H6}}, {{PAWN, H7}}, {}};
+const MoveGenerationTestParameter kBlackPawnBlockedOnStartRow{BOARD_MASK_BLACK_TURN, {{PAWN, H6}}, {{PAWN, H7}}, {}};
 const MoveGenerationTestParameter kBlackPawnCaptures{
-    {},
+    BOARD_MASK_BLACK_TURN,
     {{PAWN, C4}, {KNIGHT, B4}, {ROOK, D4}},
     {{PAWN, C5}},
     {ComposeMove(tzcnt(C5), tzcnt(B4), PAWN, KNIGHT, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
      ComposeMove(tzcnt(C5), tzcnt(D4), PAWN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
 const MoveGenerationTestParameter kBlackPawnEnPassentOptionRight{
-    (static_cast<Bitboard>(tzcnt(E3)) << BOARD_SHIFT_EN_PASSENT),
+    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(E3)) << BOARD_SHIFT_EN_PASSENT),
     {{PAWN, E4}, {PAWN, F3}},
     {{PAWN, F4}},
     {ComposeMove(tzcnt(F4), tzcnt(E3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
 const MoveGenerationTestParameter kBlackPawnEnPassentOptionLeft{
-    (static_cast<Bitboard>(tzcnt(G3)) << BOARD_SHIFT_EN_PASSENT),
+    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(G3)) << BOARD_SHIFT_EN_PASSENT),
     {{PAWN, G4}, {PAWN, F3}},
     {{PAWN, F4}},
     {ComposeMove(tzcnt(F4), tzcnt(G3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
 const MoveGenerationTestParameter kBlackPawnPushToPromotion{
-    {},
+    BOARD_MASK_BLACK_TURN,
     {},
     {{PAWN, A2}},
     {ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, NO_CAPTURE, QUEEN, MOVE_VALUE_TYPE_PROMOTION),
@@ -144,7 +144,7 @@ const MoveGenerationTestParameter kBlackPawnPushToPromotion{
      ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, NO_CAPTURE, KNIGHT, MOVE_VALUE_TYPE_PROMOTION),
      ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, NO_CAPTURE, BISHOP, MOVE_VALUE_TYPE_PROMOTION)}};
 const MoveGenerationTestParameter kBlackPawnPushToPromotionWithCapture{
-    {},
+    BOARD_MASK_BLACK_TURN,
     {{KING, D1}, {BISHOP, C1}, {KNIGHT, E1}},
     {{PAWN, D2}},
     {ComposeMove(tzcnt(D2), tzcnt(C1), PAWN, BISHOP, QUEEN, MOVE_VALUE_TYPE_PROMOTION),
