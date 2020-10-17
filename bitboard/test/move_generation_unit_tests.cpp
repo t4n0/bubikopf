@@ -177,5 +177,92 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicPawnPositions,
                                               kBlackPawnPushToPromotion,
                                               kBlackPawnPushToPromotionWithCapture}));
 
+const MoveGenerationTestParameter kWhiteKingAloneMidfield{
+    BOARD_MASK_WHITE_TURN,
+    {{KING, E4}},
+    {},
+    {ComposeMove(tzcnt(E4), tzcnt(E5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kWhiteKingInCornerH1{
+    BOARD_MASK_WHITE_TURN,
+    {{KING, H1}},
+    {},
+    {ComposeMove(tzcnt(H1), tzcnt(H2), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(H1), tzcnt(G2), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(H1), tzcnt(G1), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kWhiteKingInCornerA8{
+    BOARD_MASK_WHITE_TURN,
+    {{KING, A8}},
+    {},
+    {ComposeMove(tzcnt(A8), tzcnt(B8), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(A8), tzcnt(B7), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(A8), tzcnt(A7), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+
+const MoveGenerationTestParameter kBlackKingAloneMidfield{
+    BOARD_MASK_BLACK_TURN,
+    {},
+    {{KING, E4}},
+    {ComposeMove(tzcnt(E4), tzcnt(E5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kBlackKingInCornerA1{
+    BOARD_MASK_BLACK_TURN,
+    {},
+    {{KING, A1}},
+    {ComposeMove(tzcnt(A1), tzcnt(A2), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(A1), tzcnt(B2), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(A1), tzcnt(B1), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kBlackKingInCornerH8{
+    BOARD_MASK_BLACK_TURN,
+    {},
+    {{KING, H8}},
+    {ComposeMove(tzcnt(H8), tzcnt(H7), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(H8), tzcnt(G7), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(H8), tzcnt(G8), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kWhiteKingCapture{
+    BOARD_MASK_WHITE_TURN,
+    {{KING, E4}, {PAWN, E3}},
+    {{PAWN, E5}},
+    {ComposeMove(tzcnt(E4), tzcnt(D4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E5), KING, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
+     ComposeMove(tzcnt(E4), tzcnt(F5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+const MoveGenerationTestParameter kBlackKingCapture{
+    BOARD_MASK_BLACK_TURN,
+    {{PAWN, E3}},
+    {{KING, E4}, {PAWN, E5}},
+    {ComposeMove(tzcnt(E4), tzcnt(D4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F5), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E3), KING, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
+     ComposeMove(tzcnt(E4), tzcnt(D3), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+
+INSTANTIATE_TEST_SUITE_P(AllAtomicKingPositions,
+                         MoveGenerationTestFixture,
+                         ::testing::ValuesIn({kWhiteKingAloneMidfield,
+                                              kWhiteKingInCornerH1,
+                                              kWhiteKingInCornerA8,
+                                              kWhiteKingCapture,
+                                              kBlackKingAloneMidfield,
+                                              kBlackKingInCornerA1,
+                                              kBlackKingInCornerH8,
+                                              kBlackKingCapture}));
+
 }  // namespace
 }  // namespace Chess

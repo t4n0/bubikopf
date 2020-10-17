@@ -5,6 +5,7 @@
 #include "bitboard/position.h"
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
+#include "shift.h"
 
 #include <array>
 #include <type_traits>
@@ -188,7 +189,34 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // queen moves
 
-    // king moves
+    {  // king moves
+        const Bitboard king_board = position[board_idx_attacking_side + KING];
+        constexpr std::array<std::size_t, 8> king_directions{
+            west, north_west, north, north_east, east, south_east, south, south_west};
+        for (const auto direction : king_directions)
+        {
+            const Bitboard target = Shift(king_board, direction);
+            if (target)  // is on board?
+            {
+                const Bitmove source_bit = tzcnt(king_board);
+                const bool target_is_free =
+                    target & ~(position[board_idx_attacking_side] | position[board_idx_defending_side]);
+                if (target_is_free)
+                {
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        source_bit, tzcnt(target), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                    continue;
+                }
+                const bool target_is_occupied_by_opponents_piece = target & position[board_idx_defending_side];
+                if (target_is_occupied_by_opponents_piece)
+                {
+                    const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        source_bit, tzcnt(target), KING, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                }
+            }
+        }
+    }
 
     return move_generation_insertion_iterator;
 }
