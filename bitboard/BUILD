@@ -11,6 +11,8 @@ cc_library(
         "pieces.h",
         "position.cpp",
         "position.h",
+        "shift.cpp",
+        "shift.h",
         "squares.h",
     ],
     hdrs = [
@@ -31,6 +33,7 @@ cc_test(
         "test/move_generation_unit_tests.cpp",
         "test/move_unit_tests.cpp",
         "test/position_unit_tests.cpp",
+        "test/shift_unit_tests.cpp",
         "test/squares_unit_tests.cpp",
     ],
     visibility = ["//:__pkg__"],
