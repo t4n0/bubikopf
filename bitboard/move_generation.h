@@ -16,15 +16,12 @@ namespace Chess
 /// @brief Type to preallocate array for move generation
 using MoveList = std::array<Bitmove, 1000>;
 
-namespace
-{
-
-Bitmove ComposeMove(const Bitmove source,
-                    const Bitmove target,
-                    const Bitmove moved_piece,
-                    const Bitmove captured_piece,
-                    const Bitmove promotion,
-                    const Bitmove move_type)
+inline Bitmove ComposeMove(const Bitmove source,
+                           const Bitmove target,
+                           const Bitmove moved_piece,
+                           const Bitmove captured_piece,
+                           const Bitmove promotion,
+                           const Bitmove move_type)
 {
     return source |                                         //
            (target << MOVE_SHIFT_TARGET) |                  //
@@ -34,10 +31,10 @@ Bitmove ComposeMove(const Bitmove source,
            move_type;
 }
 
-void PushBackAllPromotions(MoveList::iterator& move_generation_insertion_iterator,
-                           const Bitmove source,
-                           const Bitmove target,
-                           const Bitmove captured_piece)
+inline void PushBackAllPromotions(MoveList::iterator& move_generation_insertion_iterator,
+                                  const Bitmove source,
+                                  const Bitmove target,
+                                  const Bitmove captured_piece)
 {
     *move_generation_insertion_iterator++ =
         ComposeMove(source, target, PAWN, captured_piece, QUEEN, MOVE_VALUE_TYPE_PROMOTION);
@@ -48,8 +45,6 @@ void PushBackAllPromotions(MoveList::iterator& move_generation_insertion_iterato
     *move_generation_insertion_iterator++ =
         ComposeMove(source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
 }
-
-}  // namespace
 
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
