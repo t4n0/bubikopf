@@ -69,67 +69,64 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // pawn moves
     Bitboard pawn_board = position[board_idx_attacking_side + PAWN];
-    Bitmove source_bit = tzcnt(pawn_board);
-    while (source_bit < 64)
+    Bitmove pawn_source_bit = tzcnt(pawn_board);
+    while (pawn_source_bit < 64)
     {
-        const Bitboard source = 1ULL << source_bit;
+        const Bitboard source = 1ULL << pawn_source_bit;
         const Bitmove pawn_capture_lookup_index_first_option =
-            source_bit + PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK * !position.WhiteToMove();
-        const Bitboard target_capture1 = pawn_capture_lookup_table[pawn_capture_lookup_index_first_option];
-        const Bitmove target_bit_capture1 = tzcnt(target_capture1);
-        const Bitboard target_capture2 = pawn_capture_lookup_table[pawn_capture_lookup_index_first_option +
-                                                                   PAWN_CAPTURE_LOOKUP_TABLE_OFFSET_FOR_SECOND_OPTION];
-        const Bitmove target_bit_capture2 = tzcnt(target_capture2);
+            pawn_source_bit + PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK * !position.WhiteToMove();
+        const std::array<Bitboard, 2> pawn_capture_targets{
+            pawn_capture_lookup_table[pawn_capture_lookup_index_first_option],
+            pawn_capture_lookup_table[pawn_capture_lookup_index_first_option +
+                                      PAWN_CAPTURE_LOOKUP_TABLE_OFFSET_FOR_SECOND_OPTION]};
+        const std::array<Bitboard, 2> pawn_capture_target_bits{tzcnt(std::get<0>(pawn_capture_targets)),
+                                                               tzcnt(std::get<1>(pawn_capture_targets))};
         const Bitboard target_single_push = position.WhiteToMove() ? source << 8 : source >> 8;
 
         // captures
-        if (position[board_idx_defending_side] & target_capture1)
+        for (const std::size_t index : {0, 1})
         {
-            const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target_capture1);
-            const bool is_promotion = target_capture1 & PROMOTION_RANKS;
-            if (!is_promotion)
+            if (position[board_idx_defending_side] & pawn_capture_targets.at(index))
             {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, target_bit_capture1, PAWN, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
-            }
-            else
-            {
-                // promotion (with capture)
-                PushBackAllPromotions(
-                    move_generation_insertion_iterator, source_bit, tzcnt(target_capture1), captured_piece);
-            }
-        }
-        if (position[board_idx_defending_side] & target_capture2)
-        {
-            const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target_capture2);
-            const bool is_promotion = target_capture2 & PROMOTION_RANKS;
-            if (!is_promotion)
-            {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, target_bit_capture2, PAWN, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
-            }
-            else
-            {
-                // promotion (with capture)
-                PushBackAllPromotions(
-                    move_generation_insertion_iterator, source_bit, tzcnt(target_capture2), captured_piece);
+                const Bitmove captured_piece =
+                    position.GetPieceKind(board_idx_defending_side, pawn_capture_targets.at(index));
+                const bool is_promotion = pawn_capture_targets.at(index) & PROMOTION_RANKS;
+                if (!is_promotion)
+                {
+                    *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                                                                        pawn_capture_target_bits.at(index),
+                                                                        PAWN,
+                                                                        captured_piece,
+                                                                        NO_PROMOTION,
+                                                                        MOVE_VALUE_TYPE_CAPTURE);
+                }
+                else
+                {
+                    // promotion (with capture)
+                    PushBackAllPromotions(move_generation_insertion_iterator,
+                                          pawn_source_bit,
+                                          tzcnt(pawn_capture_targets.at(index)),
+                                          captured_piece);
+                }
             }
         }
 
         // en passent
-        const Bitboard en_passent_mask = (position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT);
+        const Bitboard en_passent_mask = position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT;
         if (en_passent_mask)
         {
             const Bitboard en_passent_bit = en_passent_mask >> BOARD_SHIFT_EN_PASSENT;
-            if (en_passent_bit == target_bit_capture1)
+            for (const std::size_t index : {0, 1})
             {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, target_bit_capture1, PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
-            }
-            if (en_passent_bit == target_bit_capture2)
-            {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, target_bit_capture2, PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+                if (en_passent_bit == pawn_capture_target_bits.at(index))
+                {
+                    *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                                                                        pawn_capture_target_bits.at(index),
+                                                                        PAWN,
+                                                                        PAWN,
+                                                                        NO_PROMOTION,
+                                                                        MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+                }
             }
         }
 
@@ -141,14 +138,18 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             const bool is_promotion = target_single_push & PROMOTION_RANKS;
             if (!is_promotion)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target_single_push), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
+                *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                                                                    tzcnt(target_single_push),
+                                                                    PAWN,
+                                                                    NO_CAPTURE,
+                                                                    NO_PROMOTION,
+                                                                    MOVE_VALUE_TYPE_PAWN_PUSH);
             }
             else
             {
                 // promotion (without capture)
                 PushBackAllPromotions(
-                    move_generation_insertion_iterator, source_bit, tzcnt(target_single_push), NO_CAPTURE);
+                    move_generation_insertion_iterator, pawn_source_bit, tzcnt(target_single_push), NO_CAPTURE);
             }
         }
 
@@ -162,7 +163,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                                         (position[board_idx_defending_side] & target_double_push);
             if (!target_single_push_is_occupied && !target_double_push_is_occupied)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(source_bit,
+                *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
                                                                     tzcnt(target_double_push),
                                                                     PAWN,
                                                                     NO_CAPTURE,
@@ -173,7 +174,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
         // prepare next iteration
         pawn_board &= ~source;
-        source_bit = tzcnt(pawn_board);
+        pawn_source_bit = tzcnt(pawn_board);
     }
 
     // knight moves
@@ -184,31 +185,30 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // queen moves
 
-    {  // king moves
-        const Bitboard king_board = position[board_idx_attacking_side + KING];
-        constexpr std::array<std::size_t, 8> king_directions{
-            west, north_west, north, north_east, east, south_east, south, south_west};
-        for (const auto direction : king_directions)
+    // king moves
+    const Bitboard king_board = position[board_idx_attacking_side + KING];
+    constexpr std::array<std::size_t, 8> king_directions{
+        west, north_west, north, north_east, east, south_east, south, south_west};
+    for (const auto direction : king_directions)
+    {
+        const Bitboard target = Shift(king_board, direction);
+        if (target)  // is on board?
         {
-            const Bitboard target = Shift(king_board, direction);
-            if (target)  // is on board?
+            const Bitmove king_source_bit = tzcnt(king_board);
+            const bool target_is_free =
+                target & ~(position[board_idx_attacking_side] | position[board_idx_defending_side]);
+            if (target_is_free)
             {
-                const Bitmove source_bit = tzcnt(king_board);
-                const bool target_is_free =
-                    target & ~(position[board_idx_attacking_side] | position[board_idx_defending_side]);
-                if (target_is_free)
-                {
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
-                    continue;
-                }
-                const bool target_is_occupied_by_opponents_piece = target & position[board_idx_defending_side];
-                if (target_is_occupied_by_opponents_piece)
-                {
-                    const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), KING, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
-                }
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    king_source_bit, tzcnt(target), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                continue;
+            }
+            const bool target_is_occupied_by_opponents_piece = target & position[board_idx_defending_side];
+            if (target_is_occupied_by_opponents_piece)
+            {
+                const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    king_source_bit, tzcnt(target), KING, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
             }
         }
     }
