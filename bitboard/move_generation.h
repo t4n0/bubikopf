@@ -66,6 +66,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 {
     const std::size_t board_idx_attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.WhiteToMove();
     const std::size_t board_idx_defending_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
+    const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 
     // pawn moves
     Bitboard pawn_board = position[board_idx_attacking_side + PAWN];
@@ -131,9 +132,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         }
 
         // single push
-        const bool target_single_push_is_occupied =
-            (position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]) & target_single_push;
-        if (!target_single_push_is_occupied)
+        const bool target_single_push_is_free = target_single_push & free_squares;
+        if (target_single_push_is_free)
         {
             const bool is_promotion = target_single_push & PROMOTION_RANKS;
             if (!is_promotion)
@@ -159,9 +159,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         if (source_is_on_start_row)
         {
             const Bitboard target_double_push = position.WhiteToMove() ? source << 16 : source >> 16;
-            const bool target_double_push_is_occupied = (position[board_idx_attacking_side] & target_double_push) ||
-                                                        (position[board_idx_defending_side] & target_double_push);
-            if (!target_single_push_is_occupied && !target_double_push_is_occupied)
+            const bool target_double_push_is_free = target_double_push & free_squares;
+            if (target_single_push_is_free && target_double_push_is_free)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
                                                                     tzcnt(target_double_push),
@@ -195,8 +194,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         if (target)  // is on board?
         {
             const Bitmove king_source_bit = tzcnt(king_board);
-            const bool target_is_free =
-                target & ~(position[board_idx_attacking_side] | position[board_idx_defending_side]);
+            const bool target_is_free = target & free_squares;
             if (target_is_free)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
