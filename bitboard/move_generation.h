@@ -13,6 +13,7 @@
 namespace Chess
 {
 
+/// TODO: Throw when trying to assign past the end.
 /// @brief Type to preallocate array for move generation
 using MoveList = std::array<Bitmove, 1000>;
 
@@ -229,7 +230,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     for (const auto direction : king_directions)
     {
         const Bitboard target = Shift(king_board, direction);
-        if (target)  // is on board?
+        if (target)  // is on the board?
         {
             const Bitmove king_source_bit = tzcnt(king_board);
             const bool target_is_free = target & free_squares;
