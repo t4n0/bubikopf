@@ -181,6 +181,44 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     // bishop moves
 
     // rook moves
+    Bitboard rook_board = position[board_idx_attacking_side + ROOK];
+    Bitmove rook_source_bit = tzcnt(rook_board);
+    Bitboard rook_source = 1ULL << rook_source_bit;
+    while (rook_source_bit < 64)
+    {
+        constexpr std::array<std::size_t, 4> rook_directions{west, north, east, south};
+        for (const auto direction : rook_directions)
+        {
+            Bitboard target = Shift(rook_source, direction);
+            while (target)  // is on board
+            {
+                const bool target_is_blocked_by_own_piece = target & position[board_idx_attacking_side];
+                if (target_is_blocked_by_own_piece)
+                {
+                    break;
+                }
+
+                const bool target_is_free = target & free_squares;
+                if (target_is_free)
+                {
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        rook_source_bit, tzcnt(target), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                }
+                else  // target blocked by opposing piece
+                {
+                    const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        rook_source_bit, tzcnt(target), ROOK, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                }
+                target = Shift(target, direction);
+            }
+        }
+
+        // prepare next iteration
+        rook_board &= ~rook_source;
+        rook_source_bit = tzcnt(rook_board);
+        rook_source = 1ULL << rook_source_bit;
+    }
 
     // queen moves
 

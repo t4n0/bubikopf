@@ -264,5 +264,43 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicKingPositions,
                                               kBlackKingInCornerH8,
                                               kBlackKingCapture}));
 
+const MoveGenerationTestParameter kWhiteRook{
+    BOARD_MASK_WHITE_TURN,
+    {{ROOK, E4}, {PAWN, E3}},
+    {{PAWN, A4}},
+    {ComposeMove(tzcnt(E4), tzcnt(E5), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E6), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E7), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E8), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(G4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(H4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(C4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(B4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(A4), ROOK, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
+
+const MoveGenerationTestParameter kBlackRook{
+    BOARD_MASK_BLACK_TURN,
+    {{PAWN, A4}},
+    {{ROOK, E4}, {PAWN, E5}},
+    {ComposeMove(tzcnt(E4), tzcnt(E3), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E2), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(E1), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(G4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(H4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(C4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(B4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(A4), ROOK, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
+
+INSTANTIATE_TEST_SUITE_P(AllAtomicRookPositions,
+                         MoveGenerationTestFixture,
+                         ::testing::ValuesIn({
+                             kWhiteRook,
+                             kBlackRook,
+                         }));
+
 }  // namespace
 }  // namespace Chess
