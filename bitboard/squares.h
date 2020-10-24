@@ -4,6 +4,7 @@
 #include "bitboard/basic_type_declarations.h"
 
 #include <limits>
+#include <array>
 
 namespace Chess
 {
@@ -85,6 +86,17 @@ constexpr Bitboard A8 = 1ULL << 63;
 constexpr Bitboard START_RANK_WHITE = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
 constexpr Bitboard START_RANK_BLACK = A7 | B7 | C7 | D7 | E7 | F7 | G7 | H7;
 constexpr Bitboard PROMOTION_RANKS = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8 | A1 | B1 | C1 | D1 | E1 | F1 | G1 | H1;
+
+constexpr std::array<const char* const, 64> SQUARE_LABEL{
+    "H1", "G1", "F1", "E1", "D1", "C1", "B1", "A1",  //
+    "H2", "G2", "F2", "E2", "D2", "C2", "B2", "A2",  //
+    "H3", "G3", "F3", "E3", "D3", "C3", "B3", "A3",  //
+    "H4", "G4", "F4", "E4", "D4", "C4", "B4", "A4",  //
+    "H5", "G5", "F5", "E5", "D5", "C5", "B5", "A5",  //
+    "H6", "G6", "F6", "E6", "D6", "C6", "B6", "A6",  //
+    "H7", "G7", "F7", "E7", "D7", "C7", "B7", "A7",  //
+    "H8", "G8", "F8", "E8", "D8", "C8", "B8", "A8"   //
+};
 
 }  // namespace Chess
 
