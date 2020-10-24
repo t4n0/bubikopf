@@ -247,6 +247,14 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
 
     // bishop moves
+    auto generate_bishop_move = [&](const Bitmove source_bit, const Bitboard source) {
+        constexpr std::array<std::size_t, 4> bishop_directions{north_west, north_east, south_west, south_east};
+        for (const auto direction : bishop_directions)
+        {
+            generate_ray_style_move(direction, source_bit, source, BISHOP);
+        }
+    };
+    ForEveryBitInPopulation(position[board_idx_attacking_side + BISHOP], generate_bishop_move);
 
     // rook moves
     auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {

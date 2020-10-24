@@ -304,5 +304,42 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicRookPositions,
                              kBlackRook,
                          }));
 
+const MoveGenerationTestParameter kWhiteBishop{
+    BOARD_MASK_WHITE_TURN,
+    {{BISHOP, E4}, {PAWN, C5}, {PAWN, G6}},
+    {{PAWN, C6}, {PAWN, G7}},
+    {ComposeMove(tzcnt(E4), tzcnt(D5), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(C6), BISHOP, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
+     ComposeMove(tzcnt(E4), tzcnt(F5), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(F3), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(G2), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(H1), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(D3), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(C2), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+     ComposeMove(tzcnt(E4), tzcnt(B1), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)}};
+
+const MoveGenerationTestParameter kBlackBishop{
+    BOARD_MASK_BLACK_TURN,
+    {{PAWN, C5}, {PAWN, G6}},
+    {{BISHOP, D4}, {PAWN, C6}, {PAWN, G7}},
+    {
+        ComposeMove(tzcnt(D4), tzcnt(C5), BISHOP, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
+        ComposeMove(tzcnt(D4), tzcnt(E5), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(F6), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(E3), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(F2), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(G1), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(C3), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(B2), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+        ComposeMove(tzcnt(D4), tzcnt(A1), BISHOP, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
+    }};
+
+INSTANTIATE_TEST_SUITE_P(AllAtomicBishopPositions,
+                         MoveGenerationTestFixture,
+                         ::testing::ValuesIn({
+                             kWhiteBishop,
+                             kBlackBishop,
+                         }));
+
 }  // namespace
 }  // namespace Chess
