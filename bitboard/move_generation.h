@@ -60,8 +60,9 @@ inline Bitmove ComposeMove(const Bitmove source,
 }
 
 /// @brief A function to loop over individual bits (the population) of a Bitboard
-inline void ForEveryBitInPopulation(const Bitboard population,
-                                    std::function<void(const Bitmove source_bit, const Bitboard source)> loop_body)
+inline void ForEveryBitInPopulation(
+    const Bitboard population,
+    const std::function<void(const Bitmove source_bit, const Bitboard source)> loop_body)
 {
     // prepare entry condition
     Bitboard remaining_population = population;
@@ -117,7 +118,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 
     // pawn moves
-    auto generate_pawn_move = [&](const Bitmove source_bit, const Bitboard source) {
+    const auto generate_pawn_move = [&](const Bitmove source_bit, const Bitboard source) {
         const Bitmove pawn_capture_lookup_index_first_option =
             source_bit + PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK * !position.WhiteToMove();
         const std::array<Bitboard, 2> pawn_capture_targets{
@@ -214,10 +215,10 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     ForEveryBitInPopulation(position[board_idx_attacking_side + PAWN], generate_pawn_move);
 
     /// @brief Ray in the sense that all squares in a certain direction are considered as targets
-    auto generate_ray_style_move = [&](const std::size_t direction,
-                                       const Bitmove source_bit,
-                                       const Bitboard source,
-                                       const std::size_t moved_piece) {
+    const auto generate_ray_style_move = [&](const std::size_t direction,
+                                             const Bitmove source_bit,
+                                             const Bitboard source,
+                                             const std::size_t moved_piece) {
         Bitboard target = Shift(source, direction);
         while (target)  // is on the board
         {
@@ -245,7 +246,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
 
     // bishop moves
-    auto generate_bishop_move = [&](const Bitmove source_bit, const Bitboard source) {
+    const auto generate_bishop_move = [&](const Bitmove source_bit, const Bitboard source) {
         constexpr std::array<std::size_t, 4> bishop_directions{north_west, north_east, south_west, south_east};
         for (const auto direction : bishop_directions)
         {
@@ -255,7 +256,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     ForEveryBitInPopulation(position[board_idx_attacking_side + BISHOP], generate_bishop_move);
 
     // rook moves
-    auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
+    const auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
         constexpr std::array<std::size_t, 4> rook_directions{west, north, east, south};
         for (const auto direction : rook_directions)
         {
@@ -268,7 +269,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         west, north_west, north, north_east, east, south_east, south, south_west};
 
     // queen moves
-    auto generate_queen_move = [&](const Bitmove source_bit, const Bitboard source) {
+    const auto generate_queen_move = [&](const Bitmove source_bit, const Bitboard source) {
         for (const auto direction : all_directions)
         {
             generate_ray_style_move(direction, source_bit, source, QUEEN);
@@ -277,7 +278,9 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     ForEveryBitInPopulation(position[board_idx_attacking_side + QUEEN], generate_queen_move);
 
     /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
-    auto generate_jump_style_move = [&](const Bitboard source, const Bitboard target, const std::size_t moved_piece) {
+    const auto generate_jump_style_move = [&](const Bitboard source,
+                                              const Bitboard target,
+                                              const std::size_t moved_piece) {
         if (target)  // is on the board?
         {
             const Bitmove source_bit = tzcnt(source);
