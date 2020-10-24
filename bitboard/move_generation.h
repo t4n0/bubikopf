@@ -113,8 +113,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const PositionWithBitboards& position,
     MoveList::iterator move_generation_insertion_iterator)
 {
-    const std::size_t board_idx_attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.WhiteToMove();
-    const std::size_t board_idx_defending_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
+    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.WhiteToMove();
+    const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 
     // pawn moves
@@ -132,10 +132,9 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         // captures
         for (const std::size_t index : {0, 1})
         {
-            if (position[board_idx_defending_side] & pawn_capture_targets.at(index))
+            if (position[defending_side] & pawn_capture_targets.at(index))
             {
-                const Bitmove captured_piece =
-                    position.GetPieceKind(board_idx_defending_side, pawn_capture_targets.at(index));
+                const Bitmove captured_piece = position.GetPieceKind(defending_side, pawn_capture_targets.at(index));
                 const bool is_promotion = pawn_capture_targets.at(index) & PROMOTION_RANKS;
                 if (!is_promotion)
                 {
@@ -212,7 +211,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             }
         }
     };
-    ForEveryBitInPopulation(position[board_idx_attacking_side + PAWN], generate_pawn_move);
+    ForEveryBitInPopulation(position[attacking_side + PAWN], generate_pawn_move);
 
     /// @brief Ray in the sense that all squares in a certain direction are considered as targets
     const auto generate_ray_style_move = [&](const std::size_t direction,
@@ -222,7 +221,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         Bitboard target = Shift(source, direction);
         while (target)  // is on the board
         {
-            const bool target_is_blocked_by_own_piece = target & position[board_idx_attacking_side];
+            const bool target_is_blocked_by_own_piece = target & position[attacking_side];
             if (target_is_blocked_by_own_piece)
             {
                 break;
@@ -236,7 +235,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             }
             else  // target occupied by opposing piece
             {
-                const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
                 *move_generation_insertion_iterator++ = ComposeMove(
                     source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
                 break;
@@ -253,7 +252,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             generate_ray_style_move(direction, source_bit, source, BISHOP);
         }
     };
-    ForEveryBitInPopulation(position[board_idx_attacking_side + BISHOP], generate_bishop_move);
+    ForEveryBitInPopulation(position[attacking_side + BISHOP], generate_bishop_move);
 
     // rook moves
     const auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
@@ -263,7 +262,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             generate_ray_style_move(direction, source_bit, source, ROOK);
         }
     };
-    ForEveryBitInPopulation(position[board_idx_attacking_side + ROOK], generate_rook_move);
+    ForEveryBitInPopulation(position[attacking_side + ROOK], generate_rook_move);
 
     constexpr std::array<std::size_t, 8> all_directions{
         west, north_west, north, north_east, east, south_east, south, south_west};
@@ -275,7 +274,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             generate_ray_style_move(direction, source_bit, source, QUEEN);
         }
     };
-    ForEveryBitInPopulation(position[board_idx_attacking_side + QUEEN], generate_queen_move);
+    ForEveryBitInPopulation(position[attacking_side + QUEEN], generate_queen_move);
 
     /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
     const auto generate_jump_style_move = [&](const Bitboard source,
@@ -291,10 +290,10 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                     source_bit, tzcnt(target), moved_piece, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
                 return;
             }
-            const bool target_is_occupied_by_opponents_piece = target & position[board_idx_defending_side];
+            const bool target_is_occupied_by_opponents_piece = target & position[defending_side];
             if (target_is_occupied_by_opponents_piece)
             {
-                const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
                 *move_generation_insertion_iterator++ = ComposeMove(
                     source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
             }
@@ -304,7 +303,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     // knight moves
 
     // king moves
-    const Bitboard king_board = position[board_idx_attacking_side + KING];
+    const Bitboard king_board = position[attacking_side + KING];
     for (const auto direction : all_directions)
     {
         const Bitboard target = Shift(king_board, direction);
