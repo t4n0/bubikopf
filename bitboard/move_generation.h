@@ -266,13 +266,21 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
     ForEveryBitInPopulation(position[board_idx_attacking_side + ROOK], generate_rook_move);
 
+    constexpr std::array<std::size_t, 8> all_directions{
+        west, north_west, north, north_east, east, south_east, south, south_west};
+
     // queen moves
+    auto generate_queen_move = [&](const Bitmove source_bit, const Bitboard source) {
+        for (const auto direction : all_directions)
+        {
+            generate_ray_style_move(direction, source_bit, source, QUEEN);
+        }
+    };
+    ForEveryBitInPopulation(position[board_idx_attacking_side + QUEEN], generate_queen_move);
 
     // king moves
     const Bitboard king_board = position[board_idx_attacking_side + KING];
-    constexpr std::array<std::size_t, 8> king_directions{
-        west, north_west, north, north_east, east, south_east, south, south_west};
-    for (const auto direction : king_directions)
+    for (const auto direction : all_directions)
     {
         const Bitboard target = Shift(king_board, direction);
         if (target)  // is on the board?
