@@ -213,8 +213,6 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
     ForEveryBitInPopulation(position[board_idx_attacking_side + PAWN], generate_pawn_move);
 
-    // knight moves
-
     /// @brief Ray in the sense that all squares in a certain direction are considered as targets
     auto generate_ray_style_move = [&](const std::size_t direction,
                                        const Bitmove source_bit,
@@ -278,29 +276,36 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
     ForEveryBitInPopulation(position[board_idx_attacking_side + QUEEN], generate_queen_move);
 
-    // king moves
-    const Bitboard king_board = position[board_idx_attacking_side + KING];
-    for (const auto direction : all_directions)
-    {
-        const Bitboard target = Shift(king_board, direction);
+    /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
+    auto generate_jump_style_move = [&](const Bitboard source, const Bitboard target, const std::size_t moved_piece) {
         if (target)  // is on the board?
         {
-            const Bitmove king_source_bit = tzcnt(king_board);
+            const Bitmove source_bit = tzcnt(source);
             const bool target_is_free = target & free_squares;
             if (target_is_free)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    king_source_bit, tzcnt(target), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
-                continue;
+                    source_bit, tzcnt(target), moved_piece, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                return;
             }
             const bool target_is_occupied_by_opponents_piece = target & position[board_idx_defending_side];
             if (target_is_occupied_by_opponents_piece)
             {
                 const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    king_source_bit, tzcnt(target), KING, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                    source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
             }
         }
+    };
+
+    // knight moves
+
+    // king moves
+    const Bitboard king_board = position[board_idx_attacking_side + KING];
+    for (const auto direction : all_directions)
+    {
+        const Bitboard target = Shift(king_board, direction);
+        generate_jump_style_move(king_board, target, KING);
     }
 
     return move_generation_insertion_iterator;
