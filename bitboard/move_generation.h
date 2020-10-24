@@ -9,6 +9,7 @@
 
 #include <array>
 #include <type_traits>
+#include <functional>
 
 namespace Chess
 {
@@ -30,6 +31,26 @@ inline Bitmove ComposeMove(const Bitmove source,
            (captured_piece << MOVE_SHIFT_CAPTURED_PIECE) |  //
            (promotion << MOVE_SHIFT_PROMOTION) |            //
            move_type;
+}
+
+/// @brief A function to loop over individual bits (the population) of a Bitboard
+inline void ForEveryBitInPopulation(const Bitboard population,
+                                    std::function<void(const Bitmove source_bit, const Bitboard source)> loop_body)
+{
+    // prepare entry condition
+    Bitboard remaining_population = population;
+    Bitmove current_source_bit = tzcnt(remaining_population);
+    while (current_source_bit < 64)
+    {
+        const Bitboard current_source = 1ULL << current_source_bit;
+
+        // execute body
+        loop_body(current_source_bit, current_source);
+
+        // prepare next iteration
+        remaining_population &= ~current_source;
+        current_source_bit = tzcnt(remaining_population);
+    }
 }
 
 inline void PushBackAllPromotions(MoveList::iterator& move_generation_insertion_iterator,
@@ -70,13 +91,9 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 
     // pawn moves
-    Bitboard pawn_board = position[board_idx_attacking_side + PAWN];
-    Bitmove pawn_source_bit = tzcnt(pawn_board);
-    while (pawn_source_bit < 64)
-    {
-        const Bitboard source = 1ULL << pawn_source_bit;
+    auto generate_pawn_move = [&](const Bitmove source_bit, const Bitboard source) {
         const Bitmove pawn_capture_lookup_index_first_option =
-            pawn_source_bit + PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK * !position.WhiteToMove();
+            source_bit + PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK * !position.WhiteToMove();
         const std::array<Bitboard, 2> pawn_capture_targets{
             pawn_capture_lookup_table[pawn_capture_lookup_index_first_option],
             pawn_capture_lookup_table[pawn_capture_lookup_index_first_option +
@@ -95,7 +112,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                 const bool is_promotion = pawn_capture_targets.at(index) & PROMOTION_RANKS;
                 if (!is_promotion)
                 {
-                    *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                    *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits.at(index),
                                                                         PAWN,
                                                                         captured_piece,
@@ -106,7 +123,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                 {
                     // promotion (with capture)
                     PushBackAllPromotions(move_generation_insertion_iterator,
-                                          pawn_source_bit,
+                                          source_bit,
                                           tzcnt(pawn_capture_targets.at(index)),
                                           captured_piece);
                 }
@@ -122,7 +139,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             {
                 if (en_passent_bit == pawn_capture_target_bits.at(index))
                 {
-                    *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                    *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits.at(index),
                                                                         PAWN,
                                                                         PAWN,
@@ -139,18 +156,14 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             const bool is_promotion = target_single_push & PROMOTION_RANKS;
             if (!is_promotion)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
-                                                                    tzcnt(target_single_push),
-                                                                    PAWN,
-                                                                    NO_CAPTURE,
-                                                                    NO_PROMOTION,
-                                                                    MOVE_VALUE_TYPE_PAWN_PUSH);
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    source_bit, tzcnt(target_single_push), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
             }
             else
             {
                 // promotion (without capture)
                 PushBackAllPromotions(
-                    move_generation_insertion_iterator, pawn_source_bit, tzcnt(target_single_push), NO_CAPTURE);
+                    move_generation_insertion_iterator, source_bit, tzcnt(target_single_push), NO_CAPTURE);
             }
         }
 
@@ -163,7 +176,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             const bool target_double_push_is_free = target_double_push & free_squares;
             if (target_single_push_is_free && target_double_push_is_free)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(pawn_source_bit,
+                *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                     tzcnt(target_double_push),
                                                                     PAWN,
                                                                     NO_CAPTURE,
@@ -171,26 +184,19 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                                                     MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
             }
         }
-
-        // prepare next iteration
-        pawn_board &= ~source;
-        pawn_source_bit = tzcnt(pawn_board);
-    }
+    };
+    ForEveryBitInPopulation(position[board_idx_attacking_side + PAWN], generate_pawn_move);
 
     // knight moves
 
     // bishop moves
 
     // rook moves
-    Bitboard rook_board = position[board_idx_attacking_side + ROOK];
-    Bitmove rook_source_bit = tzcnt(rook_board);
-    Bitboard rook_source = 1ULL << rook_source_bit;
-    while (rook_source_bit < 64)
-    {
+    auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
         constexpr std::array<std::size_t, 4> rook_directions{west, north, east, south};
         for (const auto direction : rook_directions)
         {
-            Bitboard target = Shift(rook_source, direction);
+            Bitboard target = Shift(source, direction);
             while (target)  // is on board
             {
                 const bool target_is_blocked_by_own_piece = target & position[board_idx_attacking_side];
@@ -203,23 +209,19 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                 if (target_is_free)
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(
-                        rook_source_bit, tzcnt(target), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                        source_bit, tzcnt(target), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
                 }
                 else  // target blocked by opposing piece
                 {
                     const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
                     *move_generation_insertion_iterator++ = ComposeMove(
-                        rook_source_bit, tzcnt(target), ROOK, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                        source_bit, tzcnt(target), ROOK, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
                 }
                 target = Shift(target, direction);
             }
         }
-
-        // prepare next iteration
-        rook_board &= ~rook_source;
-        rook_source_bit = tzcnt(rook_board);
-        rook_source = 1ULL << rook_source_bit;
-    }
+    };
+    ForEveryBitInPopulation(position[board_idx_attacking_side + ROOK], generate_rook_move);
 
     // queen moves
 
