@@ -189,6 +189,37 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // knight moves
 
+    /// @brief Ray in the sense that all squares in a certain direction are considered as targets
+    auto generate_ray_style_move = [&](const std::size_t direction,
+                                       const Bitmove source_bit,
+                                       const Bitboard source,
+                                       const std::size_t moved_piece) {
+        Bitboard target = Shift(source, direction);
+        while (target)  // is on the board
+        {
+            const bool target_is_blocked_by_own_piece = target & position[board_idx_attacking_side];
+            if (target_is_blocked_by_own_piece)
+            {
+                break;
+            }
+
+            const bool target_is_free = target & free_squares;
+            if (target_is_free)
+            {
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    source_bit, tzcnt(target), moved_piece, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+            }
+            else  // target occupied by opposing piece
+            {
+                const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                break;
+            }
+            target = Shift(target, direction);
+        }
+    };
+
     // bishop moves
 
     // rook moves
@@ -196,29 +227,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         constexpr std::array<std::size_t, 4> rook_directions{west, north, east, south};
         for (const auto direction : rook_directions)
         {
-            Bitboard target = Shift(source, direction);
-            while (target)  // is on board
-            {
-                const bool target_is_blocked_by_own_piece = target & position[board_idx_attacking_side];
-                if (target_is_blocked_by_own_piece)
-                {
-                    break;
-                }
-
-                const bool target_is_free = target & free_squares;
-                if (target_is_free)
-                {
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
-                }
-                else  // target blocked by opposing piece
-                {
-                    const Bitmove captured_piece = position.GetPieceKind(board_idx_defending_side, target);
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), ROOK, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
-                }
-                target = Shift(target, direction);
-            }
+            generate_ray_style_move(direction, source_bit, source, ROOK);
         }
     };
     ForEveryBitInPopulation(position[board_idx_attacking_side + ROOK], generate_rook_move);
