@@ -302,4 +302,30 @@ bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b)
     return boards_are_equal && iterators_are_equal && histories_are_equal;
 }
 
+PositionWithBitboards SetUpStandardStartPosition()
+{
+    PositionWithBitboards position{};
+    position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING | BOARD_MASK_WHITE_TURN;
+
+    // white pieces
+    position[BOARD_IDX_WHITE] = RANK_2 | RANK_1;
+    position[BOARD_IDX_WHITE + PAWN] = RANK_2;
+    position[BOARD_IDX_WHITE + ROOK] = A1 | H1;
+    position[BOARD_IDX_WHITE + KNIGHT] = B1 | G1;
+    position[BOARD_IDX_WHITE + BISHOP] = C1 | F1;
+    position[BOARD_IDX_WHITE + QUEEN] = D1;
+    position[BOARD_IDX_WHITE + KING] = E1;
+
+    // black pieces
+    position[BOARD_IDX_BLACK] = RANK_7 | RANK_8;
+    position[BOARD_IDX_BLACK + PAWN] = RANK_7;
+    position[BOARD_IDX_BLACK + ROOK] = A8 | H8;
+    position[BOARD_IDX_BLACK + KNIGHT] = B8 | G8;
+    position[BOARD_IDX_BLACK + BISHOP] = C8 | F8;
+    position[BOARD_IDX_BLACK + QUEEN] = D8;
+    position[BOARD_IDX_BLACK + KING] = E8;
+
+    return position;
+}
+
 }  // namespace Chess
