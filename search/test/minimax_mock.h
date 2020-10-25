@@ -46,8 +46,8 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
             position.MakeMove(*child_move_iterator);
             Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
                 depth - 1, position, end_iterator_after_move_generation);
-            position.UnmakeMove(*child_move_iterator);
             max_eval = eval > max_eval ? eval : max_eval;
+            position.UnmakeMove(*child_move_iterator);
         }
         return max_eval;
     }
@@ -62,6 +62,7 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
             Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
                 depth - 1, position, end_iterator_after_move_generation);
             min_eval = eval < min_eval ? eval : min_eval;
+            position.UnmakeMove(*child_move_iterator);
         }
         return min_eval;
     }
