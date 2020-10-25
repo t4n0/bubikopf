@@ -244,7 +244,6 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // bishop moves
     const auto generate_bishop_move = [&](const Bitmove source_bit, const Bitboard source) {
-        constexpr std::array<std::size_t, 4> bishop_directions{north_west, north_east, south_west, south_east};
         for (const auto direction : bishop_directions)
         {
             generate_ray_style_move(direction, source_bit, source, BISHOP);
@@ -254,16 +253,12 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // rook moves
     const auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
-        constexpr std::array<std::size_t, 4> rook_directions{west, north, east, south};
         for (const auto direction : rook_directions)
         {
             generate_ray_style_move(direction, source_bit, source, ROOK);
         }
     };
     ForEveryBitInPopulation(position[attacking_side + ROOK], generate_rook_move);
-
-    constexpr std::array<std::size_t, 8> all_directions{
-        west, north_west, north, north_east, east, south_east, south, south_west};
 
     // queen moves
     const auto generate_queen_move = [&](const Bitmove source_bit, const Bitboard source) {
@@ -299,16 +294,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
 
     // knight moves
-    const auto generate_knight_move[&](const Bitmove /*unused*/, const Bitboard source)
-    {
-        constexpr std::array<std::size_t, 8> knight_jumps{knight_north_west,
-                                                          knight_north_east,
-                                                          knight_east_north,
-                                                          knight_east_south,
-                                                          knight_south_east,
-                                                          knight_south_west,
-                                                          knight_west_south,
-                                                          knight_west_north};
+    const auto generate_knight_move = [&](const Bitmove /*unused*/, const Bitboard source) {
         for (const auto jump_direction : knight_jumps)
         {
             const Bitboard target = KnightJump(source, jump_direction);
