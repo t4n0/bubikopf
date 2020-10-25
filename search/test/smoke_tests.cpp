@@ -23,10 +23,10 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
         DEPTH, position, move_list.begin());
 
     // Expect
-    const std::array<Bitmove, 6> expexted_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
-    for (std::size_t idx{0}; idx < expexted_debugging_ids.size(); idx++)
+    const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
+    for (std::size_t idx{0}; idx < expected_debugging_ids.size(); idx++)
     {
-        EXPECT_EQ(expexted_debugging_ids.at(idx), move_list.at(idx));
+        EXPECT_EQ(expected_debugging_ids.at(idx), move_list.at(idx));
     }
 }
 

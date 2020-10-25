@@ -22,7 +22,7 @@ constexpr std::array<Bitboard, 8> legal_step_areas_without_wrapping{~(FILE_H),
                                                                     ~(RANK_8),
                                                                     ~(RANK_8 | FILE_H)};
 
-// Values correspond to necessary bitshifts for knight jumps. Usage as step_bits.at(west_north).
+// Values correspond to necessary bitshifts for knight jumps. Usage as jump_bits.at(west_north).
 constexpr std::array<int, 8> jump_bits{17, 15, 6, -10, -17, -15, -6, 10};
 // "wrapping" refers to e.g. a knight jump from A1 to G2 when illegally jumping "west_north" of square A1
 constexpr std::array<Bitboard, 8> legal_jump_areas_without_wrapping{~(RANK_1 | RANK_2 | FILE_H),
