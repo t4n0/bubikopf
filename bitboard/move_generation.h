@@ -59,42 +59,6 @@ inline Bitmove ComposeMove(const Bitmove source,
            move_type;
 }
 
-/// @brief A function to loop over individual bits (the population) of a Bitboard
-inline void ForEveryBitInPopulation(
-    const Bitboard population,
-    const std::function<void(const Bitmove source_bit, const Bitboard source)> loop_body)
-{
-    // prepare entry condition
-    Bitboard remaining_population = population;
-    Bitmove current_source_bit = tzcnt(remaining_population);
-    while (current_source_bit < 64)
-    {
-        const Bitboard current_source = 1ULL << current_source_bit;
-
-        // execute body
-        loop_body(current_source_bit, current_source);
-
-        // prepare next iteration
-        remaining_population &= ~current_source;
-        current_source_bit = tzcnt(remaining_population);
-    }
-}
-
-inline void PushBackAllPromotions(MoveList::iterator& move_generation_insertion_iterator,
-                                  const Bitmove source,
-                                  const Bitmove target,
-                                  const Bitmove captured_piece)
-{
-    *move_generation_insertion_iterator++ =
-        ComposeMove(source, target, PAWN, captured_piece, QUEEN, MOVE_VALUE_TYPE_PROMOTION);
-    *move_generation_insertion_iterator++ =
-        ComposeMove(source, target, PAWN, captured_piece, ROOK, MOVE_VALUE_TYPE_PROMOTION);
-    *move_generation_insertion_iterator++ =
-        ComposeMove(source, target, PAWN, captured_piece, KNIGHT, MOVE_VALUE_TYPE_PROMOTION);
-    *move_generation_insertion_iterator++ =
-        ComposeMove(source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
-}
-
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
 /// This class is substituted for a mock in tests.
@@ -113,6 +77,40 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const PositionWithBitboards& position,
     MoveList::iterator move_generation_insertion_iterator)
 {
+    /// @brief A function to loop over individual bits (the population) of a Bitboard
+    const auto ForEveryBitInPopulation =
+        [](const Bitboard population,
+           const std::function<void(const Bitmove source_bit, const Bitboard source)> loop_body) {
+            // prepare entry condition
+            Bitboard remaining_population = population;
+            Bitmove current_source_bit = tzcnt(remaining_population);
+            while (current_source_bit < 64)
+            {
+                const Bitboard current_source = 1ULL << current_source_bit;
+
+                // execute body
+                loop_body(current_source_bit, current_source);
+
+                // prepare next iteration
+                remaining_population &= ~current_source;
+                current_source_bit = tzcnt(remaining_population);
+            }
+        };
+
+    const auto PushBackAllPromotions = [](MoveList::iterator& move_generation_insertion_iterator,
+                                          const Bitmove source,
+                                          const Bitmove target,
+                                          const Bitmove captured_piece) {
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source, target, PAWN, captured_piece, QUEEN, MOVE_VALUE_TYPE_PROMOTION);
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source, target, PAWN, captured_piece, ROOK, MOVE_VALUE_TYPE_PROMOTION);
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source, target, PAWN, captured_piece, KNIGHT, MOVE_VALUE_TYPE_PROMOTION);
+        *move_generation_insertion_iterator++ =
+            ComposeMove(source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
+    };
+
     const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.WhiteToMove();
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
