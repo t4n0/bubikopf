@@ -218,7 +218,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                              const Bitmove source_bit,
                                              const Bitboard source,
                                              const std::size_t moved_piece) {
-        Bitboard target = Shift(source, direction);
+        Bitboard target = SingleStep(source, direction);
         while (target)  // is on the board
         {
             const bool target_is_blocked_by_own_piece = target & position[attacking_side];
@@ -240,7 +240,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                     source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
                 break;
             }
-            target = Shift(target, direction);
+            target = SingleStep(target, direction);
         }
     };
 
@@ -306,7 +306,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const Bitboard king_board = position[attacking_side + KING];
     for (const auto direction : all_directions)
     {
-        const Bitboard target = Shift(king_board, direction);
+        const Bitboard target = SingleStep(king_board, direction);
         generate_jump_style_move(king_board, target, KING);
     }
 
