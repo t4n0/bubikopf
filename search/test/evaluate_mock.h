@@ -19,14 +19,16 @@ std::enable_if_t<Behaviour::is_mock, Evaluation> evaluate(const Position& positi
     return Behaviour::GetNodeValue(hidden_node_identifier);
 };
 
-struct EvaluteToZero
+struct EvaluteToZeroAndCount
 {
     static constexpr bool evaluate_to_zero{true};
+    static int number_of_evaluations;
 };
 
 template <typename Behaviour>
 std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(const PositionWithBitboards& /*unused*/)
 {
+    EvaluteToZeroAndCount::number_of_evaluations++;
     return 0.0F;
 }
 
