@@ -299,20 +299,23 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
 
     // knight moves
-    constexpr std::array<std::size_t, 8> knight_jumps{knight_north_west,
-                                                      knight_north_east,
-                                                      knight_east_north,
-                                                      knight_east_south,
-                                                      knight_south_east,
-                                                      knight_south_west,
-                                                      knight_west_south,
-                                                      knight_west_north};
-    const Bitboard knight_board = position[attacking_side + KNIGHT];
-    for (const auto jump_direction : knight_jumps)
+    const auto generate_knight_move[&](const Bitmove /*unused*/, const Bitboard source)
     {
-        const Bitboard target = KnightJump(knight_board, jump_direction);
-        generate_jump_style_move(knight_board, target, KNIGHT);
-    }
+        constexpr std::array<std::size_t, 8> knight_jumps{knight_north_west,
+                                                          knight_north_east,
+                                                          knight_east_north,
+                                                          knight_east_south,
+                                                          knight_south_east,
+                                                          knight_south_west,
+                                                          knight_west_south,
+                                                          knight_west_north};
+        for (const auto jump_direction : knight_jumps)
+        {
+            const Bitboard target = KnightJump(source, jump_direction);
+            generate_jump_style_move(source, target, KNIGHT);
+        }
+    };
+    ForEveryBitInPopulation(position[attacking_side + KNIGHT], generate_knight_move);
 
     // king moves
     const Bitboard king_board = position[attacking_side + KING];
