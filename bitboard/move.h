@@ -4,6 +4,7 @@
 #include "bitboard/basic_type_declarations.h"
 
 #include <limits>
+#include <array>
 
 namespace Chess
 {
@@ -30,6 +31,19 @@ constexpr Bitmove MOVE_VALUE_TYPE_KINGSIDE_ROOK =      0b01000000'00000000'00000
 constexpr Bitmove MOVE_VALUE_TYPE_QUEENSIDE_ROOK =     0b01001000'00000000'00000000'00000000;
 constexpr Bitmove MOVE_VALUE_TYPE_PROMOTION =          0b01010000'00000000'00000000'00000000;
 // clang-format on
+
+constexpr std::array<const char* const, 10> MOVE_VALUE_LABELS = {
+    "QUIET_NON_PAWN",
+    "CAPTURE",
+    "PAWN_PUSH",
+    "PAWN_DOUBLE_PUSH",
+    "EN_PASSENT_CAPTURE",
+    "KINGSIDE_CASTLING",
+    "QUEENSIDE_CASTLING",
+    "KINGSIDE_ROOK",
+    "QUEENSIDE_ROOK",
+    "PROMOTION",
+};
 
 constexpr int MOVE_SHIFT_TARGET = 6;
 constexpr int MOVE_SHIFT_STATIC = 12;
