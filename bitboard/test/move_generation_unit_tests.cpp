@@ -45,15 +45,13 @@ TEST_P(MoveGenerationTestFixture, GivenAtomicPosition_ExpectAllPseudoLegalMoves)
 
     const MoveList::iterator returned_move_insertion_iterator = GenerateMoves(position_, move_list_.begin());
 
+    const std::size_t returned_number_of_moves = std::distance(move_list_.begin(), returned_move_insertion_iterator);
     const std::size_t expected_number_of_moves = GetParam().expected_moves.size();
-    ASSERT_EQ(std::distance(move_list_.begin(), returned_move_insertion_iterator), expected_number_of_moves)
-        << ToString(move_list_);
-    std::vector<Bitmove> returned_moves{};
-    returned_moves.resize(expected_number_of_moves);
-    std::copy_n(move_list_.begin(), expected_number_of_moves, returned_moves.begin());
+    ASSERT_EQ(returned_number_of_moves, expected_number_of_moves) << ToString(move_list_);
 
-    EXPECT_THAT(returned_moves, ::testing::UnorderedElementsAreArray(GetParam().expected_moves))
-        << ToString(move_list_);
+    const std::vector<Bitmove> returned_moves(move_list_.begin(), returned_move_insertion_iterator);
+    const std::vector<Bitmove>& expected_moves = GetParam().expected_moves;
+    EXPECT_THAT(returned_moves, ::testing::UnorderedElementsAreArray(expected_moves)) << ToString(move_list_);
 }
 
 // white pawn moves
