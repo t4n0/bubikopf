@@ -50,7 +50,7 @@ INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          ::testing::Combine(::testing::ValuesIn(ALL_MOVE_MASKS), ::testing::ValuesIn(ALL_MOVE_MASKS)));
 
 // Value tests
-const std::array<Bitmove, 10> ALL_MOVE_VALUES{
+const std::array<Bitmove, 8> ALL_MOVE_VALUES{
     MOVE_VALUE_TYPE_QUIET_NON_PAWN,
     MOVE_VALUE_TYPE_CAPTURE,
     MOVE_VALUE_TYPE_PAWN_PUSH,
@@ -58,8 +58,6 @@ const std::array<Bitmove, 10> ALL_MOVE_VALUES{
     MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE,
     MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
     MOVE_VALUE_TYPE_QUEENSIDE_CASTLING,
-    MOVE_VALUE_TYPE_KINGSIDE_ROOK,
-    MOVE_VALUE_TYPE_QUEENSIDE_ROOK,
     MOVE_VALUE_TYPE_PROMOTION,
 };
 

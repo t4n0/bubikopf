@@ -129,24 +129,6 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
             return;
         }
-        case MOVE_VALUE_TYPE_KINGSIDE_ROOK: {
-            const Bitboard board_mask_castling = board_idx_attacking_side == BOARD_IDX_WHITE
-                                                     ? BOARD_VALUE_CASTLING_WHITE_KINGSIDE
-                                                     : BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[BOARD_IDX_EXTRAS]++;
-            boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
-            return;
-        }
-        case MOVE_VALUE_TYPE_QUEENSIDE_ROOK: {
-            const Bitboard board_mask_castling = board_idx_attacking_side == BOARD_IDX_WHITE
-                                                     ? BOARD_VALUE_CASTLING_WHITE_QUEENSIDE
-                                                     : BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[BOARD_IDX_EXTRAS]++;
-            boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
-            return;
-        }
         case MOVE_VALUE_TYPE_PROMOTION: {
             const std::size_t board_idx_added_piece_kind =
                 board_idx_attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
@@ -231,14 +213,6 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
             boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
-            return;
-        }
-        case MOVE_VALUE_TYPE_KINGSIDE_ROOK: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            return;
-        }
-        case MOVE_VALUE_TYPE_QUEENSIDE_ROOK: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {
