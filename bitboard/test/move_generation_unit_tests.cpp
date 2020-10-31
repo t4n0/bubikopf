@@ -425,5 +425,121 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicKnightPositions,
                              kBlackKnight,
                          }));
 
+class CastlingGenerationTestFixture : public MoveGenerationTestFixture
+{
+};
+
+TEST_P(CastlingGenerationTestFixture, GivenAtomicPosition_ExpectProvidedMovesAreConsidered)
+{
+    SetUpBoardAccordingToTestParameter();
+
+    const MoveList::iterator returned_move_insertion_iterator = GenerateMoves(position_, move_list_.begin());
+
+    const std::size_t returned_number_of_moves = std::distance(move_list_.begin(), returned_move_insertion_iterator);
+    const std::size_t expected_number_of_moves = GetParam().expected_moves.size();
+    ASSERT_GE(returned_number_of_moves, expected_number_of_moves) << ToString(move_list_);
+
+    const std::vector<Bitmove> returned_moves(move_list_.begin(), returned_move_insertion_iterator);
+    const std::vector<Bitmove>& expected_moves = GetParam().expected_moves;
+    EXPECT_THAT(returned_moves, ::testing::IsSupersetOf(expected_moves)) << ToString(move_list_);
+}
+
+const MoveGenerationTestParameter kBlackKingSide{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_KINGSIDE,
+    {},
+    {{ROOK, H8}, {KING, E8}},
+    {ComposeMove(tzcnt(E8), tzcnt(G8), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_KINGSIDE_CASTLING)}};
+const MoveGenerationTestParameter kBlackQueenSide{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE,
+    {},
+    {{ROOK, A8}, {KING, E8}},
+    {ComposeMove(tzcnt(E8), tzcnt(C8), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUEENSIDE_CASTLING)}};
+const MoveGenerationTestParameter kWhiteKingSide{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE,
+    {{ROOK, H1}, {KING, E1}},
+    {},
+    {ComposeMove(tzcnt(E1), tzcnt(G1), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_KINGSIDE_CASTLING)}};
+const MoveGenerationTestParameter kWhiteQueenSide{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE,
+    {{ROOK, A1}, {KING, E1}},
+    {},
+    {ComposeMove(tzcnt(E1), tzcnt(C1), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUEENSIDE_CASTLING)}};
+
+INSTANTIATE_TEST_SUITE_P(AtomicCastlingPositions,
+                         CastlingGenerationTestFixture,
+                         ::testing::ValuesIn({
+                             kBlackKingSide,
+                             kBlackQueenSide,
+                             kWhiteKingSide,
+                             kWhiteQueenSide,
+                         }));
+
+MATCHER(IsACastlingMove, "")
+{
+    const Bitmove move_type = arg & MOVE_MASK_TYPE;
+    return (move_type == MOVE_VALUE_TYPE_KINGSIDE_CASTLING) || (move_type == MOVE_VALUE_TYPE_QUEENSIDE_CASTLING);
+}
+
+class NoCastlingGenerationTestFixture : public MoveGenerationTestFixture
+{
+};
+
+TEST_P(NoCastlingGenerationTestFixture, GivenAtomicPosition_ExpectExcludesAnyCastlingMove)
+{
+    SetUpBoardAccordingToTestParameter();
+    std::ignore = GetParam().expected_moves;  // not used
+
+    const MoveList::iterator returned_move_insertion_iterator = GenerateMoves(position_, move_list_.begin());
+
+    const std::vector<Bitmove> returned_moves(move_list_.begin(), returned_move_insertion_iterator);
+    EXPECT_THAT(returned_moves, ::testing::Not(::testing::Contains(IsACastlingMove()))) << ToString(move_list_);
+}
+
+const MoveGenerationTestParameter kBlackKingSideBlocked{BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_KINGSIDE,
+                                                        {{KNIGHT, F8}},
+                                                        {{ROOK, H8}, {KING, E8}},
+                                                        {/*unused*/}};
+const MoveGenerationTestParameter kBlackQueenSideBlocked{BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE,
+                                                         {{KNIGHT, C8}},
+                                                         {{ROOK, A8}, {KING, E8}},
+                                                         {/*unused*/}};
+const MoveGenerationTestParameter kWhiteKingSideBlocked{BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE,
+                                                        {{ROOK, H1}, {KING, E1}},
+                                                        {{KNIGHT, G1}},
+                                                        {/*unused*/}};
+const MoveGenerationTestParameter kWhiteQueenSideBlocked{BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE,
+                                                         {{ROOK, A1}, {KING, E1}},
+                                                         {{KNIGHT, B1}},
+                                                         {/*unused*/}};
+const MoveGenerationTestParameter kBlackKingSideNoRights{BOARD_MASK_BLACK_TURN,
+                                                         {},
+                                                         {{ROOK, H8}, {KING, E8}},
+                                                         {/*unused*/}};
+const MoveGenerationTestParameter kBlackQueenSideNoRights{BOARD_MASK_BLACK_TURN,
+                                                          {},
+                                                          {{ROOK, A8}, {KING, E8}},
+                                                          {/*unused*/}};
+const MoveGenerationTestParameter kWhiteKingSideNoRights{BOARD_MASK_WHITE_TURN,
+                                                         {{ROOK, H1}, {KING, E1}},
+                                                         {},
+                                                         {/*unused*/}};
+const MoveGenerationTestParameter kWhiteQueenSideNoRights{BOARD_MASK_WHITE_TURN,
+                                                          {{ROOK, A1}, {KING, E1}},
+                                                          {},
+                                                          {/*unused*/}};
+
+INSTANTIATE_TEST_SUITE_P(AtomicNoCastlingPositions,
+                         NoCastlingGenerationTestFixture,
+                         ::testing::ValuesIn({
+                             kBlackKingSideBlocked,
+                             kBlackQueenSideBlocked,
+                             kWhiteKingSideBlocked,
+                             kWhiteQueenSideBlocked,
+                             kBlackKingSideNoRights,
+                             kBlackQueenSideNoRights,
+                             kWhiteKingSideNoRights,
+                             kWhiteQueenSideNoRights,
+                         }));
+
 }  // namespace
 }  // namespace Chess

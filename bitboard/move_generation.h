@@ -317,6 +317,34 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         generate_jump_style_move(king_board, target, KING);
     }
 
+    // castling
+    constexpr std::array<Bitboard, 4> castling_rights{BOARD_VALUE_CASTLING_BLACK_KINGSIDE,
+                                                      BOARD_VALUE_CASTLING_BLACK_QUEENSIDE,
+                                                      BOARD_VALUE_CASTLING_WHITE_KINGSIDE,
+                                                      BOARD_VALUE_CASTLING_WHITE_QUEENSIDE};
+    constexpr std::array<Bitboard, 4> neccessary_free_squares = {F8 | G8, D8 | C8 | B8, F1 | G1, D1 | C1 | B1};
+    constexpr std::array<int, 4> source_bits = {59, 59, 3, 3};
+    constexpr std::array<int, 4> target_bits{57, 61, 1, 5};
+    constexpr std::array<Bitmove, 4> move_values{MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
+                                                 MOVE_VALUE_TYPE_QUEENSIDE_CASTLING,
+                                                 MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
+                                                 MOVE_VALUE_TYPE_QUEENSIDE_CASTLING};
+
+    const std ::size_t offset_for_white = 2 * white_to_move;
+    for (std::size_t side = 0; side < 2; side++)  // side as in queen- or kingside, not white or black
+    {
+        const std::size_t castling = side + offset_for_white;
+        const bool castling_to_side_is_allowed = position[BOARD_IDX_EXTRAS] & castling_rights[castling];
+        const bool space_between_king_and_rook_is_free =
+            (free_squares & neccessary_free_squares[castling]) == neccessary_free_squares[castling];
+        const bool castling_possible = castling_to_side_is_allowed && space_between_king_and_rook_is_free;
+        if (castling_possible)
+        {
+            *move_generation_insertion_iterator++ = ComposeMove(
+                source_bits[castling], target_bits[castling], KING, NO_CAPTURE, NO_PROMOTION, move_values[castling]);
+        }
+    }
+
     return move_generation_insertion_iterator;
 }
 
