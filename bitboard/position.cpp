@@ -3,7 +3,7 @@
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
 
-#include <exception>
+#include <stdexcept>
 
 namespace Chess
 {
