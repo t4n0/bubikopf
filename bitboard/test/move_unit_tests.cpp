@@ -67,7 +67,7 @@ TEST(MoveValueTest, GivenAllValues_ExpectEveryValueIsUnique)
     std::array<Bitmove, 9>::iterator new_end_it = std::unique(all_move_values.begin(), all_move_values.end());
     const bool is_unique = new_end_it == all_move_values.end();
     EXPECT_TRUE(is_unique);
-}  // namespace
+}
 
 class MoveValueFixture : public ::testing::TestWithParam<Bitmove>
 {
