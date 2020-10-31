@@ -21,8 +21,21 @@ struct MoveGenerationTestParameter
 class MoveGenerationTestFixture : public ::testing::TestWithParam<MoveGenerationTestParameter>
 {
   public:
-    void SetUp() override { position_[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING; }
-    void TearDown() override {}
+    void SetUpBoardAccordingToTestParameter()
+    {
+        position_[BOARD_IDX_EXTRAS] |= GetParam().extras;
+
+        for (const auto& piece : GetParam().black_pieces)
+        {
+            position_[BOARD_IDX_BLACK] |= piece.second;
+            position_[BOARD_IDX_BLACK + piece.first] |= piece.second;
+        }
+        for (const auto& piece : GetParam().white_pieces)
+        {
+            position_[BOARD_IDX_WHITE] |= piece.second;
+            position_[BOARD_IDX_WHITE + piece.first] |= piece.second;
+        }
+    }
 
     PositionWithBitboards position_{};
     MoveList move_list_{};
@@ -30,18 +43,7 @@ class MoveGenerationTestFixture : public ::testing::TestWithParam<MoveGeneration
 
 TEST_P(MoveGenerationTestFixture, GivenAtomicPosition_ExpectAllPseudoLegalMoves)
 {
-    position_[BOARD_IDX_EXTRAS] |= GetParam().extras;
-
-    for (const auto& piece : GetParam().black_pieces)
-    {
-        position_[BOARD_IDX_BLACK] |= piece.second;
-        position_[BOARD_IDX_BLACK + piece.first] |= piece.second;
-    }
-    for (const auto& piece : GetParam().white_pieces)
-    {
-        position_[BOARD_IDX_WHITE] |= piece.second;
-        position_[BOARD_IDX_WHITE + piece.first] |= piece.second;
-    }
+    SetUpBoardAccordingToTestParameter();
 
     const MoveList::iterator returned_move_insertion_iterator = GenerateMoves(position_, move_list_.begin());
 
