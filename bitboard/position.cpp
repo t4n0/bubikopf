@@ -113,6 +113,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
                                                      ? BOARD_VALUE_CASTLING_WHITE_KINGSIDE
                                                      : BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
             boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
@@ -126,6 +127,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
                                                      ? BOARD_VALUE_CASTLING_WHITE_QUEENSIDE
                                                      : BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
             boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
@@ -207,6 +209,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
             const Bitboard target_rook = target << 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
             boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
         }
@@ -215,6 +218,7 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
             const Bitboard target_rook = target >> 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
             boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
         }
