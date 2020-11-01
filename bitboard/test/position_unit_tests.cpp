@@ -3,7 +3,7 @@
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <algorithm>
 #include <iterator>
@@ -82,203 +82,158 @@ bool BoardsEqualTheirIndexExceptIgnored(const PositionWithBitboards& position,
     return return_value;
 }
 
-TEST(PositionMakeMoveFixture,
-     GivenAnyMove_ExpectSideSwitchedAndHistoryAppendedAndEnPassentClearedAndAttackingPieceMoved)
+struct PriorSpecifier
+{
+    std::size_t index;
+    Bitboard value;
+};
+
+struct PosteriorSpecifier
+{
+    std::size_t index;
+    ::testing::Matcher<Bitboard> value;
+};
+
+struct MakeUnmakeMoveTestParameter
+{
+    std::vector<PriorSpecifier> prior_setup;
+    Bitmove move;
+    std::vector<PosteriorSpecifier> posterior_setup;
+};
+
+class MakeUnmakeMoveTestFixture : public ::testing::TestWithParam<MakeUnmakeMoveTestParameter>
+{
+};
+
+TEST_P(MakeUnmakeMoveTestFixture, GivenMove_ExpectPosteriorAfterMakeAndPriorAfterUnmake)
 {
     // Setup
-    const Bitboard source = C3;
-    const Bitboard target = E5;
-    const Bitboard extras = BOARD_MASK_WHITE_TURN;
-    PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, 6, 7, 8, source, 10, 11, 12, 13, 14, 15, 16}};
+    PositionWithBitboards position{};
+    std::array<::testing::Matcher<Bitboard>, 17> expected_position_posterior{
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove any_move = source_bit | (target_bit << MOVE_SHIFT_TARGET) | (BISHOP << MOVE_SHIFT_MOVED_PIECE);
+    for (const auto& setter : GetParam().prior_setup)
+    {
+        position[setter.index] = setter.value;
+    }
+    for (const auto& setter : GetParam().posterior_setup)
+    {
+        expected_position_posterior[setter.index] = setter.value;
+    }
 
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(any_move);
-
-    // Expect
-    EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN);
-    EXPECT_TRUE(position.extras_history_insertion_index_ == 1);
-    EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT);
-    EXPECT_EQ(position[BOARD_IDX_WHITE], target);
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 12}));
+    const PositionWithBitboards expected_position_prior{position};
 
     // Call
-    position.UnmakeMove(any_move);
+    position.MakeMove(GetParam().move);
 
     // Expect
-    EXPECT_EQ(position, position_prior_make_move);
+    EXPECT_THAT(position.boards_, ::testing::ElementsAreArray(expected_position_posterior));
+
+    // Call
+    position.UnmakeMove(GetParam().move);
+
+    // Expect
+    EXPECT_THAT(position, expected_position_prior) << "Position does not equal prior after UnmakeMove(..).";
 }
 
-TEST(PositionMakeMoveFixture, GivenQuietNonPawn_ExpectAttackingPieceMovedAndIncrementedStaticPliesCount)
+MATCHER(IsAnything, "")
 {
-    // Setup
-    const Bitboard source = H1;
-    const Bitboard target = G3;
-    const Bitboard static_plies = 7;
-    const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies;
-    PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, source, 12, 13, 14, 15, 16}};
-
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove quiet_non_pawn_move = MOVE_VALUE_TYPE_QUIET_NON_PAWN | source_bit |
-                                        (target_bit << MOVE_SHIFT_TARGET) | (KNIGHT << MOVE_SHIFT_MOVED_PIECE);
-
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(quiet_non_pawn_move);
-
-    // Expect
-    EXPECT_EQ(position[BOARD_IDX_WHITE + KNIGHT], target);
-    EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, static_plies + 1);
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 11}));
-
-    // Call
-    position.UnmakeMove(quiet_non_pawn_move);
-
-    // Expect
-    EXPECT_EQ(position, position_prior_make_move);
+    return true;
 }
 
-TEST(PositionMakeMoveFixture, GivenCapture_ExpectAttackingPieceMovedAndHarmedPieceRemovedAndStaticPliesCountReset)
+MATCHER(IsWhitesTurn, "")
 {
-    // Setup
-    const Bitboard static_plies = 8;
-    const Bitboard source = D1;
-    const Bitboard target = D5;
-    const Bitboard extras = static_plies;
-    PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, source, 7, 8, target, target, 11, 12, 13, 14, 15, 16}};
-
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove capture_move = MOVE_VALUE_TYPE_CAPTURE | source_bit | (target_bit << MOVE_SHIFT_TARGET) |
-                                 (QUEEN << MOVE_SHIFT_MOVED_PIECE) | (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
-
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(capture_move);
-
-    // Expect
-    EXPECT_EQ(position[BOARD_IDX_BLACK + QUEEN], target);
-    EXPECT_EQ(position[BOARD_IDX_WHITE], 0);
-    EXPECT_EQ(position[BOARD_IDX_WHITE + PAWN], 0);
-    EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 6, 9, 10}));
-
-    // Call
-    position.UnmakeMove(capture_move);
-
-    // Expect
-    EXPECT_EQ(position, position_prior_make_move);
+    return arg & BOARD_MASK_WHITE_TURN;
 }
 
-TEST(PositionMakeMoveFixture, GivenPawnPush_ExpectAttackingPieceMovedAndStaticPliesCountReset)
+MATCHER(HasEnPassentSet, "")
 {
-    // Setup
-    const Bitboard source = F2;
-    const Bitboard target = F3;
-    const Bitboard static_plies = 9;
-    const Bitboard extras = static_plies;
-    PositionWithBitboards position{{extras, source, source, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
-
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove single_push =
-        MOVE_VALUE_TYPE_PAWN_PUSH | source_bit | (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE);
-
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(single_push);
-
-    // Expect
-    EXPECT_EQ(position[BOARD_IDX_BLACK + PAWN], target);
-    EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 2}));
-
-    // Call
-    position.UnmakeMove(single_push);
-
-    // Expect
-    EXPECT_EQ(position, position_prior_make_move);
+    return arg & BOARD_MASK_EN_PASSENT;
 }
 
-TEST(PositionMakeMoveFixture, GivenPawnDoublePush_ExpectAttackingPieceMovedAndStaticPliesCountResetAndEnpassentSet)
-{
-    // Setup
-    const Bitboard source = F2;
-    const Bitboard target = F4;
-    const Bitboard static_plies = 10;
-    const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies;
-    PositionWithBitboards position{{extras, 1, 2, 3, 4, 5, 6, 7, 8, 9, source, 11, 12, 13, 14, 15, 16}};
+const MakeUnmakeMoveTestParameter kSideSwitchedFromWhiteToBlack{
+    {{BOARD_IDX_EXTRAS, BOARD_MASK_WHITE_TURN}},
+    {},
+    {{BOARD_IDX_EXTRAS, ::testing::Not(IsWhitesTurn())}},
+};
+const MakeUnmakeMoveTestParameter kSideSwitchedFromBlackToWhite{
+    {{BOARD_IDX_EXTRAS, BOARD_MASK_BLACK_TURN}},
+    {},
+    {{BOARD_IDX_EXTRAS, IsWhitesTurn()}},
+};
+const MakeUnmakeMoveTestParameter kEnPassentCleared{
+    {{BOARD_IDX_EXTRAS, BOARD_MASK_EN_PASSENT}},
+    {},
+    {{BOARD_IDX_EXTRAS, ::testing::Not(HasEnPassentSet())}},
+};
+const MakeUnmakeMoveTestParameter kBlackPieceMoved{
+    {{BOARD_IDX_BLACK, A7}},
+    {ComposeMove(tzcnt(A7), tzcnt(A6), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS, 1 + BOARD_MASK_WHITE_TURN}, {BOARD_IDX_BLACK, A6}, {BOARD_IDX_BLACK + ROOK, IsAnything()}},
+};
+const MakeUnmakeMoveTestParameter kWhitePieceMoved{
+    {{BOARD_IDX_EXTRAS, BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, A7}},
+    {ComposeMove(tzcnt(A7), tzcnt(A6), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS, 1 + BOARD_MASK_BLACK_TURN}, {BOARD_IDX_WHITE, A6}, {BOARD_IDX_WHITE + ROOK, IsAnything()}},
+};
+const MakeUnmakeMoveTestParameter kQuietNonPawn{
+    {{BOARD_IDX_EXTRAS, 2 + BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, H1}, {BOARD_IDX_WHITE + KNIGHT, H1}},
+    {ComposeMove(tzcnt(H1), tzcnt(G3), KNIGHT, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS, 3 + BOARD_MASK_BLACK_TURN}, {BOARD_IDX_WHITE, G3}, {BOARD_IDX_WHITE + KNIGHT, G3}},
+};
+const MakeUnmakeMoveTestParameter kCapture{
+    {{BOARD_IDX_EXTRAS, 3 + BOARD_MASK_BLACK_TURN},
+     {BOARD_IDX_WHITE, D5},
+     {BOARD_IDX_WHITE + PAWN, D5},
+     {BOARD_IDX_BLACK, D1},
+     {BOARD_IDX_BLACK + QUEEN, D1}},
+    {ComposeMove(tzcnt(D1), tzcnt(D5), QUEEN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)},
+    {{BOARD_IDX_EXTRAS, 0 + BOARD_MASK_WHITE_TURN},
+     {BOARD_IDX_WHITE, XX},
+     {BOARD_IDX_WHITE + PAWN, XX},
+     {BOARD_IDX_BLACK, D5},
+     {BOARD_IDX_BLACK + QUEEN, D5}},
+};
+const MakeUnmakeMoveTestParameter kPawnSinglePush{
+    {{BOARD_IDX_EXTRAS, 9 + BOARD_MASK_BLACK_TURN}, {BOARD_IDX_BLACK, F3}, {BOARD_IDX_BLACK + PAWN, F3}},
+    {ComposeMove(tzcnt(F3), tzcnt(F2), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH)},
+    {{BOARD_IDX_EXTRAS, 0 + BOARD_MASK_WHITE_TURN}, {BOARD_IDX_BLACK, F2}, {BOARD_IDX_BLACK + PAWN, F2}},
+};
+const MakeUnmakeMoveTestParameter kPawnDoublePush{
+    {{BOARD_IDX_EXTRAS, 10 + BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, F2}, {BOARD_IDX_WHITE + PAWN, F2}},
+    {ComposeMove(tzcnt(F2), tzcnt(F4), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH)},
+    {{BOARD_IDX_EXTRAS, (0 + BOARD_MASK_BLACK_TURN) | (tzcnt(F3) << BOARD_SHIFT_EN_PASSENT)},
+     {BOARD_IDX_WHITE, F4},
+     {BOARD_IDX_WHITE + PAWN, F4}},
+};
+const MakeUnmakeMoveTestParameter kEnPassentCapture{
+    {{BOARD_IDX_EXTRAS, (11 + BOARD_MASK_WHITE_TURN) | (tzcnt(G7) << BOARD_SHIFT_EN_PASSENT)},
+     {BOARD_IDX_WHITE, H6},
+     {BOARD_IDX_WHITE + PAWN, H6},
+     {BOARD_IDX_BLACK, G6},
+     {BOARD_IDX_BLACK + PAWN, G6}},
+    {ComposeMove(tzcnt(H6), tzcnt(G7), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)},
+    {{BOARD_IDX_EXTRAS, 0 + BOARD_MASK_BLACK_TURN},
+     {BOARD_IDX_WHITE, G7},
+     {BOARD_IDX_WHITE + PAWN, G7},
+     {BOARD_IDX_BLACK, XX},
+     {BOARD_IDX_BLACK + PAWN, XX}},
+};
 
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove en_passent_bit = tzcnt(F3);
-    const Bitmove double_push = MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH | source_bit | (target_bit << MOVE_SHIFT_TARGET) |
-                                (PAWN << MOVE_SHIFT_MOVED_PIECE);
-
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(double_push);
-
-    // Expect
-    EXPECT_EQ(position[BOARD_IDX_WHITE + PAWN], target);
-    EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
-    EXPECT_EQ((position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT) >> BOARD_SHIFT_EN_PASSENT, en_passent_bit);
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 9, 10}));
-
-    // Call
-    position.UnmakeMove(double_push);
-
-    // Expect
-    EXPECT_EQ(position, position_prior_make_move);
-}
-
-TEST(PositionMakeMoveFixture,
-     GivenEnPassentCapture_ExpectAttackingPieceMovedAndHarmedPawnRemovedAndStaticPliesCountReset)
-{
-    // Setup
-    const Bitboard source = H6;
-    const Bitboard target = G7;
-    const Bitboard harmed = G6;
-    const Bitboard harmed_bit = tzcnt(harmed);
-    const Bitboard static_plies = 11;
-    const Bitboard extras = BOARD_MASK_WHITE_TURN | static_plies | (harmed_bit << BOARD_SHIFT_EN_PASSENT);
-    PositionWithBitboards position{{extras, harmed, harmed, 3, 4, 5, 6, 7, 8, 9, source, 11, 12, 13, 14, 15, 16}};
-
-    const Bitmove source_bit = tzcnt(source);
-    const Bitmove target_bit = tzcnt(target);
-    const Bitmove en_passent_capture = MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE | source_bit |
-                                       (target_bit << MOVE_SHIFT_TARGET) | (PAWN << MOVE_SHIFT_MOVED_PIECE) |
-                                       (PAWN << MOVE_SHIFT_CAPTURED_PIECE);
-
-    const PositionWithBitboards position_prior_make_move{position};
-
-    // Call
-    position.MakeMove(en_passent_capture);
-
-    // Expect
-    EXPECT_EQ(position[BOARD_IDX_WHITE + PAWN], target);
-    EXPECT_EQ(position[BOARD_IDX_BLACK], 0);
-    EXPECT_EQ(position[BOARD_IDX_BLACK + PAWN], 0);
-    EXPECT_EQ(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES, 0);
-
-    EXPECT_TRUE(BoardsEqualTheirIndexExceptIgnored(position, {0, 1, 2, 9, 10}));
-
-    // Call
-    position.UnmakeMove(en_passent_capture);
-
-    // Expect
-    EXPECT_EQ(position, position_prior_make_move);
-}
+INSTANTIATE_TEST_SUITE_P(AllMoves,
+                         MakeUnmakeMoveTestFixture,
+                         ::testing::ValuesIn({
+                             kSideSwitchedFromWhiteToBlack,
+                             kSideSwitchedFromBlackToWhite,
+                             kEnPassentCleared,
+                             kBlackPieceMoved,
+                             kWhitePieceMoved,
+                             kQuietNonPawn,
+                             kCapture,
+                             kPawnSinglePush,
+                             kPawnDoublePush,
+                             kEnPassentCapture,
+                         }));
 
 TEST(PositionMakeMoveFixture,
      GivenKingsideCastling_ExpectKingAndRookMovedAndStaticPliesIncrementedAndCastlingRightsRevoked)
@@ -420,6 +375,16 @@ TEST(PositionMakeMoveFixture, GivenPromotionCapture_ExpectPieceMovedAndStaticPli
     EXPECT_EQ(position.boards_, position_prior_make_move.boards_);
     EXPECT_EQ(position, position_prior_make_move);
 }
+
+// TODO: Add missing test for history was appended
+
+// TODO: Add tests for revoking castling rights on:
+// king rook move
+// queen rook move
+// king rook capture
+// queen rook capture
+// king move
+// king capture
 
 }  // namespace
 }  // namespace Chess
