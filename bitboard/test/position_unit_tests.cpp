@@ -293,6 +293,54 @@ const MakeUnmakeMoveTestParameter kKingMoveLosesCastling{
      {BOARD_IDX_WHITE + KING, E2}},
     "KingMoveLosesCastling",
 };
+const MakeUnmakeMoveTestParameter kWhiteKingRookMoveLosesCastling{
+    {{BOARD_IDX_EXTRAS, 17 | BOARD_MASK_WHITE_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_WHITE, H1},
+     {BOARD_IDX_WHITE + ROOK, H1}},
+    {ComposeMove(tzcnt(H1), tzcnt(H2), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS,
+      18 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE | BOARD_VALUE_CASTLING_BLACK_KINGSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_WHITE, H2},
+     {BOARD_IDX_WHITE + ROOK, H2}},
+    "KingRookMoveLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kWhiteQueenRookMoveLosesCastling{
+    {{BOARD_IDX_EXTRAS, 18 | BOARD_MASK_WHITE_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_WHITE, A1},
+     {BOARD_IDX_WHITE + ROOK, A1}},
+    {ComposeMove(tzcnt(A1), tzcnt(B1), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS,
+      19 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_BLACK_KINGSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_WHITE, B1},
+     {BOARD_IDX_WHITE + ROOK, B1}},
+    "WhiteQueenRookMoveLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kBlackKingRookMoveLosesCastling{
+    {{BOARD_IDX_EXTRAS, 20 | BOARD_MASK_BLACK_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_BLACK, H8},
+     {BOARD_IDX_BLACK + ROOK, H8}},
+    {ComposeMove(tzcnt(H8), tzcnt(F8), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS,
+      21 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_BLACK, F8},
+     {BOARD_IDX_BLACK + ROOK, F8}},
+    "BlackKingRookMoveLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kBlackQueenRookMoveLosesCastling{
+    {{BOARD_IDX_EXTRAS, 21 | BOARD_MASK_BLACK_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_BLACK, A8},
+     {BOARD_IDX_BLACK + ROOK, A8}},
+    {ComposeMove(tzcnt(A8), tzcnt(A3), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS,
+      22 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE |
+          BOARD_VALUE_CASTLING_BLACK_KINGSIDE},
+     {BOARD_IDX_BLACK, A3},
+     {BOARD_IDX_BLACK + ROOK, A3}},
+    "BlackQueenRookMoveLosesCastling",
+};
 
 INSTANTIATE_TEST_SUITE_P(AllMoves,
                          MakeUnmakeMoveTestFixture,
@@ -311,17 +359,14 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                              kQueenSideCastling,
                              kPromotion,
                              kKingMoveLosesCastling,
+                             kWhiteKingRookMoveLosesCastling,
+                             kWhiteQueenRookMoveLosesCastling,
+                             kBlackKingRookMoveLosesCastling,
+                             kBlackQueenRookMoveLosesCastling,
                          }),
                          [](const testing::TestParamInfo<MakeUnmakeMoveTestParameter>& info) {
                              return info.param.description;
                          });
-
-// TODO: Add tests for revoking castling rights on:
-// king rook move
-// queen rook move
-// king rook capture
-// queen rook capture
-// king capture
 
 }  // namespace
 }  // namespace Chess

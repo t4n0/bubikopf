@@ -64,6 +64,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     boards_[attacking_side] ^= source_and_target;
 
     // revoke castling rights
+    // TODO: This is ugly. Simplify.
     const bool someone_can_still_castle = current_extras & BOARD_MASK_CASTLING;
     if (someone_can_still_castle)
     {
@@ -79,6 +80,31 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             {
                 boards_[BOARD_IDX_EXTRAS] &=
                     ~(BOARD_VALUE_CASTLING_BLACK_KINGSIDE | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE);
+            }
+        }
+        else if (attacking_piece == ROOK)
+        {
+            if (white_to_move)
+            {
+                if (source & H1)  // king rook moves
+                {
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
+                }
+                else if (source & A1)  // queen rook moves
+                {
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_WHITE_QUEENSIDE;
+                }
+            }
+            else
+            {
+                if (source & H8)  // king rook moves
+                {
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
+                }
+                else if (source & A8)  // queen rook moves
+                {
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+                }
             }
         }
     }
