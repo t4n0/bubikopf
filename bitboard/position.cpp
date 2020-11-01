@@ -63,6 +63,26 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSANT;
     boards_[attacking_side] ^= source_and_target;
 
+    // revoke castling rights
+    const bool someone_can_still_castle = current_extras & BOARD_MASK_CASTLING;
+    if (someone_can_still_castle)
+    {
+        const bool is_king_move = attacking_piece == KING;
+        if (is_king_move)
+        {
+            if (white_to_move)
+            {
+                boards_[BOARD_IDX_EXTRAS] &=
+                    ~(BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE);
+            }
+            else
+            {
+                boards_[BOARD_IDX_EXTRAS] &=
+                    ~(BOARD_VALUE_CASTLING_BLACK_KINGSIDE | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE);
+            }
+        }
+    }
+
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
