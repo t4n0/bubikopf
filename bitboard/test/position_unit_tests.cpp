@@ -64,6 +64,28 @@ TEST(PositionWhiteToMove, GivenBlacksTurn_ExpectFalse)
     EXPECT_FALSE(position.WhiteToMove());
 }
 
+TEST(MakeUnmakeMoveTest, GivenMove_ExpectHistoryIsAppended)
+{
+    // Setup
+    const Bitmove arbitrary_move{};
+    const Bitboard arbitrary_extras = 42;
+    PositionWithBitboards position{};
+    position.boards_[BOARD_IDX_EXTRAS] = arbitrary_extras;
+
+    // Call
+    position.MakeMove(arbitrary_move);
+
+    // Expect
+    EXPECT_THAT(position.extras_history_.at(0), arbitrary_extras);
+    EXPECT_THAT(position.extras_history_insertion_index_, 1);
+
+    // Call
+    position.UnmakeMove(arbitrary_move);
+
+    // Expect
+    EXPECT_THAT(position.extras_history_insertion_index_, 0);
+}
+
 struct PriorSpecifier
 {
     std::size_t index;
@@ -263,8 +285,6 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                              kQueenSideCastling,
                              kPromotion,
                          }));
-
-// TODO: Add missing test for history was appended
 
 // TODO: Add tests for revoking castling rights on:
 // king rook move
