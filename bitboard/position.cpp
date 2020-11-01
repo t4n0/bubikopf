@@ -56,7 +56,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     const Bitboard source_and_target = source | target;
 
     boards_[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
-    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSENT;
+    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSANT;
     boards_[board_idx_attacking_side] ^= source_and_target;
 
     const Bitmove move_type = move & MOVE_MASK_TYPE;
@@ -87,16 +87,16 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             const Bitmove source_bit = move & MOVE_MASK_SOURCE;
             const Bitmove target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
             boards_[BOARD_IDX_EXTRAS] |= ((source_bit + target_bit) >> 1)
-                                         << BOARD_SHIFT_EN_PASSENT;  // (source_bit+target_bit)/2
+                                         << BOARD_SHIFT_EN_PASSANT;  // (source_bit+target_bit)/2
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             return;
         }
-        case MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE: {
+        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
             const Bitboard en_passant_square =
                 BOARD_ONE
-                << ((extras_history_[extras_history_insertion_index_ - 1] & BOARD_MASK_EN_PASSENT) >>
-                    BOARD_SHIFT_EN_PASSENT);  // En-passent bit mask erased at function entry. Get from history.
+                << ((extras_history_[extras_history_insertion_index_ - 1] & BOARD_MASK_EN_PASSANT) >>
+                    BOARD_SHIFT_EN_PASSANT);  // En-passant bit mask erased at function entry. Get from history.
             const bool white_to_move = extras_history_[extras_history_insertion_index_ - 1] & BOARD_MASK_WHITE_TURN;
             const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
@@ -190,12 +190,12 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
             return;
         }
-        case MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE: {
+        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
             const Bitboard en_passant_square =
                 BOARD_ONE
-                << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT) >>
-                    BOARD_SHIFT_EN_PASSENT);  // En-passent bit mask erased at function entry. Get from history.
+                << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >>
+                    BOARD_SHIFT_EN_PASSANT);  // En-passant bit mask erased at function entry. Get from history.
             const Bitboard en_passant_victim = WhiteToMove() ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[board_idx_attacking_piece_kind] ^= source_and_target;
             boards_[board_idx_harmed_side] |= en_passant_victim;

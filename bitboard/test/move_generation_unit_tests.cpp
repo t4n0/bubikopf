@@ -76,16 +76,16 @@ const MoveGenerationTestParameter kWhitePawnCaptures{
     {{PAWN, C6}, {KNIGHT, B6}, {ROOK, D6}},
     {ComposeMove(tzcnt(C5), tzcnt(B6), PAWN, KNIGHT, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
      ComposeMove(tzcnt(C5), tzcnt(D6), PAWN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
-const MoveGenerationTestParameter kWhitePawnEnPassentOptionRight{
-    BOARD_MASK_WHITE_TURN | (static_cast<Bitboard>(tzcnt(F6)) << BOARD_SHIFT_EN_PASSENT),
+const MoveGenerationTestParameter kWhitePawnEnPassantOptionRight{
+    BOARD_MASK_WHITE_TURN | (static_cast<Bitboard>(tzcnt(F6)) << BOARD_SHIFT_EN_PASSANT),
     {{PAWN, E5}},
     {{PAWN, E6}, {PAWN, F5}},
-    {ComposeMove(tzcnt(E5), tzcnt(F6), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
-const MoveGenerationTestParameter kWhitePawnEnPassentOptionLeft{
-    BOARD_MASK_WHITE_TURN | (static_cast<Bitboard>(tzcnt(D6)) << BOARD_SHIFT_EN_PASSENT),
+    {ComposeMove(tzcnt(E5), tzcnt(F6), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE)}};
+const MoveGenerationTestParameter kWhitePawnEnPassantOptionLeft{
+    BOARD_MASK_WHITE_TURN | (static_cast<Bitboard>(tzcnt(D6)) << BOARD_SHIFT_EN_PASSANT),
     {{PAWN, E5}},
     {{PAWN, E6}, {PAWN, D5}},
-    {ComposeMove(tzcnt(E5), tzcnt(D6), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
+    {ComposeMove(tzcnt(E5), tzcnt(D6), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE)}};
 const MoveGenerationTestParameter kWhitePawnPushToPromotion{
     BOARD_MASK_WHITE_TURN,
     {{PAWN, E7}},
@@ -127,16 +127,16 @@ const MoveGenerationTestParameter kBlackPawnCaptures{
     {{PAWN, C5}},
     {ComposeMove(tzcnt(C5), tzcnt(B4), PAWN, KNIGHT, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE),
      ComposeMove(tzcnt(C5), tzcnt(D4), PAWN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
-const MoveGenerationTestParameter kBlackPawnEnPassentOptionRight{
-    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(E3)) << BOARD_SHIFT_EN_PASSENT),
+const MoveGenerationTestParameter kBlackPawnEnPassantOptionRight{
+    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(E3)) << BOARD_SHIFT_EN_PASSANT),
     {{PAWN, E4}, {PAWN, F3}},
     {{PAWN, F4}},
-    {ComposeMove(tzcnt(F4), tzcnt(E3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
-const MoveGenerationTestParameter kBlackPawnEnPassentOptionLeft{
-    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(G3)) << BOARD_SHIFT_EN_PASSENT),
+    {ComposeMove(tzcnt(F4), tzcnt(E3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE)}};
+const MoveGenerationTestParameter kBlackPawnEnPassantOptionLeft{
+    BOARD_MASK_BLACK_TURN | (static_cast<Bitboard>(tzcnt(G3)) << BOARD_SHIFT_EN_PASSANT),
     {{PAWN, G4}, {PAWN, F3}},
     {{PAWN, F4}},
-    {ComposeMove(tzcnt(F4), tzcnt(G3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)}};
+    {ComposeMove(tzcnt(F4), tzcnt(G3), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE)}};
 const MoveGenerationTestParameter kBlackPawnPushToPromotion{
     BOARD_MASK_BLACK_TURN,
     {},
@@ -165,8 +165,8 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicPawnPositions,
                                               kWhitePawnOnStartRow,
                                               kWhitePawnBlockedOnStartRow,
                                               kWhitePawnCaptures,
-                                              kWhitePawnEnPassentOptionRight,
-                                              kWhitePawnEnPassentOptionLeft,
+                                              kWhitePawnEnPassantOptionRight,
+                                              kWhitePawnEnPassantOptionLeft,
                                               kWhitePawnPushToPromotion,
                                               kWhitePawnPushToPromotionWithCapture,
                                               kBlackPawnSinglePush,
@@ -174,8 +174,8 @@ INSTANTIATE_TEST_SUITE_P(AllAtomicPawnPositions,
                                               kBlackPawnOnStartRow,
                                               kBlackPawnBlockedOnStartRow,
                                               kBlackPawnCaptures,
-                                              kBlackPawnEnPassentOptionRight,
-                                              kBlackPawnEnPassentOptionLeft,
+                                              kBlackPawnEnPassantOptionRight,
+                                              kBlackPawnEnPassantOptionLeft,
                                               kBlackPawnPushToPromotion,
                                               kBlackPawnPushToPromotionWithCapture}));
 

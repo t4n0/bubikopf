@@ -146,9 +146,9 @@ MATCHER(IsWhitesTurn, "")
     return arg & BOARD_MASK_WHITE_TURN;
 }
 
-MATCHER(HasEnPassentSet, "")
+MATCHER(HasEnPassantSet, "")
 {
-    return arg & BOARD_MASK_EN_PASSENT;
+    return arg & BOARD_MASK_EN_PASSANT;
 }
 
 const MakeUnmakeMoveTestParameter kSideSwitchedFromWhiteToBlack{
@@ -161,10 +161,10 @@ const MakeUnmakeMoveTestParameter kSideSwitchedFromBlackToWhite{
     {},
     {{BOARD_IDX_EXTRAS, IsWhitesTurn()}},
 };
-const MakeUnmakeMoveTestParameter kEnPassentCleared{
-    {{BOARD_IDX_EXTRAS, BOARD_MASK_EN_PASSENT}},
+const MakeUnmakeMoveTestParameter kEnPassantCleared{
+    {{BOARD_IDX_EXTRAS, BOARD_MASK_EN_PASSANT}},
     {},
-    {{BOARD_IDX_EXTRAS, ::testing::Not(HasEnPassentSet())}},
+    {{BOARD_IDX_EXTRAS, ::testing::Not(HasEnPassantSet())}},
 };
 const MakeUnmakeMoveTestParameter kBlackPieceMoved{
     {{BOARD_IDX_BLACK, A7}},
@@ -202,17 +202,17 @@ const MakeUnmakeMoveTestParameter kPawnSinglePush{
 const MakeUnmakeMoveTestParameter kPawnDoublePush{
     {{BOARD_IDX_EXTRAS, 10 + BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, F2}, {BOARD_IDX_WHITE + PAWN, F2}},
     {ComposeMove(tzcnt(F2), tzcnt(F4), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH)},
-    {{BOARD_IDX_EXTRAS, (0 + BOARD_MASK_BLACK_TURN) | (tzcnt(F3) << BOARD_SHIFT_EN_PASSENT)},
+    {{BOARD_IDX_EXTRAS, (0 + BOARD_MASK_BLACK_TURN) | (tzcnt(F3) << BOARD_SHIFT_EN_PASSANT)},
      {BOARD_IDX_WHITE, F4},
      {BOARD_IDX_WHITE + PAWN, F4}},
 };
-const MakeUnmakeMoveTestParameter kEnPassentCapture{
-    {{BOARD_IDX_EXTRAS, (11 + BOARD_MASK_WHITE_TURN) | (tzcnt(G7) << BOARD_SHIFT_EN_PASSENT)},
+const MakeUnmakeMoveTestParameter kEnPassantCapture{
+    {{BOARD_IDX_EXTRAS, (11 + BOARD_MASK_WHITE_TURN) | (tzcnt(G7) << BOARD_SHIFT_EN_PASSANT)},
      {BOARD_IDX_WHITE, H6},
      {BOARD_IDX_WHITE + PAWN, H6},
      {BOARD_IDX_BLACK, G6},
      {BOARD_IDX_BLACK + PAWN, G6}},
-    {ComposeMove(tzcnt(H6), tzcnt(G7), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE)},
+    {ComposeMove(tzcnt(H6), tzcnt(G7), PAWN, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE)},
     {{BOARD_IDX_EXTRAS, 0 + BOARD_MASK_BLACK_TURN},
      {BOARD_IDX_WHITE, G7},
      {BOARD_IDX_WHITE + PAWN, G7},
@@ -225,14 +225,14 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                          ::testing::ValuesIn({
                              kSideSwitchedFromWhiteToBlack,
                              kSideSwitchedFromBlackToWhite,
-                             kEnPassentCleared,
+                             kEnPassantCleared,
                              kBlackPieceMoved,
                              kWhitePieceMoved,
                              kQuietNonPawn,
                              kCapture,
                              kPawnSinglePush,
                              kPawnDoublePush,
-                             kEnPassentCapture,
+                             kEnPassantCapture,
                          }));
 
 TEST(PositionMakeMoveFixture,

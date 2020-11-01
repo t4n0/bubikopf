@@ -145,21 +145,21 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             }
         }
 
-        // en passent
-        const Bitboard en_passent_mask = position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSENT;
-        if (en_passent_mask)
+        // en passant
+        const Bitboard en_passant_mask = position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT;
+        if (en_passant_mask)
         {
-            const Bitboard en_passent_bit = en_passent_mask >> BOARD_SHIFT_EN_PASSENT;
+            const Bitboard en_passant_bit = en_passant_mask >> BOARD_SHIFT_EN_PASSANT;
             for (const std::size_t index : {0, 1})
             {
-                if (en_passent_bit == pawn_capture_target_bits.at(index))
+                if (en_passant_bit == pawn_capture_target_bits.at(index))
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits.at(index),
                                                                         PAWN,
                                                                         PAWN,
                                                                         NO_PROMOTION,
-                                                                        MOVE_VALUE_TYPE_EN_PASSENT_CAPTURE);
+                                                                        MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE);
                 }
             }
         }
