@@ -51,6 +51,21 @@ constexpr int MOVE_SHIFT_TYPE = 27;
 constexpr std::size_t NO_CAPTURE = 0;    // for clarity in tests
 constexpr std::size_t NO_PROMOTION = 0;  // for clarity in tests
 
+inline Bitmove ComposeMove(const Bitmove source,
+                           const Bitmove target,
+                           const Bitmove moved_piece,
+                           const Bitmove captured_piece,
+                           const Bitmove promotion,
+                           const Bitmove move_type)
+{
+    return source |                                         //
+           (target << MOVE_SHIFT_TARGET) |                  //
+           (moved_piece << MOVE_SHIFT_MOVED_PIECE) |        //
+           (captured_piece << MOVE_SHIFT_CAPTURED_PIECE) |  //
+           (promotion << MOVE_SHIFT_PROMOTION) |            //
+           move_type;
+}
+
 }  // namespace Chess
 
 #endif

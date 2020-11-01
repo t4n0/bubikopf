@@ -49,21 +49,6 @@ inline std::string ToString(const MoveList& move_list)
     return move_list_print_out.str();
 }
 
-inline Bitmove ComposeMove(const Bitmove source,
-                           const Bitmove target,
-                           const Bitmove moved_piece,
-                           const Bitmove captured_piece,
-                           const Bitmove promotion,
-                           const Bitmove move_type)
-{
-    return source |                                         //
-           (target << MOVE_SHIFT_TARGET) |                  //
-           (moved_piece << MOVE_SHIFT_MOVED_PIECE) |        //
-           (captured_piece << MOVE_SHIFT_CAPTURED_PIECE) |  //
-           (promotion << MOVE_SHIFT_PROMOTION) |            //
-           move_type;
-}
-
 /// @brief Type to configure behavior of GenerateMoves at compile time
 ///
 /// This class is substituted for a mock in tests.
