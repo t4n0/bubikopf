@@ -46,10 +46,13 @@ void PositionWithBitboards::MakeMove(Bitmove move)
 {
     extras_history_[extras_history_insertion_index_] = boards_[BOARD_IDX_EXTRAS];
     extras_history_insertion_index_++;
+    const Bitboard& current_extras =
+        extras_history_[extras_history_insertion_index_ - 1];  // Moving side, en-passant etc. will be changed in
+                                                               // position. Hence getting unaltered state from history.
 
-    const std::size_t board_idx_attacking_side = WhiteToMove() ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
-    const std::size_t board_idx_attacking_piece_kind =
-        board_idx_attacking_side + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
+    const bool white_to_move = WhiteToMove();
+    const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t attacking_piece = attacking_side + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
 
     const Bitboard source = BOARD_ONE << (move & MOVE_MASK_SOURCE);
     const Bitboard target = BOARD_ONE << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
@@ -57,33 +60,33 @@ void PositionWithBitboards::MakeMove(Bitmove move)
 
     boards_[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
     boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSANT;
-    boards_[board_idx_attacking_side] ^= source_and_target;
+    boards_[attacking_side] ^= source_and_target;
 
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
         case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             boards_[BOARD_IDX_EXTRAS]++;
             return;
         }
         case MOVE_VALUE_TYPE_CAPTURE: {
-            const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
-            const std::size_t board_idx_captured_piece_kind =
-                board_idx_harmed_side + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_harmed_side] &= ~target;
-            boards_[board_idx_captured_piece_kind] &= ~target;
+            const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+            const std::size_t captured_piece =
+                defending_side + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[defending_side] &= ~target;
+            boards_[captured_piece] &= ~target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             return;
         }
         case MOVE_VALUE_TYPE_PAWN_PUSH: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             return;
         }
         case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             const Bitmove source_bit = move & MOVE_MASK_SOURCE;
             const Bitmove target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
             boards_[BOARD_IDX_EXTRAS] |= ((source_bit + target_bit) >> 1)
@@ -92,16 +95,13 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             return;
         }
         case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
-            const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
-            const Bitboard en_passant_square =
-                BOARD_ONE
-                << ((extras_history_[extras_history_insertion_index_ - 1] & BOARD_MASK_EN_PASSANT) >>
-                    BOARD_SHIFT_EN_PASSANT);  // En-passant bit mask erased at function entry. Get from history.
-            const bool white_to_move = extras_history_[extras_history_insertion_index_ - 1] & BOARD_MASK_WHITE_TURN;
+            const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+            const Bitboard en_passant_square = BOARD_ONE
+                                               << ((current_extras & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
             const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_harmed_side] &= ~en_passant_victim;
-            boards_[board_idx_harmed_side + PAWN] &= ~en_passant_victim;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[defending_side] &= ~en_passant_victim;
+            boards_[defending_side + PAWN] &= ~en_passant_victim;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             return;
         }
@@ -109,12 +109,12 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             const Bitboard source_rook = target >> 1;
             const Bitboard target_rook = target << 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            const Bitboard board_mask_castling = board_idx_attacking_side == BOARD_IDX_WHITE
+            const Bitboard board_mask_castling = attacking_side == BOARD_IDX_WHITE
                                                      ? BOARD_VALUE_CASTLING_WHITE_KINGSIDE
                                                      : BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
-            boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[attacking_side] ^= source_and_target_rook_jump;
+            boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
             return;
@@ -123,30 +123,29 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             const Bitboard source_rook = target << 2;
             const Bitboard target_rook = target >> 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            const Bitboard board_mask_castling = board_idx_attacking_side == BOARD_IDX_WHITE
+            const Bitboard board_mask_castling = attacking_side == BOARD_IDX_WHITE
                                                      ? BOARD_VALUE_CASTLING_WHITE_QUEENSIDE
                                                      : BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
-            boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[attacking_side] ^= source_and_target_rook_jump;
+            boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {
             const std::size_t board_idx_added_piece_kind =
-                board_idx_attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
-            boards_[board_idx_attacking_piece_kind] &= ~source;
+                attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
+            boards_[attacking_piece] &= ~source;
             boards_[board_idx_added_piece_kind] |= target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
             if (capture)
             {
-                const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
-                const std::size_t board_idx_captured_piece_kind =
-                    board_idx_harmed_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
-                boards_[board_idx_harmed_side] &= ~target;
-                boards_[board_idx_captured_piece_kind] &= ~target;
+                const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+                const std::size_t captured_piece = defending_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
+                boards_[defending_side] &= ~target;
+                boards_[captured_piece] &= ~target;
             }
             return;
         }
@@ -158,83 +157,80 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
     extras_history_insertion_index_--;
     boards_[BOARD_IDX_EXTRAS] = extras_history_[extras_history_insertion_index_];
 
-    const std::size_t board_idx_attacking_side = WhiteToMove() ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
-    const std::size_t board_idx_attacking_piece_kind =
-        board_idx_attacking_side + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
+    const bool white_to_move = WhiteToMove();
+    const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t attacking_piece = attacking_side + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
 
     const Bitboard source = BOARD_ONE << (move & MOVE_MASK_SOURCE);
     const Bitboard target = BOARD_ONE << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
     const Bitboard source_and_target = source | target;
 
-    boards_[board_idx_attacking_side] ^= source_and_target;
+    boards_[attacking_side] ^= source_and_target;
 
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
         case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_CAPTURE: {
-            const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
-            const std::size_t board_idx_captured_piece_kind =
-                board_idx_harmed_side + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_harmed_side] |= target;
-            boards_[board_idx_captured_piece_kind] |= target;
+            const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+            const std::size_t captured_piece =
+                defending_side + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[defending_side] |= target;
+            boards_[captured_piece] |= target;
             return;
         }
         case MOVE_VALUE_TYPE_PAWN_PUSH: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
+            boards_[attacking_piece] ^= source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
-            const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
+            const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
             const Bitboard en_passant_square =
-                BOARD_ONE
-                << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >>
-                    BOARD_SHIFT_EN_PASSANT);  // En-passant bit mask erased at function entry. Get from history.
-            const Bitboard en_passant_victim = WhiteToMove() ? en_passant_square >> 8 : en_passant_square << 8;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_harmed_side] |= en_passant_victim;
-            boards_[board_idx_harmed_side + PAWN] |= en_passant_victim;
+                BOARD_ONE << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
+            const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[defending_side] |= en_passant_victim;
+            boards_[defending_side + PAWN] |= en_passant_victim;
             return;
         }
         case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
             const Bitboard source_rook = target >> 1;
             const Bitboard target_rook = target << 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
-            boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[attacking_side] ^= source_and_target_rook_jump;
+            boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
         }
         case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
             const Bitboard source_rook = target << 2;
             const Bitboard target_rook = target >> 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[board_idx_attacking_piece_kind] ^= source_and_target;
-            boards_[board_idx_attacking_side] ^= source_and_target_rook_jump;
-            boards_[board_idx_attacking_side + ROOK] ^= source_and_target_rook_jump;
+            boards_[attacking_piece] ^= source_and_target;
+            boards_[attacking_side] ^= source_and_target_rook_jump;
+            boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {
             const std::size_t board_idx_added_piece_kind =
-                board_idx_attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
-            boards_[board_idx_attacking_piece_kind] |= source;
+                attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
+            boards_[attacking_piece] |= source;
             boards_[board_idx_added_piece_kind] &= ~target;
             const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
             if (capture)
             {
-                const std::size_t board_idx_harmed_side = BOARD_IDX_BLACK_WHITE_SUM - board_idx_attacking_side;
-                const std::size_t board_idx_captured_piece_kind =
-                    board_idx_harmed_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
-                boards_[board_idx_harmed_side] |= target;
-                boards_[board_idx_captured_piece_kind] |= target;
+                const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+                const std::size_t captured_piece = defending_side + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
+                boards_[defending_side] |= target;
+                boards_[captured_piece] |= target;
             }
             return;
         }

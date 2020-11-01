@@ -103,6 +103,7 @@ struct MakeUnmakeMoveTestParameter
     std::vector<PriorSpecifier> prior_setup;
     Bitmove move;
     std::vector<PosteriorSpecifier> posterior_setup;
+    std::string description;
 };
 
 class MakeUnmakeMoveTestFixture : public ::testing::TestWithParam<MakeUnmakeMoveTestParameter>
@@ -159,31 +160,37 @@ const MakeUnmakeMoveTestParameter kSideSwitchedFromWhiteToBlack{
     {{BOARD_IDX_EXTRAS, BOARD_MASK_WHITE_TURN}},
     {},
     {{BOARD_IDX_EXTRAS, ::testing::Not(IsWhitesTurn())}},
+    "SideSwitchedFromWhiteToBlack",
 };
 const MakeUnmakeMoveTestParameter kSideSwitchedFromBlackToWhite{
     {{BOARD_IDX_EXTRAS, BOARD_MASK_BLACK_TURN}},
     {},
     {{BOARD_IDX_EXTRAS, IsWhitesTurn()}},
+    "SideSwitchedFromBlackToWhite",
 };
 const MakeUnmakeMoveTestParameter kEnPassantCleared{
     {{BOARD_IDX_EXTRAS, BOARD_MASK_EN_PASSANT}},
     {},
     {{BOARD_IDX_EXTRAS, ::testing::Not(HasEnPassantSet())}},
+    "EnPassantCleared",
 };
 const MakeUnmakeMoveTestParameter kBlackPieceMoved{
     {{BOARD_IDX_BLACK, A7}},
     {ComposeMove(tzcnt(A7), tzcnt(A6), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
     {{BOARD_IDX_EXTRAS, 1 | BOARD_MASK_WHITE_TURN}, {BOARD_IDX_BLACK, A6}, {BOARD_IDX_BLACK + ROOK, IsAnything()}},
+    "BlackPieceMoved",
 };
 const MakeUnmakeMoveTestParameter kWhitePieceMoved{
     {{BOARD_IDX_EXTRAS, BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, A7}},
     {ComposeMove(tzcnt(A7), tzcnt(A6), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
     {{BOARD_IDX_EXTRAS, 1 | BOARD_MASK_BLACK_TURN}, {BOARD_IDX_WHITE, A6}, {BOARD_IDX_WHITE + ROOK, IsAnything()}},
+    "WhitePieceMoved",
 };
 const MakeUnmakeMoveTestParameter kQuietNonPawn{
     {{BOARD_IDX_EXTRAS, 2 | BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, H1}, {BOARD_IDX_WHITE + KNIGHT, H1}},
     {ComposeMove(tzcnt(H1), tzcnt(G3), KNIGHT, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
     {{BOARD_IDX_EXTRAS, 3 | BOARD_MASK_BLACK_TURN}, {BOARD_IDX_WHITE, G3}, {BOARD_IDX_WHITE + KNIGHT, G3}},
+    "QuietNonPawn",
 };
 const MakeUnmakeMoveTestParameter kCapture{
     {{BOARD_IDX_EXTRAS, 3 | BOARD_MASK_BLACK_TURN},
@@ -197,11 +204,13 @@ const MakeUnmakeMoveTestParameter kCapture{
      {BOARD_IDX_WHITE + PAWN, XX},
      {BOARD_IDX_BLACK, D5},
      {BOARD_IDX_BLACK + QUEEN, D5}},
+    "Capture",
 };
 const MakeUnmakeMoveTestParameter kPawnSinglePush{
     {{BOARD_IDX_EXTRAS, 9 | BOARD_MASK_BLACK_TURN}, {BOARD_IDX_BLACK, F3}, {BOARD_IDX_BLACK + PAWN, F3}},
     {ComposeMove(tzcnt(F3), tzcnt(F2), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH)},
     {{BOARD_IDX_EXTRAS, 0 | BOARD_MASK_WHITE_TURN}, {BOARD_IDX_BLACK, F2}, {BOARD_IDX_BLACK + PAWN, F2}},
+    "PawnSinglePush",
 };
 const MakeUnmakeMoveTestParameter kPawnDoublePush{
     {{BOARD_IDX_EXTRAS, 10 | BOARD_MASK_WHITE_TURN}, {BOARD_IDX_WHITE, F2}, {BOARD_IDX_WHITE + PAWN, F2}},
@@ -209,6 +218,7 @@ const MakeUnmakeMoveTestParameter kPawnDoublePush{
     {{BOARD_IDX_EXTRAS, (0 | BOARD_MASK_BLACK_TURN) | (tzcnt(F3) << BOARD_SHIFT_EN_PASSANT)},
      {BOARD_IDX_WHITE, F4},
      {BOARD_IDX_WHITE + PAWN, F4}},
+    "PawnDoublePush",
 };
 const MakeUnmakeMoveTestParameter kEnPassantCapture{
     {{BOARD_IDX_EXTRAS, 11 | BOARD_MASK_WHITE_TURN | (tzcnt(G7) << BOARD_SHIFT_EN_PASSANT)},
@@ -222,6 +232,7 @@ const MakeUnmakeMoveTestParameter kEnPassantCapture{
      {BOARD_IDX_WHITE + PAWN, G7},
      {BOARD_IDX_BLACK, XX},
      {BOARD_IDX_BLACK + PAWN, XX}},
+    "EnPassantCapture",
 };
 const MakeUnmakeMoveTestParameter kKingSideCastling{
     {{BOARD_IDX_EXTRAS, 12 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE},
@@ -233,6 +244,7 @@ const MakeUnmakeMoveTestParameter kKingSideCastling{
      {BOARD_IDX_WHITE, F1 | G1},
      {BOARD_IDX_WHITE + KING, G1},
      {BOARD_IDX_WHITE + ROOK, F1}},
+    "KingSideCastling",
 };
 const MakeUnmakeMoveTestParameter kQueenSideCastling{
     {{BOARD_IDX_EXTRAS, 13 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
@@ -244,6 +256,7 @@ const MakeUnmakeMoveTestParameter kQueenSideCastling{
      {BOARD_IDX_BLACK, C8 | D8},
      {BOARD_IDX_BLACK + KING, C8},
      {BOARD_IDX_BLACK + ROOK, D8}},
+    "QueenSideCastling",
 };
 const MakeUnmakeMoveTestParameter kPromotion{
     {{BOARD_IDX_EXTRAS, 14 | BOARD_MASK_BLACK_TURN}, {BOARD_IDX_BLACK, H2}, {BOARD_IDX_BLACK + PAWN, H2}},
@@ -252,6 +265,7 @@ const MakeUnmakeMoveTestParameter kPromotion{
      {BOARD_IDX_BLACK, H1},
      {BOARD_IDX_BLACK + PAWN, XX},
      {BOARD_IDX_BLACK + QUEEN, H1}},
+    "Promotion",
 };
 const MakeUnmakeMoveTestParameter kPromotionCapture{
     {{BOARD_IDX_EXTRAS, 15 | BOARD_MASK_WHITE_TURN},
@@ -266,6 +280,18 @@ const MakeUnmakeMoveTestParameter kPromotionCapture{
      {BOARD_IDX_WHITE, C8},
      {BOARD_IDX_WHITE + PAWN, XX},
      {BOARD_IDX_WHITE + ROOK, C8}},
+    "PromotionCapture",
+};
+const MakeUnmakeMoveTestParameter kKingMoveLosesCastling{
+    {{BOARD_IDX_EXTRAS, 16 | BOARD_MASK_WHITE_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_WHITE, E1},
+     {BOARD_IDX_WHITE + KING, E1}},
+    {ComposeMove(tzcnt(E1), tzcnt(E2), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN)},
+    {{BOARD_IDX_EXTRAS,
+      17 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_BLACK_KINGSIDE | BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_WHITE, E2},
+     {BOARD_IDX_WHITE + KING, E2}},
+    "KingMoveLosesCastling",
 };
 
 INSTANTIATE_TEST_SUITE_P(AllMoves,
@@ -284,14 +310,17 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                              kKingSideCastling,
                              kQueenSideCastling,
                              kPromotion,
-                         }));
+                             kKingMoveLosesCastling,
+                         }),
+                         [](const testing::TestParamInfo<MakeUnmakeMoveTestParameter>& info) {
+                             return info.param.description;
+                         });
 
 // TODO: Add tests for revoking castling rights on:
 // king rook move
 // queen rook move
 // king rook capture
 // queen rook capture
-// king move
 // king capture
 
 }  // namespace
