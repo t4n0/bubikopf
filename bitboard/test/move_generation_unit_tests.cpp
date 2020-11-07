@@ -160,24 +160,24 @@ const MoveGenerationTestParameter kBlackPawnPushToPromotionWithCapture{
 
 INSTANTIATE_TEST_SUITE_P(AllAtomicPawnPositions,
                          MoveGenerationTestFixture,
-                         ::testing::ValuesIn({kWhitePawnSinglePush,
-                                              kWhitePawnBlockedMidfield,
-                                              kWhitePawnOnStartRow,
-                                              kWhitePawnBlockedOnStartRow,
-                                              kWhitePawnCaptures,
-                                              kWhitePawnEnPassantOptionRight,
-                                              kWhitePawnEnPassantOptionLeft,
-                                              kWhitePawnPushToPromotion,
-                                              kWhitePawnPushToPromotionWithCapture,
-                                              kBlackPawnSinglePush,
-                                              kBlackPawnBlockedMidfield,
-                                              kBlackPawnOnStartRow,
-                                              kBlackPawnBlockedOnStartRow,
-                                              kBlackPawnCaptures,
-                                              kBlackPawnEnPassantOptionRight,
-                                              kBlackPawnEnPassantOptionLeft,
-                                              kBlackPawnPushToPromotion,
-                                              kBlackPawnPushToPromotionWithCapture}));
+                         ::testing::Values(kWhitePawnSinglePush,
+                                           kWhitePawnBlockedMidfield,
+                                           kWhitePawnOnStartRow,
+                                           kWhitePawnBlockedOnStartRow,
+                                           kWhitePawnCaptures,
+                                           kWhitePawnEnPassantOptionRight,
+                                           kWhitePawnEnPassantOptionLeft,
+                                           kWhitePawnPushToPromotion,
+                                           kWhitePawnPushToPromotionWithCapture,
+                                           kBlackPawnSinglePush,
+                                           kBlackPawnBlockedMidfield,
+                                           kBlackPawnOnStartRow,
+                                           kBlackPawnBlockedOnStartRow,
+                                           kBlackPawnCaptures,
+                                           kBlackPawnEnPassantOptionRight,
+                                           kBlackPawnEnPassantOptionLeft,
+                                           kBlackPawnPushToPromotion,
+                                           kBlackPawnPushToPromotionWithCapture));
 
 const MoveGenerationTestParameter kWhiteKingAloneMidfield{
     BOARD_MASK_WHITE_TURN,
@@ -257,14 +257,14 @@ const MoveGenerationTestParameter kBlackKingCapture{
 
 INSTANTIATE_TEST_SUITE_P(AllAtomicKingPositions,
                          MoveGenerationTestFixture,
-                         ::testing::ValuesIn({kWhiteKingAloneMidfield,
-                                              kWhiteKingInCornerH1,
-                                              kWhiteKingInCornerA8,
-                                              kWhiteKingCapture,
-                                              kBlackKingAloneMidfield,
-                                              kBlackKingInCornerA1,
-                                              kBlackKingInCornerH8,
-                                              kBlackKingCapture}));
+                         ::testing::Values(kWhiteKingAloneMidfield,
+                                           kWhiteKingInCornerH1,
+                                           kWhiteKingInCornerA8,
+                                           kWhiteKingCapture,
+                                           kBlackKingAloneMidfield,
+                                           kBlackKingInCornerA1,
+                                           kBlackKingInCornerH8,
+                                           kBlackKingCapture));
 
 const MoveGenerationTestParameter kWhiteRook{
     BOARD_MASK_WHITE_TURN,
@@ -297,12 +297,7 @@ const MoveGenerationTestParameter kBlackRook{
      ComposeMove(tzcnt(E4), tzcnt(B4), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN),
      ComposeMove(tzcnt(E4), tzcnt(A4), ROOK, PAWN, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)}};
 
-INSTANTIATE_TEST_SUITE_P(AllAtomicRookPositions,
-                         MoveGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kWhiteRook,
-                             kBlackRook,
-                         }));
+INSTANTIATE_TEST_SUITE_P(AllAtomicRookPositions, MoveGenerationTestFixture, ::testing::Values(kWhiteRook, kBlackRook));
 
 const MoveGenerationTestParameter kWhiteBishop{
     BOARD_MASK_WHITE_TURN,
@@ -336,10 +331,7 @@ const MoveGenerationTestParameter kBlackBishop{
 
 INSTANTIATE_TEST_SUITE_P(AllAtomicBishopPositions,
                          MoveGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kWhiteBishop,
-                             kBlackBishop,
-                         }));
+                         ::testing::Values(kWhiteBishop, kBlackBishop));
 
 const MoveGenerationTestParameter kWhiteQueen{
     BOARD_MASK_WHITE_TURN,
@@ -393,10 +385,7 @@ const MoveGenerationTestParameter kBlackQueen{
 
 INSTANTIATE_TEST_SUITE_P(AllAtomicQueenPositions,
                          MoveGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kWhiteQueen,
-                             kBlackQueen,
-                         }));
+                         ::testing::Values(kWhiteQueen, kBlackQueen));
 
 const MoveGenerationTestParameter kWhiteKnight{
     BOARD_MASK_WHITE_TURN,
@@ -420,10 +409,7 @@ const MoveGenerationTestParameter kBlackKnight{
 
 INSTANTIATE_TEST_SUITE_P(AllAtomicKnightPositions,
                          MoveGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kWhiteKnight,
-                             kBlackKnight,
-                         }));
+                         ::testing::Values(kWhiteKnight, kBlackKnight));
 
 class CastlingGenerationTestFixture : public MoveGenerationTestFixture
 {
@@ -467,12 +453,7 @@ const MoveGenerationTestParameter kWhiteQueenSide{
 
 INSTANTIATE_TEST_SUITE_P(AtomicCastlingPositions,
                          CastlingGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kBlackKingSide,
-                             kBlackQueenSide,
-                             kWhiteKingSide,
-                             kWhiteQueenSide,
-                         }));
+                         ::testing::Values(kBlackKingSide, kBlackQueenSide, kWhiteKingSide, kWhiteQueenSide));
 
 MATCHER(IsACastlingMove, "")
 {
@@ -530,16 +511,14 @@ const MoveGenerationTestParameter kWhiteQueenSideNoRights{BOARD_MASK_WHITE_TURN,
 
 INSTANTIATE_TEST_SUITE_P(AtomicNoCastlingPositions,
                          NoCastlingGenerationTestFixture,
-                         ::testing::ValuesIn({
-                             kBlackKingSideBlocked,
-                             kBlackQueenSideBlocked,
-                             kWhiteKingSideBlocked,
-                             kWhiteQueenSideBlocked,
-                             kBlackKingSideNoRights,
-                             kBlackQueenSideNoRights,
-                             kWhiteKingSideNoRights,
-                             kWhiteQueenSideNoRights,
-                         }));
+                         ::testing::Values(kBlackKingSideBlocked,
+                                           kBlackQueenSideBlocked,
+                                           kWhiteKingSideBlocked,
+                                           kWhiteQueenSideBlocked,
+                                           kBlackKingSideNoRights,
+                                           kBlackQueenSideNoRights,
+                                           kWhiteKingSideNoRights,
+                                           kWhiteQueenSideNoRights));
 
 }  // namespace
 }  // namespace Chess

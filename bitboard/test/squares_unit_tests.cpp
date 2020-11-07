@@ -43,9 +43,9 @@ const SquareTestParameter ALL_SQUARES{
 const SquareTestParameter ALL_RANKS{{RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8}, 8};
 const SquareTestParameter ALL_FILES{{FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H}, 8};
 
-INSTANTIATE_TEST_SUITE_P(AllSquares, SquareTestFixture, ::testing::ValuesIn({ALL_SQUARES}));
-INSTANTIATE_TEST_SUITE_P(AllRanks, SquareTestFixture, ::testing::ValuesIn({ALL_RANKS}));
-INSTANTIATE_TEST_SUITE_P(AllFiles, SquareTestFixture, ::testing::ValuesIn({ALL_FILES}));
+INSTANTIATE_TEST_SUITE_P(AllSquares, SquareTestFixture, ::testing::Values(ALL_SQUARES));
+INSTANTIATE_TEST_SUITE_P(AllRanks, SquareTestFixture, ::testing::Values(ALL_RANKS));
+INSTANTIATE_TEST_SUITE_P(AllFiles, SquareTestFixture, ::testing::Values(ALL_FILES));
 
 }  // namespace
 }  // namespace Chess

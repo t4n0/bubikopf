@@ -344,29 +344,25 @@ const MakeUnmakeMoveTestParameter kBlackQueenRookMoveLosesCastling{
 
 INSTANTIATE_TEST_SUITE_P(AllMoves,
                          MakeUnmakeMoveTestFixture,
-                         ::testing::ValuesIn({
-                             kSideSwitchedFromWhiteToBlack,
-                             kSideSwitchedFromBlackToWhite,
-                             kEnPassantCleared,
-                             kBlackPieceMoved,
-                             kWhitePieceMoved,
-                             kQuietNonPawn,
-                             kCapture,
-                             kPawnSinglePush,
-                             kPawnDoublePush,
-                             kEnPassantCapture,
-                             kKingSideCastling,
-                             kQueenSideCastling,
-                             kPromotion,
-                             kKingMoveLosesCastling,
-                             kWhiteKingRookMoveLosesCastling,
-                             kWhiteQueenRookMoveLosesCastling,
-                             kBlackKingRookMoveLosesCastling,
-                             kBlackQueenRookMoveLosesCastling,
-                         }),
-                         [](const testing::TestParamInfo<MakeUnmakeMoveTestParameter>& info) {
-                             return info.param.description;
-                         });
+                         ::testing::Values(kSideSwitchedFromWhiteToBlack,
+                                           kSideSwitchedFromBlackToWhite,
+                                           kEnPassantCleared,
+                                           kBlackPieceMoved,
+                                           kWhitePieceMoved,
+                                           kQuietNonPawn,
+                                           kCapture,
+                                           kPawnSinglePush,
+                                           kPawnDoublePush,
+                                           kEnPassantCapture,
+                                           kKingSideCastling,
+                                           kQueenSideCastling,
+                                           kPromotion,
+                                           kKingMoveLosesCastling,
+                                           kWhiteKingRookMoveLosesCastling,
+                                           kWhiteQueenRookMoveLosesCastling,
+                                           kBlackKingRookMoveLosesCastling,
+                                           kBlackQueenRookMoveLosesCastling),
+                         [](const auto& info) { return info.param.description; });
 
 }  // namespace
 }  // namespace Chess

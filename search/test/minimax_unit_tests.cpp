@@ -114,9 +114,10 @@ TEST_P(MinimaxTest_Fixture, GivenDepths_ExpectCutOfAtSmallerDepth)
 
 const MinimaxTestParameters SEARCH_DEPTH_GREATER_TREE_DEPTH{7, 3, 8};
 const MinimaxTestParameters TREE_DEPTH_GREATER_SEARCH_DEPTH{2, 7, 4};
-const std::vector<MinimaxTestParameters> SAMPLES{TREE_DEPTH_GREATER_SEARCH_DEPTH, SEARCH_DEPTH_GREATER_TREE_DEPTH};
 
-INSTANTIATE_TEST_SUITE_P(TwoPermutations, MinimaxTest_Fixture, ::testing::ValuesIn(SAMPLES));
+INSTANTIATE_TEST_SUITE_P(TwoPermutations,
+                         MinimaxTest_Fixture,
+                         ::testing::Values(TREE_DEPTH_GREATER_SEARCH_DEPTH, SEARCH_DEPTH_GREATER_TREE_DEPTH));
 
 template <typename T>
 struct MinimaxTest_TypedFixture : public ::testing::Test

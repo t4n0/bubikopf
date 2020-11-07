@@ -77,7 +77,7 @@ constexpr MiniMaxTestParameter ply7{7, 3195901860};
 constexpr MiniMaxTestParameter ply8{8, 84998978956};
 constexpr MiniMaxTestParameter ply9{9, 2439530234167};
 
-INSTANTIATE_TEST_SUITE_P(FromStartPosition, MiniMaxTestFixture, ::testing::ValuesIn({ply3}));
+INSTANTIATE_TEST_SUITE_P(FromStartPosition, MiniMaxTestFixture, ::testing::Values(ply3));
 
 }  // namespace
 }  // namespace Chess

@@ -44,17 +44,15 @@ const SingleStepTestParameter D8_step_in_all_directions{D8, {C8, XX, XX, XX, E8,
 
 INSTANTIATE_TEST_SUITE_P(AllCornersAndDirections,
                          SingleStepTestFixture,
-                         ::testing::ValuesIn({
-                             A1_step_in_all_directions,
-                             A4_step_in_all_directions,
-                             A8_step_in_all_directions,
-                             H1_step_in_all_directions,
-                             H5_step_in_all_directions,
-                             H8_step_in_all_directions,
-                             E1_step_in_all_directions,
-                             E4_step_in_all_directions,
-                             D8_step_in_all_directions,
-                         }));
+                         ::testing::Values(A1_step_in_all_directions,
+                                           A4_step_in_all_directions,
+                                           A8_step_in_all_directions,
+                                           H1_step_in_all_directions,
+                                           H5_step_in_all_directions,
+                                           H8_step_in_all_directions,
+                                           E1_step_in_all_directions,
+                                           E4_step_in_all_directions,
+                                           D8_step_in_all_directions));
 
 struct KnightJumpTestParameter
 {
@@ -94,20 +92,18 @@ const KnightJumpTestParameter H1_jump_in_all_directions{H1, {G3, XX, XX, XX, XX,
 
 INSTANTIATE_TEST_SUITE_P(VariousSquaresAndAllDirections,
                          KnightJumpTestFixture,
-                         ::testing::ValuesIn({
-                             B7_jump_in_all_directions,
-                             C7_jump_in_all_directions,
-                             B6_jump_in_all_directions,
-                             C6_jump_in_all_directions,
-                             F3_jump_in_all_directions,
-                             G3_jump_in_all_directions,
-                             F2_jump_in_all_directions,
-                             G2_jump_in_all_directions,
-                             A1_jump_in_all_directions,
-                             A8_jump_in_all_directions,
-                             H8_jump_in_all_directions,
-                             H1_jump_in_all_directions,
-                         }));
+                         ::testing::Values(B7_jump_in_all_directions,
+                                           C7_jump_in_all_directions,
+                                           B6_jump_in_all_directions,
+                                           C6_jump_in_all_directions,
+                                           F3_jump_in_all_directions,
+                                           G3_jump_in_all_directions,
+                                           F2_jump_in_all_directions,
+                                           G2_jump_in_all_directions,
+                                           A1_jump_in_all_directions,
+                                           A8_jump_in_all_directions,
+                                           H8_jump_in_all_directions,
+                                           H1_jump_in_all_directions));
 
 }  // namespace
 }  // namespace Chess
