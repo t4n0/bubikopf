@@ -7,6 +7,7 @@ cc_library(
         "board.h",
         "move.h",
         "move_generation.h",
+        "move_list.h",
         "move_lookup_table.h",
         "pieces.h",
         "position.cpp",
