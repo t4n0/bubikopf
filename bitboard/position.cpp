@@ -61,7 +61,9 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     const Bitboard source_and_target = source | target;
 
     boards_[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
-    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_EN_PASSANT;
+    boards_[BOARD_IDX_EXTRAS] &= ~(BOARD_MASK_EN_PASSANT | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE |
+                                   BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE);
+
     boards_[attacking_side] ^= source_and_target;
 
     // revoke castling rights
@@ -165,6 +167,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
+            boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE;
             return;
         }
         case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
@@ -179,6 +182,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
             boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
+            boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {

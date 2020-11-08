@@ -156,6 +156,11 @@ MATCHER(HasEnPassantSet, "")
     return arg & BOARD_MASK_EN_PASSANT;
 }
 
+MATCHER(HasCastlingOnLastMoveSet, "")
+{
+    return arg & (BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE);
+}
+
 const MakeUnmakeMoveTestParameter kSideSwitchedFromWhiteToBlack{
     {{BOARD_IDX_EXTRAS, BOARD_MASK_WHITE_TURN}},
     {},
@@ -173,6 +178,12 @@ const MakeUnmakeMoveTestParameter kEnPassantCleared{
     {},
     {{BOARD_IDX_EXTRAS, ::testing::Not(HasEnPassantSet())}},
     "EnPassantCleared",
+};
+const MakeUnmakeMoveTestParameter kCastlingOnLastMoveCleared{
+    {{BOARD_IDX_EXTRAS, BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE}},
+    {},
+    {{BOARD_IDX_EXTRAS, ::testing::Not(HasCastlingOnLastMoveSet())}},
+    "CastlingOnLastMoveCleared",
 };
 const MakeUnmakeMoveTestParameter kBlackPieceMoved{
     {{BOARD_IDX_BLACK, A7}},
@@ -240,7 +251,7 @@ const MakeUnmakeMoveTestParameter kKingSideCastling{
      {BOARD_IDX_WHITE + KING, E1},
      {BOARD_IDX_WHITE + ROOK, H1}},
     {ComposeMove(tzcnt(E1), tzcnt(G1), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_KINGSIDE_CASTLING)},
-    {{BOARD_IDX_EXTRAS, 13 | BOARD_MASK_BLACK_TURN},
+    {{BOARD_IDX_EXTRAS, 13 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE},
      {BOARD_IDX_WHITE, F1 | G1},
      {BOARD_IDX_WHITE + KING, G1},
      {BOARD_IDX_WHITE + ROOK, F1}},
@@ -252,7 +263,7 @@ const MakeUnmakeMoveTestParameter kQueenSideCastling{
      {BOARD_IDX_BLACK + KING, E8},
      {BOARD_IDX_BLACK + ROOK, A8}},
     {ComposeMove(tzcnt(E8), tzcnt(C8), KING, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUEENSIDE_CASTLING)},
-    {{BOARD_IDX_EXTRAS, 14 | BOARD_MASK_WHITE_TURN},
+    {{BOARD_IDX_EXTRAS, 14 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE},
      {BOARD_IDX_BLACK, C8 | D8},
      {BOARD_IDX_BLACK + KING, C8},
      {BOARD_IDX_BLACK + ROOK, D8}},
@@ -347,6 +358,7 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                          ::testing::Values(kSideSwitchedFromWhiteToBlack,
                                            kSideSwitchedFromBlackToWhite,
                                            kEnPassantCleared,
+                                           kCastlingOnLastMoveCleared,
                                            kBlackPieceMoved,
                                            kWhitePieceMoved,
                                            kQuietNonPawn,
