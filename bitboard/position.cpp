@@ -2,6 +2,7 @@
 
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
+#include "bitboard/shift.h"
 
 #include <stdexcept>
 
@@ -331,6 +332,79 @@ PositionWithBitboards SetUpStandardStartPosition()
     position[BOARD_IDX_BLACK + KING] = E8;
 
     return position;
+}
+
+// Index corresponds to directions of "all_directions"
+constexpr std::array<std::size_t, 8>
+    dangerous_pieces_besides_queen_with_ray_style_attack{ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP};
+
+bool PositionWithBitboards::DefendersKingIsInCheck() const
+{
+    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * WhiteToMove();
+    const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+
+    // check for ray style attacks
+    for (std::size_t idx = 0; idx < all_directions.size(); idx++)
+    {
+        const auto direction = all_directions[idx];
+        const auto also_dangerous_piece = dangerous_pieces_besides_queen_with_ray_style_attack[idx];
+
+        Bitboard attacker_location = SingleStep(boards_[defending_side + KING], direction);
+        while (attacker_location)  // is on the board
+        {
+            const bool location_is_occupied_by_friendly_piece = attacker_location & boards_[defending_side];
+            if (location_is_occupied_by_friendly_piece)
+            {
+                break;  // this direction is safe
+            }
+
+            const bool location_is_occupied_by_enemy_piece = attacker_location & boards_[attacking_side];
+            if (location_is_occupied_by_enemy_piece)
+            {
+                const std::size_t piece_kind = GetPieceKind(attacking_side, attacker_location);
+                const bool piece_can_attack_from_this_angle =
+                    (piece_kind == QUEEN) || (piece_kind == also_dangerous_piece);
+                if (piece_can_attack_from_this_angle)
+                {
+                    return true;
+                }
+            }
+
+            attacker_location = SingleStep(attacker_location, direction);  // next iteration
+        }
+    }
+
+    // check for knight attacks
+    for (const auto knight_jump : knight_jumps)
+    {
+        const Bitboard attacker_location = KnightJump(boards_[defending_side + KING], knight_jump);
+        if (attacker_location)  // is on the board
+        {
+            const bool location_is_occupied_by_enemy_knight = attacker_location & boards_[attacking_side + KNIGHT];
+            if (location_is_occupied_by_enemy_knight)
+            {
+                return true;
+            }
+        }
+    }
+
+    // TODO: Merge with ray style attacks above
+    // check for pawn attacks
+    constexpr std::array<std::size_t, 2> pawn_attack_angles_for_black_king{south_east, south_west};
+    constexpr std::array<std::size_t, 2> pawn_attack_angles_for_white_king{north_east, north_west};
+    const auto& attack_directions =
+        WhiteToMove() ? pawn_attack_angles_for_black_king : pawn_attack_angles_for_white_king;
+    for (const auto pawn_attack_direction : attack_directions)
+    {
+        const Bitboard attacker_location = SingleStep(boards_[defending_side + KING], pawn_attack_direction);
+        const bool attacker_location_is_occupied_by_enemy_pawn = attacker_location & boards_[attacking_side + PAWN];
+        if (attacker_location_is_occupied_by_enemy_pawn)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 }  // namespace Chess

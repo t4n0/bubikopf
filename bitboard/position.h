@@ -23,6 +23,12 @@ class PositionWithBitboards
     bool WhiteToMove() const;
     Bitmove GetPieceKind(const std::size_t side, const Bitboard location) const;
 
+    /// @brief Function to evaluate if defending sides king is in check.
+    ///
+    /// A search is started from the kings position and only relevant squares are checked for attackers.
+    /// (Rather then calculating a complete attack board).
+    bool DefendersKingIsInCheck() const;
+
     Bitboard& operator[](const std::size_t index);
     Bitboard operator[](const std::size_t index) const;
 

@@ -364,5 +364,154 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                                            kBlackQueenRookMoveLosesCastling),
                          [](const auto& info) { return info.param.description; });
 
+struct DefendersKingIsInCheckTestParameter
+{
+    Bitboard extras;
+    std::vector<std::pair<std::size_t, Bitboard>> white_pieces;
+    std::vector<std::pair<std::size_t, Bitboard>> black_pieces;
+    bool expected_king_safety;
+    std::string description;
+};
+
+class DefendersKingIsInCheckTestFixture : public ::testing::TestWithParam<DefendersKingIsInCheckTestParameter>
+{
+};
+
+TEST_P(DefendersKingIsInCheckTestFixture, GivenPosition_ExpectProvidedStateOfKingSafety)
+{
+    PositionWithBitboards position{};
+    position[BOARD_IDX_EXTRAS] |= GetParam().extras;
+    for (const auto& piece : GetParam().white_pieces)
+    {
+        position[BOARD_IDX_WHITE] |= piece.second;
+        position[BOARD_IDX_WHITE + piece.first] |= piece.second;
+    }
+    for (const auto& piece : GetParam().black_pieces)
+    {
+        position[BOARD_IDX_BLACK] |= piece.second;
+        position[BOARD_IDX_BLACK + piece.first] |= piece.second;
+    }
+
+    EXPECT_THAT(position.DefendersKingIsInCheck(), GetParam().expected_king_safety);
+}
+
+const DefendersKingIsInCheckTestParameter kByBlackRook{BOARD_MASK_BLACK_TURN,
+                                                       {{KING, A1}},
+                                                       {{ROOK, A8}},
+                                                       true,
+                                                       "ByBlackRook"};
+const DefendersKingIsInCheckTestParameter kNotByBlackRook{BOARD_MASK_BLACK_TURN,
+                                                          {{KING, A1}},
+                                                          {{ROOK, B8}},
+                                                          false,
+                                                          "NotByBlackRook"};
+const DefendersKingIsInCheckTestParameter kByWhiteRook{BOARD_MASK_WHITE_TURN,
+                                                       {{ROOK, B6}},
+                                                       {{KING, E6}},
+                                                       true,
+                                                       "ByWhiteRook"};
+const DefendersKingIsInCheckTestParameter kNotByWhiteRook{BOARD_MASK_WHITE_TURN,
+                                                          {{ROOK, B7}},
+                                                          {{KING, E6}},
+                                                          false,
+                                                          "NotByWhiteRook"};
+const DefendersKingIsInCheckTestParameter kByBlackBishop{BOARD_MASK_BLACK_TURN,
+                                                         {{KING, H8}},
+                                                         {{BISHOP, B2}},
+                                                         true,
+                                                         "ByBlackBishop"};
+const DefendersKingIsInCheckTestParameter kNotByBlackBishop{BOARD_MASK_BLACK_TURN,
+                                                            {{KING, H8}},
+                                                            {{BISHOP, C2}},
+                                                            false,
+                                                            "NotByBlackBishop"};
+const DefendersKingIsInCheckTestParameter kByWhiteBishop{BOARD_MASK_WHITE_TURN,
+                                                         {{BISHOP, A7}},
+                                                         {{KING, G1}},
+                                                         true,
+                                                         "ByWhiteBishop"};
+const DefendersKingIsInCheckTestParameter kNotByWhiteBishop{BOARD_MASK_WHITE_TURN,
+                                                            {{BISHOP, A8}},
+                                                            {{KING, G1}},
+                                                            false,
+                                                            "NotByWhiteBishop"};
+const DefendersKingIsInCheckTestParameter kPinnedPawn{BOARD_MASK_WHITE_TURN,
+                                                      {{BISHOP, A7}},
+                                                      {{KING, G1}, {PAWN, F2}},
+                                                      false,
+                                                      "PinnedPawn"};
+const DefendersKingIsInCheckTestParameter kByBlackKnight{BOARD_MASK_BLACK_TURN,
+                                                         {{KING, F4}},
+                                                         {{KNIGHT, H5}},
+                                                         true,
+                                                         "ByBlackKnight"};
+const DefendersKingIsInCheckTestParameter kNotByBlackKnight{BOARD_MASK_BLACK_TURN,
+                                                            {{KING, F5}},
+                                                            {{KNIGHT, H5}},
+                                                            false,
+                                                            "NotByBlackKnight"};
+const DefendersKingIsInCheckTestParameter kByWhiteKnight{BOARD_MASK_WHITE_TURN,
+                                                         {{KNIGHT, C3}},
+                                                         {{KING, D5}},
+                                                         true,
+                                                         "ByWhiteKnight"};
+const DefendersKingIsInCheckTestParameter kNotByWhiteKnight{BOARD_MASK_WHITE_TURN,
+                                                            {{KNIGHT, C3}},
+                                                            {{KING, D6}},
+                                                            false,
+                                                            "NotByWhiteKnight"};
+const DefendersKingIsInCheckTestParameter kByWhitePawn1{BOARD_MASK_WHITE_TURN,
+                                                        {{PAWN, C3}},
+                                                        {{KING, D4}},
+                                                        true,
+                                                        "ByWhitePawn1"};
+const DefendersKingIsInCheckTestParameter kByWhitePawn2{BOARD_MASK_WHITE_TURN,
+                                                        {{PAWN, E3}},
+                                                        {{KING, D4}},
+                                                        true,
+                                                        "ByWhitePawn2"};
+const DefendersKingIsInCheckTestParameter kNotByWhitePawn{BOARD_MASK_WHITE_TURN,
+                                                          {{PAWN, D3}},
+                                                          {{KING, D4}},
+                                                          false,
+                                                          "NotByWhitePawn"};
+const DefendersKingIsInCheckTestParameter kByBlackPawn1{BOARD_MASK_BLACK_TURN,
+                                                        {{KING, D4}},
+                                                        {{PAWN, C5}},
+                                                        true,
+                                                        "ByBlackPawn1"};
+const DefendersKingIsInCheckTestParameter kByBlackPawn2{BOARD_MASK_BLACK_TURN,
+                                                        {{KING, D4}},
+                                                        {{PAWN, E5}},
+                                                        true,
+                                                        "ByBlackPawn2"};
+const DefendersKingIsInCheckTestParameter kNotByBlackPawn{BOARD_MASK_BLACK_TURN,
+                                                          {{KING, D4}},
+                                                          {{PAWN, D5}},
+                                                          false,
+                                                          "NotByBlackPawn"};
+
+INSTANTIATE_TEST_SUITE_P(AllAttackingAngles,
+                         DefendersKingIsInCheckTestFixture,
+                         ::testing::Values(kByBlackRook,
+                                           kNotByBlackRook,
+                                           kByWhiteRook,
+                                           kNotByWhiteRook,
+                                           kByBlackBishop,
+                                           kNotByBlackBishop,
+                                           kByWhiteBishop,
+                                           kNotByWhiteBishop,
+                                           kByBlackKnight,
+                                           kNotByBlackKnight,
+                                           kByWhiteKnight,
+                                           kNotByWhiteKnight,
+                                           kByWhitePawn1,
+                                           kByWhitePawn2,
+                                           kNotByWhitePawn,
+                                           kByBlackPawn1,
+                                           kByBlackPawn2,
+                                           kNotByBlackPawn),
+                         [](const auto& info) { return info.param.description; });
+
 }  // namespace
 }  // namespace Chess
