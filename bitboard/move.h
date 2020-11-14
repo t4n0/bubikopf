@@ -2,9 +2,12 @@
 #define BITBOARD_MOVE_H
 
 #include "bitboard/basic_type_declarations.h"
+#include "bitboard/pieces.h"
+#include "bitboard/squares.h"
 
 #include <limits>
 #include <array>
+#include <sstream>
 
 namespace Chess
 {
@@ -64,6 +67,35 @@ inline Bitmove ComposeMove(const Bitmove source,
            (captured_piece << MOVE_SHIFT_CAPTURED_PIECE) |  //
            (promotion << MOVE_SHIFT_PROMOTION) |            //
            move_type;
+}
+
+inline std::string ToString(const Bitmove& move)
+{
+    std::stringstream move_print_out{};
+
+    const bool move_is_empty = !move;
+    if (move_is_empty)
+    {
+        return {};
+    }
+
+    const std::size_t source_bit = move & MOVE_MASK_SOURCE;
+    const std::string source = SQUARE_LABEL.at(source_bit);
+    const std::size_t target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
+    const std::string target = SQUARE_LABEL.at(target_bit);
+    const std::size_t moved_piece_kind = (move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE;
+    const std::string moved_piece = PIECE_LABEL.at(moved_piece_kind);
+    const std::size_t captured_piece_kind = (move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE;
+    const std::string captured_piece = PIECE_LABEL.at(captured_piece_kind);
+    const std::size_t promotion_kind = (move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION;
+    const std::string promotion = PIECE_LABEL.at(promotion_kind);
+    const std::size_t move_value_kind = (move & MOVE_MASK_TYPE) >> MOVE_SHIFT_TYPE;
+    const std::string move_value = MOVE_VALUE_LABELS.at(move_value_kind);
+
+    move_print_out << moved_piece << " on " << source << " to " << target << " promoting to " << promotion
+                   << " capturing " << captured_piece << " with move value " << move_value << "\n";
+
+    return move_print_out.str();
 }
 
 }  // namespace Chess
