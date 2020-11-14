@@ -41,8 +41,6 @@ class PositionWithBitboards
 
 bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b);
 
-PositionWithBitboards SetUpStandardStartPosition();
-
 }  // namespace Chess
 
 #endif

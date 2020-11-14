@@ -1,6 +1,7 @@
 #include "search/test/evaluate_mock.h"
 #include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
+#include "bitboard/position_from_fen.h"
 
 #include <gtest/gtest.h>
 
@@ -50,7 +51,7 @@ class MiniMaxTestFixture : public ::testing::TestWithParam<MiniMaxTestParameter>
 TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 {
     // Setup
-    PositionWithBitboards position = SetUpStandardStartPosition();
+    PositionWithBitboards position = PositionFromFen(kStandardStartingPosition);
     MoveList move_list{};
 
     // Call

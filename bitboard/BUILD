@@ -12,12 +12,14 @@ cc_library(
         "pieces.h",
         "position.cpp",
         "position.h",
+        "position_from_fen.cpp",
         "shift.cpp",
         "shift.h",
         "squares.h",
     ],
     hdrs = [
         "move_generation.h",
+        "position_from_fen.h",
     ],
     visibility = [
         "//:__pkg__",
@@ -34,6 +36,7 @@ cc_test(
         "test/move_generation_unit_tests.cpp",
         "test/move_unit_tests.cpp",
         "test/position_unit_tests.cpp",
+        "test/set_up_from_fen_unit_tests.cpp",
         "test/shift_unit_tests.cpp",
         "test/squares_unit_tests.cpp",
     ],
