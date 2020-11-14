@@ -502,6 +502,54 @@ const DefendersKingIsInCheckTestParameter kNotByBlackPawn{BOARD_MASK_BLACK_TURN,
                                                           {{PAWN, D5}},
                                                           false,
                                                           "NotByBlackPawn"};
+const DefendersKingIsInCheckTestParameter kWhiteAfterCastlingKingsidePassThrough{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE,
+    {{KING, G1}, {ROOK, F1}},
+    {{ROOK, F8}},
+    true,
+    "WhiteAfterCastlingKingsidePassThrough"};
+const DefendersKingIsInCheckTestParameter kWhiteAfterCastlingKingsideOriginalSquare{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE,
+    {{KING, G1}, {ROOK, F1}},
+    {{ROOK, E8}},
+    true,
+    "WhiteAfterCastlingKingsideOriginalSquare"};
+const DefendersKingIsInCheckTestParameter kWhiteAfterCastlingQueensidePassThrough{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE,
+    {{KING, C1}, {ROOK, D1}},
+    {{ROOK, D8}},
+    true,
+    "WhiteAfterCastlingQueensidePassThrough"};
+const DefendersKingIsInCheckTestParameter kWhiteAfterCastlingQueensideOriginalSquare{
+    BOARD_MASK_BLACK_TURN | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE,
+    {{KING, C1}, {ROOK, D1}},
+    {{ROOK, E8}},
+    true,
+    "WhiteAfterCastlingQueensideOriginalSquare"};
+const DefendersKingIsInCheckTestParameter kBlackAfterCastlingKingsidePassThrough{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE,
+    {{ROOK, F1}},
+    {{KING, G8}, {ROOK, F8}},
+    true,
+    "BlackAfterCastlingKingsidePassThrough"};
+const DefendersKingIsInCheckTestParameter kBlackAfterCastlingKingsideOriginalSquare{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE,
+    {{ROOK, E1}},
+    {{KING, G8}, {ROOK, F8}},
+    true,
+    "BlackAfterCastlingKingsideOriginalSquare"};
+const DefendersKingIsInCheckTestParameter kBlackAfterCastlingQueensidePassThrough{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE,
+    {{ROOK, D1}},
+    {{KING, C8}, {ROOK, D8}},
+    true,
+    "BlackAfterCastlingQueensidePassThrough"};
+const DefendersKingIsInCheckTestParameter kBlackAfterCastlingQueensideOriginalSquare{
+    BOARD_MASK_WHITE_TURN | BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE,
+    {{ROOK, E1}},
+    {{KING, C8}, {ROOK, D8}},
+    true,
+    "BlackAfterCastlingQueensideOriginalSquare"};
 
 INSTANTIATE_TEST_SUITE_P(AllAttackingAngles,
                          DefendersKingIsInCheckTestFixture,
@@ -522,7 +570,15 @@ INSTANTIATE_TEST_SUITE_P(AllAttackingAngles,
                                            kNotByWhitePawn,
                                            kByBlackPawn1,
                                            kByBlackPawn2,
-                                           kNotByBlackPawn),
+                                           kNotByBlackPawn,
+                                           kWhiteAfterCastlingKingsidePassThrough,
+                                           kWhiteAfterCastlingKingsideOriginalSquare,
+                                           kWhiteAfterCastlingQueensidePassThrough,
+                                           kWhiteAfterCastlingQueensideOriginalSquare,
+                                           kBlackAfterCastlingKingsidePassThrough,
+                                           kBlackAfterCastlingKingsideOriginalSquare,
+                                           kBlackAfterCastlingQueensidePassThrough,
+                                           kBlackAfterCastlingQueensideOriginalSquare),
                          [](const auto& info) { return info.param.description; });
 
 }  // namespace
