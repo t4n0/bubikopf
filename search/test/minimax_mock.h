@@ -29,40 +29,40 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
     const MoveList::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
 
-    const bool game_is_over = end_iterator_before_move_generation == end_iterator_after_move_generation;
-
-    if (game_is_over)
-    {
-        return position.WhiteToMove() ? MIN_EVAL : MAX_EVAL;
-    }
-
     if (position.WhiteToMove())
     {
         Evaluation max_eval{MIN_EVAL};
-        for (MoveList::iterator child_move_iterator = end_iterator_before_move_generation;
-             child_move_iterator != end_iterator_after_move_generation;
-             child_move_iterator++)
+        for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
+             move_iterator != end_iterator_after_move_generation;
+             move_iterator++)
         {
-            position.MakeMove(*child_move_iterator);
-            Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
-                depth - 1, position, end_iterator_after_move_generation);
-            max_eval = eval > max_eval ? eval : max_eval;
-            position.UnmakeMove(*child_move_iterator);
+            position.MakeMove(*move_iterator);
+            if (!position.DefendersKingIsInCheck())
+            {
+                Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
+                    depth - 1, position, end_iterator_after_move_generation);
+                max_eval = eval > max_eval ? eval : max_eval;
+            }
+            position.UnmakeMove(*move_iterator);
         }
         return max_eval;
     }
     else
     {
         Evaluation min_eval{MAX_EVAL};
-        for (MoveList::iterator child_move_iterator = end_iterator_before_move_generation;
-             child_move_iterator != end_iterator_after_move_generation;
-             child_move_iterator++)
+        for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
+             move_iterator != end_iterator_after_move_generation;
+             move_iterator++)
         {
-            position.MakeMove(*child_move_iterator);
-            Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
-                depth - 1, position, end_iterator_after_move_generation);
-            min_eval = eval < min_eval ? eval : min_eval;
-            position.UnmakeMove(*child_move_iterator);
+            position.MakeMove(*move_iterator);
+            if (!position.DefendersKingIsInCheck())
+            {
+                Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior>(
+                    depth - 1, position, end_iterator_after_move_generation);
+                min_eval = eval < min_eval ? eval : min_eval;
+            }
+
+            position.UnmakeMove(*move_iterator);
         }
         return min_eval;
     }
