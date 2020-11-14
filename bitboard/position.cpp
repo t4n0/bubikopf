@@ -347,6 +347,10 @@ bool PositionWithBitboards::DefendersKingIsInCheck() const
                     {
                         return true;
                     }
+                    else
+                    {
+                        break;  // this direction is safe
+                    }
                 }
 
                 attacker_location = SingleStep(attacker_location, direction);  // next iteration
