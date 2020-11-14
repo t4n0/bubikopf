@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
 cc_library(
     name = "search",
@@ -39,4 +39,14 @@ cc_test(
         ":search",
         "@googletest//:gtest_main",
     ],
+)
+
+cc_binary(
+    name = "perft",
+    srcs = [
+        "test/evaluate_mock.h",
+        "test/minimax_mock.h",
+        "test/perft.cpp",
+    ],
+    deps = [":search"],
 )
