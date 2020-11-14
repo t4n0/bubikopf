@@ -33,6 +33,8 @@ class PositionWithBitboards
     Bitboard operator[](const std::size_t index) const;
 
     std::array<Bitboard, 17> boards_{};
+
+    // ToDo: Move this to MoveList type
     std::array<Bitboard, 40> extras_history_{};
     std::size_t extras_history_insertion_index_{0};
 };
