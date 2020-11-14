@@ -62,7 +62,6 @@ TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 
     // Expect
     EXPECT_EQ(GetParam().expected_number_of_nodes, EvaluteToZeroAndCount::number_of_evaluations) << ToString(move_list);
-    std::cout << "Nodes evaluated = " << EvaluteToZeroAndCount::number_of_evaluations << std::endl;
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 }
@@ -71,14 +70,14 @@ TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 constexpr MiniMaxTestParameter ply1{1, 20};
 constexpr MiniMaxTestParameter ply2{2, 400};
 constexpr MiniMaxTestParameter ply3{3, 8902};
-constexpr MiniMaxTestParameter ply4{4, 197281};  // castling missing, also checks
+constexpr MiniMaxTestParameter ply4{4, 197281};
 constexpr MiniMaxTestParameter ply5{5, 4865609};
 constexpr MiniMaxTestParameter ply6{6, 119060324};
 constexpr MiniMaxTestParameter ply7{7, 3195901860};
 constexpr MiniMaxTestParameter ply8{8, 84998978956};
 constexpr MiniMaxTestParameter ply9{9, 2439530234167};
 
-INSTANTIATE_TEST_SUITE_P(FromStartPosition, MiniMaxTestFixture, ::testing::Values(ply3));
+INSTANTIATE_TEST_SUITE_P(FromStartPosition, MiniMaxTestFixture, ::testing::Values(ply4));
 
 }  // namespace
 }  // namespace Chess
