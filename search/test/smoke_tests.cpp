@@ -38,6 +38,7 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
 struct MiniMaxTestParameter
 {
     int depth;
+    std::string fen;
     long long expected_number_of_nodes;
 };
 
@@ -51,7 +52,7 @@ class MiniMaxTestFixture : public ::testing::TestWithParam<MiniMaxTestParameter>
 TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 {
     // Setup
-    PositionWithBitboards position = PositionFromFen(kStandardStartingPosition);
+    PositionWithBitboards position = PositionFromFen(GetParam().fen);
     MoveList move_list{};
 
     // Call
@@ -67,17 +68,34 @@ TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 }
 
 // Numbers taken from https://www.chessprogramming.org/Perft_Results
-constexpr MiniMaxTestParameter ply1{1, 20};
-constexpr MiniMaxTestParameter ply2{2, 400};
-constexpr MiniMaxTestParameter ply3{3, 8902};
-constexpr MiniMaxTestParameter ply4{4, 197281};
-constexpr MiniMaxTestParameter ply5{5, 4865609};
-constexpr MiniMaxTestParameter ply6{6, 119060324};
-constexpr MiniMaxTestParameter ply7{7, 3195901860};
-constexpr MiniMaxTestParameter ply8{8, 84998978956};
-constexpr MiniMaxTestParameter ply9{9, 2439530234167};
+const char* const pos2_fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+const char* const pos3_fen = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1";
+const char* const pos4_fen = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1";
+const char* const pos5_fen = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
+const char* const pos6_fen = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10";
 
-INSTANTIATE_TEST_SUITE_P(FromStartPosition, MiniMaxTestFixture, ::testing::Values(ply4));
+const MiniMaxTestParameter pos1_ply4{4, kStandardStartingPosition, 197281};
+const MiniMaxTestParameter pos2_ply4{4, pos2_fen, 4085603};
+const MiniMaxTestParameter pos3_ply4{4, pos3_fen, 43238};
+const MiniMaxTestParameter pos4_ply4{4, pos4_fen, 422333};
+const MiniMaxTestParameter pos5_ply4{4, pos5_fen, 2103487};
+const MiniMaxTestParameter pos6_ply4{4, pos6_fen, 3894594};
+
+INSTANTIATE_TEST_SUITE_P(FromPositionDepth4,
+                         MiniMaxTestFixture,
+                         ::testing::Values(pos1_ply4, pos2_ply4, pos3_ply4, pos4_ply4, pos5_ply4, pos6_ply4));
+
+const MiniMaxTestParameter pos1_ply6{6, kStandardStartingPosition, 119060324};
+const MiniMaxTestParameter pos2_ply6{6, pos2_fen, 8031647685};
+const MiniMaxTestParameter pos3_ply6{6, pos3_fen, 11030083};
+const MiniMaxTestParameter pos4_ply6{6, pos4_fen, 706045033};
+const MiniMaxTestParameter pos5_ply5{5, pos5_fen, 89941194};  // numbers for depth 6 not available
+const MiniMaxTestParameter pos6_ply6{6, pos6_fen, 6923051137};
+
+// Disabled by default. Takes <2h.
+// INSTANTIATE_TEST_SUITE_P(FromPositionDepth6,
+//                          MiniMaxTestFixture,
+//                          ::testing::Values(pos1_ply6, pos2_ply6, pos3_ply6, pos4_ply6, pos5_ply5, pos6_ply6));
 
 }  // namespace
 }  // namespace Chess
