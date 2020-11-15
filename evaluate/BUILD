@@ -4,7 +4,6 @@ cc_library(
     name = "evaluate",
     hdrs = ["evaluate.h"],
     visibility = [
-        "//:__pkg__",
         "//play:__pkg__",
         "//search:__pkg__",
     ],

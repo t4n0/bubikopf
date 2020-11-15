@@ -16,7 +16,6 @@ cc_library(
         "position.h",
     ],
     visibility = [
-        "//:__pkg__",
         "//evaluate:__pkg__",
         "//play:__pkg__",
         "//search:__pkg__",
@@ -33,7 +32,6 @@ cc_test(
         "test/position_unit_tests.cpp",
     ],
     visibility = [
-        "//:__pkg__",
     ],
     deps = [
         ":board",

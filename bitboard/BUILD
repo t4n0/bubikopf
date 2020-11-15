@@ -22,7 +22,6 @@ cc_library(
         "position_from_fen.h",
     ],
     visibility = [
-        "//:__pkg__",
         "//evaluate:__pkg__",
         "//search:__pkg__",
     ],

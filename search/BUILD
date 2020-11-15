@@ -12,7 +12,6 @@ cc_library(
         "populate.h",
     ],
     visibility = [
-        "//:__pkg__",
         "//play:__pkg__",
     ],
     deps = [
