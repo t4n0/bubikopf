@@ -5,7 +5,7 @@ cc_library(
     hdrs = ["evaluate.h"],
     visibility = [
         "//play:__pkg__",
-        "//search:__pkg__",
+        "//search:__subpackages__",
     ],
     deps = [
         "//bitboard",

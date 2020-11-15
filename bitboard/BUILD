@@ -23,7 +23,7 @@ cc_library(
     ],
     visibility = [
         "//evaluate:__pkg__",
-        "//search:__pkg__",
+        "//search:__subpackages__",
     ],
     deps = ["//hardware"],
 )

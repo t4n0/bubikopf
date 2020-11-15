@@ -18,7 +18,7 @@ cc_library(
     visibility = [
         "//evaluate:__pkg__",
         "//play:__pkg__",
-        "//search:__pkg__",
+        "//search:__subpackages__",
     ],
 )
 
