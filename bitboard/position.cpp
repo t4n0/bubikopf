@@ -55,6 +55,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
     const std::size_t attacking_piece = (move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE;
     const std::size_t attacking_piece_index = attacking_side + attacking_piece;
+    const std::size_t captured_piece_kind = (move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE;
 
     const Bitboard source = BOARD_ONE << (move & MOVE_MASK_SOURCE);
     const Bitboard target = BOARD_ONE << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
@@ -71,6 +72,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     const bool someone_can_still_castle = current_extras & BOARD_MASK_CASTLING;
     if (someone_can_still_castle)
     {
+        // revoke castling right due to moving own pieces
         const bool is_king_move = attacking_piece == KING;
         if (is_king_move)
         {
@@ -108,6 +110,27 @@ void PositionWithBitboards::MakeMove(Bitmove move)
                 {
                     boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
                 }
+            }
+        }
+
+        // take enemies castling rights due to capture of a rook
+        const bool rook_is_captured = captured_piece_kind == ROOK;
+        if (rook_is_captured)
+        {
+            switch (target)
+            {
+                case A1:
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_WHITE_QUEENSIDE;
+                    break;
+                case H1:
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
+                    break;
+                case A8:
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+                    break;
+                case H8:
+                    boards_[BOARD_IDX_EXTRAS] &= ~BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
+                    break;
             }
         }
     }

@@ -352,6 +352,62 @@ const MakeUnmakeMoveTestParameter kBlackQueenRookMoveLosesCastling{
      {BOARD_IDX_BLACK + ROOK, A3}},
     "BlackQueenRookMoveLosesCastling",
 };
+const MakeUnmakeMoveTestParameter kWhiteKingRookCapturedLosesCastling{
+    {{BOARD_IDX_EXTRAS, 17 | BOARD_MASK_BLACK_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_WHITE, H1},
+     {BOARD_IDX_WHITE + ROOK, H1},
+     {BOARD_IDX_BLACK, H8},
+     {BOARD_IDX_BLACK + QUEEN, H8}},
+    {ComposeMove(tzcnt(H8), tzcnt(H1), QUEEN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)},
+    {{BOARD_IDX_EXTRAS,
+      0 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE | BOARD_VALUE_CASTLING_BLACK_KINGSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_BLACK, H1},
+     {BOARD_IDX_BLACK + QUEEN, H1}},
+    "KingRookCapturedLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kWhiteQueenRookCapturedLosesCastling{
+    {{BOARD_IDX_EXTRAS, 17 | BOARD_MASK_BLACK_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_WHITE, A1},
+     {BOARD_IDX_WHITE + ROOK, A1},
+     {BOARD_IDX_BLACK, A8},
+     {BOARD_IDX_BLACK + QUEEN, A8}},
+    {ComposeMove(tzcnt(A8), tzcnt(A1), QUEEN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)},
+    {{BOARD_IDX_EXTRAS,
+      0 | BOARD_MASK_WHITE_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_BLACK_KINGSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_BLACK, A1},
+     {BOARD_IDX_BLACK + QUEEN, A1}},
+    "WhiteQueenRookCapturedLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kBlackKingRookCapturedLosesCastling{
+    {{BOARD_IDX_EXTRAS, 17 | BOARD_MASK_WHITE_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_BLACK, A8},
+     {BOARD_IDX_BLACK + ROOK, A8},
+     {BOARD_IDX_WHITE, A1},
+     {BOARD_IDX_WHITE + QUEEN, A1}},
+    {ComposeMove(tzcnt(A1), tzcnt(A8), QUEEN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)},
+    {{BOARD_IDX_EXTRAS,
+      0 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE |
+          BOARD_VALUE_CASTLING_BLACK_KINGSIDE},
+     {BOARD_IDX_WHITE, A8},
+     {BOARD_IDX_WHITE + QUEEN, A8}},
+    "BlackKingRookCapturedLosesCastling",
+};
+const MakeUnmakeMoveTestParameter kBlackQueenRookCapturedLosesCastling{
+    {{BOARD_IDX_EXTRAS, 17 | BOARD_MASK_WHITE_TURN | BOARD_MASK_CASTLING},
+     {BOARD_IDX_BLACK, H8},
+     {BOARD_IDX_BLACK + ROOK, H8},
+     {BOARD_IDX_WHITE, H1},
+     {BOARD_IDX_WHITE + QUEEN, H1}},
+    {ComposeMove(tzcnt(H1), tzcnt(H8), QUEEN, ROOK, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE)},
+    {{BOARD_IDX_EXTRAS,
+      0 | BOARD_MASK_BLACK_TURN | BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE |
+          BOARD_VALUE_CASTLING_BLACK_QUEENSIDE},
+     {BOARD_IDX_WHITE, H8},
+     {BOARD_IDX_WHITE + QUEEN, H8}},
+    "BlackQueenRookCapturedLosesCastling",
+};
 
 INSTANTIATE_TEST_SUITE_P(AllMoves,
                          MakeUnmakeMoveTestFixture,
@@ -373,7 +429,11 @@ INSTANTIATE_TEST_SUITE_P(AllMoves,
                                            kWhiteKingRookMoveLosesCastling,
                                            kWhiteQueenRookMoveLosesCastling,
                                            kBlackKingRookMoveLosesCastling,
-                                           kBlackQueenRookMoveLosesCastling),
+                                           kBlackQueenRookMoveLosesCastling,
+                                           kWhiteKingRookCapturedLosesCastling,
+                                           kWhiteQueenRookCapturedLosesCastling,
+                                           kBlackKingRookCapturedLosesCastling,
+                                           kBlackQueenRookCapturedLosesCastling),
                          [](const auto& info) { return info.param.description; });
 
 struct DefendersKingIsInCheckTestParameter
