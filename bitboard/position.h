@@ -15,7 +15,7 @@ class PositionWithBitboards
 {
   public:
     PositionWithBitboards() {}
-    PositionWithBitboards(const std::array<Bitboard, 17>& boards) : boards_(boards) {}
+    PositionWithBitboards(const std::array<Bitboard, 15>& boards) : boards_(boards) {}
 
     void MakeMove(Bitmove move);
     void UnmakeMove(Bitmove move);
@@ -32,7 +32,7 @@ class PositionWithBitboards
     Bitboard& operator[](const std::size_t index);
     Bitboard operator[](const std::size_t index) const;
 
-    std::array<Bitboard, 17> boards_{};
+    std::array<Bitboard, 15> boards_{};
 
     // ToDo: Move this to MoveList type
     std::array<Bitboard, 40> extras_history_{};

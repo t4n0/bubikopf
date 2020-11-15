@@ -15,8 +15,7 @@ constexpr Bitboard BOARD_ONES = std::numeric_limits<Bitboard>::max();
 
 constexpr std::size_t BOARD_IDX_EXTRAS = 0;
 constexpr std::size_t BOARD_IDX_BLACK = 1;
-constexpr std::size_t BOARD_IDX_WHITE = 9;
-constexpr std::size_t BOARD_IDX_ATTACK = 7;
+constexpr std::size_t BOARD_IDX_WHITE = 8;
 constexpr std::size_t BOARD_IDX_BLACK_WHITE_SUM = BOARD_IDX_BLACK + BOARD_IDX_WHITE;
 constexpr std::size_t BOARD_IDX_BLACK_WHITE_DIFF = BOARD_IDX_WHITE - BOARD_IDX_BLACK;
 

@@ -24,15 +24,13 @@ TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumb
     unit.boards_[BOARD_IDX_BLACK + ROOK] = 6;
     unit.boards_[BOARD_IDX_BLACK + QUEEN] = 7;
     unit.boards_[BOARD_IDX_BLACK + KING] = 8;
-    unit.boards_[BOARD_IDX_BLACK + BOARD_IDX_ATTACK] = 9;
-    unit.boards_[BOARD_IDX_WHITE] = 10;
-    unit.boards_[BOARD_IDX_WHITE + PAWN] = 11;
-    unit.boards_[BOARD_IDX_WHITE + KNIGHT] = 12;
-    unit.boards_[BOARD_IDX_WHITE + BISHOP] = 13;
-    unit.boards_[BOARD_IDX_WHITE + ROOK] = 14;
-    unit.boards_[BOARD_IDX_WHITE + QUEEN] = 15;
-    unit.boards_[BOARD_IDX_WHITE + KING] = 16;
-    unit.boards_[BOARD_IDX_WHITE + BOARD_IDX_ATTACK] = 17;
+    unit.boards_[BOARD_IDX_WHITE] = 9;
+    unit.boards_[BOARD_IDX_WHITE + PAWN] = 10;
+    unit.boards_[BOARD_IDX_WHITE + KNIGHT] = 11;
+    unit.boards_[BOARD_IDX_WHITE + BISHOP] = 12;
+    unit.boards_[BOARD_IDX_WHITE + ROOK] = 13;
+    unit.boards_[BOARD_IDX_WHITE + QUEEN] = 14;
+    unit.boards_[BOARD_IDX_WHITE + KING] = 15;
 
     Bitboard expected_unique_number = 1;
     for (Bitboard board : unit.boards_)
@@ -114,8 +112,8 @@ TEST_P(MakeUnmakeMoveTestFixture, GivenMove_ExpectPosteriorAfterMakeAndPriorAfte
 {
     // Setup
     PositionWithBitboards position{};
-    std::array<::testing::Matcher<Bitboard>, 17> expected_position_posterior{
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    std::array<::testing::Matcher<Bitboard>, 15> expected_position_posterior{
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
     for (const auto& setter : GetParam().prior_setup)
     {
