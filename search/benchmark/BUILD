@@ -10,3 +10,15 @@ cc_binary(
         "//search/test:mock",
     ],
 )
+
+cc_binary(
+    name = "benchmark",
+    srcs = [
+        "benchmark.cpp",
+    ],
+    deps = [
+        "//bitboard",
+        "//search/test:mock",
+        "@googlebenchmark//:benchmark",
+    ],
+)
