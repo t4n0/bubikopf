@@ -158,6 +158,4 @@ PositionWithBitboards PositionFromFen(const std::string& fen)
     return position;
 }
 
-const char* const kFenStartingPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
 }  // namespace Chess
