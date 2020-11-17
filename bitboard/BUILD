@@ -8,7 +8,7 @@ cc_library(
         "move.h",
         "move_generation.h",
         "move_list.h",
-        "move_lookup_table.h",
+        "pawn_lookup_table.h",
         "pieces.h",
         "position.cpp",
         "position.h",

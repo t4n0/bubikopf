@@ -1,5 +1,5 @@
-#ifndef BITBOARD_MOVE_LOOKUP_TABLE_H
-#define BITBOARD_MOVE_LOOKUP_TABLE_H
+#ifndef BITBOARD_PAWN_LOOKUP_TABLE_H
+#define BITBOARD_PAWN_LOOKUP_TABLE_H
 
 #include "bitboard/basic_type_declarations.h"
 #include "bitboard/squares.h"

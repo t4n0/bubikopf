@@ -1,7 +1,7 @@
 #ifndef BITBOARD_MOVE_GENERATION_H
 #define BITBOARD_MOVE_GENERATION_H
 
-#include "bitboard/move_lookup_table.h"
+#include "bitboard/pawn_lookup_table.h"
 #include "bitboard/position.h"
 #include "bitboard/squares.h"
 #include "bitboard/shift.h"
