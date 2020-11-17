@@ -7,7 +7,6 @@ cc_test(
         "evaluation_unit_tests.cpp",
         "player_unit_tests.cpp",
     ],
-    visibility = ["//:__pkg__"],
     deps = [
         "//evaluate",
         "@googletest//:gtest_main",

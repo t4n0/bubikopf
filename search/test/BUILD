@@ -18,7 +18,6 @@ cc_test(
     srcs = [
         "smoke_tests.cpp",
     ],
-    visibility = ["//:__pkg__"],
     deps = [
         ":mock",
         "@googletest//:gtest_main",

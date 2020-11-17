@@ -40,7 +40,6 @@ cc_test(
         "test/shift_unit_tests.cpp",
         "test/squares_unit_tests.cpp",
     ],
-    visibility = ["//:__pkg__"],
     deps = [
         ":bitboard",
         "@googletest//:gtest",
