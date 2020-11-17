@@ -343,7 +343,8 @@ constexpr std::array<std::size_t, 8>
 
 bool PositionWithBitboards::DefendersKingIsInCheck() const
 {
-    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * WhiteToMove();
+    const bool white_to_move = WhiteToMove();
+    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move;
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
 
     const auto square_is_under_attack = [&](const Bitboard square) {
@@ -382,27 +383,20 @@ bool PositionWithBitboards::DefendersKingIsInCheck() const
             }
         }
 
+        const int square_bit = tzcnt(square);
+
         // check for knight attacks
-        const bool knight_is_giving_check = knight_jumps[tzcnt(square)] & boards_[attacking_side + KNIGHT];
+        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + KNIGHT];
         if (knight_is_giving_check)
         {
             return true;
         }
 
-        // TODO: Merge with ray style attacks above
-        // check for pawn attacks
-        constexpr std::array<std::size_t, 2> pawn_attack_angles_for_black_king{south_east, south_west};
-        constexpr std::array<std::size_t, 2> pawn_attack_angles_for_white_king{north_east, north_west};
-        const auto& attack_directions =
-            WhiteToMove() ? pawn_attack_angles_for_black_king : pawn_attack_angles_for_white_king;
-        for (const auto pawn_attack_direction : attack_directions)
+        const bool pawn_is_giving_check =
+            pawn_attacks[square_bit + (white_to_move * pawn_attacks_offset_for_white)] & boards_[attacking_side + PAWN];
+        if (pawn_is_giving_check)
         {
-            const Bitboard attacker_location = SingleStep(square, pawn_attack_direction);
-            const bool attacker_location_is_occupied_by_enemy_pawn = attacker_location & boards_[attacking_side + PAWN];
-            if (attacker_location_is_occupied_by_enemy_pawn)
-            {
-                return true;
-            }
+            return true;
         }
 
         return false;

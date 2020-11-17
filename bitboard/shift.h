@@ -2,21 +2,12 @@
 #define BITBOARD_SHIFT_H
 
 #include "bitboard/basic_type_declarations.h"
+#include "bitboard/lookup_table/pawn.h"
 
 #include <array>
 
 namespace Chess
 {
-
-/// @brief Indizes to acces different aspects of a single piece step (except knights).
-constexpr std::size_t west = 0;
-constexpr std::size_t north_west = 1;
-constexpr std::size_t north = 2;
-constexpr std::size_t north_east = 3;
-constexpr std::size_t east = 4;
-constexpr std::size_t south_east = 5;
-constexpr std::size_t south = 6;
-constexpr std::size_t south_west = 7;
 
 constexpr std::array<std::size_t, 8>
     all_directions{west, north_west, north, north_east, east, south_east, south, south_west};
