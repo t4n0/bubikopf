@@ -14,7 +14,7 @@ cc_library(
 )
 
 cc_test(
-    name = "unit_tests",
+    name = "test",
     srcs = [
         "smoke_tests.cpp",
     ],

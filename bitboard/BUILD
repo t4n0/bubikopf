@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "bitboard",
@@ -22,27 +22,6 @@ cc_library(
         "move_generation.h",
         "position_from_fen.h",
     ],
-    visibility = [
-        "//evaluate:__pkg__",
-        "//search:__subpackages__",
-    ],
+    visibility = ["//visibility:public"],
     deps = ["//hardware"],
-)
-
-cc_test(
-    name = "unit_tests",
-    srcs = [
-        "test/board_unit_tests.cpp",
-        "test/move_generation_unit_tests.cpp",
-        "test/move_unit_tests.cpp",
-        "test/position_unit_tests.cpp",
-        "test/set_up_from_fen_unit_tests.cpp",
-        "test/shift_unit_tests.cpp",
-        "test/squares_unit_tests.cpp",
-    ],
-    deps = [
-        ":bitboard",
-        "@googletest//:gtest",
-        "@googletest//:gtest_main",
-    ],
 )

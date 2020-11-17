@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "hardware",
@@ -7,14 +7,4 @@ cc_library(
         "trailing_zeros_count.h",
     ],
     visibility = ["//visibility:public"],
-)
-
-cc_test(
-    name = "unit_tests",
-    srcs = ["test/trailing_zeros_count_unit_tests.cpp"],
-    deps = [
-        ":hardware",
-        "@googletest//:gtest",
-        "@googletest//:gtest_main",
-    ],
 )
