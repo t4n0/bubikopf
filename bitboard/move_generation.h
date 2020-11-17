@@ -1,17 +1,17 @@
 #ifndef BITBOARD_MOVE_GENERATION_H
 #define BITBOARD_MOVE_GENERATION_H
 
-#include "bitboard/pawn_lookup_table.h"
-#include "bitboard/position.h"
-#include "bitboard/squares.h"
-#include "bitboard/shift.h"
+#include "bitboard/lookup_table/knight.h"
+#include "bitboard/lookup_table/pawn.h"
 #include "bitboard/move_list.h"
-#include "bitboard/knight_lookup_table.h"
+#include "bitboard/position.h"
+#include "bitboard/shift.h"
+#include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
 #include <array>
-#include <type_traits>
 #include <functional>
+#include <type_traits>
 
 namespace Chess
 {

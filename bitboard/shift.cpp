@@ -1,6 +1,6 @@
 #include "bitboard/shift.h"
 
-#include "bitboard/knight_lookup_table.h"
+#include "bitboard/lookup_table/knight.h"
 
 #include <array>
 #include <cmath>

@@ -5,11 +5,9 @@ cc_library(
     srcs = [
         "basic_type_declarations.h",
         "board.h",
-        "knight_lookup_table.h",
         "move.h",
         "move_generation.h",
         "move_list.h",
-        "pawn_lookup_table.h",
         "pieces.h",
         "position.cpp",
         "position.h",
@@ -23,5 +21,8 @@ cc_library(
         "position_from_fen.h",
     ],
     visibility = ["//visibility:public"],
-    deps = ["//hardware"],
+    deps = [
+        "//bitboard/lookup_table",
+        "//hardware",
+    ],
 )

@@ -1,7 +1,8 @@
-#ifndef BITBOARD_KNIGHT_LOOKUP_TABLE_H
-#define BITBOARD_KNIGHT_LOOKUP_TABLE_H
+#ifndef BITBOARD_LOOKUP_TABLE_KNIGHT_H
+#define BITBOARD_LOOKUP_TABLE_KNIGHT_H
 
 #include "bitboard/basic_type_declarations.h"
+#include "bitboard/lookup_table/utilities.h"
 #include "bitboard/squares.h"
 
 #include <array>
@@ -11,7 +12,8 @@ namespace Chess
 
 /// @brief Indizes to acces various aspects of a knight jump
 ///
-/// north_west means two steps north, one step west. In contrast west_north means two steps west and one step north.
+/// north_west means two steps north, one step west. In contrast west_north
+/// means two steps west and one step north.
 constexpr std::size_t knight_north_west = 0;
 constexpr std::size_t knight_north_east = 1;
 constexpr std::size_t knight_east_north = 2;
@@ -30,11 +32,13 @@ constexpr std::array<std::size_t, 8> knight_directions{knight_north_west,
                                                        knight_west_south,
                                                        knight_west_north};
 
-// Values provide the necessary bitshift for respective knight jump. E.g. jump_bits.at(knight_west_north).
+// Values provide the necessary bitshift for respective knight jump. E.g.
+// jump_bits.at(knight_west_north).
 constexpr std::array<int, 8> jump_bits{17, 15, 6, -10, -17, -15, -6, 10};
 
-// Values priovdes a bitboard specifying the legal landing area after a jump. (Used to null illegal moves that wrap
-// around the board). E.g. legal_jump_areas_without_wrapping.at(knight_west_north).
+// Values priovdes a bitboard specifying the legal landing area after a jump.
+// (Used to null illegal moves that wrap around the board). E.g.
+// legal_jump_areas_without_wrapping.at(knight_west_north).
 constexpr std::array<Bitboard, 8> legal_landing_areas_without_wrapping{~(RANK_1 | RANK_2 | FILE_H),
                                                                        ~(RANK_1 | RANK_2 | FILE_A),
                                                                        ~(FILE_A | FILE_B | RANK_1),
@@ -44,21 +48,8 @@ constexpr std::array<Bitboard, 8> legal_landing_areas_without_wrapping{~(RANK_1 
                                                                        ~(FILE_H | FILE_G | RANK_8),
                                                                        ~(FILE_H | FILE_G | RANK_1)};
 
-/// @brief Calculates absolute value of input
-template <int positive_or_negative>
-struct Absolute
-{
-    constexpr static int value = positive_or_negative < 0 ? -positive_or_negative : positive_or_negative;
-};
-
-/// @brief Converts input source_bit to a bitboard
-template <int source_bit>
-struct ToBitboard
-{
-    constexpr static Bitboard value = Bitboard{1} << source_bit;
-};
-
-/// @brief Creates a bitboard from source_bit, shifts it in direction and NULLs the board if "wrap around" occurs.
+/// @brief Creates a bitboard from source_bit, shifts it in direction and NULLs
+/// the board if "wrap around" occurs.
 /// @pre Assumes that only a single bit is set
 template <int source_bit, std::size_t direction>
 struct KnightJump
@@ -83,8 +74,9 @@ struct KnightJumps<source_bit, 8>
     constexpr static Bitboard value = 0;
 };
 
-/// @brief When accessing this lookup table with the source bit as index (e.g. 0 is H1 , 7 is A1, etc.) a bitboard is
-/// returned with all possible landing squares for a knight jump
+/// @brief When accessing this lookup table with the source bit as index (e.g. 0
+/// is H1 , 7 is A1, etc.) a bitboard is returned with all possible landing
+/// squares for a knight jump
 constexpr std::array<Bitboard, 64> knight_jumps{
     KnightJumps<0>::value,  KnightJumps<1>::value,  KnightJumps<2>::value,  KnightJumps<3>::value,
     KnightJumps<4>::value,  KnightJumps<5>::value,  KnightJumps<6>::value,  KnightJumps<7>::value,

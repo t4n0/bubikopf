@@ -1,4 +1,4 @@
-#include "bitboard/knight_lookup_table.h"
+#include "bitboard/lookup_table/knight.h"
 #include "bitboard/shift.h"
 #include "bitboard/squares.h"
 
