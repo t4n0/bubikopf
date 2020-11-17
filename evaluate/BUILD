@@ -1,25 +1,15 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "evaluate",
-    hdrs = ["evaluate.h"],
-    visibility = [
-        "//play:__pkg__",
-        "//search:__subpackages__",
+    hdrs = [
+        "evaluate.h",
+        "evaluation.h",
+        "player.h",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//bitboard",
-        "//board",
         "//hardware",
-    ],
-)
-
-cc_test(
-    name = "unit_tests",
-    srcs = ["test/evaluate_unit_tests.cpp"],
-    visibility = ["//:__pkg__"],
-    deps = [
-        ":evaluate",
-        "@googletest//:gtest_main",
     ],
 )

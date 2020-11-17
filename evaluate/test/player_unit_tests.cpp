@@ -1,4 +1,4 @@
-#include "board/player.h"
+#include "evaluate/player.h"
 
 #include <gtest/gtest.h>
 

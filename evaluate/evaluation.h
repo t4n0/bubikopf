@@ -1,7 +1,7 @@
-#ifndef BOARD_EVALUATION_H
-#define BOARD_EVALUATION_H
+#ifndef EVALUATE_EVALUATION_H
+#define EVALUATE_EVALUATION_H
 
-#include "board/player.h"
+#include "evaluate/player.h"
 
 #include <cstdint>
 #include <iostream>

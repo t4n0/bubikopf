@@ -2,7 +2,7 @@
 #define SEACH_TEST_MINIMAX_MOCK_H
 
 #include "bitboard/move_generation.h"
-#include "board/evaluation.h"
+#include "evaluate/evaluation.h"
 #include "search/test/evaluate_mock.h"
 
 #include <type_traits>

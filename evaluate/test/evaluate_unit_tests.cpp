@@ -1,5 +1,5 @@
 #include "evaluate/evaluate.h"
-#include "board/evaluation.h"
+#include "evaluate/evaluation.h"
 
 #include <gtest/gtest.h>
 

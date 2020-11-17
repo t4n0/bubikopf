@@ -1,5 +1,5 @@
-#ifndef BOARD_PLAYER_H
-#define BOARD_PLAYER_H
+#ifndef EVALUATE_PLAYER_H
+#define EVALUATE_PLAYER_H
 
 namespace Chess
 {

@@ -9,7 +9,6 @@ cc_library(
     ],
     visibility = ["//search/benchmark:__pkg__"],
     deps = [
-        "//board",
         "//evaluate",
     ],
 )
