@@ -6,6 +6,7 @@
 #include "bitboard/squares.h"
 #include "bitboard/shift.h"
 #include "bitboard/move_list.h"
+#include "bitboard/knight_lookup_table.h"
 #include "hardware/trailing_zeros_count.h"
 
 #include <array>
@@ -252,9 +253,9 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // knight moves
     const auto generate_knight_move = [&](const Bitmove /*unused*/, const Bitboard source) {
-        for (const auto jump_direction : knight_jumps)
+        for (const auto jump_direction : knight_directions)
         {
-            const Bitboard target = KnightJump(source, jump_direction);
+            const Bitboard target = RuntimeKnightJump(source, jump_direction);
             generate_jump_style_move(source, target, KNIGHT);
         }
     };

@@ -5,6 +5,7 @@ cc_library(
     srcs = [
         "basic_type_declarations.h",
         "board.h",
+        "knight_lookup_table.h",
         "move.h",
         "move_generation.h",
         "move_list.h",

@@ -3,6 +3,8 @@
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
 #include "bitboard/shift.h"
+#include "bitboard/knight_lookup_table.h"
+#include "hardware/trailing_zeros_count.h"
 
 #include <stdexcept>
 
@@ -381,17 +383,10 @@ bool PositionWithBitboards::DefendersKingIsInCheck() const
         }
 
         // check for knight attacks
-        for (const auto knight_jump : knight_jumps)
+        const bool knight_is_giving_check = knight_jumps[tzcnt(square)] & boards_[attacking_side + KNIGHT];
+        if (knight_is_giving_check)
         {
-            const Bitboard attacker_location = KnightJump(square, knight_jump);
-            if (attacker_location)  // is on the board
-            {
-                const bool location_is_occupied_by_enemy_knight = attacker_location & boards_[attacking_side + KNIGHT];
-                if (location_is_occupied_by_enemy_knight)
-                {
-                    return true;
-                }
-            }
+            return true;
         }
 
         // TODO: Merge with ray style attacks above
@@ -423,6 +418,7 @@ bool PositionWithBitboards::DefendersKingIsInCheck() const
                                                                           BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE);
     if (defending_side_just_castled)
     {
+        // pass through square
         const bool defending_side_just_castled_kingside =
             boards_[BOARD_IDX_EXTRAS] & BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE;
         const Bitboard pass_through_square_of_king =
@@ -431,6 +427,8 @@ bool PositionWithBitboards::DefendersKingIsInCheck() const
         {
             return true;
         }
+
+        // previous square
         const Bitboard previous_square_of_king =
             defending_side_just_castled_kingside ? king_location << 2 : king_location >> 2;
         if (square_is_under_attack(previous_square_of_king))

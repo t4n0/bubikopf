@@ -1,6 +1,7 @@
 #include "bitboard/shift.h"
 
 #include "bitboard/squares.h"
+#include "bitboard/knight_lookup_table.h"
 
 #include <gmock/gmock.h>
 
@@ -67,14 +68,14 @@ class KnightJumpTestFixture : public ::testing::TestWithParam<KnightJumpTestPara
 TEST_P(KnightJumpTestFixture, GivenSquare_ExpectOnlyValidTargetsForAllDirections)
 {
     const std::array<Bitboard, 8>& expected_targets = GetParam().expected_targets_per_direction;
-    ASSERT_THAT(KnightJump(GetParam().source, knight_north_west), ::testing::Eq(expected_targets.at(0)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_north_east), ::testing::Eq(expected_targets.at(1)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_east_north), ::testing::Eq(expected_targets.at(2)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_east_south), ::testing::Eq(expected_targets.at(3)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_south_east), ::testing::Eq(expected_targets.at(4)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_south_west), ::testing::Eq(expected_targets.at(5)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_west_south), ::testing::Eq(expected_targets.at(6)));
-    ASSERT_THAT(KnightJump(GetParam().source, knight_west_north), ::testing::Eq(expected_targets.at(7)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_north_west), ::testing::Eq(expected_targets.at(0)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_north_east), ::testing::Eq(expected_targets.at(1)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_east_north), ::testing::Eq(expected_targets.at(2)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_east_south), ::testing::Eq(expected_targets.at(3)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_south_east), ::testing::Eq(expected_targets.at(4)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_south_west), ::testing::Eq(expected_targets.at(5)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_west_south), ::testing::Eq(expected_targets.at(6)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_west_north), ::testing::Eq(expected_targets.at(7)));
 }
 
 const KnightJumpTestParameter B7_jump_in_all_directions{B7, {XX, XX, D8, D6, C5, A5, XX, XX}};
