@@ -2,18 +2,9 @@ load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 cc_library(
     name = "board",
-    srcs = [
-        "board.cpp",
-        "pieces.cpp",
-        "position.cpp",
-    ],
     hdrs = [
-        "board.h",
         "evaluation.h",
-        "i_square.h",
-        "pieces.h",
         "player.h",
-        "position.h",
     ],
     visibility = [
         "//evaluate:__pkg__",
@@ -25,11 +16,8 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
-        "test/board_unit_tests.cpp",
         "test/evaluation_unit_tests.cpp",
-        "test/pieces_unit_tests.cpp",
         "test/player_unit_tests.cpp",
-        "test/position_unit_tests.cpp",
     ],
     visibility = [
     ],

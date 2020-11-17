@@ -17,16 +17,11 @@ cc_library(
 cc_test(
     name = "unit_tests",
     srcs = [
-        "minimax_unit_tests.cpp",
-        "node_unit_tests.cpp",
-        "populate_unit_tests.cpp",
-        "puzzle_tests.cpp",
         "smoke_tests.cpp",
     ],
     visibility = ["//:__pkg__"],
     deps = [
         ":mock",
-        "//search",
         "@googletest//:gtest_main",
     ],
 )
