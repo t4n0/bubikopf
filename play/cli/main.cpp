@@ -76,7 +76,7 @@ int main()
         }
         else
         {
-            throw - 1;
+            throw -1;
         }
     }
 

@@ -1,7 +1,7 @@
-#include "bitboard/position_from_fen.h"
-#include "hardware/trailing_zeros_count.h"
 #include "bitboard/board.h"
+#include "bitboard/position_from_fen.h"
 #include "bitboard/squares.h"
+#include "hardware/trailing_zeros_count.h"
 
 #include <gtest/gtest.h>
 

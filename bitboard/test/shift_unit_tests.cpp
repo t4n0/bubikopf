@@ -1,7 +1,6 @@
-#include "bitboard/shift.h"
-
-#include "bitboard/squares.h"
 #include "bitboard/knight_lookup_table.h"
+#include "bitboard/shift.h"
+#include "bitboard/squares.h"
 
 #include <gmock/gmock.h>
 

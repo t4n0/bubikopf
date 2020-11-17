@@ -2,9 +2,9 @@
 #include "bitboard/position_from_fen.h"
 #include "search/test/minimax_mock.h"
 
-#include <string>
-#include <chrono>
 #include <cassert>
+#include <chrono>
+#include <string>
 
 int Chess::EvaluteToZeroAndCount::number_of_evaluations{0};
 

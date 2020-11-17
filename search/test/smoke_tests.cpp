@@ -1,12 +1,12 @@
+#include "bitboard/position_from_fen.h"
 #include "search/test/evaluate_mock.h"
 #include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
-#include "bitboard/position_from_fen.h"
 
 #include <gtest/gtest.h>
 
-#include <iostream>
 #include <chrono>
+#include <iostream>
 
 namespace Chess
 {

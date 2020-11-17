@@ -1,12 +1,13 @@
 #include "bitboard/position_from_fen.h"
+
 #include "bitboard/board.h"
 #include "bitboard/squares.h"
 
-#include <vector>
-#include <sstream>
-#include <iterator>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <sstream>
+#include <vector>
 
 namespace Chess
 {

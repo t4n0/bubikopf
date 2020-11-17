@@ -2,8 +2,8 @@
 
 #include <gmock/gmock.h>
 
-#include <vector>
 #include <limits>
+#include <vector>
 
 namespace Chess
 {

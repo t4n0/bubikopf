@@ -1,9 +1,9 @@
 #include "bitboard/position.h"
 
-#include "bitboard/pieces.h"
-#include "bitboard/squares.h"
-#include "bitboard/shift.h"
 #include "bitboard/knight_lookup_table.h"
+#include "bitboard/pieces.h"
+#include "bitboard/shift.h"
+#include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
 #include <stdexcept>
