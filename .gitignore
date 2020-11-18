@@ -2,3 +2,4 @@ bazel-*
 compile_commands.json*
 *.autosave
 .vscode/*
+perf*
