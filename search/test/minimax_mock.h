@@ -3,6 +3,7 @@
 
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
+#include "search/statistic.h"
 
 #include <type_traits>
 
@@ -29,6 +30,7 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
 {
     if (depth == 0)
     {
+        Statistic::number_of_evaluations++;
         return evaluate<EvaluateBehavior>(position);
     }
 

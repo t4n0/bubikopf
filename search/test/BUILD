@@ -15,6 +15,7 @@ cc_test(
     deps = [
         "//bitboard",
         "//evaluate/test:mock",
+        "//search",
         "//search/test:mock",
         "@googletest//:gtest_main",
     ],

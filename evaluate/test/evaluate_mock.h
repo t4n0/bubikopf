@@ -6,16 +6,14 @@
 namespace Chess
 {
 
-struct EvaluteToZeroAndCount
+struct EvaluteToZero
 {
     static constexpr bool evaluate_to_zero{true};
-    static int number_of_evaluations;
 };
 
 template <typename Behaviour>
 std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(const PositionWithBitboards& /*unused*/)
 {
-    EvaluteToZeroAndCount::number_of_evaluations++;
     return 0.0F;
 }
 

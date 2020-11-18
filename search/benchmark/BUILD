@@ -6,6 +6,7 @@ cc_binary(
     deps = [
         "//bitboard",
         "//evaluate/test:mock",
+        "//search",
         "//search/test:mock",
     ],
 )
@@ -16,6 +17,7 @@ cc_binary(
     deps = [
         "//bitboard",
         "//evaluate/test:mock",
+        "//search",
         "//search/test:mock",
         "@googlebenchmark//:benchmark",
     ],

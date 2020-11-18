@@ -1,5 +1,6 @@
 #include "bitboard/position_from_fen.h"
 #include "evaluate/test/evaluate_mock.h"
+#include "search/statistic.h"
 #include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
 
@@ -11,7 +12,7 @@ const std::array<const char* const, 5> fens{"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2
                                             "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8",
                                             "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"};
 
-int Chess::EvaluteToZeroAndCount::number_of_evaluations = 0;
+long long Chess::Statistic::number_of_evaluations = 0;
 
 static void FullSearch(benchmark::State& state)
 {
@@ -22,7 +23,7 @@ static void FullSearch(benchmark::State& state)
     {
         Chess::minimax<Chess::SearchAllBranchesWithoutPruning,
                        Chess::GenerateAllPseudoLegalMoves,
-                       Chess::EvaluteToZeroAndCount>(3, position, move_list.begin());
+                       Chess::EvaluteToZero>(3, position, move_list.begin());
     }
 }
 

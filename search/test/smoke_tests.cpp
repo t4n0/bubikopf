@@ -1,5 +1,6 @@
 #include "bitboard/position_from_fen.h"
 #include "evaluate/test/evaluate_mock.h"
+#include "search/statistic.h"
 #include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
 
@@ -11,7 +12,7 @@
 namespace Chess
 {
 
-int EvaluteToZeroAndCount::number_of_evaluations{0};
+long long Statistic::number_of_evaluations = 0;
 
 namespace
 {
@@ -24,7 +25,7 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
     const int DEPTH{3};
 
     // Call
-    minimax<SearchAllBranchesWithoutPruning, GenerateTwoMovesWithUniqueDebugId, EvaluteToZeroAndCount>(
+    minimax<SearchAllBranchesWithoutPruning, GenerateTwoMovesWithUniqueDebugId, EvaluteToZero>(
         DEPTH, position, move_list.begin());
 
     // Expect
@@ -45,7 +46,7 @@ struct MiniMaxTestParameter
 class MiniMaxTestFixture : public ::testing::TestWithParam<MiniMaxTestParameter>
 {
   public:
-    void SetUp() final { EvaluteToZeroAndCount::number_of_evaluations = 0; }
+    void SetUp() final { Statistic::number_of_evaluations = 0; }
     void TearDown() final {}
 };
 
@@ -57,12 +58,12 @@ TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    minimax<SearchAllBranchesWithoutPruning, GenerateAllPseudoLegalMoves, EvaluteToZeroAndCount>(
+    minimax<SearchAllBranchesWithoutPruning, GenerateAllPseudoLegalMoves, EvaluteToZero>(
         GetParam().depth, position, move_list.begin());
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect
-    EXPECT_EQ(GetParam().expected_number_of_nodes, EvaluteToZeroAndCount::number_of_evaluations) << ToString(move_list);
+    EXPECT_EQ(GetParam().expected_number_of_nodes, Statistic::number_of_evaluations) << ToString(move_list);
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 }
