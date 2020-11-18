@@ -9,7 +9,7 @@ namespace
 
 TEST(EvaluteMaterial, GivenSamples_ExpectAllHold)
 {
-    PositionWithBitboards position{};
+    Position position{};
 
     position[BOARD_IDX_BLACK + PAWN] = 1;
     Evaluation returned_evaluation{evaluate(position)};

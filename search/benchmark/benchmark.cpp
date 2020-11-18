@@ -16,7 +16,7 @@ long long Chess::Statistic::number_of_evaluations = 0;
 
 static void FullSearch(benchmark::State& state)
 {
-    Chess::PositionWithBitboards position = Chess::PositionFromFen(fens.at(state.range(0)));
+    Chess::Position position = Chess::PositionFromFen(fens.at(state.range(0)));
     Chess::MoveList move_list{};
 
     for (auto _ : state)

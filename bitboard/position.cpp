@@ -11,12 +11,12 @@
 namespace Chess
 {
 
-bool PositionWithBitboards::WhiteToMove() const
+bool Position::WhiteToMove() const
 {
     return boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN;
 }
 
-Bitmove PositionWithBitboards::GetPieceKind(const std::size_t side, const Bitboard location) const
+Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) const
 {
     if (boards_[side + PAWN] & location)
     {
@@ -45,7 +45,7 @@ Bitmove PositionWithBitboards::GetPieceKind(const std::size_t side, const Bitboa
     throw std::runtime_error{"Querry for piece kind failed."};
 }
 
-void PositionWithBitboards::MakeMove(Bitmove move)
+void Position::MakeMove(Bitmove move)
 {
     *extras_history_insertion_index_++ = boards_[BOARD_IDX_EXTRAS];
     const Bitboard& current_extras =
@@ -228,7 +228,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
     }
 }
 
-void PositionWithBitboards::UnmakeMove(Bitmove move)
+void Position::UnmakeMove(Bitmove move)
 {
     extras_history_insertion_index_--;
     boards_[BOARD_IDX_EXTRAS] = *extras_history_insertion_index_;
@@ -314,17 +314,17 @@ void PositionWithBitboards::UnmakeMove(Bitmove move)
     }
 }
 
-Bitboard& PositionWithBitboards::operator[](const std::size_t index)
+Bitboard& Position::operator[](const std::size_t index)
 {
     return boards_[index];
 }
 
-Bitboard PositionWithBitboards::operator[](const std::size_t index) const
+Bitboard Position::operator[](const std::size_t index) const
 {
     return boards_[index];
 }
 
-bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b)
+bool operator==(const Position& a, const Position& b)
 {
     const bool boards_are_equal = a.boards_ == b.boards_;
     return boards_are_equal;
@@ -334,7 +334,7 @@ bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b)
 constexpr std::array<std::size_t, 8>
     dangerous_pieces_besides_queen_with_ray_style_attack{ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP};
 
-bool PositionWithBitboards::DefendersKingIsInCheck() const
+bool Position::DefendersKingIsInCheck() const
 {
     const bool white_to_move = WhiteToMove();
     const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move;

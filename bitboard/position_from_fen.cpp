@@ -12,9 +12,9 @@
 namespace Chess
 {
 
-PositionWithBitboards PositionFromFen(const std::string& fen)
+Position PositionFromFen(const std::string& fen)
 {
-    PositionWithBitboards position{};
+    Position position{};
 
     std::istringstream iss{fen};
     const std::vector<std::string> tokens{std::istream_iterator<std::string>{iss},

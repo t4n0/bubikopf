@@ -14,7 +14,7 @@ namespace
 
 TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumber)
 {
-    PositionWithBitboards unit{};
+    Position unit{};
     unit.boards_[BOARD_IDX_EXTRAS] = 1;
     unit.boards_[BOARD_IDX_BLACK] = 2;
     unit.boards_[BOARD_IDX_BLACK + PAWN] = 3;
@@ -42,7 +42,7 @@ TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumb
 TEST(PositionWhiteToMove, GivenWhitesTurn_ExpectTrue)
 {
     // Setup
-    PositionWithBitboards position{};
+    Position position{};
     position.boards_[BOARD_IDX_EXTRAS] = BOARD_ZEROS;
     position.boards_[BOARD_IDX_EXTRAS] |= BOARD_MASK_WHITE_TURN;
 
@@ -53,7 +53,7 @@ TEST(PositionWhiteToMove, GivenWhitesTurn_ExpectTrue)
 TEST(PositionWhiteToMove, GivenBlacksTurn_ExpectFalse)
 {
     // Setup
-    PositionWithBitboards position{};
+    Position position{};
     position.boards_[BOARD_IDX_EXTRAS] = BOARD_ONES;
     position.boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_WHITE_TURN;
 
@@ -66,7 +66,7 @@ TEST(MakeUnmakeMoveTest, GivenMove_ExpectHistoryIsAppended)
     // Setup
     const Bitmove arbitrary_move{};
     const Bitboard arbitrary_extras = 42;
-    PositionWithBitboards position{};
+    Position position{};
     position.boards_[BOARD_IDX_EXTRAS] = arbitrary_extras;
 
     // Call
@@ -110,7 +110,7 @@ class MakeUnmakeMoveTestFixture : public ::testing::TestWithParam<MakeUnmakeMove
 TEST_P(MakeUnmakeMoveTestFixture, GivenMove_ExpectPosteriorAfterMakeAndPriorAfterUnmake)
 {
     // Setup
-    PositionWithBitboards position{};
+    Position position{};
     std::array<::testing::Matcher<Bitboard>, 15> expected_position_posterior{
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
@@ -123,7 +123,7 @@ TEST_P(MakeUnmakeMoveTestFixture, GivenMove_ExpectPosteriorAfterMakeAndPriorAfte
         expected_position_posterior[setter.index] = setter.value;
     }
 
-    const PositionWithBitboards expected_position_prior{position};
+    const Position expected_position_prior{position};
 
     // Call
     position.MakeMove(GetParam().move);
@@ -448,7 +448,7 @@ class DefendersKingIsInCheckTestFixture : public ::testing::TestWithParam<Defend
 
 TEST_P(DefendersKingIsInCheckTestFixture, GivenPosition_ExpectProvidedStateOfKingSafety)
 {
-    PositionWithBitboards position{};
+    Position position{};
     position[BOARD_IDX_EXTRAS] |= GetParam().extras;
     for (const auto& piece : GetParam().white_pieces)
     {

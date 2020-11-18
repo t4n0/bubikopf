@@ -20,7 +20,7 @@ namespace
 TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
 {
     // Setup
-    PositionWithBitboards position{};
+    Position position{};
     MoveList move_list{};
     const int DEPTH{3};
 
@@ -53,7 +53,7 @@ class MiniMaxTestFixture : public ::testing::TestWithParam<MiniMaxTestParameter>
 TEST_P(MiniMaxTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 {
     // Setup
-    PositionWithBitboards position = PositionFromFen(GetParam().fen);
+    Position position = PositionFromFen(GetParam().fen);
     MoveList move_list{};
 
     // Call

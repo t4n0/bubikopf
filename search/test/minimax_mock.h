@@ -11,10 +11,10 @@ namespace Chess
 {
 
 template <typename EvaluateBehavior>
-std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> evaluate(const PositionWithBitboards&);
+std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> evaluate(const Position&);
 
 template <typename GenerateBehavior>
-std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> GenerateMoves(const PositionWithBitboards&,
+std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> GenerateMoves(const Position&,
                                                                                         MoveList::iterator);
 
 struct SearchAllBranchesWithoutPruning
@@ -23,10 +23,8 @@ struct SearchAllBranchesWithoutPruning
 };
 
 template <typename SearchBehaviour, typename GenerateBehavior, typename EvaluateBehavior>
-std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluation> minimax(
-    const uint8_t depth,
-    PositionWithBitboards& position,
-    const MoveList::iterator& end_iterator_before_move_generation)
+std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluation>
+minimax(const uint8_t depth, Position& position, const MoveList::iterator& end_iterator_before_move_generation)
 {
     if (depth == 0)
     {

@@ -11,11 +11,11 @@
 namespace Chess
 {
 
-class PositionWithBitboards
+class Position
 {
   public:
-    PositionWithBitboards() {}
-    PositionWithBitboards(const std::array<Bitboard, 15>& boards) : boards_(boards) {}
+    Position() {}
+    Position(const std::array<Bitboard, 15>& boards) : boards_(boards) {}
 
     void MakeMove(Bitmove move);
     void UnmakeMove(Bitmove move);
@@ -39,7 +39,7 @@ class PositionWithBitboards
     std::array<Bitboard, 40>::iterator extras_history_insertion_index_ = extras_history_.begin();
 };
 
-bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b);
+bool operator==(const Position& a, const Position& b);
 
 }  // namespace Chess
 

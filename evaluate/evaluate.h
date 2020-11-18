@@ -13,7 +13,7 @@ struct EvaluteMaterial
 };
 
 template <typename Behaviour = EvaluteMaterial>
-std::enable_if_t<Behaviour::evaluate_material, Evaluation> evaluate(const PositionWithBitboards& position)
+std::enable_if_t<Behaviour::evaluate_material, Evaluation> evaluate(const Position& position)
 {
     float evaluation = 0.0F;
     // clang-format off

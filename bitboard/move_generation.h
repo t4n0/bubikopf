@@ -31,7 +31,7 @@ struct GenerateAllPseudoLegalMoves
 /// @returns An iterator pointing to the element past the last generated move
 template <typename Behavior = GenerateAllPseudoLegalMoves>
 std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> GenerateMoves(
-    const PositionWithBitboards& position,
+    const Position& position,
     MoveList::iterator move_generation_insertion_iterator)
 {
     /// @brief A function to loop over individual bits (the population) of a Bitboard

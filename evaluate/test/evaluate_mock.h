@@ -12,7 +12,7 @@ struct EvaluteToZero
 };
 
 template <typename Behaviour>
-std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(const PositionWithBitboards& /*unused*/)
+std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(const Position& /*unused*/)
 {
     return 0.0F;
 }

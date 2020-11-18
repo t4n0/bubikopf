@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
     assert(argc == 3);  // Must provide depth and fen.
 
-    Chess::PositionWithBitboards position = Chess::PositionFromFen(fen);
+    Chess::Position position = Chess::PositionFromFen(fen);
     Chess::MoveList move_list{};
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();

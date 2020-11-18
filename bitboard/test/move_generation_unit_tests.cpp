@@ -37,7 +37,7 @@ class MoveGenerationTestFixture : public ::testing::TestWithParam<MoveGeneration
         }
     }
 
-    PositionWithBitboards position_{};
+    Position position_{};
     MoveList move_list_{};
 };
 

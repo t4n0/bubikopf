@@ -95,9 +95,9 @@ TEST_F(PositionFromFenTestFixture, StaticMoveCount)
     EXPECT_EQ((position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES), 42);
 }
 
-PositionWithBitboards StandardStartingPosition()
+Position StandardStartingPosition()
 {
-    PositionWithBitboards position{};
+    Position position{};
     position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING | BOARD_MASK_WHITE_TURN;
 
     // white pieces

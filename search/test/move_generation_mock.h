@@ -15,7 +15,7 @@ struct GenerateTwoMovesWithUniqueDebugId
 
 template <typename Behavior = GenerateTwoMovesWithUniqueDebugId>
 std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id, MoveList::iterator> GenerateMoves(
-    const PositionWithBitboards& /*unused*/,
+    const Position& /*unused*/,
     MoveList::iterator move_generation_insertion_iterator)
 {
     static Bitmove unique_id{1};
