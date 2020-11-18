@@ -26,6 +26,14 @@ static void FullSearch(benchmark::State& state)
     }
 }
 
-BENCHMARK(FullSearch)->Arg(0)->Arg(1)->Arg(2)->Arg(3)->Arg(4)->Unit(benchmark::kMillisecond);
+BENCHMARK(FullSearch)
+    ->Arg(0)
+    ->Arg(1)
+    ->Arg(2)
+    ->Arg(3)
+    ->Arg(4)
+    ->Unit(benchmark::kMillisecond)
+    ->ReportAggregatesOnly()
+    ->Repetitions(5);
 
 BENCHMARK_MAIN();
