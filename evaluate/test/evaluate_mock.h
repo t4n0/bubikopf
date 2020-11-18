@@ -1,10 +1,7 @@
-#ifndef SEARCH_TEST_EVALUATE_MOCK_H
-#define SEARCH_TEST_EVALUATE_MOCK_H
-
-#include "evaluate/evaluate.h"
+#ifndef EVALUATE_TEST_EVALUATE_MOCK_H
+#define EVALUATE_TEST_EVALUATE_MOCK_H
 
 #include <type_traits>
-#include <vector>
 
 namespace Chess
 {
