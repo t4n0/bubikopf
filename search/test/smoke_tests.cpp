@@ -92,7 +92,7 @@ const MiniMaxTestParameter pos4_ply6{6, pos4_fen, 706045033};
 const MiniMaxTestParameter pos5_ply5{5, pos5_fen, 89941194};  // numbers for depth 6 not available
 const MiniMaxTestParameter pos6_ply6{6, pos6_fen, 6923051137};
 
-// Disabled by default. Takes <2h.
+// Disabled by default. Takes >3h.
 // INSTANTIATE_TEST_SUITE_P(FromPositionDepth6,
 //                          MiniMaxTestFixture,
 //                          ::testing::Values(pos1_ply6, pos2_ply6, pos3_ply6, pos4_ply6, pos5_ply5, pos6_ply6));
