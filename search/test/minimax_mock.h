@@ -1,13 +1,20 @@
 #ifndef SEACH_TEST_MINIMAX_MOCK_H
 #define SEACH_TEST_MINIMAX_MOCK_H
 
-#include "bitboard/move_generation.h"
-#include "evaluate/test/evaluate_mock.h"
+#include "bitboard/move_list.h"
+#include "bitboard/position.h"
 
 #include <type_traits>
 
 namespace Chess
 {
+
+template <typename EvaluateBehavior>
+std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> evaluate(const PositionWithBitboards&);
+
+template <typename GenerateBehavior>
+std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> GenerateMoves(const PositionWithBitboards&,
+                                                                                        MoveList::iterator);
 
 struct SearchAllBranchesWithoutPruning
 {

@@ -7,7 +7,6 @@ cc_library(
         "move_generation_mock.h",
     ],
     visibility = ["//search/benchmark:__pkg__"],
-    deps = ["//evaluate/test:mock"],
 )
 
 cc_test(
@@ -15,6 +14,7 @@ cc_test(
     srcs = ["smoke_tests.cpp"],
     deps = [
         "//bitboard",
+        "//evaluate/test:mock",
         "//search/test:mock",
         "@googletest//:gtest_main",
     ],

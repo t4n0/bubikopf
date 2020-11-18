@@ -1,6 +1,8 @@
 #include "bitboard/position.h"
 #include "bitboard/position_from_fen.h"
+#include "evaluate/test/evaluate_mock.h"
 #include "search/test/minimax_mock.h"
+#include "search/test/move_generation_mock.h"
 
 #include <cassert>
 #include <chrono>
