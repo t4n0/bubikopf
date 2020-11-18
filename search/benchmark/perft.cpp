@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <chrono>
+#include <iostream>
 #include <string>
 
 int Chess::EvaluteToZeroAndCount::number_of_evaluations{0};

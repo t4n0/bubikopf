@@ -2,7 +2,6 @@
 #define SEACH_TEST_MINIMAX_MOCK_H
 
 #include "bitboard/move_generation.h"
-#include "evaluate/evaluation.h"
 #include "search/test/evaluate_mock.h"
 
 #include <type_traits>
@@ -31,7 +30,7 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
 
     if (position.WhiteToMove())
     {
-        Evaluation max_eval{MIN_EVAL};
+        Evaluation max_eval{std::numeric_limits<Evaluation>::lowest()};
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)
@@ -49,7 +48,7 @@ std::enable_if_t<SearchBehaviour::search_all_branches_without_pruning, Evaluatio
     }
     else
     {
-        Evaluation min_eval{MAX_EVAL};
+        Evaluation min_eval{std::numeric_limits<Evaluation>::max()};
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)

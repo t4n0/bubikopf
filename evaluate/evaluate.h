@@ -2,7 +2,6 @@
 #define EVALUATE_EVALUATE_H
 
 #include "bitboard/position.h"
-#include "evaluate/evaluation.h"
 #include "hardware/population_count.h"
 
 namespace Chess

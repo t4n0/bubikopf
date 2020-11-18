@@ -8,6 +8,7 @@ namespace Chess
 
 using Bitmove = uint32_t;
 using Bitboard = uint64_t;
+using Evaluation = float;
 
 }  // namespace Chess
 
