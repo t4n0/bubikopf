@@ -36,7 +36,7 @@ class PositionWithBitboards
 
     // ToDo: Move this to MoveList type
     std::array<Bitboard, 40> extras_history_{};
-    std::size_t extras_history_insertion_index_{0};
+    std::array<Bitboard, 40>::iterator extras_history_insertion_index_ = extras_history_.begin();
 };
 
 bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b);

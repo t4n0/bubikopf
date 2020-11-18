@@ -1,5 +1,4 @@
 ﻿#include "bitboard/position.h"
-
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
@@ -75,13 +74,13 @@ TEST(MakeUnmakeMoveTest, GivenMove_ExpectHistoryIsAppended)
 
     // Expect
     EXPECT_THAT(position.extras_history_.at(0), arbitrary_extras);
-    EXPECT_THAT(position.extras_history_insertion_index_, 1);
+    EXPECT_THAT(std::distance(position.extras_history_.begin(), position.extras_history_insertion_index_), 1);
 
     // Call
     position.UnmakeMove(arbitrary_move);
 
     // Expect
-    EXPECT_THAT(position.extras_history_insertion_index_, 0);
+    EXPECT_THAT(std::distance(position.extras_history_.begin(), position.extras_history_insertion_index_), 0);
 }
 
 struct PriorSpecifier

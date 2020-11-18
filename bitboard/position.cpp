@@ -47,11 +47,10 @@ Bitmove PositionWithBitboards::GetPieceKind(const std::size_t side, const Bitboa
 
 void PositionWithBitboards::MakeMove(Bitmove move)
 {
-    extras_history_[extras_history_insertion_index_] = boards_[BOARD_IDX_EXTRAS];
-    extras_history_insertion_index_++;
+    *extras_history_insertion_index_++ = boards_[BOARD_IDX_EXTRAS];
     const Bitboard& current_extras =
-        extras_history_[extras_history_insertion_index_ - 1];  // Moving side, en-passant etc. will be changed in
-                                                               // position. Hence getting unaltered state from history.
+        *(extras_history_insertion_index_ - 1);  // Moving side, en-passant etc. will be changed in
+                                                 // position. Hence getting unaltered state from history.
 
     const bool white_to_move = WhiteToMove();
     const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
@@ -232,7 +231,7 @@ void PositionWithBitboards::MakeMove(Bitmove move)
 void PositionWithBitboards::UnmakeMove(Bitmove move)
 {
     extras_history_insertion_index_--;
-    boards_[BOARD_IDX_EXTRAS] = extras_history_[extras_history_insertion_index_];
+    boards_[BOARD_IDX_EXTRAS] = *extras_history_insertion_index_;
 
     const bool white_to_move = WhiteToMove();
     const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
@@ -328,13 +327,7 @@ Bitboard PositionWithBitboards::operator[](const std::size_t index) const
 bool operator==(const PositionWithBitboards& a, const PositionWithBitboards& b)
 {
     const bool boards_are_equal = a.boards_ == b.boards_;
-    const bool iterators_are_equal = a.extras_history_insertion_index_ == b.extras_history_insertion_index_;
-    const bool histories_are_equal = std::equal(begin(a.extras_history_),
-                                                begin(a.extras_history_) + a.extras_history_insertion_index_,
-                                                begin(b.extras_history_));  // Don't consider obsolete data at
-                                                                            // insertion index and beyond
-
-    return boards_are_equal && iterators_are_equal && histories_are_equal;
+    return boards_are_equal;
 }
 
 // Index corresponds to directions of "all_directions"
