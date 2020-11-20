@@ -5,8 +5,8 @@
 #include "bitboard/pieces.h"
 #include "bitboard/squares.h"
 
-#include <limits>
 #include <array>
+#include <limits>
 #include <sstream>
 
 namespace Chess
@@ -29,8 +29,8 @@ constexpr Bitmove MOVE_VALUE_TYPE_PAWN_PUSH =          0b00010000'00000000'00000
 constexpr Bitmove MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH =   0b00011000'00000000'00000000'00000000;
 constexpr Bitmove MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE = 0b00100000'00000000'00000000'00000000;
 constexpr Bitmove MOVE_VALUE_TYPE_KINGSIDE_CASTLING =  0b00101000'00000000'00000000'00000000;
-constexpr Bitmove MOVE_VALUE_TYPE_QUEENSIDE_CASTLING = 0b00111000'00000000'00000000'00000000;
-constexpr Bitmove MOVE_VALUE_TYPE_PROMOTION =          0b01010000'00000000'00000000'00000000;
+constexpr Bitmove MOVE_VALUE_TYPE_QUEENSIDE_CASTLING = 0b00110000'00000000'00000000'00000000;
+constexpr Bitmove MOVE_VALUE_TYPE_PROMOTION =          0b00111000'00000000'00000000'00000000;
 // clang-format on
 
 constexpr std::array<const char* const, 8> MOVE_VALUE_LABELS = {
