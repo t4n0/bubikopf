@@ -1,5 +1,6 @@
 #include "bitboard/position.h"
 
+#include "bitboard/lookup_table/king.h"
 #include "bitboard/lookup_table/knight.h"
 #include "bitboard/pieces.h"
 #include "bitboard/shift.h"
@@ -389,6 +390,13 @@ bool Position::DefendersKingIsInCheck() const
         const bool pawn_is_giving_check =
             pawn_attacks[square_bit + (white_to_move * pawn_attacks_offset_for_white)] & boards_[attacking_side + PAWN];
         if (pawn_is_giving_check)
+        {
+            return true;
+        }
+
+        // king checks
+        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side + KING];
+        if (king_is_giving_check)
         {
             return true;
         }

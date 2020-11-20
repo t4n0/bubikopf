@@ -612,6 +612,16 @@ const DefendersKingIsInCheckTestParameter kBlackAfterCastlingQueensideOriginalSq
     {{KING, C8}, {ROOK, D8}},
     true,
     "BlackAfterCastlingQueensideOriginalSquare"};
+const DefendersKingIsInCheckTestParameter kBlackKingByWhiteKing{BOARD_MASK_WHITE_TURN,
+                                                                {{KING, E1}},
+                                                                {{KING, F1}},
+                                                                true,
+                                                                "BlackKingByWhiteKing"};
+const DefendersKingIsInCheckTestParameter kWhiteKingByBlackKing{BOARD_MASK_BLACK_TURN,
+                                                                {{KING, E1}},
+                                                                {{KING, F1}},
+                                                                true,
+                                                                "WhiteKingByBlackKing"};
 
 INSTANTIATE_TEST_SUITE_P(AllAttackingAngles,
                          DefendersKingIsInCheckTestFixture,
@@ -642,7 +652,9 @@ INSTANTIATE_TEST_SUITE_P(AllAttackingAngles,
                                            kBlackAfterCastlingKingsidePassThrough,
                                            kBlackAfterCastlingKingsideOriginalSquare,
                                            kBlackAfterCastlingQueensidePassThrough,
-                                           kBlackAfterCastlingQueensideOriginalSquare),
+                                           kBlackAfterCastlingQueensideOriginalSquare,
+                                           kBlackKingByWhiteKing,
+                                           kWhiteKingByBlackKing),
                          [](const auto& info) { return info.param.description; });
 
 }  // namespace
