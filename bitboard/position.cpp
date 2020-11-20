@@ -341,7 +341,7 @@ bool Position::DefendersKingIsInCheck() const
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
 
     const auto square_is_under_attack = [&](const Bitboard square) {
-        // check for ray style attacks
+        // ray style checks
         for (std::size_t idx = 0; idx < all_directions.size(); idx++)
         {
             const auto direction = all_directions[idx];
@@ -378,13 +378,14 @@ bool Position::DefendersKingIsInCheck() const
 
         const int square_bit = tzcnt(square);
 
-        // check for knight attacks
+        // knight checks
         const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + KNIGHT];
         if (knight_is_giving_check)
         {
             return true;
         }
 
+        // pawn checks
         const bool pawn_is_giving_check =
             pawn_attacks[square_bit + (white_to_move * pawn_attacks_offset_for_white)] & boards_[attacking_side + PAWN];
         if (pawn_is_giving_check)
