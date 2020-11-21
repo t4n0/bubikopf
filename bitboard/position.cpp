@@ -1,7 +1,9 @@
 #include "bitboard/position.h"
 
+#include "bitboard/lookup_table/bishop.h"
 #include "bitboard/lookup_table/king.h"
 #include "bitboard/lookup_table/knight.h"
+#include "bitboard/lookup_table/rook.h"
 #include "bitboard/pieces.h"
 #include "bitboard/shift.h"
 #include "bitboard/squares.h"
@@ -331,23 +333,14 @@ bool operator==(const Position& a, const Position& b)
     return boards_are_equal;
 }
 
-// Index corresponds to directions of "all_directions"
-constexpr std::array<std::size_t, 8>
-    dangerous_pieces_besides_queen_with_ray_style_attack{ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP, ROOK, BISHOP};
-
 bool Position::DefendersKingIsInCheck() const
 {
     const bool white_to_move = WhiteToMove();
     const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move;
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
 
-    const auto square_is_under_attack = [&](const Bitboard square) {
-        // ray style checks
-        for (std::size_t idx = 0; idx < all_directions.size(); idx++)
-        {
-            const auto direction = all_directions[idx];
-            const auto also_dangerous_piece = dangerous_pieces_besides_queen_with_ray_style_attack[idx];
-
+    const auto ray_check_given =
+        [&](const Bitboard square, const std::size_t direction, const std::size_t dangerous_piece_besides_queen) {
             Bitboard attacker_location = SingleStep(square, direction);
             while (attacker_location)  // is on the board
             {
@@ -362,7 +355,7 @@ bool Position::DefendersKingIsInCheck() const
                 {
                     const std::size_t piece_kind = GetPieceKind(attacking_side, attacker_location);
                     const bool piece_can_attack_from_this_angle =
-                        (piece_kind == QUEEN) || (piece_kind == also_dangerous_piece);
+                        (piece_kind == QUEEN) || (piece_kind == dangerous_piece_besides_queen);
                     if (piece_can_attack_from_this_angle)
                     {
                         return true;
@@ -375,9 +368,40 @@ bool Position::DefendersKingIsInCheck() const
 
                 attacker_location = SingleStep(attacker_location, direction);  // next iteration
             }
+
+            return false;
+        };
+
+    const auto square_is_under_attack = [&](const Bitboard square) {
+        const int square_bit = tzcnt(square);
+
+        // ray style checks horizontal and vertical
+        const bool rook_or_queen_aligend_on_rank_or_file =
+            rook_attacks[square_bit] & (boards_[attacking_side + ROOK] | boards_[attacking_side + QUEEN]);
+        if (rook_or_queen_aligend_on_rank_or_file)
+        {
+            for (const auto direction : {west, south, east, north})
+            {
+                if (ray_check_given(square, direction, ROOK))
+                {
+                    return true;
+                }
+            }
         }
 
-        const int square_bit = tzcnt(square);
+        // ray style checks diagonally
+        const bool bishop_or_queen_aligend_diagonally =
+            bishop_attacks[square_bit] & (boards_[attacking_side + BISHOP] | boards_[attacking_side + QUEEN]);
+        if (bishop_or_queen_aligend_diagonally)
+        {
+            for (const auto direction : {north_east, north_west, south_east, south_west})
+            {
+                if (ray_check_given(square, direction, BISHOP))
+                {
+                    return true;
+                }
+            }
+        }
 
         // knight checks
         const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + KNIGHT];

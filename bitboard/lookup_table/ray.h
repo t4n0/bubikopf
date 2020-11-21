@@ -45,6 +45,21 @@ class RayOneSquare
         legal_step_area & (bitshift > 0 ? source << bitshift : source >> Absolute<bitshift>::value);
 };
 
+template <Bitboard source, std::size_t direction, int loop = 0>
+class RaySevenSquares
+{
+    constexpr static Bitboard ray_one_square = RayOneSquare<source, direction>::value;
+
+  public:
+    constexpr static Bitboard value = ray_one_square | RaySevenSquares<ray_one_square, direction, loop + 1>::value;
+};
+
+template <Bitboard source, std::size_t direction>
+struct RaySevenSquares<source, direction, 8>
+{
+    constexpr static Bitboard value = 0;
+};
+
 }  // namespace Chess
 
 #endif
