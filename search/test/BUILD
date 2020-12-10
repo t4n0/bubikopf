@@ -10,13 +10,23 @@ cc_library(
 )
 
 cc_test(
-    name = "test",
+    name = "smoke",
     srcs = ["smoke_tests.cpp"],
     deps = [
         "//bitboard",
         "//evaluate/test:mock",
         "//search",
         "//search/test:mock",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "minimax",
+    srcs = ["minimax_test.cpp"],
+    deps = [
+        "//hardware",
+        "//search",
         "@googletest//:gtest_main",
     ],
 )
