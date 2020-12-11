@@ -246,37 +246,25 @@ void Position::UnmakeMove(Bitmove move)
     const Bitboard source_and_target = source | target;
 
     boards_[attacking_side] ^= source_and_target;
+    boards_[attacking_piece_index] ^= source_and_target;
 
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
-        case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
-            boards_[attacking_piece_index] ^= source_and_target;
-            return;
-        }
         case MOVE_VALUE_TYPE_CAPTURE: {
             const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
             const std::size_t captured_piece =
                 defending_side + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
-            boards_[attacking_piece_index] ^= source_and_target;
             boards_[defending_side] |= target;
             boards_[captured_piece] |= target;
             return;
         }
-        case MOVE_VALUE_TYPE_PAWN_PUSH: {
-            boards_[attacking_piece_index] ^= source_and_target;
-            return;
-        }
-        case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
-            boards_[attacking_piece_index] ^= source_and_target;
-            return;
-        }
+
         case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
             const Bitboard en_passant_square =
                 BOARD_ONE << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
             const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
-            boards_[attacking_piece_index] ^= source_and_target;
             boards_[defending_side] |= en_passant_victim;
             boards_[defending_side + PAWN] |= en_passant_victim;
             return;
@@ -285,7 +273,6 @@ void Position::UnmakeMove(Bitmove move)
             const Bitboard source_rook = target >> 1;
             const Bitboard target_rook = target << 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_piece_index] ^= source_and_target;
             boards_[attacking_side] ^= source_and_target_rook_jump;
             boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
@@ -294,12 +281,12 @@ void Position::UnmakeMove(Bitmove move)
             const Bitboard source_rook = target << 2;
             const Bitboard target_rook = target >> 1;
             const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_piece_index] ^= source_and_target;
             boards_[attacking_side] ^= source_and_target_rook_jump;
             boards_[attacking_side + ROOK] ^= source_and_target_rook_jump;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {
+            boards_[attacking_piece_index] ^= source_and_target;  // revert default operation before switch
             const std::size_t board_idx_added_piece_kind =
                 attacking_side + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
             boards_[attacking_piece_index] |= source;
