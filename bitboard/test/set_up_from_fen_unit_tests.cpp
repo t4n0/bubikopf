@@ -33,13 +33,13 @@ INSTANTIATE_TEST_SUITE_P(InvalidFens,
 TEST_F(PositionFromFenTestFixture, WhiteToMove)
 {
     const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 w KQkq e3 1 1");
-    EXPECT_TRUE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN);
+    EXPECT_TRUE(position.white_to_move_);
 }
 
 TEST_F(PositionFromFenTestFixture, BlackToMove)
 {
     const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b KQkq e3 1 1");
-    EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN);
+    EXPECT_FALSE(position.white_to_move_);
 }
 
 TEST_F(PositionFromFenTestFixture, BlackKingsideCastling)
@@ -98,7 +98,8 @@ TEST_F(PositionFromFenTestFixture, StaticMoveCount)
 Position StandardStartingPosition()
 {
     Position position{};
-    position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING | BOARD_MASK_WHITE_TURN;
+    position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING;
+    position.white_to_move_ = true;
 
     // white pieces
     position[BOARD_IDX_WHITE] = RANK_2 | RANK_1;

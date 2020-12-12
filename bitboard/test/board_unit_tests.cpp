@@ -9,11 +9,10 @@ namespace Chess
 namespace
 {
 
-constexpr std::array<Bitboard, 5> ALL_BOARD_MASKS{
+constexpr std::array<Bitboard, 4> ALL_BOARD_MASKS{
     BOARD_MASK_STATIC_PLIES,
     BOARD_MASK_EN_PASSANT,
     BOARD_MASK_CASTLING,
-    BOARD_MASK_WHITE_TURN,
     BOARD_MASK_UNUSED,
 };
 

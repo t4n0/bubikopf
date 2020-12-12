@@ -14,11 +14,6 @@
 namespace Chess
 {
 
-bool Position::WhiteToMove() const
-{
-    return boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_WHITE_TURN;
-}
-
 Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) const
 {
     if (boards_[side + PAWN] & location)
@@ -55,8 +50,7 @@ void Position::MakeMove(Bitmove move)
         *(extras_history_insertion_index_ - 1);  // Moving side, en-passant etc. will be changed in
                                                  // position. Hence getting unaltered state from history.
 
-    const bool white_to_move = WhiteToMove();
-    const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t attacking_side = white_to_move_ ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
     const std::size_t attacking_piece = (move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE;
     const std::size_t attacking_piece_index = attacking_side + attacking_piece;
     const std::size_t captured_piece_kind = (move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE;
@@ -65,7 +59,6 @@ void Position::MakeMove(Bitmove move)
     const Bitboard target = BOARD_ONE << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
     const Bitboard source_and_target = source | target;
 
-    boards_[BOARD_IDX_EXTRAS] ^= BOARD_MASK_WHITE_TURN;
     boards_[BOARD_IDX_EXTRAS] &= ~(BOARD_MASK_EN_PASSANT | BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE |
                                    BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE);
 
@@ -80,7 +73,7 @@ void Position::MakeMove(Bitmove move)
         const bool is_king_move = attacking_piece == KING;
         if (is_king_move)
         {
-            if (white_to_move)
+            if (white_to_move_)
             {
                 boards_[BOARD_IDX_EXTRAS] &=
                     ~(BOARD_VALUE_CASTLING_WHITE_KINGSIDE | BOARD_VALUE_CASTLING_WHITE_QUEENSIDE);
@@ -93,7 +86,7 @@ void Position::MakeMove(Bitmove move)
         }
         else if (attacking_piece == ROOK)
         {
-            if (white_to_move)
+            if (white_to_move_)
             {
                 if (source & H1)  // king rook moves
                 {
@@ -145,7 +138,7 @@ void Position::MakeMove(Bitmove move)
         case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
             boards_[attacking_piece_index] ^= source_and_target;
             boards_[BOARD_IDX_EXTRAS]++;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_CAPTURE: {
             const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
@@ -155,12 +148,12 @@ void Position::MakeMove(Bitmove move)
             boards_[defending_side] &= ~target;
             boards_[captured_piece] &= ~target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_PAWN_PUSH: {
             boards_[attacking_piece_index] ^= source_and_target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
             boards_[attacking_piece_index] ^= source_and_target;
@@ -169,18 +162,18 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] |= ((source_bit + target_bit) >> 1)
                                          << BOARD_SHIFT_EN_PASSANT;  // (source_bit+target_bit)/2
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
             const Bitboard en_passant_square = BOARD_ONE
                                                << ((current_extras & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
-            const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
+            const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[attacking_piece_index] ^= source_and_target;
             boards_[defending_side] &= ~en_passant_victim;
             boards_[defending_side + PAWN] &= ~en_passant_victim;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
             const Bitboard source_rook = target >> 1;
@@ -195,7 +188,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
             const Bitboard source_rook = target << 2;
@@ -210,7 +203,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] &= ~board_mask_castling;
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE;
-            return;
+            break;
         }
         case MOVE_VALUE_TYPE_PROMOTION: {
             const std::size_t board_idx_added_piece_kind =
@@ -226,18 +219,19 @@ void Position::MakeMove(Bitmove move)
                 boards_[defending_side] &= ~target;
                 boards_[captured_piece] &= ~target;
             }
-            return;
+            break;
         }
     }
+    white_to_move_ = !white_to_move_;
 }
 
 void Position::UnmakeMove(Bitmove move)
 {
     extras_history_insertion_index_--;
     boards_[BOARD_IDX_EXTRAS] = *extras_history_insertion_index_;
+    white_to_move_ = !white_to_move_;
 
-    const bool white_to_move = WhiteToMove();
-    const std::size_t attacking_side = white_to_move ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t attacking_side = white_to_move_ ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
     const std::size_t attacking_piece_index =
         attacking_side + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
 
@@ -264,7 +258,7 @@ void Position::UnmakeMove(Bitmove move)
             const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
             const Bitboard en_passant_square =
                 BOARD_ONE << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
-            const Bitboard en_passant_victim = white_to_move ? en_passant_square >> 8 : en_passant_square << 8;
+            const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[defending_side] |= en_passant_victim;
             boards_[defending_side + PAWN] |= en_passant_victim;
             return;
@@ -317,13 +311,13 @@ Bitboard Position::operator[](const std::size_t index) const
 bool operator==(const Position& a, const Position& b)
 {
     const bool boards_are_equal = a.boards_ == b.boards_;
-    return boards_are_equal;
+    const bool playing_side_is_equal = a.white_to_move_ == b.white_to_move_;
+    return boards_are_equal && playing_side_is_equal;
 }
 
 bool Position::DefendersKingIsInCheck() const
 {
-    const bool white_to_move = WhiteToMove();
-    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move;
+    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move_;
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
 
     const auto ray_check_given =
@@ -398,8 +392,8 @@ bool Position::DefendersKingIsInCheck() const
         }
 
         // pawn checks
-        const bool pawn_is_giving_check =
-            pawn_attacks[square_bit + (white_to_move * pawn_attacks_offset_for_white)] & boards_[attacking_side + PAWN];
+        const bool pawn_is_giving_check = pawn_attacks[square_bit + (white_to_move_ * pawn_attacks_offset_for_white)] &
+                                          boards_[attacking_side + PAWN];
         if (pawn_is_giving_check)
         {
             return true;

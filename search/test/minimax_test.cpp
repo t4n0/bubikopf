@@ -14,7 +14,7 @@ Position EncodeUniqueIdToZero()
     Position position{};
     position[BOARD_IDX_WHITE + PAWN] = 1;
     position[BOARD_IDX_BLACK + PAWN] = 1;
-    position[BOARD_IDX_EXTRAS] = BOARD_MASK_WHITE_TURN;
+    position.white_to_move_ = true;
     return position;
 }
 
@@ -55,7 +55,7 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
 {
     static int unique_id{0};
 
-    const std::size_t side = position.WhiteToMove() ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t side = position.white_to_move_ ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
     for (int i = 1; i < 3; i++)
     {
         *move_generation_insertion_iterator++ = ComposeMove(

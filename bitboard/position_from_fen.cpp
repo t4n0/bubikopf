@@ -106,10 +106,10 @@ Position PositionFromFen(const std::string& fen)
     switch (side_to_move)
     {
         case 'w':
-            position[BOARD_IDX_EXTRAS] |= BOARD_MASK_WHITE_TURN;
+            position.white_to_move_ = true;
             break;
         case 'b':
-            position[BOARD_IDX_EXTRAS] |= BOARD_MASK_BLACK_TURN;
+            position.white_to_move_ = false;
             break;
         default:
             throw std::runtime_error{"FEN contains invalid token for side to play."};

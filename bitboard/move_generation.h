@@ -68,8 +68,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             ComposeMove(source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
     };
 
-    const bool white_to_move = position.WhiteToMove();
-    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * white_to_move;
+    const bool& white_to_move = position.white_to_move_;
+    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.white_to_move_;
     const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 

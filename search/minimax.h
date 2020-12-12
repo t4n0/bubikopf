@@ -65,7 +65,7 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
     Evaluation alpha = alpha_parent;
     Evaluation beta = beta_parent;
 
-    if (position.WhiteToMove())
+    if (position.white_to_move_)
     {
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
              move_iterator != end_iterator_after_move_generation;

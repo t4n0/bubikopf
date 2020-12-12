@@ -35,7 +35,7 @@ minimax(const uint8_t depth, Position& position, const MoveList::iterator& end_i
     const MoveList::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
 
-    if (position.WhiteToMove())
+    if (position.white_to_move_)
     {
         Evaluation max_eval{std::numeric_limits<Evaluation>::lowest()};
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;

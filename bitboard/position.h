@@ -14,13 +14,9 @@ namespace Chess
 class Position
 {
   public:
-    Position() {}
-    Position(const std::array<Bitboard, 15>& boards) : boards_(boards) {}
-
     void MakeMove(Bitmove move);
     void UnmakeMove(Bitmove move);
 
-    bool WhiteToMove() const;
     Bitmove GetPieceKind(const std::size_t side, const Bitboard location) const;
 
     /// @brief Function to evaluate if defending sides king is in check.
@@ -33,6 +29,7 @@ class Position
     Bitboard operator[](const std::size_t index) const;
 
     std::array<Bitboard, 15> boards_{};
+    bool white_to_move_{true};
 
     // ToDo: Move this to MoveList type
     std::array<Bitboard, 40> extras_history_{};
