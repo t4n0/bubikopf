@@ -12,8 +12,12 @@ namespace Chess
 Position EncodeUniqueIdToZero()
 {
     Position position{};
-    position[BOARD_IDX_WHITE + PAWN] = 1;
-    position[BOARD_IDX_BLACK + PAWN] = 1;
+    position[BOARD_IDX_WHITE] = H1 | A8;
+    position[BOARD_IDX_BLACK] = H1 | A8;
+    position[BOARD_IDX_WHITE + PAWN] = H1;
+    position[BOARD_IDX_BLACK + PAWN] = H1;
+    position[BOARD_IDX_WHITE + KING] = A8;
+    position[BOARD_IDX_BLACK + KING] = A8;
     position.white_to_move_ = true;
     return position;
 }

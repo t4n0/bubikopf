@@ -14,12 +14,15 @@ long long Chess::Statistic::number_of_evaluations = 0;
 
 int main(int argc, char** argv)
 {
+    if (argc != 3)
+    {
+        std::cout << "You must provide depth and FEN as arguments." << std::endl;
+    }
+
     const int depth = std::stoi(std::string{argv[1]});
     const std::string fen{argv[2]};
     std::cout << "FEN " << fen << std::endl;
     std::cout << "Depth " << depth << std::endl;
-
-    assert(argc == 3);  // Must provide depth and fen.
 
     Chess::Position position = Chess::PositionFromFen(fen);
     Chess::MoveList move_list{};
