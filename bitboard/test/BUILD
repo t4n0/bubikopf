@@ -4,7 +4,6 @@ cc_test(
     name = "test",
     srcs = [
         "board_unit_tests.cpp",
-        "move_generation_unit_tests.cpp",
         "move_unit_tests.cpp",
         "position_unit_tests.cpp",
         "set_up_from_fen_unit_tests.cpp",
