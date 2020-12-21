@@ -128,10 +128,10 @@ void Position::MakeMove(Bitmove move)
         }
         case MOVE_VALUE_TYPE_PROMOTION:
         {
-            boards_[attacking_piece_index] ^= source_and_target;  // revert default operation before switch
             const std::size_t board_idx_added_piece_kind =
                 attacking_side_ + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
-            boards_[attacking_piece_index] &= ~source;
+            boards_[attacking_piece_index] &=
+                ~source_and_target;  // pawn was moved to target as side effect of default operation earlier
             boards_[board_idx_added_piece_kind] |= target;
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
@@ -235,10 +235,10 @@ void Position::UnmakeMove(Bitmove move)
         }
         case MOVE_VALUE_TYPE_PROMOTION:
         {
-            boards_[attacking_piece_index] ^= source_and_target;  // revert default operation before switch
+            boards_[attacking_piece_index] &=
+                ~target;  // pawns were set on target and source as side effect of default operation
             const std::size_t board_idx_added_piece_kind =
                 attacking_side_ + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
-            boards_[attacking_piece_index] |= source;
             boards_[board_idx_added_piece_kind] &= ~target;
             const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
             if (capture)
