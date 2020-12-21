@@ -107,9 +107,13 @@ Position PositionFromFen(const std::string& fen)
     {
         case 'w':
             position.white_to_move_ = true;
+            position.attacking_side_ = BOARD_IDX_WHITE;
+            position.defending_side_ = BOARD_IDX_BLACK;
             break;
         case 'b':
             position.white_to_move_ = false;
+            position.attacking_side_ = BOARD_IDX_BLACK;
+            position.defending_side_ = BOARD_IDX_WHITE;
             break;
         default:
             throw std::runtime_error{"FEN contains invalid token for side to play."};

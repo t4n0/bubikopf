@@ -30,6 +30,8 @@ class Position
 
     std::array<Bitboard, 17> boards_{};
     bool white_to_move_{true};
+    std::size_t attacking_side_{BOARD_IDX_WHITE};
+    std::size_t defending_side_{BOARD_IDX_BLACK};
 
     // ToDo: Move this to MoveList type
     std::array<Bitboard, 40> extras_history_{};

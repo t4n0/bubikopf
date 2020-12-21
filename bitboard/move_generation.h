@@ -69,8 +69,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     };
 
     const bool& white_to_move = position.white_to_move_;
-    const std::size_t attacking_side = BOARD_IDX_BLACK + BOARD_IDX_BLACK_WHITE_DIFF * position.white_to_move_;
-    const std::size_t defending_side = BOARD_IDX_BLACK_WHITE_SUM - attacking_side;
+    const std::size_t& attacking_side = position.attacking_side_;
+    const std::size_t& defending_side = position.defending_side_;
     const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
 
     // pawn moves
