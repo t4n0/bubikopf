@@ -15,7 +15,9 @@ constexpr Bitboard BOARD_ONES = std::numeric_limits<Bitboard>::max();
 
 constexpr std::size_t BOARD_IDX_EXTRAS = 0;
 constexpr std::size_t BOARD_IDX_BLACK = 1;
-constexpr std::size_t BOARD_IDX_WHITE = 8;
+constexpr std::size_t BOARD_IDX_WHITE = 9;
+constexpr std::size_t BOARD_IDX_UNUSED1 = 8;
+constexpr std::size_t BOARD_IDX_UNUSED2 = 16;
 constexpr std::size_t BOARD_IDX_BLACK_WHITE_SUM = BOARD_IDX_BLACK + BOARD_IDX_WHITE;
 constexpr std::size_t BOARD_IDX_BLACK_WHITE_DIFF = BOARD_IDX_WHITE - BOARD_IDX_BLACK;
 
@@ -24,7 +26,6 @@ constexpr Bitboard BOARD_MASK_STATIC_PLIES = 0b00000000'00000000'00000000'000000
 constexpr Bitboard BOARD_MASK_EN_PASSANT = 0b00000000'00000000'00000000'00000000'00000000'00000000'00111111'00000000;
 constexpr Bitboard BOARD_MASK_CASTLING = 0b00000000'00000000'00000000'00000000'00000000'00001111'00000000'00000000;
 constexpr Bitboard BOARD_MASK_UNUSED = 0b11111111'11111111'11111111'11111111'11111111'11110000'11000000'11000000;
-// TODO: Fix respective tests for BOARD_MASK_UNUSED
 
 // current castling rights
 constexpr Bitboard BOARD_VALUE_CASTLING_WHITE_KINGSIDE =

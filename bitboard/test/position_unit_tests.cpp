@@ -23,13 +23,15 @@ TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumb
     unit.boards_[BOARD_IDX_BLACK + ROOK] = 6;
     unit.boards_[BOARD_IDX_BLACK + QUEEN] = 7;
     unit.boards_[BOARD_IDX_BLACK + KING] = 8;
-    unit.boards_[BOARD_IDX_WHITE] = 9;
-    unit.boards_[BOARD_IDX_WHITE + PAWN] = 10;
-    unit.boards_[BOARD_IDX_WHITE + KNIGHT] = 11;
-    unit.boards_[BOARD_IDX_WHITE + BISHOP] = 12;
-    unit.boards_[BOARD_IDX_WHITE + ROOK] = 13;
-    unit.boards_[BOARD_IDX_WHITE + QUEEN] = 14;
-    unit.boards_[BOARD_IDX_WHITE + KING] = 15;
+    unit.boards_[BOARD_IDX_UNUSED1] = 9;
+    unit.boards_[BOARD_IDX_WHITE] = 10;
+    unit.boards_[BOARD_IDX_WHITE + PAWN] = 11;
+    unit.boards_[BOARD_IDX_WHITE + KNIGHT] = 12;
+    unit.boards_[BOARD_IDX_WHITE + BISHOP] = 13;
+    unit.boards_[BOARD_IDX_WHITE + ROOK] = 14;
+    unit.boards_[BOARD_IDX_WHITE + QUEEN] = 15;
+    unit.boards_[BOARD_IDX_WHITE + KING] = 16;
+    unit.boards_[BOARD_IDX_UNUSED2] = 17;
 
     Bitboard expected_unique_number = 1;
     for (Bitboard board : unit.boards_)

@@ -28,7 +28,7 @@ class Position
     Bitboard& operator[](const std::size_t index);
     Bitboard operator[](const std::size_t index) const;
 
-    std::array<Bitboard, 15> boards_{};
+    std::array<Bitboard, 17> boards_{};
     bool white_to_move_{true};
 
     // ToDo: Move this to MoveList type
