@@ -6,6 +6,7 @@ A chess engine.
 - Draw due to insufficient material
 - Draw due to 50 move rule
 - Draw due to threefold repitition
+- Track principal variation (incl. full move count)
 
 ## known issues
-- cli / lichess packages currently broken (play not possible)
+- lichess interface currently broken (play not possible)
