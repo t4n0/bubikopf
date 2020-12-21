@@ -45,7 +45,8 @@ Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) 
 
 void Position::MakeMove(Bitmove move)
 {
-    *extras_history_insertion_index_++ = boards_[BOARD_IDX_EXTRAS];
+    *extras_history_insertion_index_ = boards_[BOARD_IDX_EXTRAS];
+    extras_history_insertion_index_++;
     const Bitboard& current_extras =
         *(extras_history_insertion_index_ - 1);  // Moving side, en-passant etc. will be changed in
                                                  // position. Hence getting unaltered state from history.
