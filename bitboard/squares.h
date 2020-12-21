@@ -3,7 +3,6 @@
 
 #include "bitboard/basic_type_declarations.h"
 
-#include <limits>
 #include <array>
 
 namespace Chess
