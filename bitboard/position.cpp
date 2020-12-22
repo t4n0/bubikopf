@@ -107,22 +107,22 @@ void Position::MakeMove(Bitmove move)
         }
         case MOVE_VALUE_TYPE_KINGSIDE_CASTLING:
         {
-            const Bitboard source_rook = target >> 1;
-            const Bitboard target_rook = target << 1;
-            const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_side_] ^= source_and_target_rook_jump;
-            boards_[attacking_side_ + ROOK] ^= source_and_target_rook_jump;
+            constexpr Bitboard white_rook_jump = F1 | H1;
+            constexpr Bitboard black_rook_jump = F8 | H8;
+            const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
+            boards_[attacking_side_] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE;
             break;
         }
         case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING:
         {
-            const Bitboard source_rook = target << 2;
-            const Bitboard target_rook = target >> 1;
-            const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_side_] ^= source_and_target_rook_jump;
-            boards_[attacking_side_ + ROOK] ^= source_and_target_rook_jump;
+            constexpr Bitboard white_rook_jump = A1 | D1;
+            constexpr Bitboard black_rook_jump = A8 | D8;
+            const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
+            boards_[attacking_side_] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             boards_[BOARD_IDX_EXTRAS]++;
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE;
             break;
@@ -218,20 +218,20 @@ void Position::UnmakeMove(Bitmove move)
         }
         case MOVE_VALUE_TYPE_KINGSIDE_CASTLING:
         {
-            const Bitboard source_rook = target >> 1;
-            const Bitboard target_rook = target << 1;
-            const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_side_] ^= source_and_target_rook_jump;
-            boards_[attacking_side_ + ROOK] ^= source_and_target_rook_jump;
+            constexpr Bitboard white_rook_jump = F1 | H1;
+            constexpr Bitboard black_rook_jump = F8 | H8;
+            const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
+            boards_[attacking_side_] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING:
         {
-            const Bitboard source_rook = target << 2;
-            const Bitboard target_rook = target >> 1;
-            const Bitboard source_and_target_rook_jump = source_rook | target_rook;
-            boards_[attacking_side_] ^= source_and_target_rook_jump;
-            boards_[attacking_side_ + ROOK] ^= source_and_target_rook_jump;
+            constexpr Bitboard white_rook_jump = A1 | D1;
+            constexpr Bitboard black_rook_jump = A8 | D8;
+            const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
+            boards_[attacking_side_] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
         case MOVE_VALUE_TYPE_PROMOTION:
