@@ -22,10 +22,16 @@ struct DebuggingDisabled
 };
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintPruningInfo(const Evaluation /*unused*/,
-                                                                 const Evaluation /*unused*/,
-                                                                 const Position& /*unused*/,
-                                                                 const bool /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintPruningInfoNodeEntry(const Evaluation /*unused*/,
+                                                                          const Evaluation /*unused*/,
+                                                                          const Position& /*unused*/)
+{
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::disabled, void> PrintPruningInfoNodeExit(const Evaluation /*unused*/,
+                                                                         const Evaluation /*unused*/,
+                                                                         const Position& /*unused*/)
 {
 }
 
@@ -51,7 +57,7 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
     const Evaluation alpha_parent,
     const Evaluation beta_parent)
 {
-    PrintPruningInfo<DebugBehavior>(alpha_parent, beta_parent, position, true);
+    PrintPruningInfoNodeEntry<DebugBehavior>(alpha_parent, beta_parent, position);
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
@@ -82,11 +88,11 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
 
             if (alpha >= beta)
             {
-                PrintPruningInfo<DebugBehavior>(alpha, beta, position, false);
+                PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
                 return alpha;
             }
         }
-        PrintPruningInfo<DebugBehavior>(alpha, beta, position, false);
+        PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
         return alpha;
     }
     else
@@ -106,11 +112,11 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
 
             if (beta <= alpha)
             {
-                PrintPruningInfo<DebugBehavior>(alpha, beta, position, false);
+                PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
                 return beta;
             }
         }
-        PrintPruningInfo<DebugBehavior>(alpha, beta, position, false);
+        PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
         return beta;
     }
 }

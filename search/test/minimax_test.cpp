@@ -78,19 +78,23 @@ struct DebuggingEnabled
 };
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintPruningInfo(const Evaluation alpha,
-                                                                const Evaluation beta,
-                                                                const Position& position,
-                                                                const bool entering_node)
+std::enable_if_t<DebugBehavior::enabled, void> PrintPruningInfoNodeEntry(const Evaluation alpha,
+                                                                         const Evaluation beta,
+                                                                         const Position& position)
 {
-    const std::string identifier = entering_node ? "-> ID " + std::to_string(DecodeUniqueId(position))
-                                                 : "ID " + std::to_string(DecodeUniqueId(position)) + " ->";
-    std::cout << identifier << std::endl;
-    std::cout << "alpha " << alpha << ", beta " << beta << std::endl;
-    if (!entering_node)
-    {
-        std::cout << "Pruning: " << std::boolalpha << (alpha >= beta) << std::endl;
-    }
+    std::cout << "-> node " + std::to_string(DecodeUniqueId(position)) << '\n';
+    std::cout << "alpha " << alpha << ", beta " << beta << '\n';
+    std::cout << std::endl;
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintPruningInfoNodeExit(const Evaluation alpha,
+                                                                        const Evaluation beta,
+                                                                        const Position& position)
+{
+    std::cout << "node " + std::to_string(DecodeUniqueId(position)) + " ->" << '\n';
+    std::cout << "alpha " << alpha << ", beta " << beta << '\n';
+    std::cout << "pruning: " << std::boolalpha << (alpha >= beta) << '\n';
     std::cout << std::endl;
 }
 
@@ -98,7 +102,7 @@ template <typename DebugBehavior>
 std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluation evaluation,
                                                                    const Position& position)
 {
-    std::cout << "ID " << DecodeUniqueId(position) << std::endl;
+    std::cout << "node " << DecodeUniqueId(position) << std::endl;
     std::cout << "eval " << evaluation << std::endl << std::endl;
 }
 
