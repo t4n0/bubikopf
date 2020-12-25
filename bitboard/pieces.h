@@ -1,8 +1,8 @@
 #ifndef BITBOAD_PIECES_H
 #define BITBOAD_PIECES_H
 
-#include <cstdint>
 #include <array>
+#include <cstdint>
 
 namespace Chess
 {
@@ -19,7 +19,7 @@ constexpr std::size_t ROOK = 4;
 constexpr std::size_t QUEEN = 5;
 constexpr std::size_t KING = 6;
 
-constexpr std::array<const char* const, 7> PIECE_LABEL{"NONE", "PAWN", "KNIGHT", "BISHOP", "ROOK", "QUEEN", "KING"};
+constexpr std::array<const char* const, 7> PIECE_LABEL{"_", "p", "n", "b", "r", "q", "k"};
 
 }  // namespace Chess
 
