@@ -1,5 +1,7 @@
 #include "bitboard/move.h"
 
+#include "hardware/trailing_zeros_count.h"
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -105,6 +107,26 @@ TEST(MoveShiftPromotionTest, GivenOnAllOnes_Expect7)
 TEST(MoveShiftTypeTest, GivenOnAllOnes_Expect15)
 {
     EXPECT_EQ((MOVE_ONES & MOVE_MASK_TYPE) >> MOVE_SHIFT_TYPE, 0b00001111);
+}
+
+TEST(ToUciString, GivenEmptyBitmove_ExpectUciNullmove)
+{
+    constexpr const char* const expected_null_move = "0000";
+    EXPECT_EQ(ToUciString(Bitmove{0}), expected_null_move);
+}
+
+TEST(ToUciString, GivenBitmove_ExpectCorrectUciMove)
+{
+    const Bitmove arbritrary_move =
+        ComposeMove(tzcnt(E7), tzcnt(E1), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+    EXPECT_EQ(ToUciString(arbritrary_move), "e7e1");
+}
+
+TEST(ToUciString, GivenBitmoveWithPromotion_ExpectCorrectUciMove)
+{
+    const Bitmove arbritrary_move =
+        ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, NO_CAPTURE, KNIGHT, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+    EXPECT_EQ(ToUciString(arbritrary_move), "a2a1n");
 }
 
 }  // namespace

@@ -98,6 +98,28 @@ inline std::string ToString(const Bitmove& move)
     return move_print_out.str();
 }
 
+inline std::string ToUciString(const Bitmove& move)
+{
+    const bool is_null_move = !move;
+    if (is_null_move)
+    {
+        constexpr const char* const null_move = "0000";
+        return null_move;
+    }
+
+    std::stringstream uci_move{};
+    const std::size_t source_bit = move & MOVE_MASK_SOURCE;
+    const std::size_t target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
+    uci_move << SQUARE_LABEL.at(source_bit) << SQUARE_LABEL.at(target_bit);
+    const std::size_t promotion_kind = (move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION;
+    if (promotion_kind)
+    {
+        uci_move << PIECE_LABEL.at(promotion_kind);
+    }
+
+    return uci_move.str();
+}
+
 }  // namespace Chess
 
 #endif
