@@ -11,8 +11,6 @@
 namespace Chess
 {
 
-long long Statistic::number_of_evaluations = 0;
-
 namespace
 {
 
@@ -21,10 +19,11 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
     // Setup
     Position position{};
     MoveList move_list{};
+    Statistic stats{};
     const int DEPTH{3};
 
     // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId, EvaluteToZero>(DEPTH, position, move_list.begin());
+    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId, EvaluteToZero>(DEPTH, position, move_list.begin(), stats);
 
     // Expect
     const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
@@ -43,9 +42,6 @@ struct TraverseAllLeavesTestParameter
 
 class TraverseAllLeavesTestFixture : public testing::TestWithParam<TraverseAllLeavesTestParameter>
 {
-  public:
-    void SetUp() final { Statistic::number_of_evaluations = 0; }
-    void TearDown() final {}
 };
 
 TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
@@ -53,14 +49,15 @@ TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations
     // Setup
     Position position = PositionFromFen(GetParam().fen);
     MoveList move_list{};
+    Statistic stats{};
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    TraverseAllLeaves<GenerateAllPseudoLegalMoves, EvaluteToZero>(GetParam().depth, position, move_list.begin());
+    TraverseAllLeaves<GenerateAllPseudoLegalMoves, EvaluteToZero>(GetParam().depth, position, move_list.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect
-    EXPECT_EQ(GetParam().expected_number_of_nodes, Statistic::number_of_evaluations) << ToString(move_list);
+    EXPECT_EQ(GetParam().expected_number_of_nodes, stats.number_of_evaluations) << ToString(move_list);
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 }

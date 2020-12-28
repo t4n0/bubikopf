@@ -9,8 +9,6 @@
 #include <iostream>
 #include <string>
 
-long long Chess::Statistic::number_of_evaluations = 0;
-
 int main(int argc, char** argv)
 {
     if (argc != 3)
@@ -25,13 +23,14 @@ int main(int argc, char** argv)
 
     Chess::Position position = Chess::PositionFromFen(fen);
     Chess::MoveList move_list{};
+    Chess::Statistic stats{};
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
-        depth, position, move_list.begin());
+        depth, position, move_list.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-    std::cout << "Number of static evaluations " << Chess::Statistic::number_of_evaluations << std::endl;
+    std::cout << "Number of static evaluations " << stats.number_of_evaluations << std::endl;
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 
