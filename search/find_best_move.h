@@ -4,6 +4,7 @@
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
 
+#include <limits>
 #include <tuple>
 #include <type_traits>
 
@@ -47,8 +48,8 @@ template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBe
 std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                                              Position& position,
                                              const MoveList::iterator& end_iterator_before_move_generation,
-                                             const Evaluation alpha_parent,
-                                             const Evaluation beta_parent)
+                                             const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
+                                             const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
     PrintPruningInfoNodeEntry<DebugBehavior>(alpha_parent, beta_parent, position);
     if (depth == 0)

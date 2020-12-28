@@ -139,10 +139,8 @@ TEST_F(FindBestMovePruningTestFixture, GivenDepth3_ExpectEvaluationOrderFromExam
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation.at(12) = -4;
 
     // Call
-    const Evaluation alpha_init = std::numeric_limits<Evaluation>::lowest();
-    const Evaluation beta_init = std::numeric_limits<Evaluation>::max();
     FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingEnabled>(
-        DEPTH, position, move_list.begin(), alpha_init, beta_init);
+        DEPTH, position, move_list.begin());
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -166,15 +164,13 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
 {
     // Setup
     const int depth{6};  // Allow king to be captured
-    const Evaluation alpha_init = std::numeric_limits<Evaluation>::lowest();
-    const Evaluation beta_init = std::numeric_limits<Evaluation>::max();
     Position position{PositionFromFen(GetFen())};
     MoveList move_list{};
 
     // Call
     Bitmove best_move;
     std::tie(best_move, std::ignore) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, move_list.begin(), alpha_init, beta_init);
+        depth, position, move_list.begin());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
