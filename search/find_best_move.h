@@ -4,6 +4,7 @@
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
 
+#include <tuple>
 #include <type_traits>
 
 namespace Chess
@@ -43,18 +44,19 @@ std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluationInfo(const Evalua
 
 /// @brief A minimax search using alpha / beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
-Evaluation FindBestMove(const uint8_t depth,
-                        Position& position,
-                        const MoveList::iterator& end_iterator_before_move_generation,
-                        const Evaluation alpha_parent,
-                        const Evaluation beta_parent)
+std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
+                                             Position& position,
+                                             const MoveList::iterator& end_iterator_before_move_generation,
+                                             const Evaluation alpha_parent,
+                                             const Evaluation beta_parent)
 {
     PrintPruningInfoNodeEntry<DebugBehavior>(alpha_parent, beta_parent, position);
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
+        constexpr Bitmove null_move = 0;
         PrintEvaluationInfo<DebugBehavior>(evaluation, position);
-        return evaluation;
+        return std::tie(null_move, evaluation);
     }
 
     const MoveList::iterator end_iterator_after_move_generation =
@@ -62,6 +64,7 @@ Evaluation FindBestMove(const uint8_t depth,
 
     Evaluation alpha = alpha_parent;
     Evaluation beta = beta_parent;
+    Bitmove best_move;
 
     if (position.white_to_move_)
     {
@@ -72,20 +75,25 @@ Evaluation FindBestMove(const uint8_t depth,
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                Evaluation eval = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
+                Evaluation eval;
+                std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
-                alpha = std::max(eval, alpha);
+                if (eval > alpha)
+                {
+                    alpha = eval;
+                    best_move = *move_iterator;
+                }
             }
             position.UnmakeMove(*move_iterator);
 
             if (alpha >= beta)
             {
                 PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
-                return alpha;
+                return std::tie(best_move, alpha);
             }
         }
         PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
-        return alpha;
+        return std::tie(best_move, alpha);
     }
     else
     {
@@ -96,20 +104,25 @@ Evaluation FindBestMove(const uint8_t depth,
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                Evaluation eval = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
+                Evaluation eval;
+                std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
-                beta = std::min(eval, beta);
+                if (eval < beta)
+                {
+                    beta = eval;
+                    best_move = *move_iterator;
+                }
             }
             position.UnmakeMove(*move_iterator);
 
             if (beta <= alpha)
             {
                 PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
-                return beta;
+                return std::tie(best_move, beta);
             }
         }
         PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
-        return beta;
+        return std::tie(best_move, beta);
     }
 }
 

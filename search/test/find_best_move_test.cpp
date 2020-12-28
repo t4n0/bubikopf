@@ -1,5 +1,8 @@
 #include "search/find_best_move.h"
 
+#include "bitboard/move_generation.h"
+#include "bitboard/position_from_fen.h"
+#include "evaluate/evaluate.h"
 #include "hardware/trailing_zeros_count.h"
 
 #include <gtest/gtest.h>
@@ -109,7 +112,7 @@ std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluat
 namespace
 {
 
-class FindBestMoveTestFixture : public testing::Test
+class FindBestMovePruningTestFixture : public testing::Test
 {
     void SetUp() final
     {
@@ -123,7 +126,7 @@ class FindBestMoveTestFixture : public testing::Test
     Position position{EncodeUniqueIdToZero()};
 };
 
-TEST_F(FindBestMoveTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
+TEST_F(FindBestMovePruningTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
 {
     // Setup
     const int DEPTH{3};
@@ -151,6 +154,42 @@ TEST_F(FindBestMoveTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
     const std::vector<int> expected_unique_id_evaluation_order{5, 6, 7, 11, 12};
     EXPECT_EQ(EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order, expected_unique_id_evaluation_order);
 }
+
+class FindBestMoveTestFixture : public testing::TestWithParam<std::tuple<std::string, std::string>>
+{
+  public:
+    std::string GetFen() { return std::get<0>(GetParam()); }
+    std::string GetExpectedBestMove() { return std::get<1>(GetParam()); }
+};
+
+TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
+{
+    // Setup
+    const int depth{6};  // Allow king to be captured
+    const Evaluation alpha_init = std::numeric_limits<Evaluation>::lowest();
+    const Evaluation beta_init = std::numeric_limits<Evaluation>::max();
+    Position position{PositionFromFen(GetFen())};
+    MoveList move_list{};
+
+    // Call
+    Bitmove best_move;
+    std::tie(best_move, std::ignore) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
+        depth, position, move_list.begin(), alpha_init, beta_init);
+
+    // Expect
+    EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
+}
+
+const std::array<std::tuple<std::string, std::string>, 4> various_check_mate_in_three_positions{{
+    {"r2q1rk1/pb3p1p/1pn3p1/2p1R2Q/2P5/2BB4/P4PPP/R5K1 w - - 0 21", "h5h7"},
+    {"r2q2kr/ppp1b1pp/2n5/4B3/3Pn1b1/2P5/PP4PP/RN1Q1RK1 w - - 1 12", "d1b3"},
+    {"7r/Q1p2ppp/1p3k2/1Bb5/5q2/2N5/PPPrR1KP/R7 b - - 2 21", "f4g4"},
+    {"7r/6k1/1p2p1p1/p2pP1b1/P1NP1qpr/2P3N1/1R2QPP1/4R1K1 b - - 0 37", "h4h1"},
+}};
+
+INSTANTIATE_TEST_SUITE_P(VariousCheckmateInThreePositions,
+                         FindBestMoveTestFixture,
+                         testing::ValuesIn(various_check_mate_in_three_positions));
 
 }  // namespace
 }  // namespace Chess

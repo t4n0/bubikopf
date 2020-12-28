@@ -22,6 +22,7 @@ cc_test(
     name = "test",
     srcs = ["find_best_move_test.cpp"],
     deps = [
+        "//evaluate",
         "//hardware",
         "//search",
         "@googletest//:gtest_main",
