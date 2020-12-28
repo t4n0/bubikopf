@@ -1,9 +1,8 @@
 #include "bitboard/position.h"
 #include "bitboard/position_from_fen.h"
 #include "evaluate/test/evaluate_mock.h"
-#include "search/statistic.h"
-#include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
+#include "search/traverse_all_leaves.h"
 
 #include <cassert>
 #include <chrono>
@@ -28,7 +27,7 @@ int main(int argc, char** argv)
     Chess::MoveList move_list{};
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    Chess::minimax<Chess::SearchAllBranchesWithoutPruning, Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
+    Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
         depth, position, move_list.begin());
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 

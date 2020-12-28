@@ -4,7 +4,7 @@ cc_library(
     name = "search",
     hdrs = [
         "find_best_move.h",
-        "statistic.h",
+        "traverse_all_leaves.h",
     ],
     visibility = ["//visibility:public"],
     deps = ["//bitboard"],

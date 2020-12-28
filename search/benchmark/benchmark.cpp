@@ -1,8 +1,7 @@
 #include "bitboard/position_from_fen.h"
 #include "evaluate/test/evaluate_mock.h"
-#include "search/statistic.h"
-#include "search/test/minimax_mock.h"
 #include "search/test/move_generation_mock.h"
+#include "search/traverse_all_leaves.h"
 
 #include <benchmark/benchmark.h>
 
@@ -22,15 +21,12 @@ static void FullSearch(benchmark::State& state)
 
     for (auto _ : state)
     {
-        Chess::minimax<Chess::SearchAllBranchesWithoutPruning,
-                       Chess::GenerateAllPseudoLegalMoves,
-                       Chess::EvaluteToZero>(4, starting_position, move_list.begin());
-        Chess::minimax<Chess::SearchAllBranchesWithoutPruning,
-                       Chess::GenerateAllPseudoLegalMoves,
-                       Chess::EvaluteToZero>(4, middle_game, move_list.begin());
-        Chess::minimax<Chess::SearchAllBranchesWithoutPruning,
-                       Chess::GenerateAllPseudoLegalMoves,
-                       Chess::EvaluteToZero>(4, end_game, move_list.begin());
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
+            4, starting_position, move_list.begin());
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
+            4, middle_game, move_list.begin());
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
+            4, end_game, move_list.begin());
     }
 }
 

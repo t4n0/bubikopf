@@ -2,10 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 cc_library(
     name = "mock",
-    hdrs = [
-        "minimax_mock.h",
-        "move_generation_mock.h",
-    ],
+    hdrs = ["move_generation_mock.h"],
     visibility = ["//search/benchmark:__pkg__"],
 )
 
