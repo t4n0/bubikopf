@@ -1,5 +1,4 @@
 #include "bitboard/move.h"
-
 #include "hardware/trailing_zeros_count.h"
 
 #include <gtest/gtest.h>

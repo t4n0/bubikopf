@@ -1,4 +1,5 @@
 #include "play/uci_interactor.h"
+
 #include <iostream>
 #include <iterator>
 #include <sstream>

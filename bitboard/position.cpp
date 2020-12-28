@@ -67,13 +67,11 @@ void Position::MakeMove(Bitmove move)
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
-        case MOVE_VALUE_TYPE_QUIET_NON_PAWN:
-        {
+        case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
             boards_[BOARD_IDX_EXTRAS]++;
             break;
         }
-        case MOVE_VALUE_TYPE_CAPTURE:
-        {
+        case MOVE_VALUE_TYPE_CAPTURE: {
             const std::size_t captured_piece =
                 defending_side_ + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
             boards_[defending_side_] &= ~target;
@@ -81,13 +79,11 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             break;
         }
-        case MOVE_VALUE_TYPE_PAWN_PUSH:
-        {
+        case MOVE_VALUE_TYPE_PAWN_PUSH: {
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             break;
         }
-        case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH:
-        {
+        case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
             const Bitmove source_bit = move & MOVE_MASK_SOURCE;
             const Bitmove target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
             boards_[BOARD_IDX_EXTRAS] |= ((source_bit + target_bit) >> 1)
@@ -95,8 +91,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             break;
         }
-        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE:
-        {
+        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const Bitboard en_passant_square = BOARD_ONE
                                                << ((current_extras & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
@@ -105,8 +100,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] &= ~BOARD_MASK_STATIC_PLIES;
             break;
         }
-        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING:
-        {
+        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
             constexpr Bitboard white_rook_jump = F1 | H1;
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -116,8 +110,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_KINGSIDE_CASTLING_ON_LAST_MOVE;
             break;
         }
-        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING:
-        {
+        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
             constexpr Bitboard white_rook_jump = A1 | D1;
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -127,8 +120,7 @@ void Position::MakeMove(Bitmove move)
             boards_[BOARD_IDX_EXTRAS] |= BOARD_VALUE_QUEENSIDE_CASTLING_ON_LAST_MOVE;
             break;
         }
-        case MOVE_VALUE_TYPE_PROMOTION:
-        {
+        case MOVE_VALUE_TYPE_PROMOTION: {
             const std::size_t board_idx_added_piece_kind =
                 attacking_side_ + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
             boards_[attacking_piece_index] &=
@@ -198,8 +190,7 @@ void Position::UnmakeMove(Bitmove move)
     const Bitmove move_type = move & MOVE_MASK_TYPE;
     switch (move_type)
     {
-        case MOVE_VALUE_TYPE_CAPTURE:
-        {
+        case MOVE_VALUE_TYPE_CAPTURE: {
             const std::size_t captured_piece =
                 defending_side_ + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
             boards_[defending_side_] |= target;
@@ -207,8 +198,7 @@ void Position::UnmakeMove(Bitmove move)
             return;
         }
 
-        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE:
-        {
+        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
             const Bitboard en_passant_square =
                 BOARD_ONE << ((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
@@ -216,8 +206,7 @@ void Position::UnmakeMove(Bitmove move)
             boards_[defending_side_ + PAWN] |= en_passant_victim;
             return;
         }
-        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING:
-        {
+        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
             constexpr Bitboard white_rook_jump = F1 | H1;
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -225,8 +214,7 @@ void Position::UnmakeMove(Bitmove move)
             boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
-        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING:
-        {
+        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
             constexpr Bitboard white_rook_jump = A1 | D1;
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -234,8 +222,7 @@ void Position::UnmakeMove(Bitmove move)
             boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
-        case MOVE_VALUE_TYPE_PROMOTION:
-        {
+        case MOVE_VALUE_TYPE_PROMOTION: {
             boards_[attacking_piece_index] &=
                 ~target;  // pawns were set on target and source as side effect of default operation
             const std::size_t board_idx_added_piece_kind =

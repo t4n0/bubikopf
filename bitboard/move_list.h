@@ -3,8 +3,8 @@
 
 #include "bitboard/move.h"
 
-#include <sstream>
 #include <array>
+#include <sstream>
 
 namespace Chess
 {
