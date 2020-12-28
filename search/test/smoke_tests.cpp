@@ -23,7 +23,7 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
     const int DEPTH{3};
 
     // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId, EvaluteToZero>(DEPTH, position, move_list.begin(), stats);
+    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(DEPTH, position, move_list.begin(), stats);
 
     // Expect
     const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
@@ -53,7 +53,7 @@ TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    TraverseAllLeaves<GenerateAllPseudoLegalMoves, EvaluteToZero>(GetParam().depth, position, move_list.begin(), stats);
+    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(GetParam().depth, position, move_list.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect

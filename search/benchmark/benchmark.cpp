@@ -20,12 +20,9 @@ static void FullSearch(benchmark::State& state)
 
     for (auto _ : state)
     {
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
-            4, starting_position, move_list.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
-            4, middle_game, move_list.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
-            4, end_game, move_list.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, starting_position, move_list.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, middle_game, move_list.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, end_game, move_list.begin(), stats);
     }
 }
 

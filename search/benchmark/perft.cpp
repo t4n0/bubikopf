@@ -26,8 +26,7 @@ int main(int argc, char** argv)
     Chess::Statistic stats{};
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluteToZero>(
-        depth, position, move_list.begin(), stats);
+    Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(depth, position, move_list.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     std::cout << "Number of static evaluations " << stats.number_of_evaluations << std::endl;
