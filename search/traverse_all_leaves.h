@@ -11,7 +11,7 @@ namespace Chess
 
 struct Statistic
 {
-    static long long number_of_evaluations;
+    long long number_of_evaluations;
 };
 
 template <typename EvaluateBehavior>
@@ -25,13 +25,13 @@ std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> Genera
 ///
 /// Used for debugging and benchmarks.
 template <typename GenerateBehavior, typename EvaluateBehavior>
-Evaluation TraverseAllLeaves(const uint8_t depth,
-                             Position& position,
-                             const MoveList::iterator& end_iterator_before_move_generation)
+void TraverseAllLeaves(const uint8_t depth,
+                       Statistic& stats,
+                       const MoveList::iterator& end_iterator_before_move_generation)
 {
     if (depth == 0)
     {
-        Statistic::number_of_evaluations++;
+        stats.number_of_evaluations++;
         return evaluate<EvaluateBehavior>(position);
     }
 
@@ -40,7 +40,6 @@ Evaluation TraverseAllLeaves(const uint8_t depth,
 
     if (position.white_to_move_)
     {
-        Evaluation max_eval{std::numeric_limits<Evaluation>::lowest()};
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)
@@ -48,17 +47,15 @@ Evaluation TraverseAllLeaves(const uint8_t depth,
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                Evaluation eval = TraverseAllLeaves<GenerateBehavior, EvaluateBehavior>(
+                TraverseAllLeaves<GenerateBehavior, EvaluateBehavior>(
                     depth - 1, position, end_iterator_after_move_generation);
-                max_eval = eval > max_eval ? eval : max_eval;
             }
             position.UnmakeMove(*move_iterator);
         }
-        return max_eval;
+        return;
     }
     else
     {
-        Evaluation min_eval{std::numeric_limits<Evaluation>::max()};
         for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)
@@ -68,12 +65,11 @@ Evaluation TraverseAllLeaves(const uint8_t depth,
             {
                 Evaluation eval = TraverseAllLeaves<GenerateBehavior, EvaluateBehavior>(
                     depth - 1, position, end_iterator_after_move_generation);
-                min_eval = eval < min_eval ? eval : min_eval;
             }
 
             position.UnmakeMove(*move_iterator);
         }
-        return min_eval;
+        return;
     }
 }
 
