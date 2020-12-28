@@ -1,4 +1,4 @@
-#include "search/minimax.h"
+#include "search/find_best_move.h"
 
 #include "hardware/trailing_zeros_count.h"
 
@@ -109,7 +109,7 @@ std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluat
 namespace
 {
 
-class MinimaxTestFixture : public testing::Test
+class FindBestMoveTestFixture : public testing::Test
 {
     void SetUp() final
     {
@@ -123,7 +123,7 @@ class MinimaxTestFixture : public testing::Test
     Position position{EncodeUniqueIdToZero()};
 };
 
-TEST_F(MinimaxTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
+TEST_F(FindBestMoveTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
 {
     // Setup
     const int DEPTH{3};
@@ -138,10 +138,8 @@ TEST_F(MinimaxTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
     // Call
     const Evaluation alpha_init = std::numeric_limits<Evaluation>::lowest();
     const Evaluation beta_init = std::numeric_limits<Evaluation>::max();
-    minimax<SearchWithAlphaBetaPruning,
-            GenerateTwoMovesThatEncodeUniqueId,
-            EvaluteAccordingToEncodedUniqueId,
-            DebuggingEnabled>(DEPTH, position, move_list.begin(), alpha_init, beta_init);
+    FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingEnabled>(
+        DEPTH, position, move_list.begin(), alpha_init, beta_init);
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;

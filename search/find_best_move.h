@@ -1,5 +1,5 @@
-#ifndef SEACH_MINIMAX_H
-#define SEACH_MINIMAX_H
+#ifndef SEARCH_FIND_BEST_MOVE_H
+#define SEARCH_FIND_BEST_MOVE_H
 
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
@@ -41,21 +41,13 @@ std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluationInfo(const Evalua
 {
 }
 
-struct SearchWithAlphaBetaPruning
-{
-    static constexpr bool search_with_alpha_beta_pruning = true;
-};
-
-template <typename SearchBehaviour,
-          typename GenerateBehavior,
-          typename EvaluateBehavior,
-          typename DebugBehavior = DebuggingDisabled>
-std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> minimax(
-    const uint8_t depth,
-    Position& position,
-    const MoveList::iterator& end_iterator_before_move_generation,
-    const Evaluation alpha_parent,
-    const Evaluation beta_parent)
+/// @brief A minimax search using alpha / beta pruning.
+template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
+Evaluation FindBestMove(const uint8_t depth,
+                        Position& position,
+                        const MoveList::iterator& end_iterator_before_move_generation,
+                        const Evaluation alpha_parent,
+                        const Evaluation beta_parent)
 {
     PrintPruningInfoNodeEntry<DebugBehavior>(alpha_parent, beta_parent, position);
     if (depth == 0)
@@ -80,7 +72,7 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior, DebugBehavior>(
+                Evaluation eval = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
                 alpha = std::max(eval, alpha);
             }
@@ -104,7 +96,7 @@ std::enable_if_t<SearchBehaviour::search_with_alpha_beta_pruning, Evaluation> mi
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                Evaluation eval = minimax<SearchBehaviour, GenerateBehavior, EvaluateBehavior, DebugBehavior>(
+                Evaluation eval = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
                 beta = std::min(eval, beta);
             }

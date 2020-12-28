@@ -22,8 +22,8 @@ cc_test(
 )
 
 cc_test(
-    name = "minimax",
-    srcs = ["minimax_test.cpp"],
+    name = "test",
+    srcs = ["find_best_move_test.cpp"],
     deps = [
         "//hardware",
         "//search",
