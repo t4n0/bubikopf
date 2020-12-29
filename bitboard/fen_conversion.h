@@ -1,5 +1,5 @@
-#ifndef BITBOARD_POSITION_FROM_FEN_H
-#define BITBOARD_POSITION_FROM_FEN_H
+#ifndef BITBOARD_FEN_CONVERSION_H
+#define BITBOARD_FEN_CONVERSION_H
 
 #include "bitboard/position.h"
 

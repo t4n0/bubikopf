@@ -1,5 +1,5 @@
 #include "bitboard/board.h"
-#include "bitboard/position_from_fen.h"
+#include "bitboard/fen_conversion.h"
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 

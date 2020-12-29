@@ -1,10 +1,9 @@
-#include "bitboard/position_from_fen.h"
+#include "bitboard/fen_conversion.h"
 
 #include "bitboard/board.h"
 #include "bitboard/squares.h"
 
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <vector>

@@ -1,4 +1,4 @@
-#include "bitboard/position_from_fen.h"
+#include "bitboard/fen_conversion.h"
 #include "evaluate/test/evaluate_mock.h"
 #include "search/test/move_generation_mock.h"
 #include "search/traverse_all_leaves.h"

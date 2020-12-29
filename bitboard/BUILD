@@ -5,20 +5,20 @@ cc_library(
     srcs = [
         "basic_type_declarations.h",
         "board.h",
+        "fen_conversion.cpp",
         "move.h",
         "move_generation.h",
         "move_list.h",
         "pieces.h",
         "position.cpp",
         "position.h",
-        "position_from_fen.cpp",
         "shift.cpp",
         "shift.h",
         "squares.h",
     ],
     hdrs = [
+        "fen_conversion.h",
         "move_generation.h",
-        "position_from_fen.h",
     ],
     visibility = ["//visibility:public"],
     deps = [
