@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
 cc_library(
     name = "uci_interactor",
@@ -7,7 +7,7 @@ cc_library(
 )
 
 cc_library(
-    name = "bubikopf",
+    name = "engine_api",
     srcs = ["bubikopf.cpp"],
     hdrs = ["bubikopf.h"],
     visibility = ["//play:__subpackages__"],
@@ -18,3 +18,12 @@ cc_library(
     ],
 )
 
+cc_binary(
+    name = "bubikopf",
+    srcs = ["main.cpp"],
+    linkopts = ["-pthread"],
+    deps = [
+        ":engine_api",
+        ":uci_interactor",
+    ],
+)

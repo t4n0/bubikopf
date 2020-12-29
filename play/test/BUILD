@@ -4,7 +4,7 @@ cc_test(
     name = "test",
     srcs = ["bubikopf_unit_test.cpp"],
     deps = [
-        "//play:bubikopf",
+        "//play:engine_api",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
