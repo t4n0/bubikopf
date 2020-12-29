@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <iterator>
 #include <sstream>
-#include <vector>
 
 namespace Chess
 {
@@ -15,16 +14,14 @@ Position PositionFromFen(const std::string& fen)
 {
     Position position{};
 
-    std::istringstream iss{fen};
-    const std::vector<std::string> tokens{std::istream_iterator<std::string>{iss},
-                                          std::istream_iterator<std::string>{}};
+    const std::vector<std::string> tokens = TokenizeFen(fen);
 
     if (tokens.size() != 6)
     {
         throw std::runtime_error{"FEN contains invalid number of tokens."};
     }
 
-    const std::string pieces = tokens.at(0);
+    const std::string pieces = tokens.at(kFenTokenPieces);
     Bitboard current_square = A8;
     for (const char symbol : pieces)
     {
@@ -101,7 +98,7 @@ Position PositionFromFen(const std::string& fen)
         }
     }
 
-    const char side_to_move = tokens.at(1).front();
+    const char side_to_move = tokens.at(kFenTokenSide).front();
     switch (side_to_move)
     {
         case 'w':
@@ -118,7 +115,7 @@ Position PositionFromFen(const std::string& fen)
             throw std::runtime_error{"FEN contains invalid token for side to play."};
     }
 
-    const std::string castling_rights = tokens.at(2);
+    const std::string castling_rights = tokens.at(kFenTokenCastling);
     if (castling_rights != "-")
     {
         for (const auto& castling_right : castling_rights)
@@ -143,7 +140,7 @@ Position PositionFromFen(const std::string& fen)
         }
     }
 
-    const std::string en_passant = tokens.at(3);
+    const std::string en_passant = tokens.at(kFenTokenEnPassant);
     if (en_passant != "-")
     {
         const auto location_it = std::find(SQUARE_LABEL.begin(), SQUARE_LABEL.end(), en_passant);
@@ -156,10 +153,10 @@ Position PositionFromFen(const std::string& fen)
         position[BOARD_IDX_EXTRAS] |= en_passant_bits << BOARD_SHIFT_EN_PASSANT;
     }
 
-    const Bitboard static_plies = std::stoi(tokens.at(4));
+    const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
     position[BOARD_IDX_EXTRAS] |= static_plies;
 
-    const Bitboard total_plies = std::stoi(tokens.at(5));
+    const Bitboard total_plies = std::stoi(tokens.at(kFenTokenMoves));
 
     position[BOARD_IDX_EXTRAS] |= total_plies << BOARD_SHIFT_MOVES;
 
@@ -248,6 +245,12 @@ std::string FenFromPosition(const Position& position)
     const auto total_plies = std::to_string((position[BOARD_IDX_EXTRAS] & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES);
 
     return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + total_plies;
+}
+
+std::vector<std::string> TokenizeFen(const std::string& fen)
+{
+    std::istringstream iss{fen};
+    return {std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
 }
 
 }  // namespace Chess
