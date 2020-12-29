@@ -19,6 +19,7 @@ class UciInteractor
     void ParseIncomingCommandsContinously();
 
     std::vector<std::string> GetMoveList();
+    std::atomic_bool quit_game_{false};
     std::atomic_bool restart_game_{false};
     std::atomic_bool find_best_move_{false};
 

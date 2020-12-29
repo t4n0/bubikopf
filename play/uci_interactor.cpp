@@ -93,6 +93,7 @@ void UciInteractor::ParseIncomingCommandsContinously()
 
         if (tokens.front() == "quit")
         {
+            quit_game_.store(true);
             Log("Quitting");
             break;
         }
