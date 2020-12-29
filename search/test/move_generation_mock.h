@@ -1,7 +1,8 @@
 #ifndef SEARCH_TEST_MOVE_GENERATION_MOCK_H
 #define SEARCH_TEST_MOVE_GENERATION_MOCK_H
 
-#include "bitboard/move_generation.h"
+#include "bitboard/move_list.h"
+#include "bitboard/position.h"
 
 #include <type_traits>
 

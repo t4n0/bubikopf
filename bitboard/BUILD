@@ -7,7 +7,6 @@ cc_library(
         "board.h",
         "fen_conversion.cpp",
         "move.h",
-        "move_generation.h",
         "move_list.h",
         "pieces.h",
         "position.cpp",
@@ -18,7 +17,7 @@ cc_library(
     ],
     hdrs = [
         "fen_conversion.h",
-        "move_generation.h",
+        "generate_moves.h",
     ],
     visibility = ["//visibility:public"],
     deps = [

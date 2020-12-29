@@ -1,10 +1,7 @@
 #include "bitboard/fen_conversion.h"
-#include "bitboard/position.h"
-#include "evaluate/test/evaluate_mock.h"
-#include "search/test/move_generation_mock.h"
+#include "bitboard/generate_moves.h"
 #include "search/traverse_all_leaves.h"
 
-#include <cassert>
 #include <chrono>
 #include <iostream>
 #include <string>

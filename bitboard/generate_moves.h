@@ -1,5 +1,5 @@
-#ifndef BITBOARD_MOVE_GENERATION_H
-#define BITBOARD_MOVE_GENERATION_H
+#ifndef BITBOARD_GENERATE_MOVES_H
+#define BITBOARD_GENERATE_MOVES_H
 
 #include "bitboard/lookup_table/knight.h"
 #include "bitboard/lookup_table/pawn.h"

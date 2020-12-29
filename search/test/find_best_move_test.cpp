@@ -1,7 +1,7 @@
 #include "search/find_best_move.h"
 
 #include "bitboard/fen_conversion.h"
-#include "bitboard/move_generation.h"
+#include "bitboard/generate_moves.h"
 #include "evaluate/evaluate.h"
 #include "hardware/trailing_zeros_count.h"
 
