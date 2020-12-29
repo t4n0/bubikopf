@@ -157,10 +157,98 @@ Position PositionFromFen(const std::string& fen)
         position[BOARD_IDX_EXTRAS] |= en_passant_bits << BOARD_SHIFT_EN_PASSANT;
     }
 
-    const int static_plies = std::stoi(tokens.at(4));
+    const Bitboard static_plies = std::stoi(tokens.at(4));
     position[BOARD_IDX_EXTRAS] |= static_plies;
 
+    const Bitboard total_plies = std::stoi(tokens.at(5));
+
+    position[BOARD_IDX_EXTRAS] |= total_plies << BOARD_SHIFT_MOVES;
+
     return position;
+}
+
+std::string FenFromPosition(const Position& position)
+{
+    std::string pieces{};
+    int empty_squares = 0;
+    int squares_covered_in_current_rank = 0;
+    for (int idx = 63; idx >= 0; idx--)
+    {
+        const Bitboard square = Bitboard{1} << idx;
+        const Bitmove white_piece = position.GetPieceKind(BOARD_IDX_WHITE, square);
+        const Bitmove black_piece = position.GetPieceKind(BOARD_IDX_BLACK, square);
+        if (white_piece)
+        {
+            if (empty_squares)
+            {
+                pieces += std::to_string(empty_squares);
+                empty_squares = 0;
+            }
+            pieces += PIECE_LABEL_WHITE.at(white_piece);
+        }
+        else if (black_piece)
+        {
+            if (empty_squares)
+            {
+                pieces += std::to_string(empty_squares);
+                empty_squares = 0;
+            }
+            pieces += PIECE_LABEL.at(black_piece);
+        }
+        else
+        {
+            empty_squares++;
+        }
+
+        squares_covered_in_current_rank++;
+        if (squares_covered_in_current_rank == 8)
+        {
+            squares_covered_in_current_rank = 0;
+            if (empty_squares)
+            {
+                pieces += std::to_string(empty_squares);
+                empty_squares = 0;
+            }
+            if (idx)
+            {
+                pieces += "/";
+            }
+        }
+    }
+
+    const auto side = position.white_to_move_ ? "w" : "b";
+
+    std::string castling{};
+    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_KINGSIDE)
+    {
+        castling += "K";
+    }
+    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_QUEENSIDE)
+    {
+        castling += "Q";
+    }
+    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_KINGSIDE)
+    {
+        castling += "k";
+    }
+    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_QUEENSIDE)
+    {
+        castling += "q";
+    }
+    const bool at_least_one_side_can_castle = position[BOARD_IDX_EXTRAS] & BOARD_MASK_CASTLING;
+    if (!at_least_one_side_can_castle)
+    {
+        castling += "-";
+    }
+
+    const auto en_passant_square_bits = (position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT;
+    const auto en_passant = en_passant_square_bits ? SQUARE_LABEL.at(en_passant_square_bits) : "-";
+
+    const auto static_plies = std::to_string(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES);
+
+    const auto total_plies = std::to_string((position[BOARD_IDX_EXTRAS] & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES);
+
+    return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + total_plies;
 }
 
 }  // namespace Chess

@@ -19,7 +19,10 @@ constexpr std::size_t ROOK = 4;
 constexpr std::size_t QUEEN = 5;
 constexpr std::size_t KING = 6;
 
-constexpr std::array<const char* const, 7> PIECE_LABEL{"_", "p", "n", "b", "r", "q", "k"};
+// UCI does not differentiate between white and black
+constexpr std::array<const char* const, 7> PIECE_LABEL{"-", "p", "n", "b", "r", "q", "k"};
+// FEN differentiates between white and black
+constexpr std::array<const char* const, 7> PIECE_LABEL_WHITE{"-", "P", "N", "B", "R", "Q", "K"};
 
 }  // namespace Chess
 

@@ -9,10 +9,11 @@ namespace Chess
 namespace
 {
 
-constexpr std::array<Bitboard, 4> ALL_BOARD_MASKS{
+constexpr std::array<Bitboard, 5> ALL_BOARD_MASKS{
     BOARD_MASK_STATIC_PLIES,
     BOARD_MASK_EN_PASSANT,
     BOARD_MASK_CASTLING,
+    BOARD_MASK_MOVES,
     BOARD_MASK_UNUSED,
 };
 
@@ -45,14 +46,19 @@ INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          ::testing::Combine(::testing::ValuesIn(ALL_BOARD_MASKS),
                                             ::testing::ValuesIn(ALL_BOARD_MASKS)));
 
-TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect64)
+TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
 {
     EXPECT_EQ((BOARD_ONES & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT, 0b00111111);
 }
 
-TEST(BoardShiftCastlingTest, GivenOnAllOnes_Expect4)
+TEST(BoardShiftCastlingTest, GivenOnAllOnes_Expect4BitsSet)
 {
     EXPECT_EQ((BOARD_ONES & BOARD_MASK_CASTLING) >> BOARD_SHIFT_CASTLING, 0b00001111);
+}
+
+TEST(BoardShiftTotalPliesTest, GivenOnAllOnes_Expect8BitsSet)
+{
+    EXPECT_EQ((BOARD_ONES & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES, 0b11111111);
 }
 
 }  // namespace

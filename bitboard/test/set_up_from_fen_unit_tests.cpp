@@ -10,11 +10,34 @@ namespace Chess
 namespace
 {
 
-class PositionFromFenTestFixture : public ::testing::TestWithParam<std::string>
+class RoundTripConversionTestFixture : public testing::TestWithParam<const char*>
+{
+  public:
+    std::string GetFen() const { return GetParam(); }
+};
+
+TEST_P(RoundTripConversionTestFixture, GivenRoundTripConversion_ExpectOriginalFen)
+{
+    const auto position = PositionFromFen(GetFen());
+    const auto fen_after_round_trip_conversion = FenFromPosition(position);
+
+    EXPECT_EQ(GetFen(), fen_after_round_trip_conversion);
+}
+
+const std::array<const char*, 4> kArbitraryFens{
+    "2r3k1/pp2npp1/3r2qp/8/2BBp3/1PP3Rb/P4P2/R2Q3K b - - 0 28",
+    "8/8/1p5p/p2k2p1/PP4P1/1K5P/8/8 w - - 0 33",
+    "8/p2r1pk1/1p3pp1/2p5/7Q/1B2B2P/Pq3P2/6K1 b - - 3 29",
+    "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4RK1 w - - 1 24",
+};
+
+INSTANTIATE_TEST_SUITE_P(ArbitraryFens, RoundTripConversionTestFixture, testing::ValuesIn(kArbitraryFens));
+
+class InvalidFenTestFixture : public testing::TestWithParam<std::string>
 {
 };
 
-TEST_P(PositionFromFenTestFixture, GivenInvalidFen_ExpectException)
+TEST_P(InvalidFenTestFixture, GivenInvalidFen_ExpectException)
 {
     EXPECT_THROW(PositionFromFen(GetParam()), std::runtime_error);
 }
@@ -27,78 +50,14 @@ const std::string kCastling = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b KQkB e3 
 const std::string kEnPassant = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b KQk e9 1 1";
 
 INSTANTIATE_TEST_SUITE_P(InvalidFens,
-                         PositionFromFenTestFixture,
-                         ::testing::Values(kMissingToken, kExtraToken, kSide, kCastling, kEnPassant));
-
-TEST_F(PositionFromFenTestFixture, WhiteToMove)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 w KQkq e3 1 1");
-    EXPECT_TRUE(position.white_to_move_);
-}
-
-TEST_F(PositionFromFenTestFixture, BlackToMove)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b KQkq e3 1 1");
-    EXPECT_FALSE(position.white_to_move_);
-}
-
-TEST_F(PositionFromFenTestFixture, BlackKingsideCastling)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 w k e3 1 1");
-    EXPECT_TRUE(position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_KINGSIDE);
-}
-
-TEST_F(PositionFromFenTestFixture, BlackQueensideCastling)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 w q e3 1 1");
-    EXPECT_TRUE(position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_QUEENSIDE);
-}
-
-TEST_F(PositionFromFenTestFixture, WhiteKingSideCastling)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b K e3 1 1");
-    EXPECT_TRUE(position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_KINGSIDE);
-}
-
-TEST_F(PositionFromFenTestFixture, WhiteQueenSideCastling)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b Q e3 1 1");
-    EXPECT_TRUE(position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_QUEENSIDE);
-}
-
-TEST_F(PositionFromFenTestFixture, NoCastling)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b - e3 1 1");
-    EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_CASTLING);
-}
-
-TEST_F(PositionFromFenTestFixture, EnPassant)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b - e3 1 1");
-    EXPECT_EQ((position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT, tzcnt(E3));
-}
-
-TEST_F(PositionFromFenTestFixture, NoEnPassant)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b - - 1 1");
-    EXPECT_FALSE(position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT);
-}
-
-TEST_F(PositionFromFenTestFixture, InvalidStaticMoveCount)
-{
-    EXPECT_THROW(PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b - - x 13"), std::invalid_argument);
-}
-
-TEST_F(PositionFromFenTestFixture, StaticMoveCount)
-{
-    const auto position = PositionFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/8 b - - 42 13");
-    EXPECT_EQ((position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES), 42);
-}
+                         InvalidFenTestFixture,
+                         testing::Values(kMissingToken, kExtraToken, kSide, kCastling, kEnPassant));
 
 Position StandardStartingPosition()
 {
     Position position{};
     position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING;
+    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_ADD_MOVE;
     position.white_to_move_ = true;
 
     // white pieces
@@ -122,7 +81,7 @@ Position StandardStartingPosition()
     return position;
 }
 
-TEST_F(PositionFromFenTestFixture, StandardPosition)
+TEST(PositionFromFenTestFixture, StandardPosition)
 {
     const auto position = PositionFromFen(kStandardStartingPosition);
     EXPECT_EQ(position, StandardStartingPosition());
