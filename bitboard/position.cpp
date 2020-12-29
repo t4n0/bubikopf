@@ -164,6 +164,15 @@ void Position::MakeMove(Bitmove move)
         }
     }
 
+    if (!white_to_move_)
+    {
+        boards_[BOARD_IDX_EXTRAS] += BOARD_VALUE_ADD_MOVE;
+    }
+    else
+    {
+        // Move counter is incremented only after black move.
+    }
+
     white_to_move_ = !white_to_move_;
     attacking_side_ ^= BOARD_IDX_TOGGLE_SIDE;
     defending_side_ ^= BOARD_IDX_TOGGLE_SIDE;

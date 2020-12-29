@@ -1,4 +1,5 @@
-﻿#include "bitboard/position.h"
+﻿#include "bitboard/fen_conversion.h"
+#include "bitboard/position.h"
 #include "bitboard/squares.h"
 #include "hardware/trailing_zeros_count.h"
 
@@ -39,6 +40,42 @@ TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumb
         EXPECT_EQ(board, expected_unique_number);
         expected_unique_number++;
     }
+}
+
+TEST(MakeUnmakeMoveTest, GivenWhiteMove_ExpectMoveCountUnchanged)
+{
+    const std::string arbitrary_fen = "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4RK1 w - - 1 24";
+    const Bitmove arbitrary_move{};
+
+    Position position = PositionFromFen(arbitrary_fen);
+    position.MakeMove(arbitrary_move);
+
+    const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
+    const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
+    EXPECT_EQ(moves_original, moves_after_make);
+
+    position.UnmakeMove(arbitrary_move);
+
+    const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
+    EXPECT_EQ(moves_original, moves_after_unmake);
+}
+
+TEST(MakeUnmakeMoveTest, GivenBlackMove_ExpectMoveCountIncremented)
+{
+    const std::string arbitrary_fen = "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4R1K b - - 2 24";
+    const Bitmove arbitrary_move{};
+
+    Position position = PositionFromFen(arbitrary_fen);
+    position.MakeMove(arbitrary_move);
+
+    const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
+    const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
+    EXPECT_EQ(moves_original + 1, moves_after_make);
+
+    position.UnmakeMove(arbitrary_move);
+
+    const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
+    EXPECT_EQ(moves_original, moves_after_unmake);
 }
 
 }  // namespace
