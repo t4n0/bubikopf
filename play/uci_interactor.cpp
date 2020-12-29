@@ -104,6 +104,12 @@ void UciInteractor::ParseIncomingCommandsContinously()
     }
 }
 
+void UciInteractor::SendBestMoveOnce(const std::string& move)
+{
+    const std::string answer = move + '\n';
+    std::cout << answer;
+}
+
 std::vector<std::string> UciInteractor::GetMoveList()
 {
     const std::lock_guard<std::mutex> move_list_guard{move_list_mutex_};
