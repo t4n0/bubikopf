@@ -78,5 +78,26 @@ TEST(MakeUnmakeMoveTest, GivenBlackMove_ExpectMoveCountIncremented)
     EXPECT_EQ(moves_original, moves_after_unmake);
 }
 
+TEST(MakeUnmakeMoveTest, GivenStartPosition_ExpectNoMovesPlayed)
+{
+    const Position position = PositionFromFen(kStandardStartingPosition);
+    const std::size_t expected_number_of_plies_played = 0;
+    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+}
+
+TEST(MakeUnmakeMoveTest, GivenPositionAfter3FullMovesAndWhiteToPlay_Expect6Plies)
+{
+    const Position position = PositionFromFen("rnbqk1nr/ppp1bppp/4p3/3p4/3P4/4PN2/PPP2PPP/RNBQKB1R w KQkq - 2 4");
+    const std::size_t expected_number_of_plies_played = 6;
+    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+}
+
+TEST(MakeUnmakeMoveTest, GivenPositionAfter3FullMovesAndBlackToPlay_Expect7Plies)
+{
+    const Position position = PositionFromFen("rnbqk1nr/ppp1bppp/4p3/3p4/3P4/2P1PN2/PP3PPP/RNBQKB1R b KQkq - 0 4");
+    const std::size_t expected_number_of_plies_played = 7;
+    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+}
+
 }  // namespace
 }  // namespace Chess

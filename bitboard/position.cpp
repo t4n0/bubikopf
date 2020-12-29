@@ -14,6 +14,14 @@
 namespace Chess
 {
 
+std::size_t Position::GetNumberOfPlayedPlies() const
+{
+    const std::size_t number_of_plies_from_full_move_counter =
+        2 * (((boards_[BOARD_IDX_EXTRAS] & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES) - 1);
+    const std::size_t additional_ply_if_white_already_played = !white_to_move_;
+    return number_of_plies_from_full_move_counter + additional_ply_if_white_already_played;
+}
+
 Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) const
 {
     if (boards_[side + PAWN] & location)
