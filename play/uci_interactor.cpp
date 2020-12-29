@@ -7,38 +7,12 @@
 namespace Chess
 {
 
-UciInteractor::UciInteractor()
-{
-    log_file_.open("log.txt", std::ios::out | std::ios::app);
-}
-
-UciInteractor::~UciInteractor()
-{
-    log_file_.close();
-}
-
-void UciInteractor::Log(const std::string& message)
-{
-    const auto current_time = std::chrono::system_clock::to_time_t(std ::chrono::system_clock::now());
-    const auto formatted_time = std::ctime(&current_time);
-
-    log_file_ << formatted_time << message;
-    if (message.back() == '\n')
-    {
-        log_file_ << std::endl;
-    }
-    else
-    {
-        log_file_ << '\n' << std::endl;
-    }
-}
-
 void UciInteractor::ParseIncomingCommandsContinously()
 {
     // Read new lines from std::cin in infinite loop
     for (std::string line; std::getline(std::cin, line);)
     {
-        Log("Received: " + line);
+        logger.Log("Received: " + line);
 
         // Split line at spaces into separate tokens of command
         std::istringstream iss{line};
@@ -49,14 +23,14 @@ void UciInteractor::ParseIncomingCommandsContinously()
         {
             const std::string answer = "uciok\n";
             std::cout << answer;
-            Log("Sent: " + answer);
+            logger.Log("Sent: " + answer);
             continue;
         }
 
         if (tokens.front() == "setoption")
         {
             // Do nothing. Configuration is done via config of lichess bot.
-            Log("(no action & no response)");
+            logger.Log("(no action & no response)");
             continue;
         }
 
@@ -64,14 +38,14 @@ void UciInteractor::ParseIncomingCommandsContinously()
         {
             const std::string answer = "readyok\n";
             std::cout << answer;
-            Log("Sent: " + answer);
+            logger.Log("Sent: " + answer);
             continue;
         }
 
         if (tokens.front() == "position" && tokens.back() == "startpos")
         {
             restart_game_.store(true);
-            Log("Set: Restart game");
+            logger.Log("Set: Restart game");
             continue;
         }
 
@@ -80,26 +54,26 @@ void UciInteractor::ParseIncomingCommandsContinously()
             // First three tokens are "position", "startpos" and "moves".
             std::vector<std::string> move_list{begin(tokens) + 3, end(tokens)};
             SetMoveList(std::move(move_list));
-            Log("Set: (move list) " + line);
+            logger.Log("Set: (move list) " + line);
             continue;
         }
 
         if (tokens.front() == "go")
         {
             find_best_move_.store(true);
-            Log("Set: Find best move");
+            logger.Log("Set: Find best move");
             continue;
         }
 
         if (tokens.front() == "quit")
         {
             quit_game_.store(true);
-            Log("Quitting");
+            logger.Log("Quitting");
             break;
         }
 
         const std::string unkown_command_error = "Error: Encountered unkown command";
-        Log(unkown_command_error);
+        logger.Log(unkown_command_error);
         throw std::runtime_error{unkown_command_error};
     }
 }
