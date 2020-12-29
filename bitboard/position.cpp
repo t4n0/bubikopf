@@ -40,7 +40,7 @@ Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) 
     {
         return KING;
     }
-    throw std::runtime_error{"Querry for piece kind failed."};
+    return NO_PIECE;
 }
 
 void Position::MakeMove(Bitmove move)
