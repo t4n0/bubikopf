@@ -75,40 +75,6 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
     return move_generation_insertion_iterator;
 }
 
-struct DebuggingEnabled
-{
-    static constexpr bool enabled = true;
-};
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintPruningInfoNodeEntry(const Evaluation alpha,
-                                                                         const Evaluation beta,
-                                                                         const Position& position)
-{
-    std::cout << "-> node " + std::to_string(DecodeUniqueId(position)) << '\n';
-    std::cout << "alpha " << alpha << ", beta " << beta << '\n';
-    std::cout << std::endl;
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintPruningInfoNodeExit(const Evaluation alpha,
-                                                                        const Evaluation beta,
-                                                                        const Position& position)
-{
-    std::cout << "node " + std::to_string(DecodeUniqueId(position)) + " ->" << '\n';
-    std::cout << "alpha " << alpha << ", beta " << beta << '\n';
-    std::cout << "pruning: " << std::boolalpha << (alpha >= beta) << '\n';
-    std::cout << std::endl;
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluation evaluation,
-                                                                   const Position& position)
-{
-    std::cout << "node " << DecodeUniqueId(position) << std::endl;
-    std::cout << "eval " << evaluation << std::endl << std::endl;
-}
-
 namespace
 {
 

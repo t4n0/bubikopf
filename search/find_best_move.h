@@ -4,6 +4,7 @@
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
 
+#include <iostream>
 #include <limits>
 #include <tuple>
 #include <type_traits>
@@ -24,23 +25,52 @@ struct DebuggingDisabled
 };
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintPruningInfoNodeEntry(const Evaluation /*unused*/,
-                                                                          const Evaluation /*unused*/,
-                                                                          const Position& /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintNodeEntryInfo(const uint8_t /*unused*/)
 {
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintPruningInfoNodeExit(const Evaluation /*unused*/,
-                                                                         const Evaluation /*unused*/,
-                                                                         const Position& /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintNodeExitInfo(const uint8_t /*unused*/)
 {
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluationInfo(const Evaluation /*unused*/,
-                                                                    const Position& /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluationInfo(const Evaluation /*unused*/)
 {
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::disabled, void> PrintMoveInfo(const Bitmove /*unused*/)
+{
+}
+
+struct DebuggingEnabled
+{
+    static constexpr bool enabled = true;
+};
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintNodeEntryInfo(const uint8_t depth)
+{
+    std::cout << "entering new node at depth " << int{depth} << std::endl;
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintNodeExitInfo(const uint8_t depth)
+{
+    std::cout << "leaving node at depth " << int{depth} << std::endl;
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluation evaluation)
+{
+    std::cout << "node evaluates to " << evaluation << std::endl;
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintMoveInfo(const Bitmove move)
+{
+    std::cout << "investigating move " << ToUciString(move) << std::endl;
 }
 
 /// @brief A minimax search using alpha / beta pruning.
@@ -51,12 +81,12 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
-    PrintPruningInfoNodeEntry<DebugBehavior>(alpha_parent, beta_parent, position);
+    PrintNodeEntryInfo<DebugBehavior>(depth);
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
         constexpr Bitmove null_move = 0;
-        PrintEvaluationInfo<DebugBehavior>(evaluation, position);
+        PrintEvaluationInfo<DebugBehavior>(evaluation);
         return std::tie(null_move, evaluation);
     }
 
@@ -76,6 +106,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
+                PrintMoveInfo<DebugBehavior>(*move_iterator);
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -89,11 +120,11 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
 
             if (alpha >= beta)
             {
-                PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
+                PrintNodeExitInfo<DebugBehavior>(depth);
                 return std::tie(best_move, alpha);
             }
         }
-        PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
+        PrintNodeExitInfo<DebugBehavior>(depth);
         return std::tie(best_move, alpha);
     }
     else
@@ -105,6 +136,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
+                PrintMoveInfo<DebugBehavior>(*move_iterator);
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -118,11 +150,11 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
 
             if (beta <= alpha)
             {
-                PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
+                PrintNodeExitInfo<DebugBehavior>(depth);
                 return std::tie(best_move, beta);
             }
         }
-        PrintPruningInfoNodeExit<DebugBehavior>(alpha, beta, position);
+        PrintNodeExitInfo<DebugBehavior>(depth);
         return std::tie(best_move, beta);
     }
 }
