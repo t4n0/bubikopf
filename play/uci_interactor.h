@@ -27,7 +27,7 @@ class UciInteractor
 
     std::vector<std::string> move_list_{};
     std::mutex move_list_mutex_{};
-    Logger logger{};
+    Logger logger{"log_uci_interactor.txt"};
 };
 
 }  // namespace Chess

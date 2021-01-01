@@ -3,9 +3,9 @@
 namespace Chess
 {
 
-Logger::Logger()
+Logger::Logger(const std::string& filename)
 {
-    log_file_.open("log.txt", std::ios::out | std::ios::app);
+    log_file_.open(filename, std::ios::out | std::ios::app);
     if (!log_file_.is_open())
     {
         throw std::runtime_error{"Setting up logging failed."};

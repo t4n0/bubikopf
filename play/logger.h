@@ -10,7 +10,7 @@ namespace Chess
 class Logger
 {
   public:
-    Logger();
+    Logger(const std::string& filename);
     ~Logger();
 
     void Log(const std::string& message);

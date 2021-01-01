@@ -3,6 +3,7 @@
 
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
+#include "play/logger.h"
 
 #include <string>
 #include <vector>
@@ -20,6 +21,7 @@ class Bubikopf
   private:
     Position position_{};
     MoveList move_list_{};
+    Logger logger{"log_bubikopf_engine.txt"};
 };
 
 }  // namespace Chess
