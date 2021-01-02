@@ -20,16 +20,17 @@ Logger::~Logger()
 void Logger::Log(const std::string& message)
 {
     const auto current_time = std::chrono::system_clock::to_time_t(std ::chrono::system_clock::now());
-    const auto formatted_time = std::ctime(&current_time);
+    auto formatted_time = std::string{std::ctime(&current_time)};
+    formatted_time.pop_back();  // remove trailing '\n'
 
-    log_file_ << formatted_time << message;
+    log_file_ << formatted_time << ": " << message;
     if (message.back() == '\n')
     {
-        log_file_ << std::endl;
+        log_file_ << std::flush;
     }
     else
     {
-        log_file_ << '\n' << std::endl;
+        log_file_ << std::endl;
     }
 }
 
