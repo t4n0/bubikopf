@@ -1,6 +1,7 @@
 #ifndef SEARCH_FIND_BEST_MOVE_H
 #define SEARCH_FIND_BEST_MOVE_H
 
+#include "bitboard/fen_conversion.h"
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
 
@@ -25,22 +26,27 @@ struct DebuggingDisabled
 };
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintNodeEntryInfo(const uint8_t /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintNodeEntry(const uint8_t /*unused*/, const Position& /*unused*/)
 {
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintNodeExitInfo(const uint8_t /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluation(const Evaluation /*unused*/)
 {
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluationInfo(const Evaluation /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintMove(const Bitmove /*unused*/)
 {
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintMoveInfo(const Bitmove /*unused*/)
+std::enable_if_t<DebugBehavior::disabled, void> PrintPruning(const Evaluation /*unused*/, const Evaluation /*unused*/)
+{
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::disabled, void> PrintNodeExit(const uint8_t /*unused*/)
 {
 }
 
@@ -50,27 +56,34 @@ struct DebuggingEnabled
 };
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintNodeEntryInfo(const uint8_t depth)
+std::enable_if_t<DebugBehavior::enabled, void> PrintNodeEntry(const uint8_t depth, const Position& position)
 {
-    std::cout << "entering new node at depth " << int{depth} << std::endl;
+    std::cout << "depth " << int{depth} << '\n';
+    PrettyPrintFen(FenFromPosition(position));
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintNodeExitInfo(const uint8_t depth)
+std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluation(const Evaluation evaluation)
 {
-    std::cout << "leaving node at depth " << int{depth} << std::endl;
+    std::cout << "= " << evaluation << '\n' << std::endl;
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluationInfo(const Evaluation evaluation)
+std::enable_if_t<DebugBehavior::enabled, void> PrintMove(const Bitmove move)
 {
-    std::cout << "node evaluates to " << evaluation << std::endl;
+    std::cout << ToUciString(move) << '\n' << std::endl;
 }
 
 template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintMoveInfo(const Bitmove move)
+std::enable_if_t<DebugBehavior::enabled, void> PrintPruning(const Evaluation alpha, const Evaluation beta)
 {
-    std::cout << "investigating move " << ToUciString(move) << std::endl;
+    std::cout << "pruning due: alpha = " << alpha << ", beta = " << beta << '\n' << std::endl;
+}
+
+template <typename DebugBehavior>
+std::enable_if_t<DebugBehavior::enabled, void> PrintNodeExit(const uint8_t depth)
+{
+    std::cout << "returning to depth " << int{depth + 1} << '\n' << std::endl;
 }
 
 /// @brief A minimax search using alpha / beta pruning.
@@ -81,12 +94,12 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
-    PrintNodeEntryInfo<DebugBehavior>(depth);
+    PrintNodeEntry<DebugBehavior>(depth, position);
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
         constexpr Bitmove null_move = 0;
-        PrintEvaluationInfo<DebugBehavior>(evaluation);
+        PrintEvaluation<DebugBehavior>(evaluation);
         return std::tie(null_move, evaluation);
     }
 
@@ -106,7 +119,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             const Bitboard saved_extras = position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                PrintMoveInfo<DebugBehavior>(*move_iterator);
+                PrintMove<DebugBehavior>(*move_iterator);
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -120,11 +133,12 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
 
             if (alpha >= beta)
             {
-                PrintNodeExitInfo<DebugBehavior>(depth);
+                PrintPruning<DebugBehavior>(alpha, beta);
+                PrintNodeExit<DebugBehavior>(depth);
                 return std::tie(best_move, alpha);
             }
         }
-        PrintNodeExitInfo<DebugBehavior>(depth);
+        PrintNodeExit<DebugBehavior>(depth);
         return std::tie(best_move, alpha);
     }
     else
@@ -136,7 +150,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             const Bitboard saved_extras = position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
-                PrintMoveInfo<DebugBehavior>(*move_iterator);
+                PrintMove<DebugBehavior>(*move_iterator);
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -150,11 +164,12 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
 
             if (beta <= alpha)
             {
-                PrintNodeExitInfo<DebugBehavior>(depth);
+                PrintPruning<DebugBehavior>(alpha, beta);
+                PrintNodeExit<DebugBehavior>(depth);
                 return std::tie(best_move, beta);
             }
         }
-        PrintNodeExitInfo<DebugBehavior>(depth);
+        PrintNodeExit<DebugBehavior>(depth);
         return std::tie(best_move, beta);
     }
 }
