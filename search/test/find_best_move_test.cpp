@@ -161,7 +161,7 @@ TEST_P(FindBestMoveInEndgameTestFixture, GivenEndgamePositions_ExpectCorrectMove
         depth, position, scratch_pad.begin());
 
     // Expect
-    EXPECT_EQ(ToUciString(best_move), "0000");
+    EXPECT_EQ(ToUciString(best_move), kUciNullMove);
     EXPECT_FLOAT_EQ(evaluation, GetExpectedEvaluation());
 }
 

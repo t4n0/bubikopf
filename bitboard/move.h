@@ -98,13 +98,14 @@ inline std::string ToString(const Bitmove& move)
     return move_print_out.str();
 }
 
+constexpr const char* const kUciNullMove = "0000";
+
 inline std::string ToUciString(const Bitmove& move)
 {
     const bool is_null_move = !move;
     if (is_null_move)
     {
-        constexpr const char* const null_move = "0000";
-        return null_move;
+        return kUciNullMove;
     }
 
     std::stringstream uci_move{};

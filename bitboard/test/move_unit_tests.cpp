@@ -110,8 +110,7 @@ TEST(MoveShiftTypeTest, GivenOnAllOnes_Expect15)
 
 TEST(ToUciString, GivenEmptyBitmove_ExpectUciNullmove)
 {
-    constexpr const char* const expected_null_move = "0000";
-    EXPECT_EQ(ToUciString(Bitmove{0}), expected_null_move);
+    EXPECT_EQ(ToUciString(Bitmove{0}), kUciNullMove);
 }
 
 TEST(ToUciString, GivenBitmove_ExpectCorrectUciMove)
