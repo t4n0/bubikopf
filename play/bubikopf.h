@@ -14,6 +14,7 @@ namespace Chess
 class Bubikopf
 {
   public:
+    Bubikopf();
     void RestartGame();
     void UpdateBoard(const std::vector<std::string>& move_list);
     std::tuple<std::string, Evaluation> FindBestMove();

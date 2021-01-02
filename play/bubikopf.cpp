@@ -10,6 +10,11 @@
 namespace Chess
 {
 
+Bubikopf::Bubikopf()
+{
+    RestartGame();
+}
+
 void Bubikopf::RestartGame()
 {
     try
