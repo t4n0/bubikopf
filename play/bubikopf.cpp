@@ -14,7 +14,7 @@ void Bubikopf::RestartGame()
 {
     try
     {
-        position_ = Position{PositionFromFen(kStandardStartingPosition)};
+        position_ = PositionFromFen(kStandardStartingPosition);
     }
     catch (const std::runtime_error& error)
     {
