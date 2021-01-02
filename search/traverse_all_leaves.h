@@ -40,12 +40,12 @@ void TraverseAllLeaves(const uint8_t depth,
          move_iterator != end_iterator_after_move_generation;
          move_iterator++)
     {
-        position.MakeMove(*move_iterator);
+        const Bitboard saved_extras = position.MakeMove(*move_iterator);
         if (!position.DefendersKingIsInCheck())
         {
             TraverseAllLeaves<GenerateBehavior>(depth - 1, position, end_iterator_after_move_generation, stats);
         }
-        position.UnmakeMove(*move_iterator);
+        position.UnmakeMove(*move_iterator, saved_extras);
     }
     return;
 }

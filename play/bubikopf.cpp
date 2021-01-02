@@ -52,7 +52,7 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
                 throw std::runtime_error{"Move played by gui not possible from internal representation."};
             }
 
-            position_.MakeMove(*move_to_play);
+            std::ignore = position_.MakeMove(*move_to_play);
         }
     }
     catch (const std::runtime_error& error)

@@ -14,8 +14,13 @@ namespace Chess
 class Position
 {
   public:
-    void MakeMove(Bitmove move);
-    void UnmakeMove(Bitmove move);
+    /// @brief Updates the position wrt. to given move and returns the "extras" bitboard prior to the move.
+    ///
+    /// Returned "extras" bitboard is necessary to unmake the same move.
+    Bitboard MakeMove(Bitmove move);
+
+    /// @brief Takes back given move and restores given extras bitboard.
+    void UnmakeMove(Bitmove move, Bitboard extras);
 
     Bitmove GetPieceKind(const std::size_t side, const Bitboard location) const;
 
@@ -34,10 +39,6 @@ class Position
     bool white_to_move_{true};
     std::size_t attacking_side_{BOARD_IDX_WHITE};
     std::size_t defending_side_{BOARD_IDX_BLACK};
-
-    // ToDo: Move this to MoveList type
-    std::array<Bitboard, 40> extras_history_{};
-    std::array<Bitboard, 40>::iterator extras_history_insertion_index_{extras_history_.begin()};
 };
 
 bool operator==(const Position& a, const Position& b);

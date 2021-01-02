@@ -48,13 +48,13 @@ TEST(MakeUnmakeMoveTest, GivenWhiteMove_ExpectMoveCountUnchanged)
     const Bitmove arbitrary_move{};
 
     Position position = PositionFromFen(arbitrary_fen);
-    position.MakeMove(arbitrary_move);
+    const Bitboard saved_extras = position.MakeMove(arbitrary_move);
 
     const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
     const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
     EXPECT_EQ(moves_original, moves_after_make);
 
-    position.UnmakeMove(arbitrary_move);
+    position.UnmakeMove(arbitrary_move, saved_extras);
 
     const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
     EXPECT_EQ(moves_original, moves_after_unmake);
@@ -66,13 +66,13 @@ TEST(MakeUnmakeMoveTest, GivenBlackMove_ExpectMoveCountIncremented)
     const Bitmove arbitrary_move{};
 
     Position position = PositionFromFen(arbitrary_fen);
-    position.MakeMove(arbitrary_move);
+    const Bitboard saved_extras = position.MakeMove(arbitrary_move);
 
     const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
     const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
     EXPECT_EQ(moves_original + 1, moves_after_make);
 
-    position.UnmakeMove(arbitrary_move);
+    position.UnmakeMove(arbitrary_move, saved_extras);
 
     const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
     EXPECT_EQ(moves_original, moves_after_unmake);

@@ -103,7 +103,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)
         {
-            position.MakeMove(*move_iterator);
+            const Bitboard saved_extras = position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
                 PrintMoveInfo<DebugBehavior>(*move_iterator);
@@ -116,7 +116,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                     best_move = *move_iterator;
                 }
             }
-            position.UnmakeMove(*move_iterator);
+            position.UnmakeMove(*move_iterator, saved_extras);
 
             if (alpha >= beta)
             {
@@ -133,7 +133,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
              move_iterator != end_iterator_after_move_generation;
              move_iterator++)
         {
-            position.MakeMove(*move_iterator);
+            const Bitboard saved_extras = position.MakeMove(*move_iterator);
             if (!position.DefendersKingIsInCheck())
             {
                 PrintMoveInfo<DebugBehavior>(*move_iterator);
@@ -146,7 +146,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                     best_move = *move_iterator;
                 }
             }
-            position.UnmakeMove(*move_iterator);
+            position.UnmakeMove(*move_iterator, saved_extras);
 
             if (beta <= alpha)
             {

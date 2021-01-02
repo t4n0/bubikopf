@@ -51,13 +51,11 @@ Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) 
     return NO_PIECE;
 }
 
-void Position::MakeMove(Bitmove move)
+Bitboard Position::MakeMove(Bitmove move)
 {
-    *extras_history_insertion_index_ = boards_[BOARD_IDX_EXTRAS];
-    extras_history_insertion_index_++;
-    const Bitboard& current_extras =
-        *(extras_history_insertion_index_ - 1);  // Moving side, en-passant etc. will be changed in
-                                                 // position. Hence getting unaltered state from history.
+    const Bitboard current_extras =
+        boards_[BOARD_IDX_EXTRAS];  // These extras correspond to move from function
+                                    // parameter including unaltered en passant information etc.
 
     const std::size_t attacking_piece = (move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE;
     const std::size_t attacking_piece_index = attacking_side_ + attacking_piece;
@@ -184,12 +182,13 @@ void Position::MakeMove(Bitmove move)
     white_to_move_ = !white_to_move_;
     attacking_side_ ^= BOARD_IDX_TOGGLE_SIDE;
     defending_side_ ^= BOARD_IDX_TOGGLE_SIDE;
+
+    return current_extras;
 }
 
-void Position::UnmakeMove(Bitmove move)
+void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
 {
-    extras_history_insertion_index_--;
-    boards_[BOARD_IDX_EXTRAS] = *extras_history_insertion_index_;
+    boards_[BOARD_IDX_EXTRAS] = saved_extras;
     white_to_move_ = !white_to_move_;
     attacking_side_ ^= BOARD_IDX_TOGGLE_SIDE;
     defending_side_ ^= BOARD_IDX_TOGGLE_SIDE;
