@@ -22,6 +22,8 @@ TEST_P(RoundTripConversionTestFixture, GivenRoundTripConversion_ExpectOriginalFe
     const auto fen_after_round_trip_conversion = FenFromPosition(position);
 
     EXPECT_EQ(GetFen(), fen_after_round_trip_conversion);
+    std::cout << GetFen() << std::endl;
+    PrettyPrintFen(fen_after_round_trip_conversion);
 }
 
 const std::array<const char*, 4> kArbitraryFens{

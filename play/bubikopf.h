@@ -17,6 +17,7 @@ class Bubikopf
     void RestartGame();
     void UpdateBoard(const std::vector<std::string>& move_list);
     std::string FindBestMove();
+    void PrintBoard();
 
   private:
     Position position_{};

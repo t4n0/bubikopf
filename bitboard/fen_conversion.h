@@ -15,6 +15,8 @@ Position PositionFromFen(const std::string& fen);
 
 std::string FenFromPosition(const Position& position);
 
+void PrettyPrintFen(const std::string& fen);
+
 std::vector<std::string> TokenizeFen(const std::string& fen);
 
 constexpr std::size_t kFenTokenPieces = 0;

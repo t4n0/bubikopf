@@ -81,4 +81,9 @@ std::string Bubikopf::FindBestMove()
     }
 }
 
+void Bubikopf::PrintBoard()
+{
+    PrettyPrintFen(FenFromPosition(position_));
+}
+
 }  // namespace Chess

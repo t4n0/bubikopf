@@ -4,11 +4,24 @@
 #include "bitboard/squares.h"
 
 #include <algorithm>
+#include <iostream>
 #include <iterator>
 #include <sstream>
 
 namespace Chess
 {
+
+namespace
+{
+int ConvertToInteger(const char charater)
+{
+    return static_cast<int>(charater - '0');
+}
+bool IsNumberOfEmptySquares(const int candidate_number)
+{
+    return (candidate_number >= 1) && (candidate_number <= 8);
+}
+}  // namespace
 
 Position PositionFromFen(const std::string& fen)
 {
@@ -27,9 +40,8 @@ Position PositionFromFen(const std::string& fen)
     {
         if (symbol != '/')
         {
-            const int empty_squares = static_cast<int>(symbol - '0');
-            const bool is_number_of_empty_squares = (empty_squares >= 1) && (empty_squares <= 8);
-            if (is_number_of_empty_squares)
+            const int empty_squares = ConvertToInteger(symbol);
+            if (IsNumberOfEmptySquares(empty_squares))
             {
                 current_square >>= empty_squares;
             }
@@ -251,6 +263,33 @@ std::vector<std::string> TokenizeFen(const std::string& fen)
 {
     std::istringstream iss{fen};
     return {std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+}
+
+void PrettyPrintFen(const std::string& fen)
+{
+    const auto tokens = TokenizeFen(fen);
+    for (const char symbol : tokens.at(kFenTokenPieces))
+    {
+        const int empty_squares = ConvertToInteger(symbol);
+        if (IsNumberOfEmptySquares(empty_squares))
+        {
+            for (int count = 0; count < empty_squares; count++)
+            {
+                std::cout << "- ";
+            }
+        }
+        else if (symbol == '/')
+        {
+            std::cout << '\n';
+        }
+        else  // is piece symbol
+        {
+            std::cout << symbol << ' ';
+        }
+    }
+    std::cout << "  " << fen.substr(tokens.at(kFenTokenPieces).size(), fen.size() - tokens.at(kFenTokenPieces).size())
+              << std::endl
+              << std::endl;
 }
 
 }  // namespace Chess
