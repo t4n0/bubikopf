@@ -267,6 +267,8 @@ std::vector<std::string> TokenizeFen(const std::string& fen)
 
 void PrettyPrintFen(const std::string& fen)
 {
+    std::cout << fen << '\n';
+
     const auto tokens = TokenizeFen(fen);
     for (const char symbol : tokens.at(kFenTokenPieces))
     {
@@ -287,9 +289,7 @@ void PrettyPrintFen(const std::string& fen)
             std::cout << symbol << ' ';
         }
     }
-    std::cout << "  " << fen.substr(tokens.at(kFenTokenPieces).size(), fen.size() - tokens.at(kFenTokenPieces).size())
-              << std::endl
-              << std::endl;
+    std::cout << '\n' << std::endl;
 }
 
 }  // namespace Chess
