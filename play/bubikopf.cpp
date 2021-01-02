@@ -68,9 +68,7 @@ std::string Bubikopf::FindBestMove()
     try
     {
         constexpr int depth = 6;
-        Bitmove best_move;
-        Evaluation evaluation;
-        std::tie(best_move, evaluation) =
+        const auto [best_move, evaluation] =
             Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(depth, position_, begin(scratch_pad));
         return ToUciString(best_move);
     }

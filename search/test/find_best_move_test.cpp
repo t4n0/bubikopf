@@ -78,24 +78,14 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
 namespace
 {
 
-class FindBestMovePruningTestFixture : public testing::Test
-{
-    void SetUp() final
-    {
-        EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order = {};
-        EvaluteAccordingToEncodedUniqueId::unique_id_evaluation = {};
-    }
-    void TearDown() final {}
-
-  public:
-    MoveList move_list{};
-    Position position{EncodeUniqueIdToZero()};
-};
-
-TEST_F(FindBestMovePruningTestFixture, GivenDepth3_ExpectEvaluationOrderFromExample)
+TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 {
     // Setup
     const int DEPTH{3};
+    MoveList scratch_pad{};
+    Position position{EncodeUniqueIdToZero()};
+    EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order = {};
+    EvaluteAccordingToEncodedUniqueId::unique_id_evaluation = {};
 
     // Example from https://youtu.be/l-hh51ncgDI?t=372
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation.at(5) = -1;
@@ -105,8 +95,8 @@ TEST_F(FindBestMovePruningTestFixture, GivenDepth3_ExpectEvaluationOrderFromExam
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation.at(12) = -4;
 
     // Call
-    FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingEnabled>(
-        DEPTH, position, move_list.begin());
+    FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingDisabled>(
+        DEPTH, position, scratch_pad.begin());
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -131,12 +121,11 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
     // Setup
     const int depth{6};  // Allow king to be captured
     Position position{PositionFromFen(GetFen())};
-    MoveList move_list{};
+    MoveList scratch_pad{};
 
     // Call
-    Bitmove best_move;
-    std::tie(best_move, std::ignore) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, move_list.begin());
+    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
+        depth, position, scratch_pad.begin());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
