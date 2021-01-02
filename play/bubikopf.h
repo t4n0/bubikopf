@@ -16,7 +16,7 @@ class Bubikopf
   public:
     void RestartGame();
     void UpdateBoard(const std::vector<std::string>& move_list);
-    std::string FindBestMove();
+    std::tuple<std::string, Evaluation> FindBestMove();
     void PrintBoard();
 
   private:

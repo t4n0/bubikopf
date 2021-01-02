@@ -62,7 +62,7 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
     }
 }
 
-std::string Bubikopf::FindBestMove()
+std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
 {
     MoveList scratch_pad{};
     try
@@ -70,7 +70,7 @@ std::string Bubikopf::FindBestMove()
         constexpr int depth = 6;
         const auto [best_move, evaluation] =
             Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(depth, position_, begin(scratch_pad));
-        return ToUciString(best_move);
+        return {ToUciString(best_move), evaluation};
     }
     catch (const std::runtime_error& error)
     {

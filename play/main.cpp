@@ -20,8 +20,8 @@ int main()
         if (uci_interactor.find_best_move_.load())
         {
             engine_api.UpdateBoard(uci_interactor.GetMoveList());
-            const auto engine_decision = engine_api.FindBestMove();
-            uci_interactor.SendBestMoveOnce(engine_decision);
+            const auto [best_move, game_result] = engine_api.FindBestMove();
+            uci_interactor.SendBestMoveOnce(best_move);
         }
     }
 
