@@ -20,7 +20,6 @@ class Bubikopf
 
   private:
     Position position_{};
-    MoveList move_list_{};
     Logger logger{"log_bubikopf_engine.txt"};
 };
 

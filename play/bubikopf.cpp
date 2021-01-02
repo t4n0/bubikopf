@@ -25,6 +25,7 @@ void Bubikopf::RestartGame()
 
 void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 {
+    MoveList scratch_pad{};
     try
     {
         const auto played_plies_internal = position_.GetNumberOfPlayedPlies();
@@ -32,17 +33,17 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
         {
             std::string message{"Move list from gui is behind engine.\n"};
             message +=
-                "Gui: " + std::to_string(move_list_.size()) + ", Engine: " + std::to_string(played_plies_internal);
+                "Gui: " + std::to_string(move_list.size()) + ", Engine: " + std::to_string(played_plies_internal);
             throw std::runtime_error{message};
         }
 
         for (std::size_t new_move = played_plies_internal; new_move < move_list.size(); new_move++)
         {
             const std::string& new_move_uci = move_list.at(new_move);
-            const auto possible_moves_end = GenerateMoves<GenerateAllPseudoLegalMoves>(position_, begin(move_list_));
+            const auto possible_moves_end = GenerateMoves<GenerateAllPseudoLegalMoves>(position_, begin(scratch_pad));
 
             const auto move_to_play =
-                std::find_if(begin(move_list_), possible_moves_end, [&new_move_uci](const auto& move) {
+                std::find_if(begin(scratch_pad), possible_moves_end, [&new_move_uci](const auto& move) {
                     return new_move_uci == ToUciString(move);
                 });
 
@@ -63,13 +64,14 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 
 std::string Bubikopf::FindBestMove()
 {
+    MoveList scratch_pad{};
     try
     {
-        constexpr int depth = 4;
+        constexpr int depth = 6;
         Bitmove best_move;
         Evaluation evaluation;
         std::tie(best_move, evaluation) =
-            Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(depth, position_, begin(move_list_));
+            Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(depth, position_, begin(scratch_pad));
         return ToUciString(best_move);
     }
     catch (const std::runtime_error& error)
