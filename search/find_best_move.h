@@ -108,7 +108,8 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
 
     Evaluation alpha = alpha_parent;
     Evaluation beta = beta_parent;
-    Bitmove best_move;
+    Bitmove best_move{};
+    bool one_legal_move_found = false;
 
     if (position.white_to_move_)
     {
@@ -120,6 +121,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             if (!position.KingIsInCheck(position.defending_side_))
             {
                 PrintMove<DebugBehavior>(*move_iterator);
+                one_legal_move_found = true;
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -138,6 +140,16 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                 return std::tie(best_move, alpha);
             }
         }
+
+        if (!one_legal_move_found)
+        {
+            const Evaluation game_result =
+                position.KingIsInCheck(position.attacking_side_) ? Evaluation{-1000} : Evaluation{0};
+            PrintEvaluation<DebugBehavior>(game_result);
+            PrintNodeExit<DebugBehavior>(depth);
+            return {Bitmove{}, game_result};
+        }
+
         PrintNodeExit<DebugBehavior>(depth);
         return std::tie(best_move, alpha);
     }
@@ -151,6 +163,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             if (!position.KingIsInCheck(position.defending_side_))
             {
                 PrintMove<DebugBehavior>(*move_iterator);
+                one_legal_move_found = true;
                 Evaluation eval;
                 std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
                     depth - 1, position, end_iterator_after_move_generation, alpha, beta);
@@ -169,6 +182,16 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                 return std::tie(best_move, beta);
             }
         }
+
+        if (!one_legal_move_found)
+        {
+            const Evaluation game_result =
+                position.KingIsInCheck(position.attacking_side_) ? Evaluation{1000} : Evaluation{0};
+            PrintEvaluation<DebugBehavior>(game_result);
+            PrintNodeExit<DebugBehavior>(depth);
+            return {Bitmove{}, game_result};
+        }
+
         PrintNodeExit<DebugBehavior>(depth);
         return std::tie(best_move, beta);
     }
