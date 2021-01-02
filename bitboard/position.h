@@ -24,11 +24,11 @@ class Position
 
     Bitmove GetPieceKind(const std::size_t side, const Bitboard location) const;
 
-    /// @brief Evaluates whether king of defending side is in check.
+    /// @brief Evaluates whether king of given side is in check.
     ///
     /// A search is started from the kings position and only relevant squares are checked for attackers.
     /// (Rather then calculating a complete attack board).
-    bool DefendersKingIsInCheck() const;
+    bool KingIsInCheck(const std::size_t side) const;
 
     std::size_t GetNumberOfPlayedPlies() const;
 

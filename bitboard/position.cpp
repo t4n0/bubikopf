@@ -273,23 +273,25 @@ bool operator==(const Position& a, const Position& b)
     return boards_are_equal && playing_side_is_equal;
 }
 
-bool Position::DefendersKingIsInCheck() const
+bool Position::KingIsInCheck(const std::size_t defending_side) const
 {
+    const std::size_t attacking_side = defending_side ^ BOARD_IDX_TOGGLE_SIDE;
+
     const auto ray_check_given =
         [&](const Bitboard square, const std::size_t direction, const std::size_t dangerous_piece_besides_queen) {
             Bitboard attacker_location = SingleStep(square, direction);
             while (attacker_location)  // is on the board
             {
-                const bool location_is_occupied_by_friendly_piece = attacker_location & boards_[defending_side_];
+                const bool location_is_occupied_by_friendly_piece = attacker_location & boards_[defending_side];
                 if (location_is_occupied_by_friendly_piece)
                 {
                     break;  // this direction is safe
                 }
 
-                const bool location_is_occupied_by_enemy_piece = attacker_location & boards_[attacking_side_];
+                const bool location_is_occupied_by_enemy_piece = attacker_location & boards_[attacking_side];
                 if (location_is_occupied_by_enemy_piece)
                 {
-                    const std::size_t piece_kind = GetPieceKind(attacking_side_, attacker_location);
+                    const std::size_t piece_kind = GetPieceKind(attacking_side, attacker_location);
                     const bool piece_can_attack_from_this_angle =
                         (piece_kind == QUEEN) || (piece_kind == dangerous_piece_besides_queen);
                     if (piece_can_attack_from_this_angle)
@@ -313,7 +315,7 @@ bool Position::DefendersKingIsInCheck() const
 
         // ray style checks horizontal and vertical
         const bool rook_or_queen_aligend_on_rank_or_file =
-            rook_attacks[square_bit] & (boards_[attacking_side_ + ROOK] | boards_[attacking_side_ + QUEEN]);
+            rook_attacks[square_bit] & (boards_[attacking_side + ROOK] | boards_[attacking_side + QUEEN]);
         if (rook_or_queen_aligend_on_rank_or_file)
         {
             for (const auto direction : {west, south, east, north})
@@ -327,7 +329,7 @@ bool Position::DefendersKingIsInCheck() const
 
         // ray style checks diagonally
         const bool bishop_or_queen_aligend_diagonally =
-            bishop_attacks[square_bit] & (boards_[attacking_side_ + BISHOP] | boards_[attacking_side_ + QUEEN]);
+            bishop_attacks[square_bit] & (boards_[attacking_side + BISHOP] | boards_[attacking_side + QUEEN]);
         if (bishop_or_queen_aligend_diagonally)
         {
             for (const auto direction : {north_east, north_west, south_east, south_west})
@@ -340,7 +342,7 @@ bool Position::DefendersKingIsInCheck() const
         }
 
         // knight checks
-        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side_ + KNIGHT];
+        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + KNIGHT];
         if (knight_is_giving_check)
         {
             return true;
@@ -348,14 +350,14 @@ bool Position::DefendersKingIsInCheck() const
 
         // pawn checks
         const bool pawn_is_giving_check = pawn_attacks[square_bit + (white_to_move_ * pawn_attacks_offset_for_white)] &
-                                          boards_[attacking_side_ + PAWN];
+                                          boards_[attacking_side + PAWN];
         if (pawn_is_giving_check)
         {
             return true;
         }
 
         // king checks
-        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side_ + KING];
+        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side + KING];
         if (king_is_giving_check)
         {
             return true;
@@ -364,7 +366,7 @@ bool Position::DefendersKingIsInCheck() const
         return false;
     };
 
-    const Bitboard king_location = boards_[defending_side_ + KING];
+    const Bitboard king_location = boards_[defending_side + KING];
     if (square_is_under_attack(king_location))
     {
         return true;

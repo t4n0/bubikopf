@@ -117,7 +117,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
              move_iterator++)
         {
             const Bitboard saved_extras = position.MakeMove(*move_iterator);
-            if (!position.DefendersKingIsInCheck())
+            if (!position.KingIsInCheck(position.defending_side_))
             {
                 PrintMove<DebugBehavior>(*move_iterator);
                 Evaluation eval;
@@ -148,7 +148,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
              move_iterator++)
         {
             const Bitboard saved_extras = position.MakeMove(*move_iterator);
-            if (!position.DefendersKingIsInCheck())
+            if (!position.KingIsInCheck(position.defending_side_))
             {
                 PrintMove<DebugBehavior>(*move_iterator);
                 Evaluation eval;
