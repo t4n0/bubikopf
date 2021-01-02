@@ -16,14 +16,15 @@ class UciInteractor
   public:
     void ParseIncomingCommandsContinously();
     void SendBestMoveOnce(const std::string& move);
-
     std::vector<std::string> GetMoveList();
+
     std::atomic_bool quit_game_{false};
     std::atomic_bool restart_game_{false};
     std::atomic_bool find_best_move_{false};
 
   private:
     void SetMoveList(std::vector<std::string>&& move_list);
+    void WriteThreadSafeToCout(const std::string& command);
 
     std::vector<std::string> move_list_{};
     std::mutex move_list_mutex_{};

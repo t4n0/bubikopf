@@ -21,24 +21,20 @@ void UciInteractor::ParseIncomingCommandsContinously()
 
         if (tokens.front() == "uci")
         {
-            const std::string answer = "uciok\n";
-            std::cout << answer;
-            logger.Log("Sent: " + answer);
+            WriteThreadSafeToCout("uciok");
             continue;
         }
 
         if (tokens.front() == "setoption")
         {
             // Do nothing. Configuration is done via config of lichess bot.
-            logger.Log("(no action & no response)");
+            logger.Log("noop");
             continue;
         }
 
         if (tokens.front() == "isready")
         {
-            const std::string answer = "readyok\n";
-            std::cout << answer;
-            logger.Log("Sent: " + answer);
+            WriteThreadSafeToCout("readyok");
             continue;
         }
 
@@ -61,18 +57,18 @@ void UciInteractor::ParseIncomingCommandsContinously()
         if (tokens.front() == "go")
         {
             find_best_move_.store(true);
-            logger.Log("Set: Find best move");
+            logger.Log("Set: Go");
             continue;
         }
 
         if (tokens.front() == "quit")
         {
             quit_game_.store(true);
-            logger.Log("Quitting");
+            logger.Log("Set: Quit");
             break;
         }
 
-        const std::string unkown_command_error = "Error: Encountered unkown command";
+        const std::string unkown_command_error = "Error. Encountered unkown command: \"" + line + "\"";
         logger.Log(unkown_command_error);
         throw std::runtime_error{unkown_command_error};
     }
@@ -80,8 +76,7 @@ void UciInteractor::ParseIncomingCommandsContinously()
 
 void UciInteractor::SendBestMoveOnce(const std::string& move)
 {
-    const std::string answer = move + '\n';
-    std::cout << answer;
+    WriteThreadSafeToCout("bestmove " + move);
 }
 
 std::vector<std::string> UciInteractor::GetMoveList()
@@ -94,6 +89,14 @@ void UciInteractor::SetMoveList(std::vector<std::string>&& move_list)
 {
     const std::lock_guard<std::mutex> move_list_guard{move_list_mutex_};
     move_list_.swap(move_list);
+}
+void UciInteractor::WriteThreadSafeToCout(const std::string& command)
+{
+    const std::string answer = command + '\n';  // Write newline as part of single operator<< to cout as only single
+                                                // instructions to cout are thread safe.
+    std::cout << answer << std::flush;  // Flush only in second step. Mangling here is not harmfull. I.e. two threads
+                                        // could end up doing: "CommandA\nCommandB\n" and flushing twice afterwards.
+    logger.Log("Sent: " + answer);
 }
 
 }  // namespace Chess
