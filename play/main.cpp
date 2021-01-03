@@ -33,7 +33,7 @@ int main()
     catch (const std::exception& e)
     {
         const auto error_message = std::string{"Exception caught in main: "} + e.what();
-        // Log error
+        // TODO: Log error
     }
 
     return 0;
