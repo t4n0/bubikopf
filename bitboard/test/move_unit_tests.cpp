@@ -12,13 +12,13 @@ namespace
 {
 
 constexpr std::array<Bitmove, 7> ALL_MOVE_MASKS{
-    MOVE_MASK_SOURCE,
-    MOVE_MASK_TARGET,
-    MOVE_MASK_MOVED_PIECE,
-    MOVE_MASK_CAPTURED_PIECE,
-    MOVE_MASK_PROMOTION,
-    MOVE_MASK_TYPE,
-    MOVE_MASK_UNUSED,
+    kMoveMaskSource,
+    kMoveMaskTarget,
+    kMoveMaskMovedPiece,
+    kMoveMaskCapturedPiece,
+    kMoveMaskPromotion,
+    kMoveMaskType,
+    kMoveMaskUnused,
 };
 
 // Mask tests
@@ -52,14 +52,14 @@ INSTANTIATE_TEST_SUITE_P(AllCombinations,
 
 // Value tests
 const std::array<Bitmove, 8> ALL_MOVE_VALUES{
-    MOVE_VALUE_TYPE_QUIET_NON_PAWN,
-    MOVE_VALUE_TYPE_CAPTURE,
-    MOVE_VALUE_TYPE_PAWN_PUSH,
-    MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH,
-    MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE,
-    MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
-    MOVE_VALUE_TYPE_QUEENSIDE_CASTLING,
-    MOVE_VALUE_TYPE_PROMOTION,
+    kMoveTypeQuietNonPawn,
+    kMoveTypeCapture,
+    kMoveTypePawnSinglePush,
+    kMoveTypePawnDoublePush,
+    kMoveTypeEnPassantCapture,
+    kMoveTypeKingsideCastling,
+    kMoveTypeQueensideCastling,
+    kMoveTypePromotion,
 };
 
 TEST(MoveValueTest, GivenAllValues_ExpectEveryValueIsUnique)
@@ -77,35 +77,36 @@ class MoveValueFixture : public ::testing::TestWithParam<Bitmove>
 TEST_P(MoveValueFixture, GivenValue_ExpectIsEnirelyWithinBoundsOfMask)
 {
     const Bitmove move_value_type = GetParam();
-    EXPECT_EQ(move_value_type, move_value_type & MOVE_MASK_TYPE);
+    EXPECT_EQ(move_value_type, move_value_type & kMoveMaskType);
 }
 
 INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture, ::testing::ValuesIn(ALL_MOVE_VALUES));
 
-// Shift tests
+constexpr Bitmove kAllBitsSet = std::numeric_limits<Bitmove>::max();
+
 TEST(MoveShiftTargetTest, GivenOnAllOnes_Expect63)
 {
-    EXPECT_EQ((MOVE_ONES & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET, 0b00111111);
+    EXPECT_EQ((kAllBitsSet & kMoveMaskTarget) >> kMoveShiftTarget, 0b00111111);
 }
 
 TEST(MoveShiftCapturedPieceTest, GivenOnAllOnes_Expect7)
 {
-    EXPECT_EQ((MOVE_ONES & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE, 0b00000111);
+    EXPECT_EQ((kAllBitsSet & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece, 0b00000111);
 }
 
 TEST(MoveShiftMovedPieceTest, GivenOnAllOnes_Expect7)
 {
-    EXPECT_EQ((MOVE_ONES & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE, 0b00000111);
+    EXPECT_EQ((kAllBitsSet & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece, 0b00000111);
 }
 
 TEST(MoveShiftPromotionTest, GivenOnAllOnes_Expect7)
 {
-    EXPECT_EQ((MOVE_ONES & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION, 0b00000111);
+    EXPECT_EQ((kAllBitsSet & kMoveMaskPromotion) >> kMoveShiftPromotion, 0b00000111);
 }
 
 TEST(MoveShiftTypeTest, GivenOnAllOnes_Expect15)
 {
-    EXPECT_EQ((MOVE_ONES & MOVE_MASK_TYPE) >> MOVE_SHIFT_TYPE, 0b00001111);
+    EXPECT_EQ((kAllBitsSet & kMoveMaskType) >> kMoveShiftType, 0b00001111);
 }
 
 TEST(ToUciString, GivenEmptyBitmove_ExpectUciNullmove)
@@ -116,14 +117,13 @@ TEST(ToUciString, GivenEmptyBitmove_ExpectUciNullmove)
 TEST(ToUciString, GivenBitmove_ExpectCorrectUciMove)
 {
     const Bitmove arbritrary_move =
-        ComposeMove(tzcnt(E7), tzcnt(E1), ROOK, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+        ComposeMove(tzcnt(E7), tzcnt(E1), ROOK, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
     EXPECT_EQ(ToUciString(arbritrary_move), "e7e1");
 }
 
 TEST(ToUciString, GivenBitmoveWithPromotion_ExpectCorrectUciMove)
 {
-    const Bitmove arbritrary_move =
-        ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, NO_CAPTURE, KNIGHT, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+    const Bitmove arbritrary_move = ComposeMove(tzcnt(A2), tzcnt(A1), PAWN, kNoCapture, KNIGHT, kMoveTypeQuietNonPawn);
     EXPECT_EQ(ToUciString(arbritrary_move), "a2a1n");
 }
 

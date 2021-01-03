@@ -66,7 +66,7 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
     for (int i = 1; i < 3; i++)
     {
         *move_generation_insertion_iterator++ = ComposeMove(
-            tzcnt(position[side + PAWN]), ++unique_id, PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
+            tzcnt(position[side + PAWN]), ++unique_id, PAWN, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
         if (unique_id == 64)
         {
             throw std::runtime_error{"No more unique squares left."};

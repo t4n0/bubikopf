@@ -59,13 +59,13 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                           const Bitmove target,
                                           const Bitmove captured_piece) {
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, QUEEN, MOVE_VALUE_TYPE_PROMOTION);
+            ComposeMove(source, target, PAWN, captured_piece, QUEEN, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, ROOK, MOVE_VALUE_TYPE_PROMOTION);
+            ComposeMove(source, target, PAWN, captured_piece, ROOK, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, KNIGHT, MOVE_VALUE_TYPE_PROMOTION);
+            ComposeMove(source, target, PAWN, captured_piece, KNIGHT, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, BISHOP, MOVE_VALUE_TYPE_PROMOTION);
+            ComposeMove(source, target, PAWN, captured_piece, BISHOP, kMoveTypePromotion);
     };
 
     const bool& white_to_move = position.white_to_move_;
@@ -98,8 +98,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                                                         pawn_capture_target_bits.at(index),
                                                                         PAWN,
                                                                         captured_piece,
-                                                                        NO_PROMOTION,
-                                                                        MOVE_VALUE_TYPE_CAPTURE);
+                                                                        kNoPromotion,
+                                                                        kMoveTypeCapture);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         const Bitboard en_passant_mask = position[kExtrasBoard] & kBoardMaskEnPassant;
         if (en_passant_mask)
         {
-            const Bitboard en_passant_bit = en_passant_mask >> kShiftEnPassant;
+            const Bitboard en_passant_bit = en_passant_mask >> kBoardShiftEnPassant;
             for (const std::size_t index : {0, 1})
             {
                 if (en_passant_bit == pawn_capture_target_bits.at(index))
@@ -125,8 +125,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                                                         pawn_capture_target_bits.at(index),
                                                                         PAWN,
                                                                         PAWN,
-                                                                        NO_PROMOTION,
-                                                                        MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE);
+                                                                        kNoPromotion,
+                                                                        kMoveTypeEnPassantCapture);
                 }
             }
         }
@@ -139,13 +139,13 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             if (!is_promotion)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target_single_push), PAWN, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_PAWN_PUSH);
+                    source_bit, tzcnt(target_single_push), PAWN, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
             }
             else
             {
                 // promotion (without capture)
                 PushBackAllPromotions(
-                    move_generation_insertion_iterator, source_bit, tzcnt(target_single_push), NO_CAPTURE);
+                    move_generation_insertion_iterator, source_bit, tzcnt(target_single_push), kNoCapture);
             }
         }
 
@@ -158,12 +158,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             const bool target_double_push_is_free = target_double_push & free_squares;
             if (target_single_push_is_free && target_double_push_is_free)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(source_bit,
-                                                                    tzcnt(target_double_push),
-                                                                    PAWN,
-                                                                    NO_CAPTURE,
-                                                                    NO_PROMOTION,
-                                                                    MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH);
+                *move_generation_insertion_iterator++ = ComposeMove(
+                    source_bit, tzcnt(target_double_push), PAWN, kNoCapture, kNoPromotion, kMoveTypePawnDoublePush);
             }
         }
     };
@@ -187,13 +183,13 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             if (target_is_free)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target), moved_piece, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
+                    source_bit, tzcnt(target), moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
             }
             else  // target occupied by opposing piece
             {
                 const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
+                *move_generation_insertion_iterator++ =
+                    ComposeMove(source_bit, tzcnt(target), moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
                 break;
             }
             target = SingleStep(target, direction);
@@ -228,28 +224,27 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     ForEveryBitInPopulation(position[attacking_side + QUEEN], generate_queen_move);
 
     /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
-    const auto generate_jump_style_move = [&](const Bitboard source,
-                                              const Bitboard target,
-                                              const std::size_t moved_piece) {
-        if (target)  // is on the board?
-        {
-            const Bitmove source_bit = tzcnt(source);
-            const bool target_is_free = target & free_squares;
-            if (target_is_free)
+    const auto generate_jump_style_move =
+        [&](const Bitboard source, const Bitboard target, const std::size_t moved_piece) {
+            if (target)  // is on the board?
             {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target), moved_piece, NO_CAPTURE, NO_PROMOTION, MOVE_VALUE_TYPE_QUIET_NON_PAWN);
-                return;
+                const Bitmove source_bit = tzcnt(source);
+                const bool target_is_free = target & free_squares;
+                if (target_is_free)
+                {
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        source_bit, tzcnt(target), moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
+                    return;
+                }
+                const bool target_is_occupied_by_opponents_piece = target & position[defending_side];
+                if (target_is_occupied_by_opponents_piece)
+                {
+                    const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
+                    *move_generation_insertion_iterator++ = ComposeMove(
+                        source_bit, tzcnt(target), moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
+                }
             }
-            const bool target_is_occupied_by_opponents_piece = target & position[defending_side];
-            if (target_is_occupied_by_opponents_piece)
-            {
-                const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target), moved_piece, captured_piece, NO_PROMOTION, MOVE_VALUE_TYPE_CAPTURE);
-            }
-        }
-    };
+        };
 
     // knight moves
     const auto generate_knight_move = [&](const Bitmove /*unused*/, const Bitboard source) {
@@ -275,10 +270,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     constexpr std::array<Bitboard, 4> neccessary_free_squares = {F8 | G8, D8 | C8 | B8, F1 | G1, D1 | C1 | B1};
     constexpr std::array<int, 4> source_bits = {59, 59, 3, 3};
     constexpr std::array<int, 4> target_bits{57, 61, 1, 5};
-    constexpr std::array<Bitmove, 4> move_values{MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
-                                                 MOVE_VALUE_TYPE_QUEENSIDE_CASTLING,
-                                                 MOVE_VALUE_TYPE_KINGSIDE_CASTLING,
-                                                 MOVE_VALUE_TYPE_QUEENSIDE_CASTLING};
+    constexpr std::array<Bitmove, 4> move_values{
+        kMoveTypeKingsideCastling, kMoveTypeQueensideCastling, kMoveTypeKingsideCastling, kMoveTypeQueensideCastling};
 
     const std ::size_t offset_for_white = 2 * white_to_move;
     for (std::size_t side = 0; side < 2; side++)  // side as in queen- or kingside, not white or black
@@ -291,7 +284,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         if (castling_possible)
         {
             *move_generation_insertion_iterator++ = ComposeMove(
-                source_bits[castling], target_bits[castling], KING, NO_CAPTURE, NO_PROMOTION, move_values[castling]);
+                source_bits[castling], target_bits[castling], KING, kNoCapture, kNoPromotion, move_values[castling]);
         }
     }
 

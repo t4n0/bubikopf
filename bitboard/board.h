@@ -35,8 +35,8 @@ constexpr Bitboard kKingsideCastlingOnLastMove =
 constexpr Bitboard kQueensideCastlingOnLastMove =
     0b00000000'00000000'00000000'00000000'00000000'00010000'00000000'00000000;
 
-constexpr int kShiftEnPassant = 8;
-constexpr int kShiftFullMoves = 56;
+constexpr int kBoardShiftEnPassant = 8;
+constexpr int kBoardShiftFullMoves = 56;
 
 }  // namespace Chess
 

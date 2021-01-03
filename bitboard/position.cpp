@@ -17,7 +17,7 @@ namespace Chess
 std::size_t Position::GetNumberOfPlayedPlies() const
 {
     const std::size_t number_of_plies_from_full_move_counter =
-        2 * (((boards_[kExtrasBoard] & kBoardMaskFullMoves) >> kShiftFullMoves) - 1);
+        2 * (((boards_[kExtrasBoard] & kBoardMaskFullMoves) >> kBoardShiftFullMoves) - 1);
     const std::size_t additional_ply_if_white_already_played = !white_to_move_;
     return number_of_plies_from_full_move_counter + additional_ply_if_white_already_played;
 }
@@ -56,11 +56,11 @@ Bitboard Position::MakeMove(Bitmove move)
     const Bitboard current_extras = boards_[kExtrasBoard];  // These extras correspond to move from function
                                                             // parameter including unaltered en passant information etc.
 
-    const std::size_t attacking_piece = (move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE;
+    const std::size_t attacking_piece = (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
     const std::size_t attacking_piece_index = attacking_side_ + attacking_piece;
 
-    const Bitboard source = Bitboard{1} << (move & MOVE_MASK_SOURCE);
-    const Bitboard target = Bitboard{1} << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
+    const Bitboard source = Bitboard{1} << (move & kMoveMaskSource);
+    const Bitboard target = Bitboard{1} << ((move & kMoveMaskTarget) >> kMoveShiftTarget);
     const Bitboard source_and_target = source | target;
 
     boards_[kExtrasBoard] &= ~(kBoardMaskEnPassant | kKingsideCastlingOnLastMove | kQueensideCastlingOnLastMove);
@@ -68,42 +68,43 @@ Bitboard Position::MakeMove(Bitmove move)
     boards_[attacking_side_] ^= source_and_target;
     boards_[attacking_piece_index] ^= source_and_target;
 
-    const Bitmove move_type = move & MOVE_MASK_TYPE;
+    const Bitmove move_type = move & kMoveMaskType;
     switch (move_type)
     {
-        case MOVE_VALUE_TYPE_QUIET_NON_PAWN: {
+        case kMoveTypeQuietNonPawn: {
             boards_[kExtrasBoard]++;
             break;
         }
-        case MOVE_VALUE_TYPE_CAPTURE: {
+        case kMoveTypeCapture: {
             const std::size_t captured_piece =
-                defending_side_ + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
+                defending_side_ + ((move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece);
             boards_[defending_side_] &= ~target;
             boards_[captured_piece] &= ~target;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
-        case MOVE_VALUE_TYPE_PAWN_PUSH: {
+        case kMoveTypePawnSinglePush: {
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
-        case MOVE_VALUE_TYPE_PAWN_DOUBLE_PUSH: {
-            const Bitmove source_bit = move & MOVE_MASK_SOURCE;
-            const Bitmove target_bit = (move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET;
-            boards_[kExtrasBoard] |= ((source_bit + target_bit) >> 1) << kShiftEnPassant;  // (source_bit+target_bit)/2
+        case kMoveTypePawnDoublePush: {
+            const Bitmove source_bit = move & kMoveMaskSource;
+            const Bitmove target_bit = (move & kMoveMaskTarget) >> kMoveShiftTarget;
+            boards_[kExtrasBoard] |= ((source_bit + target_bit) >> 1)
+                                     << kBoardShiftEnPassant;  // (source_bit+target_bit)/2
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
-        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
+        case kMoveTypeEnPassantCapture: {
             const Bitboard en_passant_square = Bitboard{1}
-                                               << ((current_extras & kBoardMaskEnPassant) >> kShiftEnPassant);
+                                               << ((current_extras & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[defending_side_] &= ~en_passant_victim;
             boards_[defending_side_ + PAWN] &= ~en_passant_victim;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
-        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
+        case kMoveTypeKingsideCastling: {
             constexpr Bitboard white_rook_jump = F1 | H1;
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -113,7 +114,7 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[kExtrasBoard] |= kKingsideCastlingOnLastMove;
             break;
         }
-        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
+        case kMoveTypeQueensideCastling: {
             constexpr Bitboard white_rook_jump = A1 | D1;
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -123,17 +124,17 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[kExtrasBoard] |= kQueensideCastlingOnLastMove;
             break;
         }
-        case MOVE_VALUE_TYPE_PROMOTION: {
+        case kMoveTypePromotion: {
             const std::size_t board_idx_added_piece_kind =
-                attacking_side_ + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
+                attacking_side_ + ((move & kMoveMaskPromotion) >> kMoveShiftPromotion);
             boards_[attacking_piece_index] &=
                 ~source_and_target;  // pawn was moved to target as side effect of default operation earlier
             boards_[board_idx_added_piece_kind] |= target;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
-            const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
+            const Bitmove capture = move & kMoveMaskCapturedPiece;
             if (capture)
             {
-                const std::size_t captured_piece = defending_side_ + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
+                const std::size_t captured_piece = defending_side_ + (capture >> kMoveShiftCapturedPiece);
                 boards_[defending_side_] &= ~target;
                 boards_[captured_piece] &= ~target;
             }
@@ -190,36 +191,35 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
     attacking_side_ ^= kToggleSide;
     defending_side_ ^= kToggleSide;
 
-    const std::size_t attacking_piece_index =
-        attacking_side_ + ((move & MOVE_MASK_MOVED_PIECE) >> MOVE_SHIFT_MOVED_PIECE);
+    const std::size_t attacking_piece_index = attacking_side_ + ((move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece);
 
-    const Bitboard source = Bitboard{1} << (move & MOVE_MASK_SOURCE);
-    const Bitboard target = Bitboard{1} << ((move & MOVE_MASK_TARGET) >> MOVE_SHIFT_TARGET);
+    const Bitboard source = Bitboard{1} << (move & kMoveMaskSource);
+    const Bitboard target = Bitboard{1} << ((move & kMoveMaskTarget) >> kMoveShiftTarget);
     const Bitboard source_and_target = source | target;
 
     boards_[attacking_side_] ^= source_and_target;
     boards_[attacking_piece_index] ^= source_and_target;
 
-    const Bitmove move_type = move & MOVE_MASK_TYPE;
+    const Bitmove move_type = move & kMoveMaskType;
     switch (move_type)
     {
-        case MOVE_VALUE_TYPE_CAPTURE: {
+        case kMoveTypeCapture: {
             const std::size_t captured_piece =
-                defending_side_ + ((move & MOVE_MASK_CAPTURED_PIECE) >> MOVE_SHIFT_CAPTURED_PIECE);
+                defending_side_ + ((move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece);
             boards_[defending_side_] |= target;
             boards_[captured_piece] |= target;
             return;
         }
 
-        case MOVE_VALUE_TYPE_EN_PASSANT_CAPTURE: {
-            const Bitboard en_passant_square = Bitboard{1}
-                                               << ((boards_[kExtrasBoard] & kBoardMaskEnPassant) >> kShiftEnPassant);
+        case kMoveTypeEnPassantCapture: {
+            const Bitboard en_passant_square =
+                Bitboard{1} << ((boards_[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[defending_side_] |= en_passant_victim;
             boards_[defending_side_ + PAWN] |= en_passant_victim;
             return;
         }
-        case MOVE_VALUE_TYPE_KINGSIDE_CASTLING: {
+        case kMoveTypeKingsideCastling: {
             constexpr Bitboard white_rook_jump = F1 | H1;
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -227,7 +227,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
             boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
-        case MOVE_VALUE_TYPE_QUEENSIDE_CASTLING: {
+        case kMoveTypeQueensideCastling: {
             constexpr Bitboard white_rook_jump = A1 | D1;
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
@@ -235,16 +235,16 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
             boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
             return;
         }
-        case MOVE_VALUE_TYPE_PROMOTION: {
+        case kMoveTypePromotion: {
             boards_[attacking_piece_index] &=
                 ~target;  // pawns were set on target and source as side effect of default operation
             const std::size_t board_idx_added_piece_kind =
-                attacking_side_ + ((move & MOVE_MASK_PROMOTION) >> MOVE_SHIFT_PROMOTION);
+                attacking_side_ + ((move & kMoveMaskPromotion) >> kMoveShiftPromotion);
             boards_[board_idx_added_piece_kind] &= ~target;
-            const Bitmove capture = move & MOVE_MASK_CAPTURED_PIECE;
+            const Bitmove capture = move & kMoveMaskCapturedPiece;
             if (capture)
             {
-                const std::size_t captured_piece = defending_side_ + (capture >> MOVE_SHIFT_CAPTURED_PIECE);
+                const std::size_t captured_piece = defending_side_ + (capture >> kMoveShiftCapturedPiece);
                 boards_[defending_side_] |= target;
                 boards_[captured_piece] |= target;
             }

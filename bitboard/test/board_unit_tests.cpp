@@ -49,12 +49,12 @@ constexpr Bitboard kAllBitsSet = std::numeric_limits<Bitboard>::max();
 
 TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
 {
-    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kShiftEnPassant, 0b00111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kBoardShiftEnPassant, 0b00111111);
 }
 
 TEST(BoardShiftFullMovesTest, GivenOnAllOnes_Expect8BitsSet)
 {
-    EXPECT_EQ((kAllBitsSet & kBoardMaskFullMoves) >> kShiftFullMoves, 0b11111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskFullMoves) >> kBoardShiftFullMoves, 0b11111111);
 }
 
 }  // namespace

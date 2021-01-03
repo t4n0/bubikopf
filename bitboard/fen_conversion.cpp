@@ -162,7 +162,7 @@ Position PositionFromFen(const std::string& fen)
         }
 
         const int en_passant_bits = std::distance(SQUARE_LABEL.begin(), location_it);
-        position[kExtrasBoard] |= en_passant_bits << kShiftEnPassant;
+        position[kExtrasBoard] |= en_passant_bits << kBoardShiftEnPassant;
     }
 
     const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
@@ -170,7 +170,7 @@ Position PositionFromFen(const std::string& fen)
 
     const Bitboard total_plies = std::stoi(tokens.at(kFenTokenMoves));
 
-    position[kExtrasBoard] |= total_plies << kShiftFullMoves;
+    position[kExtrasBoard] |= total_plies << kBoardShiftFullMoves;
 
     return position;
 }
@@ -249,12 +249,12 @@ std::string FenFromPosition(const Position& position)
         castling += "-";
     }
 
-    const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kShiftEnPassant;
+    const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant;
     const auto en_passant = en_passant_square_bits ? SQUARE_LABEL.at(en_passant_square_bits) : "-";
 
     const auto static_plies = std::to_string(position[kExtrasBoard] & kBoardMaskStaticPlies);
 
-    const auto total_plies = std::to_string((position[kExtrasBoard] & kBoardMaskFullMoves) >> kShiftFullMoves);
+    const auto total_plies = std::to_string((position[kExtrasBoard] & kBoardMaskFullMoves) >> kBoardShiftFullMoves);
 
     return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + total_plies;
 }
