@@ -17,18 +17,18 @@ Position EncodeUniqueIdToZero()
     Position position{};
     position[kWhiteBoard] = H1 | A8;
     position[kBlackBoard] = H1 | A8;
-    position[kWhiteBoard + PAWN] = H1;
-    position[kBlackBoard + PAWN] = H1;
-    position[kWhiteBoard + KING] = A8;
-    position[kBlackBoard + KING] = A8;
+    position[kWhiteBoard + kPawn] = H1;
+    position[kBlackBoard + kPawn] = H1;
+    position[kWhiteBoard + kKing] = A8;
+    position[kBlackBoard + kKing] = A8;
     position.white_to_move_ = true;
     return position;
 }
 
 int DecodeUniqueId(const Position& position)
 {
-    const int black_pawn_square = tzcnt(position[kBlackBoard + PAWN]);
-    const int white_pawn_square = tzcnt(position[kWhiteBoard + PAWN]);
+    const int black_pawn_square = tzcnt(position[kBlackBoard + kPawn]);
+    const int white_pawn_square = tzcnt(position[kWhiteBoard + kPawn]);
     const int unique_id = std::max(black_pawn_square, white_pawn_square);
     return unique_id;
 }
@@ -66,7 +66,7 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
     for (int i = 1; i < 3; i++)
     {
         *move_generation_insertion_iterator++ = ComposeMove(
-            tzcnt(position[side + PAWN]), ++unique_id, PAWN, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
+            tzcnt(position[side + kPawn]), ++unique_id, kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
         if (unique_id == 64)
         {
             throw std::runtime_error{"No more unique squares left."};

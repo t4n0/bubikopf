@@ -81,11 +81,11 @@ inline std::string ToString(const Bitmove& move)
     const std::size_t target_bit = (move & kMoveMaskTarget) >> kMoveShiftTarget;
     const std::string target = SQUARE_LABEL.at(target_bit);
     const std::size_t moved_piece_kind = (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
-    const std::string moved_piece = PIECE_LABEL.at(moved_piece_kind);
+    const char moved_piece = kPieceLabels.at(moved_piece_kind);
     const std::size_t captured_piece_kind = (move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece;
-    const std::string captured_piece = PIECE_LABEL.at(captured_piece_kind);
+    const char captured_piece = kPieceLabels.at(captured_piece_kind);
     const std::size_t promotion_kind = (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
-    const std::string promotion = PIECE_LABEL.at(promotion_kind);
+    const char promotion = kPieceLabels.at(promotion_kind);
     const std::size_t move_value_kind = (move & kMoveMaskType) >> kMoveShiftType;
     const std::string move_value = kMoveTypeLabels.at(move_value_kind);
 
@@ -112,7 +112,7 @@ inline std::string ToUciString(const Bitmove& move)
     const std::size_t promotion_kind = (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
     if (promotion_kind)
     {
-        uci_move << PIECE_LABEL.at(promotion_kind);
+        uci_move << kPieceLabels.at(promotion_kind);
     }
 
     return uci_move.str();

@@ -64,21 +64,21 @@ Position StandardStartingPosition()
 
     // white pieces
     position[kWhiteBoard] = RANK_2 | RANK_1;
-    position[kWhiteBoard + PAWN] = RANK_2;
-    position[kWhiteBoard + ROOK] = A1 | H1;
-    position[kWhiteBoard + KNIGHT] = B1 | G1;
-    position[kWhiteBoard + BISHOP] = C1 | F1;
-    position[kWhiteBoard + QUEEN] = D1;
-    position[kWhiteBoard + KING] = E1;
+    position[kWhiteBoard + kPawn] = RANK_2;
+    position[kWhiteBoard + kRook] = A1 | H1;
+    position[kWhiteBoard + kKnight] = B1 | G1;
+    position[kWhiteBoard + kBishop] = C1 | F1;
+    position[kWhiteBoard + kQueen] = D1;
+    position[kWhiteBoard + kKing] = E1;
 
     // black pieces
     position[kBlackBoard] = RANK_7 | RANK_8;
-    position[kBlackBoard + PAWN] = RANK_7;
-    position[kBlackBoard + ROOK] = A8 | H8;
-    position[kBlackBoard + KNIGHT] = B8 | G8;
-    position[kBlackBoard + BISHOP] = C8 | F8;
-    position[kBlackBoard + QUEEN] = D8;
-    position[kBlackBoard + KING] = E8;
+    position[kBlackBoard + kPawn] = RANK_7;
+    position[kBlackBoard + kRook] = A8 | H8;
+    position[kBlackBoard + kKnight] = B8 | G8;
+    position[kBlackBoard + kBishop] = C8 | F8;
+    position[kBlackBoard + kQueen] = D8;
+    position[kBlackBoard + kKing] = E8;
 
     return position;
 }

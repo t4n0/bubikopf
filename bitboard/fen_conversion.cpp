@@ -54,51 +54,51 @@ Position PositionFromFen(const std::string& fen)
                 {
                     case 'p':
                         side = kBlackBoard;
-                        piece_kind = PAWN;
+                        piece_kind = kPawn;
                         break;
                     case 'r':
                         side = kBlackBoard;
-                        piece_kind = ROOK;
+                        piece_kind = kRook;
                         break;
                     case 'n':
                         side = kBlackBoard;
-                        piece_kind = KNIGHT;
+                        piece_kind = kKnight;
                         break;
                     case 'b':
                         side = kBlackBoard;
-                        piece_kind = BISHOP;
+                        piece_kind = kBishop;
                         break;
                     case 'q':
                         side = kBlackBoard;
-                        piece_kind = QUEEN;
+                        piece_kind = kQueen;
                         break;
                     case 'k':
                         side = kBlackBoard;
-                        piece_kind = KING;
+                        piece_kind = kKing;
                         break;
                     case 'P':
                         side = kWhiteBoard;
-                        piece_kind = PAWN;
+                        piece_kind = kPawn;
                         break;
                     case 'R':
                         side = kWhiteBoard;
-                        piece_kind = ROOK;
+                        piece_kind = kRook;
                         break;
                     case 'N':
                         side = kWhiteBoard;
-                        piece_kind = KNIGHT;
+                        piece_kind = kKnight;
                         break;
                     case 'B':
                         side = kWhiteBoard;
-                        piece_kind = BISHOP;
+                        piece_kind = kBishop;
                         break;
                     case 'Q':
                         side = kWhiteBoard;
-                        piece_kind = QUEEN;
+                        piece_kind = kQueen;
                         break;
                     case 'K':
                         side = kWhiteBoard;
-                        piece_kind = KING;
+                        piece_kind = kKing;
                         break;
                     default:
                         throw std::runtime_error{"FEN contains invalid piece symbol: " + symbol};
@@ -192,7 +192,7 @@ std::string FenFromPosition(const Position& position)
                 pieces += std::to_string(empty_squares);
                 empty_squares = 0;
             }
-            pieces += PIECE_LABEL_WHITE.at(white_piece);
+            pieces += kPieceLabelsFenWhite.at(white_piece);
         }
         else if (black_piece)
         {
@@ -201,7 +201,7 @@ std::string FenFromPosition(const Position& position)
                 pieces += std::to_string(empty_squares);
                 empty_squares = 0;
             }
-            pieces += PIECE_LABEL.at(black_piece);
+            pieces += kPieceLabels.at(black_piece);
         }
         else
         {

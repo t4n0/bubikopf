@@ -59,13 +59,13 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                                           const Bitmove target,
                                           const Bitmove captured_piece) {
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, QUEEN, kMoveTypePromotion);
+            ComposeMove(source, target, kPawn, captured_piece, kQueen, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, ROOK, kMoveTypePromotion);
+            ComposeMove(source, target, kPawn, captured_piece, kRook, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, KNIGHT, kMoveTypePromotion);
+            ComposeMove(source, target, kPawn, captured_piece, kKnight, kMoveTypePromotion);
         *move_generation_insertion_iterator++ =
-            ComposeMove(source, target, PAWN, captured_piece, BISHOP, kMoveTypePromotion);
+            ComposeMove(source, target, kPawn, captured_piece, kBishop, kMoveTypePromotion);
     };
 
     const bool& white_to_move = position.white_to_move_;
@@ -96,7 +96,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits.at(index),
-                                                                        PAWN,
+                                                                        kPawn,
                                                                         captured_piece,
                                                                         kNoPromotion,
                                                                         kMoveTypeCapture);
@@ -123,8 +123,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits.at(index),
-                                                                        PAWN,
-                                                                        PAWN,
+                                                                        kPawn,
+                                                                        kPawn,
                                                                         kNoPromotion,
                                                                         kMoveTypeEnPassantCapture);
                 }
@@ -139,7 +139,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             if (!is_promotion)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target_single_push), PAWN, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
+                    source_bit, tzcnt(target_single_push), kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
             }
             else
             {
@@ -159,11 +159,11 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             if (target_single_push_is_free && target_double_push_is_free)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target_double_push), PAWN, kNoCapture, kNoPromotion, kMoveTypePawnDoublePush);
+                    source_bit, tzcnt(target_double_push), kPawn, kNoCapture, kNoPromotion, kMoveTypePawnDoublePush);
             }
         }
     };
-    ForEveryBitInPopulation(position[attacking_side + PAWN], generate_pawn_move);
+    ForEveryBitInPopulation(position[attacking_side + kPawn], generate_pawn_move);
 
     /// @brief Ray in the sense that all squares in a certain direction are considered as targets
     const auto generate_ray_style_move = [&](const std::size_t direction,
@@ -200,28 +200,28 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const auto generate_bishop_move = [&](const Bitmove source_bit, const Bitboard source) {
         for (const auto direction : bishop_directions)
         {
-            generate_ray_style_move(direction, source_bit, source, BISHOP);
+            generate_ray_style_move(direction, source_bit, source, kBishop);
         }
     };
-    ForEveryBitInPopulation(position[attacking_side + BISHOP], generate_bishop_move);
+    ForEveryBitInPopulation(position[attacking_side + kBishop], generate_bishop_move);
 
     // rook moves
     const auto generate_rook_move = [&](const Bitmove source_bit, const Bitboard source) {
         for (const auto direction : rook_directions)
         {
-            generate_ray_style_move(direction, source_bit, source, ROOK);
+            generate_ray_style_move(direction, source_bit, source, kRook);
         }
     };
-    ForEveryBitInPopulation(position[attacking_side + ROOK], generate_rook_move);
+    ForEveryBitInPopulation(position[attacking_side + kRook], generate_rook_move);
 
     // queen moves
     const auto generate_queen_move = [&](const Bitmove source_bit, const Bitboard source) {
         for (const auto direction : all_directions)
         {
-            generate_ray_style_move(direction, source_bit, source, QUEEN);
+            generate_ray_style_move(direction, source_bit, source, kQueen);
         }
     };
-    ForEveryBitInPopulation(position[attacking_side + QUEEN], generate_queen_move);
+    ForEveryBitInPopulation(position[attacking_side + kQueen], generate_queen_move);
 
     /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
     const auto generate_jump_style_move =
@@ -251,17 +251,17 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         for (const auto jump_direction : knight_directions)
         {
             const Bitboard target = RuntimeKnightJump(source, jump_direction);
-            generate_jump_style_move(source, target, KNIGHT);
+            generate_jump_style_move(source, target, kKnight);
         }
     };
-    ForEveryBitInPopulation(position[attacking_side + KNIGHT], generate_knight_move);
+    ForEveryBitInPopulation(position[attacking_side + kKnight], generate_knight_move);
 
     // king moves
-    const Bitboard king_board = position[attacking_side + KING];
+    const Bitboard king_board = position[attacking_side + kKing];
     for (const auto direction : all_directions)
     {
         const Bitboard target = SingleStep(king_board, direction);
-        generate_jump_style_move(king_board, target, KING);
+        generate_jump_style_move(king_board, target, kKing);
     }
 
     // castling
@@ -284,7 +284,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         if (castling_possible)
         {
             *move_generation_insertion_iterator++ = ComposeMove(
-                source_bits[castling], target_bits[castling], KING, kNoCapture, kNoPromotion, move_values[castling]);
+                source_bits[castling], target_bits[castling], kKing, kNoCapture, kNoPromotion, move_values[castling]);
         }
     }
 

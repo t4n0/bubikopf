@@ -24,31 +24,31 @@ std::size_t Position::GetNumberOfPlayedPlies() const
 
 Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) const
 {
-    if (boards_[side + PAWN] & location)
+    if (boards_[side + kPawn] & location)
     {
-        return PAWN;
+        return kPawn;
     }
-    if (boards_[side + KNIGHT] & location)
+    if (boards_[side + kKnight] & location)
     {
-        return KNIGHT;
+        return kKnight;
     }
-    if (boards_[side + BISHOP] & location)
+    if (boards_[side + kBishop] & location)
     {
-        return BISHOP;
+        return kBishop;
     }
-    if (boards_[side + ROOK] & location)
+    if (boards_[side + kRook] & location)
     {
-        return ROOK;
+        return kRook;
     }
-    if (boards_[side + QUEEN] & location)
+    if (boards_[side + kQueen] & location)
     {
-        return QUEEN;
+        return kQueen;
     }
-    if (boards_[side + KING] & location)
+    if (boards_[side + kKing] & location)
     {
-        return KING;
+        return kKing;
     }
-    return NO_PIECE;
+    return kNoPiece;
 }
 
 Bitboard Position::MakeMove(Bitmove move)
@@ -100,7 +100,7 @@ Bitboard Position::MakeMove(Bitmove move)
                                                << ((current_extras & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[defending_side_] &= ~en_passant_victim;
-            boards_[defending_side_ + PAWN] &= ~en_passant_victim;
+            boards_[defending_side_ + kPawn] &= ~en_passant_victim;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
@@ -109,7 +109,7 @@ Bitboard Position::MakeMove(Bitmove move)
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
-            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             boards_[kExtrasBoard]++;
             boards_[kExtrasBoard] |= kKingsideCastlingOnLastMove;
             break;
@@ -119,7 +119,7 @@ Bitboard Position::MakeMove(Bitmove move)
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
-            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             boards_[kExtrasBoard]++;
             boards_[kExtrasBoard] |= kQueensideCastlingOnLastMove;
             break;
@@ -216,7 +216,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
                 Bitboard{1} << ((boards_[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
             const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
             boards_[defending_side_] |= en_passant_victim;
-            boards_[defending_side_ + PAWN] |= en_passant_victim;
+            boards_[defending_side_ + kPawn] |= en_passant_victim;
             return;
         }
         case kMoveTypeKingsideCastling: {
@@ -224,7 +224,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
             constexpr Bitboard black_rook_jump = F8 | H8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
-            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             return;
         }
         case kMoveTypeQueensideCastling: {
@@ -232,7 +232,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
             constexpr Bitboard black_rook_jump = A8 | D8;
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
-            boards_[attacking_side_ + ROOK] ^= rook_jump_source_and_target;
+            boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             return;
         }
         case kMoveTypePromotion: {
@@ -290,7 +290,7 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
                 {
                     const std::size_t piece_kind = GetPieceKind(attacking_side, attacker_location);
                     const bool piece_can_attack_from_this_angle =
-                        (piece_kind == QUEEN) || (piece_kind == dangerous_piece_besides_queen);
+                        (piece_kind == kQueen) || (piece_kind == dangerous_piece_besides_queen);
                     if (piece_can_attack_from_this_angle)
                     {
                         return true;
@@ -312,12 +312,12 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // ray style checks horizontal and vertical
         const bool rook_or_queen_aligend_on_rank_or_file =
-            rook_attacks[square_bit] & (boards_[attacking_side + ROOK] | boards_[attacking_side + QUEEN]);
+            rook_attacks[square_bit] & (boards_[attacking_side + kRook] | boards_[attacking_side + kQueen]);
         if (rook_or_queen_aligend_on_rank_or_file)
         {
             for (const auto direction : {west, south, east, north})
             {
-                if (ray_check_given(square, direction, ROOK))
+                if (ray_check_given(square, direction, kRook))
                 {
                     return true;
                 }
@@ -326,12 +326,12 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // ray style checks diagonally
         const bool bishop_or_queen_aligend_diagonally =
-            bishop_attacks[square_bit] & (boards_[attacking_side + BISHOP] | boards_[attacking_side + QUEEN]);
+            bishop_attacks[square_bit] & (boards_[attacking_side + kBishop] | boards_[attacking_side + kQueen]);
         if (bishop_or_queen_aligend_diagonally)
         {
             for (const auto direction : {north_east, north_west, south_east, south_west})
             {
-                if (ray_check_given(square, direction, BISHOP))
+                if (ray_check_given(square, direction, kBishop))
                 {
                     return true;
                 }
@@ -339,7 +339,7 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         }
 
         // knight checks
-        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + KNIGHT];
+        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + kKnight];
         if (knight_is_giving_check)
         {
             return true;
@@ -347,14 +347,14 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // pawn checks
         const bool pawn_is_giving_check = pawn_attacks[square_bit + (white_to_move_ * pawn_attacks_offset_for_white)] &
-                                          boards_[attacking_side + PAWN];
+                                          boards_[attacking_side + kPawn];
         if (pawn_is_giving_check)
         {
             return true;
         }
 
         // king checks
-        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side + KING];
+        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side + kKing];
         if (king_is_giving_check)
         {
             return true;
@@ -363,7 +363,7 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         return false;
     };
 
-    const Bitboard king_location = boards_[defending_side + KING];
+    const Bitboard king_location = boards_[defending_side + kKing];
     if (square_is_under_attack(king_location))
     {
         return true;
