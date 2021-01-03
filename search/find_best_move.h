@@ -22,68 +22,65 @@ std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> Genera
 
 struct DebuggingDisabled
 {
-    static constexpr bool disabled = true;
+    static constexpr bool debugging = false;
 };
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintNodeEntry(const uint8_t /*unused*/, const Position& /*unused*/)
-{
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintEvaluation(const Evaluation /*unused*/)
-{
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintMove(const Bitmove /*unused*/)
-{
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintPruning(const Evaluation /*unused*/, const Evaluation /*unused*/)
-{
-}
-
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::disabled, void> PrintNodeExit(const uint8_t /*unused*/)
-{
-}
 
 struct DebuggingEnabled
 {
-    static constexpr bool enabled = true;
+    static constexpr bool debugging = true;
 };
 
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintNodeEntry(const uint8_t depth, const Position& position)
+template <typename Behavior>
+void PrintNodeEntry(const uint8_t depth, const Position& position)
 {
-    std::cout << "depth " << int{depth} << '\n';
-    PrettyPrintFen(FenFromPosition(position));
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "depth " << int{depth} << '\n';
+        PrettyPrintFen(FenFromPosition(position));
+    }
+    std::ignore = depth;  // Resolve warning if debugging disabled.
+    std::ignore = position;
 }
 
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintEvaluation(const Evaluation evaluation)
+template <typename Behavior>
+void PrintEvaluation(const Evaluation evaluation)
 {
-    std::cout << "= " << evaluation << '\n' << std::endl;
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "= " << evaluation << '\n' << std::endl;
+    }
+    std::ignore = evaluation;  // Resolve warning if debugging disabled.
 }
 
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintMove(const Bitmove move)
+template <typename Behavior>
+void PrintMove(const Bitmove move)
 {
-    std::cout << ToUciString(move) << '\n' << std::endl;
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << ToUciString(move) << '\n' << std::endl;
+    }
+    std::ignore = move;  // Resolve warning if debugging disabled.
 }
 
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintPruning(const Evaluation alpha, const Evaluation beta)
+template <typename Behavior>
+void PrintPruning(const Evaluation alpha, const Evaluation beta)
 {
-    std::cout << "pruning due: alpha = " << alpha << ", beta = " << beta << '\n' << std::endl;
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "pruning due: alpha = " << alpha << ", beta = " << beta << '\n' << std::endl;
+    }
+    std::ignore = alpha;  // Resolve warning if debugging disabled.
+    std::ignore = beta;
 }
 
-template <typename DebugBehavior>
-std::enable_if_t<DebugBehavior::enabled, void> PrintNodeExit(const uint8_t depth)
+template <typename Behavior>
+void PrintNodeExit(const uint8_t depth)
 {
-    std::cout << "returning to depth " << int{depth + 1} << '\n' << std::endl;
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "returning to depth " << int{depth + 1} << '\n' << std::endl;
+    }
+    std::ignore = depth;  // Resolve warning if debugging disabled.
 }
 
 /// @brief A minimax search using alpha / beta pruning.
