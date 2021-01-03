@@ -155,13 +155,13 @@ Position PositionFromFen(const std::string& fen)
     const std::string en_passant = tokens.at(kFenTokenEnPassant);
     if (en_passant != "-")
     {
-        const auto location_it = std::find(SQUARE_LABEL.begin(), SQUARE_LABEL.end(), en_passant);
-        if (location_it == SQUARE_LABEL.end())
+        const auto location_it = std::find(kSquareLabels.begin(), kSquareLabels.end(), en_passant);
+        if (location_it == kSquareLabels.end())
         {
             throw std::runtime_error{"FEN contains invalid en passant token."};
         }
 
-        const int en_passant_bits = std::distance(SQUARE_LABEL.begin(), location_it);
+        const int en_passant_bits = std::distance(kSquareLabels.begin(), location_it);
         position[kExtrasBoard] |= en_passant_bits << kBoardShiftEnPassant;
     }
 
@@ -250,7 +250,7 @@ std::string FenFromPosition(const Position& position)
     }
 
     const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant;
-    const auto en_passant = en_passant_square_bits ? SQUARE_LABEL.at(en_passant_square_bits) : "-";
+    const auto en_passant = en_passant_square_bits ? kSquareLabels.at(en_passant_square_bits) : "-";
 
     const auto static_plies = std::to_string(position[kExtrasBoard] & kBoardMaskStaticPlies);
 

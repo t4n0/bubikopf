@@ -25,14 +25,14 @@ constexpr std::array<int, 8> step_bits{1, 9, 8, 7, -1, -9, -8, -7};
 
 // Values correspond to legal landing areas without wrapping e.g. a step from A1 to H2 when illegally going "west" of
 // square A1. E.g. legal_step_areas_without_wrapping.at(north).
-constexpr std::array<Bitboard, 8> legal_step_areas_without_wrapping{~(FILE_H),
-                                                                    ~(FILE_H | RANK_1),
-                                                                    ~(RANK_1),
-                                                                    ~(RANK_1 | FILE_A),
-                                                                    ~(FILE_A),
-                                                                    ~(FILE_A | RANK_8),
-                                                                    ~(RANK_8),
-                                                                    ~(RANK_8 | FILE_H)};
+constexpr std::array<Bitboard, 8> legal_step_areas_without_wrapping{~(kFileH),
+                                                                    ~(kFileH | kRank1),
+                                                                    ~(kRank1),
+                                                                    ~(kRank1 | kFileA),
+                                                                    ~(kFileA),
+                                                                    ~(kFileA | kRank8),
+                                                                    ~(kRank8),
+                                                                    ~(kRank8 | kFileH)};
 
 template <Bitboard source, std::size_t direction>
 class RayOneSquare

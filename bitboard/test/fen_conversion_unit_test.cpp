@@ -63,8 +63,8 @@ Position StandardStartingPosition()
     position.white_to_move_ = true;
 
     // white pieces
-    position[kWhiteBoard] = RANK_2 | RANK_1;
-    position[kWhiteBoard + kPawn] = RANK_2;
+    position[kWhiteBoard] = kRank2 | kRank1;
+    position[kWhiteBoard + kPawn] = kRank2;
     position[kWhiteBoard + kRook] = A1 | H1;
     position[kWhiteBoard + kKnight] = B1 | G1;
     position[kWhiteBoard + kBishop] = C1 | F1;
@@ -72,8 +72,8 @@ Position StandardStartingPosition()
     position[kWhiteBoard + kKing] = E1;
 
     // black pieces
-    position[kBlackBoard] = RANK_7 | RANK_8;
-    position[kBlackBoard + kPawn] = RANK_7;
+    position[kBlackBoard] = kRank7 | kRank8;
+    position[kBlackBoard + kPawn] = kRank7;
     position[kBlackBoard + kRook] = A8 | H8;
     position[kBlackBoard + kKnight] = B8 | G8;
     position[kBlackBoard + kBishop] = C8 | F8;

@@ -39,14 +39,14 @@ constexpr std::array<int, 8> jump_bits{17, 15, 6, -10, -17, -15, -6, 10};
 // Values priovdes a bitboard specifying the legal landing area after a jump.
 // (Used to null illegal moves that wrap around the board). E.g.
 // legal_jump_areas_without_wrapping.at(knight_west_north).
-constexpr std::array<Bitboard, 8> legal_landing_areas_without_wrapping{~(RANK_1 | RANK_2 | FILE_H),
-                                                                       ~(RANK_1 | RANK_2 | FILE_A),
-                                                                       ~(FILE_A | FILE_B | RANK_1),
-                                                                       ~(FILE_A | FILE_B | RANK_8),
-                                                                       ~(RANK_7 | RANK_8 | FILE_A),
-                                                                       ~(RANK_7 | RANK_8 | FILE_H),
-                                                                       ~(FILE_H | FILE_G | RANK_8),
-                                                                       ~(FILE_H | FILE_G | RANK_1)};
+constexpr std::array<Bitboard, 8> legal_landing_areas_without_wrapping{~(kRank1 | kRank2 | kFileH),
+                                                                       ~(kRank1 | kRank2 | kFileA),
+                                                                       ~(kFileA | kFileB | kRank1),
+                                                                       ~(kFileA | kFileB | kRank8),
+                                                                       ~(kRank7 | kRank8 | kFileA),
+                                                                       ~(kRank7 | kRank8 | kFileH),
+                                                                       ~(kFileH | kFileG | kRank8),
+                                                                       ~(kFileH | kFileG | kRank1)};
 
 /// @brief Creates a bitboard from source_bit, shifts it in direction and NULLs
 /// the board if "wrap around" occurs.

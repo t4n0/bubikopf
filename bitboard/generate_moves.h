@@ -91,7 +91,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             if (position[defending_side] & pawn_capture_targets.at(index))
             {
                 const Bitmove captured_piece = position.GetPieceKind(defending_side, pawn_capture_targets.at(index));
-                const bool is_promotion = pawn_capture_targets.at(index) & PROMOTION_RANKS;
+                const bool is_promotion = pawn_capture_targets.at(index) & kPromotionRanks;
                 if (!is_promotion)
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
@@ -135,7 +135,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         const bool target_single_push_is_free = target_single_push & free_squares;
         if (target_single_push_is_free)
         {
-            const bool is_promotion = target_single_push & PROMOTION_RANKS;
+            const bool is_promotion = target_single_push & kPromotionRanks;
             if (!is_promotion)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
@@ -151,7 +151,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
         // double push
         const bool source_is_on_start_row =
-            (white_to_move && (source & START_RANK_WHITE)) || (!white_to_move && (source & START_RANK_BLACK));
+            (white_to_move && (source & kStartRankWhite)) || (!white_to_move && (source & kStartRankBlack));
         if (source_is_on_start_row)
         {
             const Bitboard target_double_push = white_to_move ? source << 16 : source >> 16;
