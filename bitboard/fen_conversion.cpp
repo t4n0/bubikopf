@@ -53,51 +53,51 @@ Position PositionFromFen(const std::string& fen)
                 switch (symbol)
                 {
                     case 'p':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = PAWN;
                         break;
                     case 'r':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = ROOK;
                         break;
                     case 'n':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = KNIGHT;
                         break;
                     case 'b':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = BISHOP;
                         break;
                     case 'q':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = QUEEN;
                         break;
                     case 'k':
-                        side = BOARD_IDX_BLACK;
+                        side = kBlackBoard;
                         piece_kind = KING;
                         break;
                     case 'P':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = PAWN;
                         break;
                     case 'R':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = ROOK;
                         break;
                     case 'N':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = KNIGHT;
                         break;
                     case 'B':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = BISHOP;
                         break;
                     case 'Q':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = QUEEN;
                         break;
                     case 'K':
-                        side = BOARD_IDX_WHITE;
+                        side = kWhiteBoard;
                         piece_kind = KING;
                         break;
                     default:
@@ -115,13 +115,13 @@ Position PositionFromFen(const std::string& fen)
     {
         case 'w':
             position.white_to_move_ = true;
-            position.attacking_side_ = BOARD_IDX_WHITE;
-            position.defending_side_ = BOARD_IDX_BLACK;
+            position.attacking_side_ = kWhiteBoard;
+            position.defending_side_ = kBlackBoard;
             break;
         case 'b':
             position.white_to_move_ = false;
-            position.attacking_side_ = BOARD_IDX_BLACK;
-            position.defending_side_ = BOARD_IDX_WHITE;
+            position.attacking_side_ = kBlackBoard;
+            position.defending_side_ = kWhiteBoard;
             break;
         default:
             throw std::runtime_error{"FEN contains invalid token for side to play."};
@@ -135,16 +135,16 @@ Position PositionFromFen(const std::string& fen)
             switch (castling_right)
             {
                 case 'k':
-                    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_CASTLING_BLACK_KINGSIDE;
+                    position[kExtrasBoard] |= kCastlingBlackKingside;
                     break;
                 case 'q':
-                    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_CASTLING_BLACK_QUEENSIDE;
+                    position[kExtrasBoard] |= kCastlingBlackQueenside;
                     break;
                 case 'K':
-                    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_CASTLING_WHITE_KINGSIDE;
+                    position[kExtrasBoard] |= kCastlingWhiteKingside;
                     break;
                 case 'Q':
-                    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_CASTLING_WHITE_QUEENSIDE;
+                    position[kExtrasBoard] |= kCastlingWhiteQueenside;
                     break;
                 default:
                     throw std::runtime_error{"FEN contains invalid castling token."};
@@ -162,15 +162,15 @@ Position PositionFromFen(const std::string& fen)
         }
 
         const int en_passant_bits = std::distance(SQUARE_LABEL.begin(), location_it);
-        position[BOARD_IDX_EXTRAS] |= en_passant_bits << BOARD_SHIFT_EN_PASSANT;
+        position[kExtrasBoard] |= en_passant_bits << kShiftEnPassant;
     }
 
     const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
-    position[BOARD_IDX_EXTRAS] |= static_plies;
+    position[kExtrasBoard] |= static_plies;
 
     const Bitboard total_plies = std::stoi(tokens.at(kFenTokenMoves));
 
-    position[BOARD_IDX_EXTRAS] |= total_plies << BOARD_SHIFT_MOVES;
+    position[kExtrasBoard] |= total_plies << kShiftFullMoves;
 
     return position;
 }
@@ -183,8 +183,8 @@ std::string FenFromPosition(const Position& position)
     for (int idx = 63; idx >= 0; idx--)
     {
         const Bitboard square = Bitboard{1} << idx;
-        const Bitmove white_piece = position.GetPieceKind(BOARD_IDX_WHITE, square);
-        const Bitmove black_piece = position.GetPieceKind(BOARD_IDX_BLACK, square);
+        const Bitmove white_piece = position.GetPieceKind(kWhiteBoard, square);
+        const Bitmove black_piece = position.GetPieceKind(kBlackBoard, square);
         if (white_piece)
         {
             if (empty_squares)
@@ -227,34 +227,34 @@ std::string FenFromPosition(const Position& position)
     const auto side = position.white_to_move_ ? "w" : "b";
 
     std::string castling{};
-    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_KINGSIDE)
+    if (position[kExtrasBoard] & kCastlingWhiteKingside)
     {
         castling += "K";
     }
-    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_WHITE_QUEENSIDE)
+    if (position[kExtrasBoard] & kCastlingWhiteQueenside)
     {
         castling += "Q";
     }
-    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_KINGSIDE)
+    if (position[kExtrasBoard] & kCastlingBlackKingside)
     {
         castling += "k";
     }
-    if (position[BOARD_IDX_EXTRAS] & BOARD_VALUE_CASTLING_BLACK_QUEENSIDE)
+    if (position[kExtrasBoard] & kCastlingBlackQueenside)
     {
         castling += "q";
     }
-    const bool at_least_one_side_can_castle = position[BOARD_IDX_EXTRAS] & BOARD_MASK_CASTLING;
+    const bool at_least_one_side_can_castle = position[kExtrasBoard] & kBoardMaskCastling;
     if (!at_least_one_side_can_castle)
     {
         castling += "-";
     }
 
-    const auto en_passant_square_bits = (position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT;
+    const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kShiftEnPassant;
     const auto en_passant = en_passant_square_bits ? SQUARE_LABEL.at(en_passant_square_bits) : "-";
 
-    const auto static_plies = std::to_string(position[BOARD_IDX_EXTRAS] & BOARD_MASK_STATIC_PLIES);
+    const auto static_plies = std::to_string(position[kExtrasBoard] & kBoardMaskStaticPlies);
 
-    const auto total_plies = std::to_string((position[BOARD_IDX_EXTRAS] & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES);
+    const auto total_plies = std::to_string((position[kExtrasBoard] & kBoardMaskFullMoves) >> kShiftFullMoves);
 
     return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + total_plies;
 }

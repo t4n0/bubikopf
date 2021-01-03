@@ -9,18 +9,18 @@ namespace Chess
 namespace
 {
 
-constexpr std::array<Bitboard, 5> ALL_BOARD_MASKS{
-    BOARD_MASK_STATIC_PLIES,
-    BOARD_MASK_EN_PASSANT,
-    BOARD_MASK_CASTLING,
-    BOARD_MASK_MOVES,
-    BOARD_MASK_UNUSED,
+constexpr std::array<Bitboard, 5> kAllBoardMasks{
+    kBoardMaskStaticPlies,
+    kBoardMaskEnPassant,
+    kBoardMaskCastling,
+    kBoardMaskFullMoves,
+    kBoardMaskUnused,
 };
 
 TEST(BoardMaskTest, GivenAllBoardMasks_ExpectEntireRangeOfUnderlyingTypeIsUtilized)
 {
     Bitboard covered_fields = 0;
-    for (const Bitboard mask : ALL_BOARD_MASKS)
+    for (const Bitboard mask : kAllBoardMasks)
     {
         covered_fields |= mask;
     }
@@ -43,22 +43,18 @@ TEST_P(BoardMaskFixture, GivenTwoDifferentMoveMasks_ExpectNoOverlap)
 
 INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          BoardMaskFixture,
-                         ::testing::Combine(::testing::ValuesIn(ALL_BOARD_MASKS),
-                                            ::testing::ValuesIn(ALL_BOARD_MASKS)));
+                         ::testing::Combine(::testing::ValuesIn(kAllBoardMasks), ::testing::ValuesIn(kAllBoardMasks)));
+
+constexpr Bitboard kAllBitsSet = std::numeric_limits<Bitboard>::max();
 
 TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
 {
-    EXPECT_EQ((BOARD_ONES & BOARD_MASK_EN_PASSANT) >> BOARD_SHIFT_EN_PASSANT, 0b00111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kShiftEnPassant, 0b00111111);
 }
 
-TEST(BoardShiftCastlingTest, GivenOnAllOnes_Expect4BitsSet)
+TEST(BoardShiftFullMovesTest, GivenOnAllOnes_Expect8BitsSet)
 {
-    EXPECT_EQ((BOARD_ONES & BOARD_MASK_CASTLING) >> BOARD_SHIFT_CASTLING, 0b00001111);
-}
-
-TEST(BoardShiftTotalPliesTest, GivenOnAllOnes_Expect8BitsSet)
-{
-    EXPECT_EQ((BOARD_ONES & BOARD_MASK_MOVES) >> BOARD_SHIFT_MOVES, 0b11111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskFullMoves) >> kShiftFullMoves, 0b11111111);
 }
 
 }  // namespace

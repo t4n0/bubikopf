@@ -15,20 +15,20 @@ namespace Chess
 Position EncodeUniqueIdToZero()
 {
     Position position{};
-    position[BOARD_IDX_WHITE] = H1 | A8;
-    position[BOARD_IDX_BLACK] = H1 | A8;
-    position[BOARD_IDX_WHITE + PAWN] = H1;
-    position[BOARD_IDX_BLACK + PAWN] = H1;
-    position[BOARD_IDX_WHITE + KING] = A8;
-    position[BOARD_IDX_BLACK + KING] = A8;
+    position[kWhiteBoard] = H1 | A8;
+    position[kBlackBoard] = H1 | A8;
+    position[kWhiteBoard + PAWN] = H1;
+    position[kBlackBoard + PAWN] = H1;
+    position[kWhiteBoard + KING] = A8;
+    position[kBlackBoard + KING] = A8;
     position.white_to_move_ = true;
     return position;
 }
 
 int DecodeUniqueId(const Position& position)
 {
-    const int black_pawn_square = tzcnt(position[BOARD_IDX_BLACK + PAWN]);
-    const int white_pawn_square = tzcnt(position[BOARD_IDX_WHITE + PAWN]);
+    const int black_pawn_square = tzcnt(position[kBlackBoard + PAWN]);
+    const int white_pawn_square = tzcnt(position[kWhiteBoard + PAWN]);
     const int unique_id = std::max(black_pawn_square, white_pawn_square);
     return unique_id;
 }
@@ -62,7 +62,7 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::i
 {
     static int unique_id{0};
 
-    const std::size_t side = position.white_to_move_ ? BOARD_IDX_WHITE : BOARD_IDX_BLACK;
+    const std::size_t side = position.white_to_move_ ? kWhiteBoard : kBlackBoard;
     for (int i = 1; i < 3; i++)
     {
         *move_generation_insertion_iterator++ = ComposeMove(

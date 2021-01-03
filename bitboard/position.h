@@ -37,8 +37,8 @@ class Position
 
     std::array<Bitboard, 17> boards_{};
     bool white_to_move_{true};
-    std::size_t attacking_side_{BOARD_IDX_WHITE};
-    std::size_t defending_side_{BOARD_IDX_BLACK};
+    std::size_t attacking_side_{kWhiteBoard};
+    std::size_t defending_side_{kBlackBoard};
 };
 
 bool operator==(const Position& a, const Position& b);

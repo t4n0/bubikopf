@@ -17,18 +17,18 @@ std::enable_if_t<Behaviour::evaluate_material, Evaluation> evaluate(const Positi
 {
     float evaluation = 0.0F;
     // clang-format off
-  evaluation += popcnt(position[BOARD_IDX_WHITE + PAWN])     * 1.0F;
-  evaluation += popcnt(position[BOARD_IDX_WHITE + KNIGHT])   * 3.0F;
-  evaluation += popcnt(position[BOARD_IDX_WHITE + BISHOP])   * 3.0F;
-  evaluation += popcnt(position[BOARD_IDX_WHITE + ROOK])     * 5.0F;
-  evaluation += popcnt(position[BOARD_IDX_WHITE + QUEEN])    * 9.0F;
-  evaluation += popcnt(position[BOARD_IDX_WHITE + KING])   * 100.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + PAWN])    * -1.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + KNIGHT])  * -3.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + BISHOP])  * -3.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + ROOK])    * -5.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + QUEEN])   * -9.0F;
-  evaluation += popcnt(position[BOARD_IDX_BLACK + KING])  * -100.0F;
+  evaluation += popcnt(position[kWhiteBoard + PAWN])     * 1.0F;
+  evaluation += popcnt(position[kWhiteBoard + KNIGHT])   * 3.0F;
+  evaluation += popcnt(position[kWhiteBoard + BISHOP])   * 3.0F;
+  evaluation += popcnt(position[kWhiteBoard + ROOK])     * 5.0F;
+  evaluation += popcnt(position[kWhiteBoard + QUEEN])    * 9.0F;
+  evaluation += popcnt(position[kWhiteBoard + KING])   * 100.0F;
+  evaluation += popcnt(position[kBlackBoard + PAWN])    * -1.0F;
+  evaluation += popcnt(position[kBlackBoard + KNIGHT])  * -3.0F;
+  evaluation += popcnt(position[kBlackBoard + BISHOP])  * -3.0F;
+  evaluation += popcnt(position[kBlackBoard + ROOK])    * -5.0F;
+  evaluation += popcnt(position[kBlackBoard + QUEEN])   * -9.0F;
+  evaluation += popcnt(position[kBlackBoard + KING])  * -100.0F;
     // clang-format on
 
     return Evaluation{evaluation};

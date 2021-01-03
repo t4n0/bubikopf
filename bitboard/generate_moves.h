@@ -71,7 +71,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     const bool& white_to_move = position.white_to_move_;
     const std::size_t& attacking_side = position.attacking_side_;
     const std::size_t& defending_side = position.defending_side_;
-    const Bitboard free_squares = ~(position[BOARD_IDX_BLACK] | position[BOARD_IDX_WHITE]);
+    const Bitboard free_squares = ~(position[kBlackBoard] | position[kWhiteBoard]);
 
     // pawn moves
     const auto generate_pawn_move = [&](const Bitmove source_bit, const Bitboard source) {
@@ -113,10 +113,10 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
         }
 
         // en passant
-        const Bitboard en_passant_mask = position[BOARD_IDX_EXTRAS] & BOARD_MASK_EN_PASSANT;
+        const Bitboard en_passant_mask = position[kExtrasBoard] & kBoardMaskEnPassant;
         if (en_passant_mask)
         {
-            const Bitboard en_passant_bit = en_passant_mask >> BOARD_SHIFT_EN_PASSANT;
+            const Bitboard en_passant_bit = en_passant_mask >> kShiftEnPassant;
             for (const std::size_t index : {0, 1})
             {
                 if (en_passant_bit == pawn_capture_target_bits.at(index))
@@ -270,10 +270,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     }
 
     // castling
-    constexpr std::array<Bitboard, 4> castling_rights{BOARD_VALUE_CASTLING_BLACK_KINGSIDE,
-                                                      BOARD_VALUE_CASTLING_BLACK_QUEENSIDE,
-                                                      BOARD_VALUE_CASTLING_WHITE_KINGSIDE,
-                                                      BOARD_VALUE_CASTLING_WHITE_QUEENSIDE};
+    constexpr std::array<Bitboard, 4> castling_rights{
+        kCastlingBlackKingside, kCastlingBlackQueenside, kCastlingWhiteKingside, kCastlingWhiteQueenside};
     constexpr std::array<Bitboard, 4> neccessary_free_squares = {F8 | G8, D8 | C8 | B8, F1 | G1, D1 | C1 | B1};
     constexpr std::array<int, 4> source_bits = {59, 59, 3, 3};
     constexpr std::array<int, 4> target_bits{57, 61, 1, 5};
@@ -286,7 +284,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
     for (std::size_t side = 0; side < 2; side++)  // side as in queen- or kingside, not white or black
     {
         const std::size_t castling = side + offset_for_white;
-        const bool castling_to_side_is_allowed = position[BOARD_IDX_EXTRAS] & castling_rights[castling];
+        const bool castling_to_side_is_allowed = position[kExtrasBoard] & castling_rights[castling];
         const bool space_between_king_and_rook_is_free =
             (free_squares & neccessary_free_squares[castling]) == neccessary_free_squares[castling];
         const bool castling_possible = castling_to_side_is_allowed && space_between_king_and_rook_is_free;

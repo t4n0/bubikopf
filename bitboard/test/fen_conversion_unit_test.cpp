@@ -58,27 +58,27 @@ INSTANTIATE_TEST_SUITE_P(InvalidFens,
 Position StandardStartingPosition()
 {
     Position position{};
-    position[BOARD_IDX_EXTRAS] = BOARD_MASK_CASTLING;
-    position[BOARD_IDX_EXTRAS] |= BOARD_VALUE_ADD_MOVE;
+    position[kExtrasBoard] = kBoardMaskCastling;
+    position[kExtrasBoard] |= kOneFullMove;
     position.white_to_move_ = true;
 
     // white pieces
-    position[BOARD_IDX_WHITE] = RANK_2 | RANK_1;
-    position[BOARD_IDX_WHITE + PAWN] = RANK_2;
-    position[BOARD_IDX_WHITE + ROOK] = A1 | H1;
-    position[BOARD_IDX_WHITE + KNIGHT] = B1 | G1;
-    position[BOARD_IDX_WHITE + BISHOP] = C1 | F1;
-    position[BOARD_IDX_WHITE + QUEEN] = D1;
-    position[BOARD_IDX_WHITE + KING] = E1;
+    position[kWhiteBoard] = RANK_2 | RANK_1;
+    position[kWhiteBoard + PAWN] = RANK_2;
+    position[kWhiteBoard + ROOK] = A1 | H1;
+    position[kWhiteBoard + KNIGHT] = B1 | G1;
+    position[kWhiteBoard + BISHOP] = C1 | F1;
+    position[kWhiteBoard + QUEEN] = D1;
+    position[kWhiteBoard + KING] = E1;
 
     // black pieces
-    position[BOARD_IDX_BLACK] = RANK_7 | RANK_8;
-    position[BOARD_IDX_BLACK + PAWN] = RANK_7;
-    position[BOARD_IDX_BLACK + ROOK] = A8 | H8;
-    position[BOARD_IDX_BLACK + KNIGHT] = B8 | G8;
-    position[BOARD_IDX_BLACK + BISHOP] = C8 | F8;
-    position[BOARD_IDX_BLACK + QUEEN] = D8;
-    position[BOARD_IDX_BLACK + KING] = E8;
+    position[kBlackBoard] = RANK_7 | RANK_8;
+    position[kBlackBoard + PAWN] = RANK_7;
+    position[kBlackBoard + ROOK] = A8 | H8;
+    position[kBlackBoard + KNIGHT] = B8 | G8;
+    position[kBlackBoard + BISHOP] = C8 | F8;
+    position[kBlackBoard + QUEEN] = D8;
+    position[kBlackBoard + KING] = E8;
 
     return position;
 }
