@@ -8,8 +8,8 @@
 namespace Chess
 {
 
-constexpr std::size_t PAWN_CAPTURE_LOOKUP_TABLE_OFFSET_FOR_SECOND_OPTION = 56;
-constexpr std::size_t PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK =
+constexpr std::size_t kPawnCaptureLookupTableOffsetForSecondOption = 56;
+constexpr std::size_t kPawnCaptureLookupTableOffsetForBlack =
     104;  // This is actually less than the actual number of elements for white
           // move options. 8 less exactly. This exploits the fact that black
           // pawns never occupy the first rank. So the actually accessed indeces
@@ -21,7 +21,7 @@ constexpr std::size_t PAWN_CAPUTRE_LOOKUP_TABLE_OFFSET_FOR_BLACK =
 /// pawn on H1". As there is no second option for pawn on H1 the square XX
 /// (invalid) is accessed.
 constexpr std::array<Bitboard, 232>
-    pawn_capture_lookup_table{
+    kPawnCaptureLookupTable{
         // clang-format off
     G2, F2, E2, D2, C2, B2, A2, B2,
     G3, F3, E3, D3, C3, B3, A3, B3,
@@ -70,9 +70,9 @@ struct WhitePawnAttacks
     constexpr static Bitboard value = RayOneSquare<target, south_west>::value | RayOneSquare<target, south_east>::value;
 };
 
-constexpr std::size_t pawn_attacks_offset_for_white = 64;
+constexpr std::size_t kPawnAttacksOffsetForWhite = 64;
 
-constexpr std::array<Bitboard, 128> pawn_attacks{
+constexpr std::array<Bitboard, 128> kPawnAttacks{
     BlackPawnAttacks<H1>::value,  //
     BlackPawnAttacks<G1>::value,  //
     BlackPawnAttacks<F1>::value,  //
