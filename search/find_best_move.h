@@ -97,7 +97,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
         constexpr Bitmove null_move = 0;
         PrintEvaluation<DebugBehavior>(evaluation);
-        return std::tie(null_move, evaluation);
+        return {null_move, evaluation};
     }
 
     const MoveList::iterator end_iterator_after_move_generation =
@@ -134,7 +134,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             {
                 PrintPruning<DebugBehavior>(alpha, beta);
                 PrintNodeExit<DebugBehavior>(depth);
-                return std::tie(best_move, alpha);
+                return {best_move, alpha};
             }
         }
 
@@ -148,7 +148,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
         }
 
         PrintNodeExit<DebugBehavior>(depth);
-        return std::tie(best_move, alpha);
+        return {best_move, alpha};
     }
     else
     {
@@ -176,7 +176,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             {
                 PrintPruning<DebugBehavior>(alpha, beta);
                 PrintNodeExit<DebugBehavior>(depth);
-                return std::tie(best_move, beta);
+                return {best_move, beta};
             }
         }
 
@@ -190,7 +190,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
         }
 
         PrintNodeExit<DebugBehavior>(depth);
-        return std::tie(best_move, beta);
+        return {best_move, beta};
     }
 }
 
