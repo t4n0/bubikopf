@@ -312,10 +312,10 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // ray style checks horizontal and vertical
         const bool rook_or_queen_aligend_on_rank_or_file =
-            rook_attacks[square_bit] & (boards_[attacking_side + kRook] | boards_[attacking_side + kQueen]);
+            kRookAttacks[square_bit] & (boards_[attacking_side + kRook] | boards_[attacking_side + kQueen]);
         if (rook_or_queen_aligend_on_rank_or_file)
         {
-            for (const auto direction : {west, south, east, north})
+            for (const auto direction : {kWest, kSouth, kEast, kNorth})
             {
                 if (ray_check_given(square, direction, kRook))
                 {
@@ -326,10 +326,10 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // ray style checks diagonally
         const bool bishop_or_queen_aligend_diagonally =
-            bishop_attacks[square_bit] & (boards_[attacking_side + kBishop] | boards_[attacking_side + kQueen]);
+            kBishopAttacks[square_bit] & (boards_[attacking_side + kBishop] | boards_[attacking_side + kQueen]);
         if (bishop_or_queen_aligend_diagonally)
         {
-            for (const auto direction : {north_east, north_west, south_east, south_west})
+            for (const auto direction : {kNorthEast, kNorthWest, kSouthEast, kSouthWest})
             {
                 if (ray_check_given(square, direction, kBishop))
                 {
@@ -339,7 +339,7 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         }
 
         // knight checks
-        const bool knight_is_giving_check = knight_jumps[square_bit] & boards_[attacking_side + kKnight];
+        const bool knight_is_giving_check = kKnightJumps[square_bit] & boards_[attacking_side + kKnight];
         if (knight_is_giving_check)
         {
             return true;
@@ -354,7 +354,7 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         }
 
         // king checks
-        const bool king_is_giving_check = king_attacks[square_bit] & boards_[attacking_side + kKing];
+        const bool king_is_giving_check = kKingAttacks[square_bit] & boards_[attacking_side + kKing];
         if (king_is_giving_check)
         {
             return true;

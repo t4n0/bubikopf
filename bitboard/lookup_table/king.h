@@ -11,13 +11,13 @@ namespace Chess
 template <Bitboard target>
 struct KingAttacks
 {
-    constexpr static Bitboard value = RayOneSquare<target, north>::value | RayOneSquare<target, north_west>::value |
-                                      RayOneSquare<target, west>::value | RayOneSquare<target, north_east>::value |
-                                      RayOneSquare<target, south>::value | RayOneSquare<target, south_west>::value |
-                                      RayOneSquare<target, east>::value | RayOneSquare<target, south_east>::value;
+    constexpr static Bitboard value = RayOneSquare<target, kNorth>::value | RayOneSquare<target, kNorthWest>::value |
+                                      RayOneSquare<target, kWest>::value | RayOneSquare<target, kNorthEast>::value |
+                                      RayOneSquare<target, kSouth>::value | RayOneSquare<target, kSouthWest>::value |
+                                      RayOneSquare<target, kEast>::value | RayOneSquare<target, kSouthEast>::value;
 };
 
-constexpr std::array<Bitboard, 64> king_attacks{
+constexpr std::array<Bitboard, 64> kKingAttacks{
     KingAttacks<H1>::value,  //
     KingAttacks<G1>::value,  //
     KingAttacks<F1>::value,  //

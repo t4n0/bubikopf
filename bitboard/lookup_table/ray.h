@@ -11,34 +11,34 @@ namespace Chess
 {
 
 /// @brief Indizes to access different aspects of a single piece step (except knights).
-constexpr std::size_t west = 0;
-constexpr std::size_t north_west = 1;
-constexpr std::size_t north = 2;
-constexpr std::size_t north_east = 3;
-constexpr std::size_t east = 4;
-constexpr std::size_t south_east = 5;
-constexpr std::size_t south = 6;
-constexpr std::size_t south_west = 7;
+constexpr std::size_t kWest = 0;
+constexpr std::size_t kNorthWest = 1;
+constexpr std::size_t kNorth = 2;
+constexpr std::size_t kNorthEast = 3;
+constexpr std::size_t kEast = 4;
+constexpr std::size_t kSouthEast = 5;
+constexpr std::size_t kSouth = 6;
+constexpr std::size_t kSouthWest = 7;
 
-// Values correspond to necessary bitshifts for single steps. E.g. step_bits.at(west).
-constexpr std::array<int, 8> step_bits{1, 9, 8, 7, -1, -9, -8, -7};
+// Values correspond to necessary bitshifts for single steps. E.g. kStepBits.at(kWest).
+constexpr std::array<int, 8> kStepBits{1, 9, 8, 7, -1, -9, -8, -7};
 
-// Values correspond to legal landing areas without wrapping e.g. a step from A1 to H2 when illegally going "west" of
-// square A1. E.g. legal_step_areas_without_wrapping.at(north).
-constexpr std::array<Bitboard, 8> legal_step_areas_without_wrapping{~(kFileH),
-                                                                    ~(kFileH | kRank1),
-                                                                    ~(kRank1),
-                                                                    ~(kRank1 | kFileA),
-                                                                    ~(kFileA),
-                                                                    ~(kFileA | kRank8),
-                                                                    ~(kRank8),
-                                                                    ~(kRank8 | kFileH)};
+// Values correspond to legal landing areas without wrapping e.g. a step from A1 to H2 when illegally going "kWest" of
+// square A1. E.g. kLegalAreasWithoutWrapping.at(kNorth).
+constexpr std::array<Bitboard, 8> kLegalAreasWithoutWrapping{~(kFileH),
+                                                             ~(kFileH | kRank1),
+                                                             ~(kRank1),
+                                                             ~(kRank1 | kFileA),
+                                                             ~(kFileA),
+                                                             ~(kFileA | kRank8),
+                                                             ~(kRank8),
+                                                             ~(kRank8 | kFileH)};
 
 template <Bitboard source, std::size_t direction>
 class RayOneSquare
 {
-    constexpr static int bitshift = std::get<direction>(step_bits);
-    constexpr static Bitboard legal_step_area = std::get<direction>(legal_step_areas_without_wrapping);
+    constexpr static int bitshift = std::get<direction>(kStepBits);
+    constexpr static Bitboard legal_step_area = std::get<direction>(kLegalAreasWithoutWrapping);
 
   public:
     constexpr static Bitboard value =

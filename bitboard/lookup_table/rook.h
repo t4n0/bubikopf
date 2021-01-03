@@ -11,11 +11,11 @@ namespace Chess
 template <Bitboard source>
 struct RookAttacks
 {
-    constexpr static Bitboard value = RaySevenSquares<source, north>::value | RaySevenSquares<source, west>::value |
-                                      RaySevenSquares<source, south>::value | RaySevenSquares<source, east>::value;
+    constexpr static Bitboard value = RaySevenSquares<source, kNorth>::value | RaySevenSquares<source, kWest>::value |
+                                      RaySevenSquares<source, kSouth>::value | RaySevenSquares<source, kEast>::value;
 };
 
-constexpr std::array<Bitboard, 64> rook_attacks{
+constexpr std::array<Bitboard, 64> kRookAttacks{
     RookAttacks<H1>::value,  //
     RookAttacks<G1>::value,  //
     RookAttacks<F1>::value,  //

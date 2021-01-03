@@ -12,11 +12,11 @@ template <Bitboard source>
 struct BishopAttacks
 {
     constexpr static Bitboard value =
-        RaySevenSquares<source, north_west>::value | RaySevenSquares<source, north_east>::value |
-        RaySevenSquares<source, south_west>::value | RaySevenSquares<source, south_east>::value;
+        RaySevenSquares<source, kNorthWest>::value | RaySevenSquares<source, kNorthEast>::value |
+        RaySevenSquares<source, kSouthWest>::value | RaySevenSquares<source, kSouthEast>::value;
 };
 
-constexpr std::array<Bitboard, 64> bishop_attacks{
+constexpr std::array<Bitboard, 64> kBishopAttacks{
     BishopAttacks<H1>::value,  //
     BishopAttacks<G1>::value,  //
     BishopAttacks<F1>::value,  //

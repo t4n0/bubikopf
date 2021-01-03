@@ -248,7 +248,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
 
     // knight moves
     const auto generate_knight_move = [&](const Bitmove /*unused*/, const Bitboard source) {
-        for (const auto jump_direction : knight_directions)
+        for (const auto jump_direction : kKnightDirections)
         {
             const Bitboard target = RuntimeKnightJump(source, jump_direction);
             generate_jump_style_move(source, target, kKnight);

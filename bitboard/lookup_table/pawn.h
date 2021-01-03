@@ -59,7 +59,7 @@ constexpr std::array<Bitboard, 232>
 template <Bitboard target>
 struct BlackPawnAttacks
 {
-    constexpr static Bitboard value = RayOneSquare<target, north_west>::value | RayOneSquare<target, north_east>::value;
+    constexpr static Bitboard value = RayOneSquare<target, kNorthWest>::value | RayOneSquare<target, kNorthEast>::value;
 };
 
 /// @brief Given an target bitboard the value of this struct represents a bitboard with the squares set that a white
@@ -67,7 +67,7 @@ struct BlackPawnAttacks
 template <Bitboard target>
 struct WhitePawnAttacks
 {
-    constexpr static Bitboard value = RayOneSquare<target, south_west>::value | RayOneSquare<target, south_east>::value;
+    constexpr static Bitboard value = RayOneSquare<target, kSouthWest>::value | RayOneSquare<target, kSouthEast>::value;
 };
 
 constexpr std::size_t kPawnAttacksOffsetForWhite = 64;

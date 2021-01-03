@@ -22,14 +22,14 @@ class SingleStepTestFixture : public ::testing::TestWithParam<SingleStepTestPara
 TEST_P(SingleStepTestFixture, GivenSquare_ExpectOnlyValidTargetsForAllDirections)
 {
     const std::array<Bitboard, 8>& expected_targets = GetParam().expected_targets_per_direction;
-    ASSERT_THAT(SingleStep(GetParam().source, west), ::testing::Eq(expected_targets.at(0)));
-    ASSERT_THAT(SingleStep(GetParam().source, north_west), ::testing::Eq(expected_targets.at(1)));
-    ASSERT_THAT(SingleStep(GetParam().source, north), ::testing::Eq(expected_targets.at(2)));
-    ASSERT_THAT(SingleStep(GetParam().source, north_east), ::testing::Eq(expected_targets.at(3)));
-    ASSERT_THAT(SingleStep(GetParam().source, east), ::testing::Eq(expected_targets.at(4)));
-    ASSERT_THAT(SingleStep(GetParam().source, south_east), ::testing::Eq(expected_targets.at(5)));
-    ASSERT_THAT(SingleStep(GetParam().source, south), ::testing::Eq(expected_targets.at(6)));
-    ASSERT_THAT(SingleStep(GetParam().source, south_west), ::testing::Eq(expected_targets.at(7)));
+    ASSERT_THAT(SingleStep(GetParam().source, kWest), ::testing::Eq(expected_targets.at(0)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorthWest), ::testing::Eq(expected_targets.at(1)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorth), ::testing::Eq(expected_targets.at(2)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorthEast), ::testing::Eq(expected_targets.at(3)));
+    ASSERT_THAT(SingleStep(GetParam().source, kEast), ::testing::Eq(expected_targets.at(4)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouthEast), ::testing::Eq(expected_targets.at(5)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouth), ::testing::Eq(expected_targets.at(6)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouthWest), ::testing::Eq(expected_targets.at(7)));
 }
 
 const SingleStepTestParameter A1_step_in_all_directions{A1, {XX, XX, A2, B2, B1, XX, XX, XX}};
@@ -67,14 +67,14 @@ class KnightJumpTestFixture : public ::testing::TestWithParam<KnightJumpTestPara
 TEST_P(KnightJumpTestFixture, GivenSquare_ExpectOnlyValidTargetsForAllDirections)
 {
     const std::array<Bitboard, 8>& expected_targets = GetParam().expected_targets_per_direction;
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_north_west), ::testing::Eq(expected_targets.at(0)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_north_east), ::testing::Eq(expected_targets.at(1)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_east_north), ::testing::Eq(expected_targets.at(2)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_east_south), ::testing::Eq(expected_targets.at(3)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_south_east), ::testing::Eq(expected_targets.at(4)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_south_west), ::testing::Eq(expected_targets.at(5)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_west_south), ::testing::Eq(expected_targets.at(6)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, knight_west_north), ::testing::Eq(expected_targets.at(7)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthWest), ::testing::Eq(expected_targets.at(0)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthEast), ::testing::Eq(expected_targets.at(1)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastNorth), ::testing::Eq(expected_targets.at(2)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastSouth), ::testing::Eq(expected_targets.at(3)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthEast), ::testing::Eq(expected_targets.at(4)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthWest), ::testing::Eq(expected_targets.at(5)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestSouth), ::testing::Eq(expected_targets.at(6)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestNorth), ::testing::Eq(expected_targets.at(7)));
 }
 
 const KnightJumpTestParameter B7_jump_in_all_directions{B7, {XX, XX, D8, D6, C5, A5, XX, XX}};
