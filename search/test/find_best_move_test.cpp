@@ -84,6 +84,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
     const int DEPTH{3};
     MoveList scratch_pad{};
     Position position{EncodeUniqueIdToZero()};
+    const Evaluation negamax_sign_for_white{1};
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order = {};
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation = {};
 
@@ -96,7 +97,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 
     // Call
     FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingDisabled>(
-        DEPTH, position, scratch_pad.begin());
+        DEPTH, position, scratch_pad.begin(), negamax_sign_for_white);
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -114,6 +115,11 @@ class FindBestMoveTestFixture : public testing::TestWithParam<std::tuple<std::st
   public:
     std::string GetFen() { return std::get<0>(GetParam()); }
     std::string GetExpectedBestMove() { return std::get<1>(GetParam()); }
+    Evaluation GetNegaMaxSign()
+    {
+        const auto side = TokenizeFen(GetFen()).at(kFenTokenSide);
+        return side == "w" ? Evaluation{1} : Evaluation{-1};
+    }
 };
 
 TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
@@ -124,8 +130,11 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
     MoveList scratch_pad{};
 
     // Call
-    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, scratch_pad.begin());
+    Bitmove best_move;
+    Evaluation evaluation;
+    const auto side = TokenizeFen(GetFen()).at(kFenTokenSide);
+    std::tie(best_move, evaluation) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
+        depth, position, scratch_pad.begin(), GetNegaMaxSign());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
@@ -142,14 +151,19 @@ INSTANTIATE_TEST_SUITE_P(VariousCheckmateInThreePositions,
                          FindBestMoveTestFixture,
                          testing::ValuesIn(various_check_mate_in_three_positions));
 
-class FindBestMoveInEndgameTestFixture : public testing::TestWithParam<std::tuple<std::string, Evaluation>>
+class FindBestMoveInFinalPosition : public testing::TestWithParam<std::tuple<std::string, Evaluation>>
 {
   public:
     std::string GetFen() { return std::get<0>(GetParam()); }
     Evaluation GetExpectedEvaluation() { return std::get<1>(GetParam()); }
+    Evaluation GetNegaMaxSign()
+    {
+        const auto side = TokenizeFen(GetFen()).at(kFenTokenSide);
+        return side == "w" ? Evaluation{1} : Evaluation{-1};
+    }
 };
 
-TEST_P(FindBestMoveInEndgameTestFixture, GivenEndgamePositions_ExpectCorrectMoveAndEvaluation)
+TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectMoveAndEvaluation)
 {
     // Setup
     const int depth{6};
@@ -158,23 +172,21 @@ TEST_P(FindBestMoveInEndgameTestFixture, GivenEndgamePositions_ExpectCorrectMove
 
     // Call
     const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, scratch_pad.begin());
+        depth, position, scratch_pad.begin(), GetNegaMaxSign());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), kUciNullMove);
     EXPECT_FLOAT_EQ(evaluation, GetExpectedEvaluation());
 }
 
-const std::array<std::tuple<std::string, Evaluation>, 4> various_endgame_positions{{
-    {"8/8/8/8/8/2K1Q3/8/3k4 b - - 0 1", Evaluation{0.0}},      // stalemate one blacks turn
-    {"8/8/8/8/8/2k1q3/8/3K4 w - - 0 1", Evaluation{0.0}},      // stalemate one whites turn
-    {"8/8/8/8/8/2k5/3q4/3K4 w - - 0 1", Evaluation{-1000.0}},  // white is checkmate
-    {"8/8/8/8/8/2K5/3Q4/3k4 b - - 0 1", Evaluation{1000.0}},   // black is checkmate
+const std::array<std::tuple<std::string, Evaluation>, 4> kFinalPositions{{
+    {"8/8/8/8/8/2K1Q3/8/3k4 b - - 0 1", Evaluation{0.0}},      // stalemate on blacks turn
+    {"8/8/8/8/8/2k1q3/8/3K4 w - - 0 1", Evaluation{0.0}},      // stalemate on whites turn
+    {"8/8/8/8/8/2k5/3q4/3K4 w - - 0 1", Evaluation{-1000.0}},  // white is checkmate, eval -> opponent is losing
+    {"8/8/8/8/8/2K5/3Q4/3k4 b - - 0 1", Evaluation{-1000.0}},  // black is checkmate, eval -> opponent is losing
 }};
 
-INSTANTIATE_TEST_SUITE_P(VariousEndgamePositions,
-                         FindBestMoveInEndgameTestFixture,
-                         testing::ValuesIn(various_endgame_positions));
+INSTANTIATE_TEST_SUITE_P(VariousFinalPositions, FindBestMoveInFinalPosition, testing::ValuesIn(kFinalPositions));
 
 }  // namespace
 }  // namespace Chess

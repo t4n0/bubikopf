@@ -83,11 +83,14 @@ void PrintNodeExit(const uint8_t depth)
     std::ignore = depth;  // Resolve warning if debugging disabled.
 }
 
-/// @brief A minimax search using alpha / beta pruning.
+constexpr Bitmove kNullBitmove = 0;
+
+/// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                                              Position& position,
                                              const MoveList::iterator& end_iterator_before_move_generation,
+                                             const Evaluation negamax_sign,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
@@ -95,103 +98,59 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
-        constexpr Bitmove null_move = 0;
         PrintEvaluation<DebugBehavior>(evaluation);
-        return {null_move, evaluation};
+        return {kNullBitmove, evaluation * negamax_sign};
     }
 
     const MoveList::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
 
     Evaluation alpha = alpha_parent;
-    Evaluation beta = beta_parent;
     Bitmove best_move{};
-    bool one_legal_move_found = false;
+    bool is_terminal_node = true;
 
-    if (position.white_to_move_)
+    for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
+         move_iterator != end_iterator_after_move_generation;
+         move_iterator++)
     {
-        for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
-             move_iterator != end_iterator_after_move_generation;
-             move_iterator++)
+        const Bitboard saved_extras = position.MakeMove(*move_iterator);
+        if (!position.KingIsInCheck(position.defending_side_))
         {
-            const Bitboard saved_extras = position.MakeMove(*move_iterator);
-            if (!position.KingIsInCheck(position.defending_side_))
+            PrintMove<DebugBehavior>(*move_iterator);
+            is_terminal_node = false;
+            Evaluation eval;
+            std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
+                depth - 1, position, end_iterator_after_move_generation, -negamax_sign, -beta_parent, -alpha);
+            eval *= Evaluation{-1};
+            if (eval > alpha)
             {
-                PrintMove<DebugBehavior>(*move_iterator);
-                one_legal_move_found = true;
-                Evaluation eval;
-                std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
-                    depth - 1, position, end_iterator_after_move_generation, alpha, beta);
-                if (eval > alpha)
-                {
-                    alpha = eval;
-                    best_move = *move_iterator;
-                }
-            }
-            position.UnmakeMove(*move_iterator, saved_extras);
-
-            if (alpha >= beta)
-            {
-                PrintPruning<DebugBehavior>(alpha, beta);
-                PrintNodeExit<DebugBehavior>(depth);
-                return {best_move, alpha};
+                alpha = eval;
+                best_move = *move_iterator;
             }
         }
+        position.UnmakeMove(*move_iterator, saved_extras);
 
-        if (!one_legal_move_found)
+        if (alpha >= beta_parent)
         {
-            const Evaluation game_result =
-                position.KingIsInCheck(position.attacking_side_) ? Evaluation{-1000} : Evaluation{0};
-            PrintEvaluation<DebugBehavior>(game_result);
-            PrintNodeExit<DebugBehavior>(depth);
-            return {Bitmove{}, game_result};
+            PrintPruning<DebugBehavior>(alpha, beta_parent);
+            break;
         }
-
-        PrintNodeExit<DebugBehavior>(depth);
-        return {best_move, alpha};
     }
-    else
+
+    if (is_terminal_node)
     {
-        for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
-             move_iterator != end_iterator_after_move_generation;
-             move_iterator++)
+        Evaluation game_result = position.KingIsInCheck(position.attacking_side_) ? Evaluation{1000} : Evaluation{0};
+        if (position.white_to_move_)
         {
-            const Bitboard saved_extras = position.MakeMove(*move_iterator);
-            if (!position.KingIsInCheck(position.defending_side_))
-            {
-                PrintMove<DebugBehavior>(*move_iterator);
-                one_legal_move_found = true;
-                Evaluation eval;
-                std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
-                    depth - 1, position, end_iterator_after_move_generation, alpha, beta);
-                if (eval < beta)
-                {
-                    beta = eval;
-                    best_move = *move_iterator;
-                }
-            }
-            position.UnmakeMove(*move_iterator, saved_extras);
-
-            if (beta <= alpha)
-            {
-                PrintPruning<DebugBehavior>(alpha, beta);
-                PrintNodeExit<DebugBehavior>(depth);
-                return {best_move, beta};
-            }
+            game_result *= Evaluation{-1};
         }
-
-        if (!one_legal_move_found)
-        {
-            const Evaluation game_result =
-                position.KingIsInCheck(position.attacking_side_) ? Evaluation{1000} : Evaluation{0};
-            PrintEvaluation<DebugBehavior>(game_result);
-            PrintNodeExit<DebugBehavior>(depth);
-            return {Bitmove{}, game_result};
-        }
-
+        PrintEvaluation<DebugBehavior>(game_result);
         PrintNodeExit<DebugBehavior>(depth);
-        return {best_move, beta};
+        return {kNullBitmove, game_result * negamax_sign};
     }
+
+    PrintNodeExit<DebugBehavior>(depth);
+    return {best_move, alpha};
 }
 
 }  // namespace Chess
