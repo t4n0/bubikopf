@@ -12,13 +12,19 @@ namespace Chess
 
 Bubikopf::Bubikopf()
 {
-    RestartGame();
+    SetUpBoardInStandardStartingPosition();
 }
 
-void Bubikopf::RestartGame()
+void Bubikopf::SetUpBoardAccordingToFen(const std::string& fen)
+{
+    position_ = PositionFromFen(fen);
+    logger.Log("Set up fen: " + fen);
+}
+
+void Bubikopf::SetUpBoardInStandardStartingPosition()
 {
     position_ = PositionFromFen(kStandardStartingPosition);
-    logger.Log("Game restarted.");
+    logger.Log("Set up standard position.");
 }
 
 void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
@@ -60,16 +66,21 @@ std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
     MoveList scratch_pad{};
     logger.Log("Starting search for best move.");
     constexpr int depth = 6;
-    const auto [best_move, evaluation] =
-        Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(depth, position_, begin(scratch_pad));
+    const auto [best_move, evaluation] = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(
+        depth, position_, begin(scratch_pad), GetCurrentNegamaxSign());
     const auto uci_move = ToUciString(best_move);
     logger.Log("Best move is: " + uci_move);
-    return {uci_move, evaluation};
+    return {uci_move, evaluation * GetCurrentNegamaxSign()};
 }
 
-void Bubikopf::PrintBoard()
+void Bubikopf::PrintBoard() const
 {
     PrettyPrintFen(FenFromPosition(position_));
+}
+
+Evaluation Bubikopf::GetCurrentNegamaxSign() const
+{
+    return position_.white_to_move_ ? Evaluation{1} : Evaluation{-1};
 }
 
 }  // namespace Chess

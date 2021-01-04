@@ -15,12 +15,15 @@ class Bubikopf
 {
   public:
     Bubikopf();
-    void RestartGame();
+    void SetUpBoardInStandardStartingPosition();
+    void SetUpBoardAccordingToFen(const std::string& fen);
     void UpdateBoard(const std::vector<std::string>& move_list);
     std::tuple<std::string, Evaluation> FindBestMove();
-    void PrintBoard();
+    void PrintBoard() const;
 
   private:
+    Evaluation GetCurrentNegamaxSign() const;
+
     Position position_{};
     Logger logger{"log_bubikopf_engine.txt"};
 };

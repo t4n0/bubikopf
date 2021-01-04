@@ -16,7 +16,7 @@ int main()
             if (uci_interactor.restart_game_.load())
             {
                 uci_interactor.restart_game_.store(false);
-                engine_api.RestartGame();
+                engine_api.SetUpBoardInStandardStartingPosition();
             }
 
             if (uci_interactor.find_best_move_.load())
