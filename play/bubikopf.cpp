@@ -2,6 +2,7 @@
 
 #include "bitboard/fen_conversion.h"
 #include "bitboard/generate_moves.h"
+#include "bitboard/uci_conversion.h"
 #include "evaluate/evaluate.h"
 #include "search/find_best_move.h"
 

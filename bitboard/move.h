@@ -11,6 +11,8 @@
 namespace Chess
 {
 
+constexpr Bitmove kBitNullMove = 0;
+
 // clang-format off
 constexpr Bitmove kMoveMaskSource =             0b00000000'00000000'00000000'00111111;
 constexpr Bitmove kMoveMaskTarget =             0b00000000'00000000'00001111'11000000;
@@ -93,29 +95,6 @@ inline std::string ToString(const Bitmove& move)
                    << " capturing " << captured_piece << " with move value " << move_value << "\n";
 
     return move_print_out.str();
-}
-
-constexpr const char* const kUciNullMove = "0000";
-
-inline std::string ToUciString(const Bitmove& move)
-{
-    const bool is_null_move = !move;
-    if (is_null_move)
-    {
-        return kUciNullMove;
-    }
-
-    std::stringstream uci_move{};
-    const std::size_t source_bit = move & kMoveMaskSource;
-    const std::size_t target_bit = (move & kMoveMaskTarget) >> kMoveShiftTarget;
-    uci_move << kSquareLabels.at(source_bit) << kSquareLabels.at(target_bit);
-    const std::size_t promotion_kind = (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
-    if (promotion_kind)
-    {
-        uci_move << kPieceLabels.at(promotion_kind);
-    }
-
-    return uci_move.str();
 }
 
 }  // namespace Chess

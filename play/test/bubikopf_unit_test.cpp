@@ -1,3 +1,4 @@
+#include "bitboard/uci_conversion.h"
 #include "play/bubikopf.h"
 
 #include <gtest/gtest.h>

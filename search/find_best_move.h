@@ -4,6 +4,7 @@
 #include "bitboard/fen_conversion.h"
 #include "bitboard/move_list.h"
 #include "bitboard/position.h"
+#include "bitboard/uci_conversion.h"
 
 #include <iostream>
 #include <limits>
@@ -83,8 +84,6 @@ void PrintNodeExit(const uint8_t depth)
     std::ignore = depth;  // Resolve warning if debugging disabled.
 }
 
-constexpr Bitmove kNullBitmove = 0;
-
 /// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
@@ -99,7 +98,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
         PrintEvaluation<DebugBehavior>(evaluation);
-        return {kNullBitmove, evaluation * negamax_sign};
+        return {kBitNullMove, evaluation * negamax_sign};
     }
 
     const MoveList::iterator end_iterator_after_move_generation =
@@ -146,7 +145,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
         }
         PrintEvaluation<DebugBehavior>(game_result);
         PrintNodeExit<DebugBehavior>(depth);
-        return {kNullBitmove, game_result * negamax_sign};
+        return {kBitNullMove, game_result * negamax_sign};
     }
 
     PrintNodeExit<DebugBehavior>(depth);

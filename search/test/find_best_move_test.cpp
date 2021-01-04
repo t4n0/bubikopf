@@ -2,6 +2,7 @@
 
 #include "bitboard/fen_conversion.h"
 #include "bitboard/generate_moves.h"
+#include "bitboard/uci_conversion.h"
 #include "evaluate/evaluate.h"
 #include "hardware/trailing_zeros_count.h"
 

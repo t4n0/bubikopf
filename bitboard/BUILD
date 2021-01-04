@@ -14,10 +14,12 @@ cc_library(
         "shift.cpp",
         "shift.h",
         "squares.h",
+        "uci_conversion.cpp",
     ],
     hdrs = [
         "fen_conversion.h",
         "generate_moves.h",
+        "uci_conversion.h",
     ],
     visibility = ["//visibility:public"],
     deps = [
