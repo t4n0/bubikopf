@@ -10,7 +10,7 @@ const char* const end_game_fen = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1";
 
 static void FullSearch(benchmark::State& state)
 {
-    Chess::MoveList move_list{};
+    Chess::MoveStack move_stack{};
     Chess::Statistic stats{};
 
     Chess::Position starting_position = Chess::PositionFromFen(starting_position_fen);
@@ -19,9 +19,9 @@ static void FullSearch(benchmark::State& state)
 
     for (auto _ : state)
     {
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, starting_position, move_list.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, middle_game, move_list.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, end_game, move_list.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, starting_position, move_stack.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, middle_game, move_stack.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(4, end_game, move_stack.begin(), stats);
     }
 }
 

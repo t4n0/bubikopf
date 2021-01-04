@@ -3,7 +3,7 @@
 
 #include "bitboard/lookup_table/knight.h"
 #include "bitboard/lookup_table/pawn.h"
-#include "bitboard/move_list.h"
+#include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "bitboard/shift.h"
 #include "bitboard/squares.h"
@@ -30,9 +30,9 @@ struct GenerateAllPseudoLegalMoves
 ///
 /// @returns An iterator pointing to the element past the last generated move
 template <typename Behavior = GenerateAllPseudoLegalMoves>
-std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> GenerateMoves(
+std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> GenerateMoves(
     const Position& position,
-    MoveList::iterator move_generation_insertion_iterator)
+    MoveStack::iterator move_generation_insertion_iterator)
 {
     /// @brief A function to loop over individual bits (the population) of a Bitboard
     const auto ForEveryBitInPopulation =
@@ -54,7 +54,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveList::iterator> Generat
             }
         };
 
-    const auto PushBackAllPromotions = [](MoveList::iterator& move_generation_insertion_iterator,
+    const auto PushBackAllPromotions = [](MoveStack::iterator& move_generation_insertion_iterator,
                                           const Bitmove source,
                                           const Bitmove target,
                                           const Bitmove captured_piece) {

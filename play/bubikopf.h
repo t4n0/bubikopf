@@ -1,7 +1,7 @@
 #ifndef PLAY_BUBIKOPF_H
 #define PLAY_BUBIKOPF_H
 
-#include "bitboard/move_list.h"
+#include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "play/logger.h"
 

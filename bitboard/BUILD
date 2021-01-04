@@ -7,7 +7,7 @@ cc_library(
         "board.h",
         "fen_conversion.cpp",
         "move.h",
-        "move_list.h",
+        "move_stack.h",
         "pieces.h",
         "position.cpp",
         "position.h",

@@ -1,7 +1,7 @@
 #ifndef SEACH_TRAVERSE_ALL_LEAVES_H
 #define SEACH_TRAVERSE_ALL_LEAVES_H
 
-#include "bitboard/move_list.h"
+#include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 
 #include <type_traits>
@@ -15,8 +15,8 @@ struct Statistic
 };
 
 template <typename GenerateBehavior>
-std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> GenerateMoves(const Position&,
-                                                                                        MoveList::iterator);
+std::enable_if_t<GenerateBehavior::not_defined, const MoveStack::iterator> GenerateMoves(const Position&,
+                                                                                         MoveStack::iterator);
 
 /// @brief A search without pruning that visits all leaf nodes.
 ///
@@ -24,7 +24,7 @@ std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> Genera
 template <typename GenerateBehavior>
 void TraverseAllLeaves(const uint8_t depth,
                        Position& position,
-                       const MoveList::iterator& end_iterator_before_move_generation,
+                       const MoveStack::iterator& end_iterator_before_move_generation,
                        Statistic& stats)
 {
     if (depth == 0)
@@ -33,10 +33,10 @@ void TraverseAllLeaves(const uint8_t depth,
         return;
     }
 
-    const MoveList::iterator end_iterator_after_move_generation =
+    const MoveStack::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
 
-    for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
+    for (MoveStack::iterator move_iterator = end_iterator_before_move_generation;
          move_iterator != end_iterator_after_move_generation;
          move_iterator++)
     {

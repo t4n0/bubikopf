@@ -14,22 +14,22 @@ namespace Chess
 namespace
 {
 
-TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveList)
+TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveStack)
 {
     // Setup
     Position position{};
-    MoveList move_list{};
+    MoveStack move_stack{};
     Statistic stats{};
     const int DEPTH{3};
 
     // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(DEPTH, position, move_list.begin(), stats);
+    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(DEPTH, position, move_stack.begin(), stats);
 
     // Expect
     const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
     for (std::size_t idx{0}; idx < expected_debugging_ids.size(); idx++)
     {
-        EXPECT_EQ(expected_debugging_ids.at(idx), move_list.at(idx));
+        EXPECT_EQ(expected_debugging_ids.at(idx), move_stack.at(idx));
     }
 }
 
@@ -48,16 +48,16 @@ TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations
 {
     // Setup
     Position position = PositionFromFen(GetParam().fen);
-    MoveList move_list{};
+    MoveStack move_stack{};
     Statistic stats{};
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(GetParam().depth, position, move_list.begin(), stats);
+    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(GetParam().depth, position, move_stack.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect
-    EXPECT_EQ(GetParam().expected_number_of_nodes, stats.number_of_evaluations) << ToString(move_list);
+    EXPECT_EQ(GetParam().expected_number_of_nodes, stats.number_of_evaluations) << ToString(move_stack);
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 }

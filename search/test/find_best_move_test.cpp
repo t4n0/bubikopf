@@ -57,9 +57,9 @@ struct GenerateTwoMovesThatEncodeUniqueId
 };
 
 template <typename Behavior>
-std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveList::iterator> GenerateMoves(
+std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveStack::iterator> GenerateMoves(
     const Position& position,
-    MoveList::iterator move_generation_insertion_iterator)
+    MoveStack::iterator move_generation_insertion_iterator)
 {
     static int unique_id{0};
 
@@ -83,7 +83,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 {
     // Setup
     const int DEPTH{3};
-    MoveList scratch_pad{};
+    MoveStack move_stack{};
     Position position{EncodeUniqueIdToZero()};
     const Evaluation negamax_sign_for_white{1};
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order = {};
@@ -98,7 +98,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 
     // Call
     FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingDisabled>(
-        DEPTH, position, scratch_pad.begin(), negamax_sign_for_white);
+        DEPTH, position, move_stack.begin(), negamax_sign_for_white);
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -128,14 +128,14 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
     // Setup
     const int depth{6};  // Allow king to be captured
     Position position{PositionFromFen(GetFen())};
-    MoveList scratch_pad{};
+    MoveStack move_stack{};
 
     // Call
     Bitmove best_move;
     Evaluation evaluation;
     const auto side = TokenizeFen(GetFen()).at(kFenTokenSide);
     std::tie(best_move, evaluation) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, scratch_pad.begin(), GetNegaMaxSign());
+        depth, position, move_stack.begin(), GetNegaMaxSign());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
@@ -169,11 +169,11 @@ TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectMoveAndEv
     // Setup
     const int depth{6};
     Position position{PositionFromFen(GetFen())};
-    MoveList scratch_pad{};
+    MoveStack move_stack{};
 
     // Call
     const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
-        depth, position, scratch_pad.begin(), GetNegaMaxSign());
+        depth, position, move_stack.begin(), GetNegaMaxSign());
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), kUciNullMove);

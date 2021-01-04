@@ -1,7 +1,7 @@
 #ifndef SEARCH_TEST_MOVE_GENERATION_MOCK_H
 #define SEARCH_TEST_MOVE_GENERATION_MOCK_H
 
-#include "bitboard/move_list.h"
+#include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 
 #include <type_traits>
@@ -15,9 +15,9 @@ struct GenerateTwoMovesWithUniqueDebugId
 };
 
 template <typename Behavior = GenerateTwoMovesWithUniqueDebugId>
-std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id, MoveList::iterator> GenerateMoves(
+std::enable_if_t<Behavior::generate_two_moves_with_unique_debug_id, MoveStack::iterator> GenerateMoves(
     const Position& /*unused*/,
-    MoveList::iterator move_generation_insertion_iterator)
+    MoveStack::iterator move_generation_insertion_iterator)
 {
     static Bitmove unique_id{1};
     *move_generation_insertion_iterator++ = unique_id++;

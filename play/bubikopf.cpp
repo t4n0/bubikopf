@@ -30,7 +30,7 @@ void Bubikopf::SetUpBoardInStandardStartingPosition()
 
 void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 {
-    MoveList scratch_pad{};
+    MoveStack move_stack{};
     const auto played_plies_internal = position_.GetNumberOfPlayedPlies();
     if (move_list.size() < played_plies_internal)
     {
@@ -43,10 +43,10 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
     for (std::size_t new_move = played_plies_internal; new_move < move_list.size(); new_move++)
     {
         const std::string& new_move_uci = move_list.at(new_move);
-        const auto possible_moves_end = GenerateMoves<GenerateAllPseudoLegalMoves>(position_, begin(scratch_pad));
+        const auto possible_moves_end = GenerateMoves<GenerateAllPseudoLegalMoves>(position_, begin(move_stack));
 
         const auto move_to_play =
-            std::find_if(begin(scratch_pad), possible_moves_end, [&new_move_uci](const auto& move) {
+            std::find_if(begin(move_stack), possible_moves_end, [&new_move_uci](const auto& move) {
                 return new_move_uci == ToUciString(move);
             });
 
@@ -64,11 +64,11 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 
 std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
 {
-    MoveList scratch_pad{};
+    MoveStack move_stack{};
     logger.Log("Starting search for best move.");
     constexpr int depth = 6;
     const auto [best_move, evaluation] = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial>(
-        depth, position_, begin(scratch_pad), GetCurrentNegamaxSign());
+        depth, position_, begin(move_stack), GetCurrentNegamaxSign());
     const auto uci_move = ToUciString(best_move);
     logger.Log("Best move is: " + uci_move);
     return {uci_move, evaluation * GetCurrentNegamaxSign()};

@@ -2,7 +2,7 @@
 #define SEARCH_FIND_BEST_MOVE_H
 
 #include "bitboard/fen_conversion.h"
-#include "bitboard/move_list.h"
+#include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "bitboard/uci_conversion.h"
 
@@ -18,8 +18,8 @@ template <typename EvaluateBehavior>
 std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> evaluate(const Position&);
 
 template <typename GenerateBehavior>
-std::enable_if_t<GenerateBehavior::not_defined, const MoveList::iterator> GenerateMoves(const Position&,
-                                                                                        MoveList::iterator);
+std::enable_if_t<GenerateBehavior::not_defined, const MoveStack::iterator> GenerateMoves(const Position&,
+                                                                                         MoveStack::iterator);
 
 struct DebuggingDisabled
 {
@@ -88,7 +88,7 @@ void PrintNodeExit(const uint8_t depth)
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
                                              Position& position,
-                                             const MoveList::iterator& end_iterator_before_move_generation,
+                                             const MoveStack::iterator& end_iterator_before_move_generation,
                                              const Evaluation negamax_sign,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
@@ -101,14 +101,14 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
         return {kBitNullMove, evaluation * negamax_sign};
     }
 
-    const MoveList::iterator end_iterator_after_move_generation =
+    const MoveStack::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
 
     Evaluation alpha = alpha_parent;
     Bitmove best_move{};
     bool is_terminal_node = true;
 
-    for (MoveList::iterator move_iterator = end_iterator_before_move_generation;
+    for (MoveStack::iterator move_iterator = end_iterator_before_move_generation;
          move_iterator != end_iterator_after_move_generation;
          move_iterator++)
     {
