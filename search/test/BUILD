@@ -20,7 +20,10 @@ cc_test(
 
 cc_test(
     name = "test",
-    srcs = ["find_best_move_test.cpp"],
+    srcs = [
+        "find_best_move_test.cpp",
+        "material_difference_comparison_unit_test.cpp",
+    ],
     deps = [
         "//evaluate",
         "//hardware",

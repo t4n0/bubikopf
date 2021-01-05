@@ -7,6 +7,7 @@
 namespace Chess
 {
 
+constexpr Evaluation kNullValue{0};
 constexpr Evaluation kPawnValue{1};
 constexpr Evaluation kKnightValue{3};
 constexpr Evaluation kBishopValue{3};
