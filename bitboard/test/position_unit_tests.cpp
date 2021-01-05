@@ -42,61 +42,44 @@ TEST(BoardIndxesTest, GivenUniqueNumberToEachBitboard_ExpectRespectiveUniqueNumb
     }
 }
 
-TEST(MakeUnmakeMoveTest, GivenWhiteMove_ExpectMoveCountUnchanged)
+TEST(GetTotalPliesTest, GivenEmptyPosition_ExpectNoPliesPlayed)
 {
-    const std::string arbitrary_fen = "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4RK1 w - - 1 24";
-    const Bitmove arbitrary_move{};
-
-    Position position = PositionFromFen(arbitrary_fen);
-    const Bitboard saved_extras = position.MakeMove(arbitrary_move);
-
-    const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
-    const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
-    EXPECT_EQ(moves_original, moves_after_make);
-
-    position.UnmakeMove(arbitrary_move, saved_extras);
-
-    const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
-    EXPECT_EQ(moves_original, moves_after_unmake);
+    const Position position{};
+    constexpr std::size_t expected_number_of_plies_played = 0;
+    EXPECT_EQ(position.GetTotalPlies(), expected_number_of_plies_played);
 }
 
-TEST(MakeUnmakeMoveTest, GivenBlackMove_ExpectMoveCountIncremented)
-{
-    const std::string arbitrary_fen = "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4R1K b - - 2 24";
-    const Bitmove arbitrary_move{};
-
-    Position position = PositionFromFen(arbitrary_fen);
-    const Bitboard saved_extras = position.MakeMove(arbitrary_move);
-
-    const auto moves_original = std::stoi(TokenizeFen(arbitrary_fen).at(kFenTokenMoves));
-    const auto moves_after_make = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
-    EXPECT_EQ(moves_original + 1, moves_after_make);
-
-    position.UnmakeMove(arbitrary_move, saved_extras);
-
-    const auto moves_after_unmake = std::stoi(TokenizeFen(FenFromPosition(position)).at(kFenTokenMoves));
-    EXPECT_EQ(moves_original, moves_after_unmake);
-}
-
-TEST(MakeUnmakeMoveTest, GivenStartPosition_ExpectNoMovesPlayed)
+TEST(GetTotalPliesTest, GivenStandardStartingPosition_ExpectNoPliesPlayed)
 {
     const Position position = PositionFromFen(kStandardStartingPosition);
-    const std::size_t expected_number_of_plies_played = 0;
-    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+    constexpr std::size_t expected_number_of_plies_played = 0;
+    EXPECT_EQ(position.GetTotalPlies(), expected_number_of_plies_played);
 }
 
-TEST(MakeUnmakeMoveTest, GivenPositionAfter3FullMovesAndWhiteToPlay_Expect6Plies)
+TEST(GetTotalPliesTest, GivenPositionAfter6Plies_Expect6Plies)
 {
     const Position position = PositionFromFen("rnbqk1nr/ppp1bppp/4p3/3p4/3P4/4PN2/PPP2PPP/RNBQKB1R w KQkq - 2 4");
-    const std::size_t expected_number_of_plies_played = 6;
-    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+    constexpr std::size_t expected_number_of_plies_played = 6;
+    EXPECT_EQ(position.GetTotalPlies(), expected_number_of_plies_played);
 }
 
-TEST(MakeUnmakeMoveTest, GivenPositionAfter3FullMovesAndBlackToPlay_Expect7Plies)
+TEST(MakeUnmakeMoveTest, GivenArbitraryMove_ExpectTotalPliesCountIncremented)
 {
-    const Position position = PositionFromFen("rnbqk1nr/ppp1bppp/4p3/3p4/3P4/2P1PN2/PP3PPP/RNBQKB1R b KQkq - 0 4");
-    const std::size_t expected_number_of_plies_played = 7;
-    EXPECT_EQ(position.GetNumberOfPlayedPlies(), expected_number_of_plies_played);
+    const std::string arbitrary_fen = "r5k1/1p4pp/1p2p3/2P1prq1/1P2Q3/P4PPn/1B5P/R4RK1 w - - 1 24";
+    constexpr Bitmove arbitrary_move{};
+
+    Position position = PositionFromFen(arbitrary_fen);
+    const auto total_plies_original = position.GetTotalPlies();
+
+    const Bitboard saved_extras = position.MakeMove(arbitrary_move);
+    const auto total_plies_after_make = position.GetTotalPlies();
+
+    EXPECT_EQ(total_plies_original + 1, total_plies_after_make);
+
+    position.UnmakeMove(arbitrary_move, saved_extras);
+    const auto total_plies_after_unmake = position.GetTotalPlies();
+
+    EXPECT_EQ(total_plies_original, total_plies_after_unmake);
 }
 
 }  // namespace

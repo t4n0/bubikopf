@@ -30,7 +30,7 @@ class Position
     /// (Rather then calculating a complete attack board).
     bool KingIsInCheck(const std::size_t side) const;
 
-    std::size_t GetNumberOfPlayedPlies() const;
+    std::size_t GetTotalPlies() const;
 
     Bitboard& operator[](const std::size_t index);
     Bitboard operator[](const std::size_t index) const;

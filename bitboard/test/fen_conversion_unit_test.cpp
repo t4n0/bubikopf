@@ -59,7 +59,6 @@ Position StandardStartingPosition()
 {
     Position position{};
     position[kExtrasBoard] = kBoardMaskCastling;
-    position[kExtrasBoard] |= kOneFullMove;
     position.white_to_move_ = true;
 
     // white pieces

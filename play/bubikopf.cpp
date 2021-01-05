@@ -31,7 +31,7 @@ void Bubikopf::SetUpBoardInStandardStartingPosition()
 void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 {
     MoveStack move_stack{};
-    const auto played_plies_internal = position_.GetNumberOfPlayedPlies();
+    const auto played_plies_internal = position_.GetTotalPlies();
     if (move_list.size() < played_plies_internal)
     {
         const std::string message = "Move list from gui is behind engine. Gui: " + std::to_string(move_list.size()) +

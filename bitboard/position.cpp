@@ -14,12 +14,9 @@
 namespace Chess
 {
 
-std::size_t Position::GetNumberOfPlayedPlies() const
+std::size_t Position::GetTotalPlies() const
 {
-    const std::size_t number_of_plies_from_full_move_counter =
-        2 * (((boards_[kExtrasBoard] & kBoardMaskFullMoves) >> kBoardShiftFullMoves) - 1);
-    const std::size_t additional_ply_if_white_already_played = !white_to_move_;
-    return number_of_plies_from_full_move_counter + additional_ply_if_white_already_played;
+    return (boards_[kExtrasBoard] & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies;
 }
 
 Bitmove Position::GetPieceKind(const std::size_t side, const Bitboard location) const
@@ -168,14 +165,7 @@ Bitboard Position::MakeMove(Bitmove move)
         }
     }
 
-    if (!white_to_move_)
-    {
-        boards_[kExtrasBoard] += kOneFullMove;
-    }
-    else
-    {
-        // Move counter is incremented only after black move.
-    }
+    boards_[kExtrasBoard] += kIncrementTotalPlies;
 
     white_to_move_ = !white_to_move_;
     attacking_side_ ^= kToggleSide;

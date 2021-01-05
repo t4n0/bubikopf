@@ -13,7 +13,7 @@ constexpr std::array<Bitboard, 5> kAllBoardMasks{
     kBoardMaskStaticPlies,
     kBoardMaskEnPassant,
     kBoardMaskCastling,
-    kBoardMaskFullMoves,
+    kBoardMaskTotalPlies,
     kBoardMaskUnused,
 };
 
@@ -52,9 +52,9 @@ TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
     EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kBoardShiftEnPassant, 0b00111111);
 }
 
-TEST(BoardShiftFullMovesTest, GivenOnAllOnes_Expect8BitsSet)
+TEST(BoardShiftTotalPliesTest, GivenOnAllOnes_Expect16BitsSet)
 {
-    EXPECT_EQ((kAllBitsSet & kBoardMaskFullMoves) >> kBoardShiftFullMoves, 0b11111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies, 0b11111111'11111111);
 }
 
 }  // namespace

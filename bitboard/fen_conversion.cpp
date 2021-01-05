@@ -161,16 +161,17 @@ Position PositionFromFen(const std::string& fen)
             throw std::runtime_error{"FEN contains invalid en passant token."};
         }
 
-        const int en_passant_bits = std::distance(kSquareLabels.begin(), location_it);
+        const Bitboard en_passant_bits = std::distance(kSquareLabels.begin(), location_it);
         position[kExtrasBoard] |= en_passant_bits << kBoardShiftEnPassant;
     }
 
     const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
     position[kExtrasBoard] |= static_plies;
 
-    const Bitboard total_plies = std::stoi(tokens.at(kFenTokenMoves));
-
-    position[kExtrasBoard] |= total_plies << kBoardShiftFullMoves;
+    const Bitboard full_moves_count = std::stoi(tokens.at(kFenTokenMoves));
+    const Bitboard additional_ply_if_black_has_not_played_yet = tokens.at(kFenTokenSide) == "b";
+    const Bitboard total_plies = (full_moves_count - 1) * 2 + additional_ply_if_black_has_not_played_yet;
+    position[kExtrasBoard] |= total_plies << kBoardShiftTotalPlies;
 
     return position;
 }
@@ -254,9 +255,9 @@ std::string FenFromPosition(const Position& position)
 
     const auto static_plies = std::to_string(position[kExtrasBoard] & kBoardMaskStaticPlies);
 
-    const auto total_plies = std::to_string((position[kExtrasBoard] & kBoardMaskFullMoves) >> kBoardShiftFullMoves);
+    const auto full_moves = std::to_string(1 + (position.GetTotalPlies() / 2));
 
-    return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + total_plies;
+    return pieces + " " + side + " " + castling + " " + en_passant + " " + static_plies + " " + full_moves;
 }
 
 std::vector<std::string> TokenizeFen(const std::string& fen)
