@@ -32,7 +32,7 @@ TEST(MoveMaskTest, GivenAllMoveMasks_ExpectEntireRangeOfUnderlyingTypeIsUtilized
     EXPECT_EQ(covered_fields, std::numeric_limits<Bitmove>::max());
 }
 
-class MoveMaskFixture : public ::testing::TestWithParam<std::tuple<Bitmove, Bitmove>>
+class MoveMaskFixture : public testing::TestWithParam<std::tuple<Bitmove, Bitmove>>
 {
 };
 
@@ -48,7 +48,7 @@ TEST_P(MoveMaskFixture, GivenTwoDifferentMoveMasks_ExpectNoOverlap)
 
 INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          MoveMaskFixture,
-                         ::testing::Combine(::testing::ValuesIn(ALL_MOVE_MASKS), ::testing::ValuesIn(ALL_MOVE_MASKS)));
+                         testing::Combine(testing::ValuesIn(ALL_MOVE_MASKS), testing::ValuesIn(ALL_MOVE_MASKS)));
 
 // Value tests
 const std::array<Bitmove, 8> ALL_MOVE_VALUES{
@@ -70,7 +70,7 @@ TEST(MoveValueTest, GivenAllValues_ExpectEveryValueIsUnique)
     EXPECT_TRUE(is_unique);
 }
 
-class MoveValueFixture : public ::testing::TestWithParam<Bitmove>
+class MoveValueFixture : public testing::TestWithParam<Bitmove>
 {
 };
 
@@ -80,7 +80,7 @@ TEST_P(MoveValueFixture, GivenValue_ExpectIsEnirelyWithinBoundsOfMask)
     EXPECT_EQ(move_value_type, move_value_type & kMoveMaskType);
 }
 
-INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture, ::testing::ValuesIn(ALL_MOVE_VALUES));
+INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture, testing::ValuesIn(ALL_MOVE_VALUES));
 
 constexpr Bitmove kAllBitsSet = std::numeric_limits<Bitmove>::max();
 

@@ -27,7 +27,7 @@ TEST(BoardMaskTest, GivenAllBoardMasks_ExpectEntireRangeOfUnderlyingTypeIsUtiliz
     EXPECT_EQ(covered_fields, std::numeric_limits<Bitboard>::max());
 }
 
-class BoardMaskFixture : public ::testing::TestWithParam<std::tuple<Bitboard, Bitboard>>
+class BoardMaskFixture : public testing::TestWithParam<std::tuple<Bitboard, Bitboard>>
 {
 };
 
@@ -43,7 +43,7 @@ TEST_P(BoardMaskFixture, GivenTwoDifferentMoveMasks_ExpectNoOverlap)
 
 INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          BoardMaskFixture,
-                         ::testing::Combine(::testing::ValuesIn(kAllBoardMasks), ::testing::ValuesIn(kAllBoardMasks)));
+                         testing::Combine(testing::ValuesIn(kAllBoardMasks), testing::ValuesIn(kAllBoardMasks)));
 
 constexpr Bitboard kAllBitsSet = std::numeric_limits<Bitboard>::max();
 

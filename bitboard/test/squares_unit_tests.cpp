@@ -16,7 +16,7 @@ struct SquareTestParameter
     int expected_size;
 };
 
-class SquareTestFixture : public ::testing::TestWithParam<SquareTestParameter>
+class SquareTestFixture : public testing::TestWithParam<SquareTestParameter>
 {
 };
 
@@ -43,9 +43,9 @@ const SquareTestParameter ALL_SQUARES{
 const SquareTestParameter ALL_RANKS{{kRank1, kRank2, kRank3, kRank4, kRank5, kRank6, kRank7, kRank8}, 8};
 const SquareTestParameter ALL_FILES{{kFileA, kFileB, kFileC, kFileD, kFileE, kFileF, kFileG, kFileH}, 8};
 
-INSTANTIATE_TEST_SUITE_P(AllSquares, SquareTestFixture, ::testing::Values(ALL_SQUARES));
-INSTANTIATE_TEST_SUITE_P(AllRanks, SquareTestFixture, ::testing::Values(ALL_RANKS));
-INSTANTIATE_TEST_SUITE_P(AllFiles, SquareTestFixture, ::testing::Values(ALL_FILES));
+INSTANTIATE_TEST_SUITE_P(AllSquares, SquareTestFixture, testing::Values(ALL_SQUARES));
+INSTANTIATE_TEST_SUITE_P(AllRanks, SquareTestFixture, testing::Values(ALL_RANKS));
+INSTANTIATE_TEST_SUITE_P(AllFiles, SquareTestFixture, testing::Values(ALL_FILES));
 
 }  // namespace
 }  // namespace Chess

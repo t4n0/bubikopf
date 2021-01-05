@@ -15,21 +15,21 @@ struct SingleStepTestParameter
     std::array<Bitboard, 8> expected_targets_per_direction;
 };
 
-class SingleStepTestFixture : public ::testing::TestWithParam<SingleStepTestParameter>
+class SingleStepTestFixture : public testing::TestWithParam<SingleStepTestParameter>
 {
 };
 
 TEST_P(SingleStepTestFixture, GivenSquare_ExpectOnlyValidTargetsForAllDirections)
 {
     const std::array<Bitboard, 8>& expected_targets = GetParam().expected_targets_per_direction;
-    ASSERT_THAT(SingleStep(GetParam().source, kWest), ::testing::Eq(expected_targets.at(0)));
-    ASSERT_THAT(SingleStep(GetParam().source, kNorthWest), ::testing::Eq(expected_targets.at(1)));
-    ASSERT_THAT(SingleStep(GetParam().source, kNorth), ::testing::Eq(expected_targets.at(2)));
-    ASSERT_THAT(SingleStep(GetParam().source, kNorthEast), ::testing::Eq(expected_targets.at(3)));
-    ASSERT_THAT(SingleStep(GetParam().source, kEast), ::testing::Eq(expected_targets.at(4)));
-    ASSERT_THAT(SingleStep(GetParam().source, kSouthEast), ::testing::Eq(expected_targets.at(5)));
-    ASSERT_THAT(SingleStep(GetParam().source, kSouth), ::testing::Eq(expected_targets.at(6)));
-    ASSERT_THAT(SingleStep(GetParam().source, kSouthWest), ::testing::Eq(expected_targets.at(7)));
+    ASSERT_THAT(SingleStep(GetParam().source, kWest), testing::Eq(expected_targets.at(0)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorthWest), testing::Eq(expected_targets.at(1)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorth), testing::Eq(expected_targets.at(2)));
+    ASSERT_THAT(SingleStep(GetParam().source, kNorthEast), testing::Eq(expected_targets.at(3)));
+    ASSERT_THAT(SingleStep(GetParam().source, kEast), testing::Eq(expected_targets.at(4)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouthEast), testing::Eq(expected_targets.at(5)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouth), testing::Eq(expected_targets.at(6)));
+    ASSERT_THAT(SingleStep(GetParam().source, kSouthWest), testing::Eq(expected_targets.at(7)));
 }
 
 const SingleStepTestParameter A1_step_in_all_directions{A1, {XX, XX, A2, B2, B1, XX, XX, XX}};
@@ -44,15 +44,15 @@ const SingleStepTestParameter D8_step_in_all_directions{D8, {C8, XX, XX, XX, E8,
 
 INSTANTIATE_TEST_SUITE_P(AllCornersAndDirections,
                          SingleStepTestFixture,
-                         ::testing::Values(A1_step_in_all_directions,
-                                           A4_step_in_all_directions,
-                                           A8_step_in_all_directions,
-                                           H1_step_in_all_directions,
-                                           H5_step_in_all_directions,
-                                           H8_step_in_all_directions,
-                                           E1_step_in_all_directions,
-                                           E4_step_in_all_directions,
-                                           D8_step_in_all_directions));
+                         testing::Values(A1_step_in_all_directions,
+                                         A4_step_in_all_directions,
+                                         A8_step_in_all_directions,
+                                         H1_step_in_all_directions,
+                                         H5_step_in_all_directions,
+                                         H8_step_in_all_directions,
+                                         E1_step_in_all_directions,
+                                         E4_step_in_all_directions,
+                                         D8_step_in_all_directions));
 
 struct KnightJumpTestParameter
 {
@@ -60,21 +60,21 @@ struct KnightJumpTestParameter
     std::array<Bitboard, 8> expected_targets_per_direction;
 };
 
-class KnightJumpTestFixture : public ::testing::TestWithParam<KnightJumpTestParameter>
+class KnightJumpTestFixture : public testing::TestWithParam<KnightJumpTestParameter>
 {
 };
 
 TEST_P(KnightJumpTestFixture, GivenSquare_ExpectOnlyValidTargetsForAllDirections)
 {
     const std::array<Bitboard, 8>& expected_targets = GetParam().expected_targets_per_direction;
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthWest), ::testing::Eq(expected_targets.at(0)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthEast), ::testing::Eq(expected_targets.at(1)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastNorth), ::testing::Eq(expected_targets.at(2)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastSouth), ::testing::Eq(expected_targets.at(3)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthEast), ::testing::Eq(expected_targets.at(4)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthWest), ::testing::Eq(expected_targets.at(5)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestSouth), ::testing::Eq(expected_targets.at(6)));
-    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestNorth), ::testing::Eq(expected_targets.at(7)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthWest), testing::Eq(expected_targets.at(0)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightNorthEast), testing::Eq(expected_targets.at(1)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastNorth), testing::Eq(expected_targets.at(2)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightEastSouth), testing::Eq(expected_targets.at(3)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthEast), testing::Eq(expected_targets.at(4)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightSouthWest), testing::Eq(expected_targets.at(5)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestSouth), testing::Eq(expected_targets.at(6)));
+    ASSERT_THAT(RuntimeKnightJump(GetParam().source, kKnightWestNorth), testing::Eq(expected_targets.at(7)));
 }
 
 const KnightJumpTestParameter B7_jump_in_all_directions{B7, {XX, XX, D8, D6, C5, A5, XX, XX}};
@@ -92,18 +92,18 @@ const KnightJumpTestParameter H1_jump_in_all_directions{H1, {G3, XX, XX, XX, XX,
 
 INSTANTIATE_TEST_SUITE_P(VariousSquaresAndAllDirections,
                          KnightJumpTestFixture,
-                         ::testing::Values(B7_jump_in_all_directions,
-                                           C7_jump_in_all_directions,
-                                           B6_jump_in_all_directions,
-                                           C6_jump_in_all_directions,
-                                           F3_jump_in_all_directions,
-                                           G3_jump_in_all_directions,
-                                           F2_jump_in_all_directions,
-                                           G2_jump_in_all_directions,
-                                           A1_jump_in_all_directions,
-                                           A8_jump_in_all_directions,
-                                           H8_jump_in_all_directions,
-                                           H1_jump_in_all_directions));
+                         testing::Values(B7_jump_in_all_directions,
+                                         C7_jump_in_all_directions,
+                                         B6_jump_in_all_directions,
+                                         C6_jump_in_all_directions,
+                                         F3_jump_in_all_directions,
+                                         G3_jump_in_all_directions,
+                                         F2_jump_in_all_directions,
+                                         G2_jump_in_all_directions,
+                                         A1_jump_in_all_directions,
+                                         A8_jump_in_all_directions,
+                                         H8_jump_in_all_directions,
+                                         H1_jump_in_all_directions));
 
 }  // namespace
 }  // namespace Chess

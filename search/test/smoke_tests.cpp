@@ -85,7 +85,7 @@ const TraverseAllLeavesTestParameter pos8_ply4{4, pos8_fen, 26111};
 INSTANTIATE_TEST_SUITE_P(
     FromPositionDepth4,
     TraverseAllLeavesTestFixture,
-    ::testing::Values(pos1_ply4, pos2_ply4, pos3_ply4, pos4_ply4, pos5_ply4, pos6_ply4, pos7_ply4, pos8_ply4));
+    testing::Values(pos1_ply4, pos2_ply4, pos3_ply4, pos4_ply4, pos5_ply4, pos6_ply4, pos7_ply4, pos8_ply4));
 
 // const TraverseAllLeavesTestParameter pos1_ply6{6, kStandardStartingPosition, 119060324};
 // const TraverseAllLeavesTestParameter pos2_ply6{6, pos2_fen, 8031647685};
@@ -97,7 +97,7 @@ INSTANTIATE_TEST_SUITE_P(
 // Disabled by default. Takes >3h.
 // INSTANTIATE_TEST_SUITE_P(FromPositionDepth6,
 //                          TraverseAllLeavesTestFixture,
-//                          ::testing::Values(pos1_ply6, pos2_ply6, pos3_ply6, pos4_ply6, pos5_ply5, pos6_ply6));
+//                          testing::Values(pos1_ply6, pos2_ply6, pos3_ply6, pos4_ply6, pos5_ply5, pos6_ply6));
 
 }  // namespace
 }  // namespace Chess
