@@ -1,5 +1,4 @@
 build --copt="-std=c++17"
-build --symlink_prefix=/
 build --copt="-mpopcnt"
 build --copt="-mbmi"
 build --copt="-Wextra"
