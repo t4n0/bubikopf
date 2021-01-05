@@ -44,7 +44,7 @@ std::vector<int> EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order{}
 std::array<int, 64> EvaluteAccordingToEncodedUniqueId::unique_id_evaluation{};
 
 template <typename Behaviour>
-std::enable_if_t<Behaviour::evaluate_according_to_encoded_unique_id, Evaluation> evaluate(const Position& position)
+std::enable_if_t<Behaviour::evaluate_according_to_encoded_unique_id, Evaluation> Evaluate(const Position& position)
 {
     Behaviour::unique_id_evaluation_order.push_back(DecodeUniqueId(position));
     const Evaluation unique_id_evaluation = Behaviour::unique_id_evaluation.at(DecodeUniqueId(position));

@@ -12,9 +12,9 @@ struct EvaluteToZero
 };
 
 template <typename Behaviour>
-std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> evaluate(const Position& /*unused*/)
+std::enable_if_t<Behaviour::evaluate_to_zero, Evaluation> Evaluate(const Position& /*unused*/)
 {
-    return 0.0F;
+    return Evaluation{0};
 }
 
 }  // namespace Chess

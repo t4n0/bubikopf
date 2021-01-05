@@ -15,7 +15,7 @@ namespace Chess
 {
 
 template <typename EvaluateBehavior>
-std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> evaluate(const Position&);
+std::enable_if_t<EvaluateBehavior::not_defined, Evaluation> Evaluate(const Position&);
 
 template <typename GenerateBehavior>
 std::enable_if_t<GenerateBehavior::not_defined, const MoveStack::iterator> GenerateMoves(const Position&,
@@ -96,7 +96,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
     PrintNodeEntry<DebugBehavior>(position, depth);
     if (depth == 0)
     {
-        const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
+        const Evaluation evaluation = Evaluate<EvaluateBehavior>(position);
         PrintEvaluation<DebugBehavior>(evaluation);
         return {kBitNullMove, evaluation * negamax_sign};
     }
