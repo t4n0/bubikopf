@@ -7,6 +7,13 @@
 namespace Chess
 {
 
+constexpr Evaluation kPawnValue{1};
+constexpr Evaluation kKnightValue{3};
+constexpr Evaluation kBishopValue{3};
+constexpr Evaluation kRookValue{5};
+constexpr Evaluation kQueenValue{9};
+constexpr Evaluation kKingValue{100};
+
 struct EvaluateMaterial
 {
     static constexpr bool evaluate_material{true};
@@ -15,20 +22,12 @@ struct EvaluateMaterial
 template <typename Behaviour = EvaluateMaterial>
 std::enable_if_t<Behaviour::evaluate_material, Evaluation> Evaluate(const Position& position)
 {
-    Evaluation evaluation{0};
-    evaluation += popcnt(position[kWhiteBoard + kPawn]) * 1.0F;
-    evaluation += popcnt(position[kWhiteBoard + kKnight]) * 3.0F;
-    evaluation += popcnt(position[kWhiteBoard + kBishop]) * 3.0F;
-    evaluation += popcnt(position[kWhiteBoard + kRook]) * 5.0F;
-    evaluation += popcnt(position[kWhiteBoard + kQueen]) * 9.0F;
-    evaluation += popcnt(position[kWhiteBoard + kKing]) * 100.0F;
-    evaluation += popcnt(position[kBlackBoard + kPawn]) * -1.0F;
-    evaluation += popcnt(position[kBlackBoard + kKnight]) * -3.0F;
-    evaluation += popcnt(position[kBlackBoard + kBishop]) * -3.0F;
-    evaluation += popcnt(position[kBlackBoard + kRook]) * -5.0F;
-    evaluation += popcnt(position[kBlackBoard + kQueen]) * -9.0F;
-    evaluation += popcnt(position[kBlackBoard + kKing]) * -100.0F;
-    return evaluation;
+    return (popcnt(position[kWhiteBoard + kPawn]) - popcnt(position[kBlackBoard + kPawn])) * kPawnValue +
+           (popcnt(position[kWhiteBoard + kKnight]) - popcnt(position[kBlackBoard + kKnight])) * kKnightValue +
+           (popcnt(position[kWhiteBoard + kBishop]) - popcnt(position[kBlackBoard + kBishop])) * kBishopValue +
+           (popcnt(position[kWhiteBoard + kRook]) - popcnt(position[kBlackBoard + kRook])) * kRookValue +
+           (popcnt(position[kWhiteBoard + kQueen]) - popcnt(position[kBlackBoard + kQueen])) * kQueenValue +
+           (popcnt(position[kWhiteBoard + kKing]) - popcnt(position[kBlackBoard + kKing])) * kKingValue;
 }
 
 }  // namespace Chess
