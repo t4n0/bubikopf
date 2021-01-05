@@ -22,8 +22,8 @@ std::enable_if_t<GenerateBehavior::not_defined, const MoveStack::iterator> Gener
 ///
 /// Used for debugging and benchmarking move generation.
 template <typename GenerateBehavior>
-void TraverseAllLeaves(const uint8_t depth,
-                       Position& position,
+void TraverseAllLeaves(Position& position,
+                       const int depth,
                        const MoveStack::iterator& end_iterator_before_move_generation,
                        Statistic& stats)
 {
@@ -43,7 +43,7 @@ void TraverseAllLeaves(const uint8_t depth,
         const Bitboard saved_extras = position.MakeMove(*move_iterator);
         if (!position.KingIsInCheck(position.defending_side_))
         {
-            TraverseAllLeaves<GenerateBehavior>(depth - 1, position, end_iterator_after_move_generation, stats);
+            TraverseAllLeaves<GenerateBehavior>(position, depth - 1, end_iterator_after_move_generation, stats);
         }
         position.UnmakeMove(*move_iterator, saved_extras);
     }

@@ -14,7 +14,7 @@ static void TraverseAllLeaves(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
     Chess::Statistic stats{};
-    const uint8_t depth{4};
+    constexpr int depth{4};
 
     Chess::Position starting_position = Chess::PositionFromFen(starting_position_fen);
     Chess::Position middle_game = Chess::PositionFromFen(starting_position_fen);
@@ -23,9 +23,9 @@ static void TraverseAllLeaves(benchmark::State& state)
     for (auto _ : state)
     {
         Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(
-            depth, starting_position, move_stack.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(depth, middle_game, move_stack.begin(), stats);
-        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(depth, end_game, move_stack.begin(), stats);
+            starting_position, depth, move_stack.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(middle_game, depth, move_stack.begin(), stats);
+        Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(end_game, depth, move_stack.begin(), stats);
     }
 }
 
@@ -34,8 +34,8 @@ BENCHMARK(TraverseAllLeaves)->Unit(benchmark::kMillisecond)->ReportAggregatesOnl
 static void FindBestMove(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
-    const uint8_t depth{6};
-    const Chess::Evaluation negamax_sign_white{1};
+    constexpr int depth{6};
+    constexpr Chess::Evaluation negamax_sign_white{1};
 
     Chess::Position starting_position = Chess::PositionFromFen(starting_position_fen);
     Chess::Position middle_game = Chess::PositionFromFen(starting_position_fen);
@@ -44,11 +44,11 @@ static void FindBestMove(benchmark::State& state)
     for (auto _ : state)
     {
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            depth, starting_position, move_stack.begin(), negamax_sign_white);
+            starting_position, depth, move_stack.begin(), negamax_sign_white);
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            depth, middle_game, move_stack.begin(), negamax_sign_white);
+            middle_game, depth, move_stack.begin(), negamax_sign_white);
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            depth, end_game, move_stack.begin(), negamax_sign_white);
+            end_game, depth, move_stack.begin(), negamax_sign_white);
     }
 }
 

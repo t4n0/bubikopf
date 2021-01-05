@@ -68,7 +68,7 @@ std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
     logger.Log("Starting search for best move.");
     constexpr int depth = 6;
     const auto [best_move, evaluation] = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial>(
-        depth, position_, begin(move_stack), GetCurrentNegamaxSign());
+        position_, depth, begin(move_stack), GetCurrentNegamaxSign());
     const auto uci_move = ToUciString(best_move);
     logger.Log("Best move is: " + uci_move);
     return {uci_move, evaluation * GetCurrentNegamaxSign()};

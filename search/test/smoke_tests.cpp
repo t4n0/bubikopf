@@ -20,10 +20,10 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveStack)
     Position position{};
     MoveStack move_stack{};
     Statistic stats{};
-    const int DEPTH{3};
+    constexpr int depth{3};
 
     // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(DEPTH, position, move_stack.begin(), stats);
+    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(position, depth, move_stack.begin(), stats);
 
     // Expect
     const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
@@ -33,31 +33,30 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveStack)
     }
 }
 
-struct TraverseAllLeavesTestParameter
-{
-    int depth;
-    std::string fen;
-    long long expected_number_of_nodes;
-};
+using TraverseAllLeavesTestParameter = std::tuple<int, std::string, long long>;
 
 class TraverseAllLeavesTestFixture : public testing::TestWithParam<TraverseAllLeavesTestParameter>
 {
+  public:
+    int GetDepth() { return std::get<0>(GetParam()); }
+    std::string GetFen() { return std::get<1>(GetParam()); }
+    long long GetExpectedNumberOfLeaves() { return std::get<2>(GetParam()); }
 };
 
 TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations)
 {
     // Setup
-    Position position = PositionFromFen(GetParam().fen);
+    Position position = PositionFromFen(GetFen());
     MoveStack move_stack{};
     Statistic stats{};
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(GetParam().depth, position, move_stack.begin(), stats);
+    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(position, GetDepth(), move_stack.begin(), stats);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect
-    EXPECT_EQ(GetParam().expected_number_of_nodes, stats.number_of_evaluations) << ToString(move_stack);
+    EXPECT_EQ(GetExpectedNumberOfLeaves(), stats.number_of_evaluations) << ToString(move_stack);
     std::cout << "Time spent = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
               << std::endl;
 }

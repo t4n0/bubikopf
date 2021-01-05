@@ -32,11 +32,11 @@ struct DebuggingEnabled
 };
 
 template <typename Behavior>
-void PrintNodeEntry(const uint8_t depth, const Position& position)
+void PrintNodeEntry(const Position& position, const int depth)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << "depth " << int{depth} << '\n';
+        std::cout << "depth " << depth << '\n';
         PrettyPrintFen(FenFromPosition(position));
     }
     std::ignore = depth;  // Resolve warning if debugging disabled.
@@ -75,25 +75,25 @@ void PrintPruning(const Evaluation alpha, const Evaluation beta)
 }
 
 template <typename Behavior>
-void PrintNodeExit(const uint8_t depth)
+void PrintNodeExit(const int depth)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << "returning to depth " << int{depth + 1} << '\n' << std::endl;
+        std::cout << "returning to depth " << (depth + 1) << '\n' << std::endl;
     }
     std::ignore = depth;  // Resolve warning if debugging disabled.
 }
 
 /// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
-std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
-                                             Position& position,
+std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
+                                             const int depth,
                                              const MoveStack::iterator& end_iterator_before_move_generation,
                                              const Evaluation negamax_sign,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
-    PrintNodeEntry<DebugBehavior>(depth, position);
+    PrintNodeEntry<DebugBehavior>(position, depth);
     if (depth == 0)
     {
         const Evaluation evaluation = evaluate<EvaluateBehavior>(position);
@@ -119,7 +119,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(const uint8_t depth,
             is_terminal_node = false;
             Evaluation eval;
             std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
-                depth - 1, position, end_iterator_after_move_generation, -negamax_sign, -beta_parent, -alpha);
+                position, depth - 1, end_iterator_after_move_generation, -negamax_sign, -beta_parent, -alpha);
             eval *= Evaluation{-1};
             if (eval > alpha)
             {
