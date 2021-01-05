@@ -9,7 +9,6 @@
 namespace Chess
 {
 
-/// TODO: Throw when trying to assign past the end.
 /// @brief Type to preallocate memory for multiple layers of candidate moves during move generation.
 ///
 /// These moves will be used during search to update the current position one move at a time (also taking it back).
