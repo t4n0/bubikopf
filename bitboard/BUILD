@@ -6,6 +6,7 @@ cc_library(
         "basic_type_declarations.h",
         "board.h",
         "fen_conversion.cpp",
+        "move.cpp",
         "move.h",
         "move_stack.h",
         "pieces.h",

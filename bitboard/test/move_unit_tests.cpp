@@ -11,7 +11,7 @@ namespace Chess
 namespace
 {
 
-constexpr std::array<Bitmove, 7> ALL_MOVE_MASKS{
+constexpr std::array<Bitmove, 7> kAllMoveMasks{
     kMoveMaskSource,
     kMoveMaskTarget,
     kMoveMaskMovedPiece,
@@ -21,11 +21,10 @@ constexpr std::array<Bitmove, 7> ALL_MOVE_MASKS{
     kMoveMaskUnused,
 };
 
-// Mask tests
 TEST(MoveMaskTest, GivenAllMoveMasks_ExpectEntireRangeOfUnderlyingTypeIsUtilized)
 {
     Bitmove covered_fields = 0;
-    for (const Bitmove mask : ALL_MOVE_MASKS)
+    for (const Bitmove mask : kAllMoveMasks)
     {
         covered_fields |= mask;
     }
@@ -40,18 +39,17 @@ TEST_P(MoveMaskFixture, GivenTwoDifferentMoveMasks_ExpectNoOverlap)
 {
     const Bitmove first = std::get<0>(GetParam());
     const Bitmove second = std::get<1>(GetParam());
-    if (first != second)
-    {  // only check permutations with different masks
+    if (first != second)  // only check combinations with different masks
+    {
         EXPECT_FALSE(first & second);
     }
 }
 
 INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          MoveMaskFixture,
-                         testing::Combine(testing::ValuesIn(ALL_MOVE_MASKS), testing::ValuesIn(ALL_MOVE_MASKS)));
+                         testing::Combine(testing::ValuesIn(kAllMoveMasks), testing::ValuesIn(kAllMoveMasks)));
 
-// Value tests
-const std::array<Bitmove, 8> ALL_MOVE_VALUES{
+const std::array<Bitmove, 8> kAllMoveValues{
     kMoveTypeQuietNonPawn,
     kMoveTypeCapture,
     kMoveTypePawnSinglePush,
@@ -64,7 +62,8 @@ const std::array<Bitmove, 8> ALL_MOVE_VALUES{
 
 TEST(MoveValueTest, GivenAllValues_ExpectEveryValueIsUnique)
 {
-    auto all_move_values = ALL_MOVE_VALUES;  // non-const copy for unique
+    auto all_move_values = kAllMoveValues;  // non-const copy for unique
+    std::sort(all_move_values.begin(), all_move_values.end());
     std::array<Bitmove, 9>::iterator new_end_it = std::unique(all_move_values.begin(), all_move_values.end());
     const bool is_unique = new_end_it == all_move_values.end();
     EXPECT_TRUE(is_unique);
@@ -80,33 +79,41 @@ TEST_P(MoveValueFixture, GivenValue_ExpectIsEnirelyWithinBoundsOfMask)
     EXPECT_EQ(move_value_type, move_value_type & kMoveMaskType);
 }
 
-INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture, testing::ValuesIn(ALL_MOVE_VALUES));
+INSTANTIATE_TEST_SUITE_P(AllElements, MoveValueFixture, testing::ValuesIn(kAllMoveValues));
 
 constexpr Bitmove kAllBitsSet = std::numeric_limits<Bitmove>::max();
+constexpr Bitmove k6BitsSet = 0b00111111;
+constexpr Bitmove k4BitsSet = 0b00001111;
+constexpr Bitmove k3BitsSet = 0b00000111;
 
-TEST(MoveShiftTargetTest, GivenOnAllOnes_Expect63)
+TEST(ExtractSourceTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
 {
-    EXPECT_EQ((kAllBitsSet & kMoveMaskTarget) >> kMoveShiftTarget, 0b00111111);
+    EXPECT_EQ(ExtractSource(kAllBitsSet), k6BitsSet);
 }
 
-TEST(MoveShiftCapturedPieceTest, GivenOnAllOnes_Expect7)
+TEST(ExtractTargetTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
 {
-    EXPECT_EQ((kAllBitsSet & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece, 0b00000111);
+    EXPECT_EQ(ExtractTarget(kAllBitsSet), k6BitsSet);
 }
 
-TEST(MoveShiftMovedPieceTest, GivenOnAllOnes_Expect7)
+TEST(ExtractMovedPieceTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
 {
-    EXPECT_EQ((kAllBitsSet & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece, 0b00000111);
+    EXPECT_EQ(ExtractMovedPiece(kAllBitsSet), k3BitsSet);
 }
 
-TEST(MoveShiftPromotionTest, GivenOnAllOnes_Expect7)
+TEST(ExtractCapturedPieceTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
 {
-    EXPECT_EQ((kAllBitsSet & kMoveMaskPromotion) >> kMoveShiftPromotion, 0b00000111);
+    EXPECT_EQ(ExtractCapturedPiece(kAllBitsSet), k3BitsSet);
 }
 
-TEST(MoveShiftTypeTest, GivenOnAllOnes_Expect15)
+TEST(ExtractPromotionTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
 {
-    EXPECT_EQ((kAllBitsSet & kMoveMaskType) >> kMoveShiftType, 0b00001111);
+    EXPECT_EQ(ExtractPromotion(kAllBitsSet), k3BitsSet);
+}
+
+TEST(ExtractTypeTest, GivenAllBitsSet_WidthOfRespectiveMaskCovered)
+{
+    EXPECT_EQ(ExtractType(kAllBitsSet), k4BitsSet);
 }
 
 }  // namespace
