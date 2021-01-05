@@ -5,7 +5,9 @@
 #include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "bitboard/uci_conversion.h"
+#include "search/material_difference_comparison.h"
 
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <tuple>
@@ -88,7 +90,7 @@ void PrintNodeExit(const int depth)
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
                                              const int depth,
-                                             const MoveStack::iterator& end_iterator_before_move_generation,
+                                             const MoveStack::iterator end_iterator_before_move_generation,
                                              const Evaluation negamax_sign,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
@@ -103,6 +105,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
 
     const MoveStack::iterator end_iterator_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
+    std::sort(end_iterator_before_move_generation, end_iterator_after_move_generation, IsMaterialDifferenceGreater);
 
     Evaluation alpha = alpha_parent;
     Bitmove best_move{};

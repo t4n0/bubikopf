@@ -138,7 +138,7 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
 }
 
-const std::array<std::tuple<std::string, std::string>, 4> various_check_mate_in_three_positions{{
+const std::array<std::tuple<std::string, std::string>, 4> kVariousCheckmateIn3Positions{{
     {"r2q1rk1/pb3p1p/1pn3p1/2p1R2Q/2P5/2BB4/P4PPP/R5K1 w - - 0 21", "h5h7"},
     {"r2q2kr/ppp1b1pp/2n5/4B3/3Pn1b1/2P5/PP4PP/RN1Q1RK1 w - - 1 12", "d1b3"},
     {"7r/Q1p2ppp/1p3k2/1Bb5/5q2/2N5/PPPrR1KP/R7 b - - 2 21", "f4g4"},
@@ -147,7 +147,7 @@ const std::array<std::tuple<std::string, std::string>, 4> various_check_mate_in_
 
 INSTANTIATE_TEST_SUITE_P(VariousCheckmateInThreePositions,
                          FindBestMoveTestFixture,
-                         testing::ValuesIn(various_check_mate_in_three_positions));
+                         testing::ValuesIn(kVariousCheckmateIn3Positions));
 
 class FindBestMoveInFinalPosition : public testing::TestWithParam<std::tuple<std::string, Evaluation>>
 {
