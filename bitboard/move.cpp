@@ -42,23 +42,12 @@ std::string ToString(const Bitmove move)
         return {};
     }
 
-    const std::size_t source_bit = move & kMoveMaskSource;
-    const std::string source = kSquareLabels.at(source_bit);
-
-    const std::size_t target_bit = (move & kMoveMaskTarget) >> kMoveShiftTarget;
-    const std::string target = kSquareLabels.at(target_bit);
-
-    const std::size_t moved_piece_kind = (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
-    const char moved_piece = kPieceLabels.at(moved_piece_kind);
-
-    const std::size_t captured_piece_kind = (move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece;
-    const char captured_piece = kPieceLabels.at(captured_piece_kind);
-
-    const std::size_t promotion_kind = (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
-    const char promotion = kPieceLabels.at(promotion_kind);
-
-    const std::size_t move_value_kind = (move & kMoveMaskType) >> kMoveShiftType;
-    const std::string move_value = move_type_labels.at(move_value_kind);
+    const std::string source = kSquareLabels.at(ExtractSource(move));
+    const std::string target = kSquareLabels.at(ExtractTarget(move));
+    const char moved_piece = kPieceLabels.at(ExtractMovedPiece(move));
+    const char captured_piece = kPieceLabels.at(ExtractCapturedPiece(move));
+    const char promotion = kPieceLabels.at(ExtractPromotion(move));
+    const std::string move_value = move_type_labels.at(ExtractType(move));
 
     std::stringstream move_print_out{};
     move_print_out << moved_piece << " on " << source << " to " << target << " promoting to " << promotion

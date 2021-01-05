@@ -53,11 +53,11 @@ Bitboard Position::MakeMove(Bitmove move)
     const Bitboard current_extras = boards_[kExtrasBoard];  // These extras correspond to move from function
                                                             // parameter including unaltered en passant information etc.
 
-    const std::size_t attacking_piece = (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
+    const std::size_t attacking_piece = ExtractMovedPiece(move);
     const std::size_t attacking_piece_index = attacking_side_ + attacking_piece;
 
-    const Bitboard source = Bitboard{1} << (move & kMoveMaskSource);
-    const Bitboard target = Bitboard{1} << ((move & kMoveMaskTarget) >> kMoveShiftTarget);
+    const Bitboard source = Bitboard{1} << ExtractSource(move);
+    const Bitboard target = Bitboard{1} << ExtractTarget(move);
     const Bitboard source_and_target = source | target;
 
     boards_[kExtrasBoard] &= ~(kBoardMaskEnPassant | kKingsideCastlingOnLastMove | kQueensideCastlingOnLastMove);
@@ -73,8 +73,7 @@ Bitboard Position::MakeMove(Bitmove move)
             break;
         }
         case kMoveTypeCapture: {
-            const std::size_t captured_piece =
-                defending_side_ + ((move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece);
+            const std::size_t captured_piece = defending_side_ + ExtractCapturedPiece(move);
             boards_[defending_side_] &= ~target;
             boards_[captured_piece] &= ~target;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
@@ -85,8 +84,8 @@ Bitboard Position::MakeMove(Bitmove move)
             break;
         }
         case kMoveTypePawnDoublePush: {
-            const Bitmove source_bit = move & kMoveMaskSource;
-            const Bitmove target_bit = (move & kMoveMaskTarget) >> kMoveShiftTarget;
+            const Bitmove source_bit = ExtractSource(move);
+            const Bitmove target_bit = ExtractTarget(move);
             boards_[kExtrasBoard] |= ((source_bit + target_bit) >> 1)
                                      << kBoardShiftEnPassant;  // (source_bit+target_bit)/2
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
@@ -122,8 +121,7 @@ Bitboard Position::MakeMove(Bitmove move)
             break;
         }
         case kMoveTypePromotion: {
-            const std::size_t board_idx_added_piece_kind =
-                attacking_side_ + ((move & kMoveMaskPromotion) >> kMoveShiftPromotion);
+            const std::size_t board_idx_added_piece_kind = attacking_side_ + ExtractPromotion(move);
             boards_[attacking_piece_index] &=
                 ~source_and_target;  // pawn was moved to target as side effect of default operation earlier
             boards_[board_idx_added_piece_kind] |= target;
@@ -181,10 +179,10 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
     attacking_side_ ^= kToggleSide;
     defending_side_ ^= kToggleSide;
 
-    const std::size_t attacking_piece_index = attacking_side_ + ((move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece);
+    const std::size_t attacking_piece_index = attacking_side_ + ExtractMovedPiece(move);
 
-    const Bitboard source = Bitboard{1} << (move & kMoveMaskSource);
-    const Bitboard target = Bitboard{1} << ((move & kMoveMaskTarget) >> kMoveShiftTarget);
+    const Bitboard source = Bitboard{1} << ExtractSource(move);
+    const Bitboard target = Bitboard{1} << ExtractTarget(move);
     const Bitboard source_and_target = source | target;
 
     boards_[attacking_side_] ^= source_and_target;
@@ -194,8 +192,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
     switch (move_type)
     {
         case kMoveTypeCapture: {
-            const std::size_t captured_piece =
-                defending_side_ + ((move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece);
+            const std::size_t captured_piece = defending_side_ + ExtractCapturedPiece(move);
             boards_[defending_side_] |= target;
             boards_[captured_piece] |= target;
             return;
@@ -228,8 +225,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
         case kMoveTypePromotion: {
             boards_[attacking_piece_index] &=
                 ~target;  // pawns were set on target and source as side effect of default operation
-            const std::size_t board_idx_added_piece_kind =
-                attacking_side_ + ((move & kMoveMaskPromotion) >> kMoveShiftPromotion);
+            const std::size_t board_idx_added_piece_kind = attacking_side_ + ExtractPromotion(move);
             boards_[board_idx_added_piece_kind] &= ~target;
             const Bitmove capture = move & kMoveMaskCapturedPiece;
             if (capture)
