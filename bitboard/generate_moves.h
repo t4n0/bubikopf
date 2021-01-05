@@ -88,14 +88,14 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         // captures
         for (const std::size_t index : {0, 1})
         {
-            if (position[defending_side] & pawn_capture_targets.at(index))
+            if (position[defending_side] & pawn_capture_targets[index])
             {
-                const Bitmove captured_piece = position.GetPieceKind(defending_side, pawn_capture_targets.at(index));
-                const bool is_promotion = pawn_capture_targets.at(index) & kPromotionRanks;
+                const Bitmove captured_piece = position.GetPieceKind(defending_side, pawn_capture_targets[index]);
+                const bool is_promotion = pawn_capture_targets[index] & kPromotionRanks;
                 if (!is_promotion)
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
-                                                                        pawn_capture_target_bits.at(index),
+                                                                        pawn_capture_target_bits[index],
                                                                         kPawn,
                                                                         captured_piece,
                                                                         kNoPromotion,
@@ -106,7 +106,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
                     // promotion (with capture)
                     PushBackAllPromotions(move_generation_insertion_iterator,
                                           source_bit,
-                                          tzcnt(pawn_capture_targets.at(index)),
+                                          tzcnt(pawn_capture_targets[index]),
                                           captured_piece);
                 }
             }
@@ -119,10 +119,10 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
             const Bitboard en_passant_bit = en_passant_mask >> kBoardShiftEnPassant;
             for (const std::size_t index : {0, 1})
             {
-                if (en_passant_bit == pawn_capture_target_bits.at(index))
+                if (en_passant_bit == pawn_capture_target_bits[index])
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
-                                                                        pawn_capture_target_bits.at(index),
+                                                                        pawn_capture_target_bits[index],
                                                                         kPawn,
                                                                         kPawn,
                                                                         kNoPromotion,

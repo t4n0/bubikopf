@@ -41,7 +41,7 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 
     for (std::size_t new_move = played_plies_internal; new_move < move_list.size(); new_move++)
     {
-        const std::string& new_move_uci = move_list.at(new_move);
+        const std::string& new_move_uci = move_list[new_move];
         const auto possible_moves_end = GenerateMoves<GenerateAllPseudoLegalMoves>(position_, begin(move_stack_));
 
         const auto move_to_play =

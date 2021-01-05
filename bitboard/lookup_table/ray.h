@@ -20,11 +20,11 @@ constexpr std::size_t kSouthEast = 5;
 constexpr std::size_t kSouth = 6;
 constexpr std::size_t kSouthWest = 7;
 
-// Values correspond to necessary bitshifts for single steps. E.g. kStepBits.at(kWest).
+// Values correspond to necessary bitshifts for single steps. E.g. kStepBits[kWest].
 constexpr std::array<int, 8> kStepBits{1, 9, 8, 7, -1, -9, -8, -7};
 
 // Values correspond to legal landing areas without wrapping e.g. a step from A1 to H2 when illegally going "kWest" of
-// square A1. E.g. kLegalAreasWithoutWrapping.at(kNorth).
+// square A1. E.g. kLegalAreasWithoutWrapping[kNorth].
 constexpr std::array<Bitboard, 8> kLegalAreasWithoutWrapping{~(kFileH),
                                                              ~(kFileH | kRank1),
                                                              ~(kRank1),

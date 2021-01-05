@@ -33,12 +33,12 @@ constexpr std::array<std::size_t, 8> kKnightDirections{kKnightNorthWest,
                                                        kKnightWestNorth};
 
 // Values provide the necessary bitshift for respective knight jump. E.g.
-// kJumpBits.at(kKnightWestNorth).
+// kJumpBits[kKnightWestNorth].
 constexpr std::array<int, 8> kJumpBits{17, 15, 6, -10, -17, -15, -6, 10};
 
 // Values priovdes a bitboard specifying the legal landing area after a jump.
 // (Used to null illegal moves that wrap around the board). E.g.
-// legal_jump_areas_without_wrapping.at(kKnightWestNorth).
+// legal_jump_areas_without_wrapping[kKnightWestNorth].
 constexpr std::array<Bitboard, 8> kLegalLandingAreasWithoutWrapping{~(kRank1 | kRank2 | kFileH),
                                                                     ~(kRank1 | kRank2 | kFileA),
                                                                     ~(kFileA | kFileB | kRank1),
