@@ -138,11 +138,9 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
 
     if (is_terminal_node)
     {
-        Evaluation game_result = position.KingIsInCheck(position.attacking_side_) ? Evaluation{1000} : Evaluation{0};
-        if (position.white_to_move_)
-        {
-            game_result *= Evaluation{-1};
-        }
+        constexpr Evaluation draw = Evaluation{0};
+        const Evaluation opponent_win = position.white_to_move_ ? Evaluation{-1000} : Evaluation{1000};
+        const Evaluation game_result = position.KingIsInCheck(position.attacking_side_) ? opponent_win : draw;
         PrintEvaluation<DebugBehavior>(game_result);
         PrintNodeExit<DebugBehavior>(depth);
         return {kBitNullMove, game_result * negamax_sign};
