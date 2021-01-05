@@ -25,6 +25,7 @@ class Bubikopf
     Evaluation GetCurrentNegamaxSign() const;
 
     Position position_{};
+    MoveStack move_stack_{};
     Logger logger{"log_bubikopf_engine.txt"};
 };
 
