@@ -7,12 +7,12 @@
 namespace Chess
 {
 
-struct EvaluteMaterial
+struct EvaluateMaterial
 {
     static constexpr bool evaluate_material{true};
 };
 
-template <typename Behaviour = EvaluteMaterial>
+template <typename Behaviour = EvaluateMaterial>
 std::enable_if_t<Behaviour::evaluate_material, Evaluation> evaluate(const Position& position)
 {
     float evaluation = 0.0F;

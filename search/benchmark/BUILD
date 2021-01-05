@@ -5,9 +5,7 @@ cc_binary(
     srcs = ["perft.cpp"],
     deps = [
         "//bitboard",
-        "//evaluate/test:mock",
         "//search",
-        "//search/test:mock",
     ],
 )
 
@@ -16,7 +14,7 @@ cc_binary(
     srcs = ["benchmark.cpp"],
     deps = [
         "//bitboard",
-        "//evaluate/test:mock",
+        "//evaluate",
         "//search",
         "//search/test:mock",
         "@googlebenchmark//:benchmark",

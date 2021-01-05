@@ -7,7 +7,7 @@ namespace Chess
 namespace
 {
 
-TEST(EvaluteMaterial, GivenSamples_ExpectAllHold)
+TEST(EvaluateMaterial, GivenSamples_ExpectAllHold)
 {
     Position position{};
 

@@ -134,7 +134,7 @@ TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
     Bitmove best_move;
     Evaluation evaluation;
     const auto side = TokenizeFen(GetFen()).at(kFenTokenSide);
-    std::tie(best_move, evaluation) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
+    std::tie(best_move, evaluation) = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
         depth, position, move_stack.begin(), GetNegaMaxSign());
 
     // Expect
@@ -172,7 +172,7 @@ TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectMoveAndEv
     MoveStack move_stack{};
 
     // Call
-    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluteMaterial, DebuggingDisabled>(
+    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
         depth, position, move_stack.begin(), GetNegaMaxSign());
 
     // Expect
