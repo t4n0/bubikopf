@@ -9,21 +9,6 @@
 namespace Chess
 {
 
-Bitmove ComposeMove(const Bitmove source,
-                    const Bitmove target,
-                    const Bitmove moved_piece,
-                    const Bitmove captured_piece,
-                    const Bitmove promotion,
-                    const Bitmove move_type)
-{
-    return source |                                       //
-           (target << kMoveShiftTarget) |                 //
-           (moved_piece << kMoveShiftMovedPiece) |        //
-           (captured_piece << kMoveShiftCapturedPiece) |  //
-           (promotion << kMoveShiftPromotion) |           //
-           move_type;
-}
-
 std::string ToString(const Bitmove move)
 {
     constexpr std::array<const char* const, 8> move_type_labels{
@@ -54,36 +39,6 @@ std::string ToString(const Bitmove move)
                    << " capturing " << captured_piece << " with move value " << move_value << "\n";
 
     return move_print_out.str();
-}
-
-Bitmove ExtractSource(const Bitmove move)
-{
-    return move & kMoveMaskSource;
-}
-
-Bitmove ExtractTarget(const Bitmove move)
-{
-    return (move & kMoveMaskTarget) >> kMoveShiftTarget;
-}
-
-Bitmove ExtractMovedPiece(const Bitmove move)
-{
-    return (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
-}
-
-Bitmove ExtractCapturedPiece(const Bitmove move)
-{
-    return (move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece;
-}
-
-Bitmove ExtractPromotion(const Bitmove move)
-{
-    return (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
-}
-
-Bitmove ExtractType(const Bitmove move)
-{
-    return (move & kMoveMaskType) >> kMoveShiftType;
 }
 
 }  // namespace Chess

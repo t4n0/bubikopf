@@ -10,7 +10,7 @@ const char* const starting_position_fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2
 const char* const middle_game_fen = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10";
 const char* const end_game_fen = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1";
 
-static void TraverseAllLeaves(benchmark::State& state)
+static void TraverseAllLeavesDepth4(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
     Chess::Statistic stats{};
@@ -29,9 +29,9 @@ static void TraverseAllLeaves(benchmark::State& state)
     }
 }
 
-BENCHMARK(TraverseAllLeaves)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
+BENCHMARK(TraverseAllLeavesDepth4)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
 
-static void FindBestMove(benchmark::State& state)
+static void FindBestMoveDepth6(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
     constexpr int depth{6};
@@ -52,6 +52,6 @@ static void FindBestMove(benchmark::State& state)
     }
 }
 
-BENCHMARK(FindBestMove)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
+BENCHMARK(FindBestMoveDepth6)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
 
 BENCHMARK_MAIN();

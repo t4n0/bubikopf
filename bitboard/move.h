@@ -38,21 +38,52 @@ constexpr int kMoveShiftType = 27;
 constexpr std::size_t kNoCapture = 0;    // for clarity in tests
 constexpr std::size_t kNoPromotion = 0;  // for clarity in tests
 
-Bitmove ComposeMove(const Bitmove source,
-                    const Bitmove target,
-                    const Bitmove moved_piece,
-                    const Bitmove captured_piece,
-                    const Bitmove promotion,
-                    const Bitmove move_type);
+inline Bitmove ComposeMove(const Bitmove source,
+                           const Bitmove target,
+                           const Bitmove moved_piece,
+                           const Bitmove captured_piece,
+                           const Bitmove promotion,
+                           const Bitmove move_type)
+{
+    return source |                                       //
+           (target << kMoveShiftTarget) |                 //
+           (moved_piece << kMoveShiftMovedPiece) |        //
+           (captured_piece << kMoveShiftCapturedPiece) |  //
+           (promotion << kMoveShiftPromotion) |           //
+           move_type;
+}
+
+inline Bitmove ExtractSource(const Bitmove move)
+{
+    return move & kMoveMaskSource;
+}
+
+inline Bitmove ExtractTarget(const Bitmove move)
+{
+    return (move & kMoveMaskTarget) >> kMoveShiftTarget;
+}
+
+inline Bitmove ExtractMovedPiece(const Bitmove move)
+{
+    return (move & kMoveMaskMovedPiece) >> kMoveShiftMovedPiece;
+}
+
+inline Bitmove ExtractCapturedPiece(const Bitmove move)
+{
+    return (move & kMoveMaskCapturedPiece) >> kMoveShiftCapturedPiece;
+}
+
+inline Bitmove ExtractPromotion(const Bitmove move)
+{
+    return (move & kMoveMaskPromotion) >> kMoveShiftPromotion;
+}
+
+inline Bitmove ExtractType(const Bitmove move)
+{
+    return (move & kMoveMaskType) >> kMoveShiftType;
+}
 
 std::string ToString(const Bitmove move);
-
-Bitmove ExtractSource(const Bitmove move);
-Bitmove ExtractTarget(const Bitmove move);
-Bitmove ExtractMovedPiece(const Bitmove move);
-Bitmove ExtractCapturedPiece(const Bitmove move);
-Bitmove ExtractPromotion(const Bitmove move);
-Bitmove ExtractType(const Bitmove move);
 
 }  // namespace Chess
 
