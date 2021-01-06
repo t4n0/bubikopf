@@ -22,7 +22,7 @@ cc_library(
         ":logger",
         "//bitboard",
         "//evaluate",
-        "//search",
+        "//search:find_best_move",
     ],
 )
 

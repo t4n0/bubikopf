@@ -1,19 +1,11 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
-
-cc_library(
-    name = "mock",
-    hdrs = ["move_generation_mock.h"],
-    visibility = ["//search/benchmark:__pkg__"],
-)
+load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "smoke",
-    srcs = ["smoke_tests.cpp"],
+    srcs = ["smoke_test.cpp"],
     deps = [
         "//bitboard",
-        "//evaluate/test:mock",
-        "//search",
-        "//search/test:mock",
+        "//search:traverse_all_leaves",
         "@googletest//:gtest_main",
     ],
 )
@@ -23,11 +15,13 @@ cc_test(
     srcs = [
         "find_best_move_test.cpp",
         "material_difference_comparison_unit_test.cpp",
+        "traverse_all_leaves_unit_test.cpp",
     ],
     deps = [
         "//evaluate",
         "//hardware",
-        "//search",
+        "//search:find_best_move",
+        "//search:traverse_all_leaves",
         "@googletest//:gtest_main",
     ],
 )

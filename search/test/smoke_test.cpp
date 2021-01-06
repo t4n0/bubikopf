@@ -1,6 +1,5 @@
 #include "bitboard/fen_conversion.h"
 #include "bitboard/generate_moves.h"
-#include "search/test/move_generation_mock.h"
 #include "search/traverse_all_leaves.h"
 
 #include <gtest/gtest.h>
@@ -13,25 +12,6 @@ namespace Chess
 
 namespace
 {
-
-TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveStack)
-{
-    // Setup
-    Position position{};
-    MoveStack move_stack{};
-    Statistic stats{};
-    constexpr int depth{3};
-
-    // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(position, depth, move_stack.begin(), stats);
-
-    // Expect
-    const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand
-    for (std::size_t idx{0}; idx < expected_debugging_ids.size(); idx++)
-    {
-        EXPECT_EQ(expected_debugging_ids.at(idx), move_stack.at(idx));
-    }
-}
 
 using TraverseAllLeavesTestParameter = std::tuple<int, std::string, long long>;
 
@@ -86,18 +66,6 @@ INSTANTIATE_TEST_SUITE_P(
     FromPositionDepth4,
     TraverseAllLeavesTestFixture,
     testing::Values(pos1_ply4, pos2_ply4, pos3_ply4, pos4_ply4, pos5_ply4, pos6_ply4, pos7_ply4, pos8_ply4));
-
-// const TraverseAllLeavesTestParameter pos1_ply6{6, kStandardStartingPosition, 119060324};
-// const TraverseAllLeavesTestParameter pos2_ply6{6, pos2_fen, 8031647685};
-// const TraverseAllLeavesTestParameter pos3_ply6{6, pos3_fen, 11030083};
-// const TraverseAllLeavesTestParameter pos4_ply6{6, pos4_fen, 706045033};
-// const TraverseAllLeavesTestParameter pos5_ply5{5, pos5_fen, 89941194};  // numbers for depth 6 not available
-// const TraverseAllLeavesTestParameter pos6_ply6{6, pos6_fen, 6923051137};
-
-// Disabled by default. Takes >3h.
-// INSTANTIATE_TEST_SUITE_P(FromPositionDepth6,
-//                          TraverseAllLeavesTestFixture,
-//                          testing::Values(pos1_ply6, pos2_ply6, pos3_ply6, pos4_ply6, pos5_ply5, pos6_ply6));
 
 }  // namespace
 }  // namespace Chess

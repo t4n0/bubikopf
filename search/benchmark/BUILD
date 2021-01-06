@@ -5,7 +5,7 @@ cc_binary(
     srcs = ["perft.cpp"],
     deps = [
         "//bitboard",
-        "//search",
+        "//search:traverse_all_leaves",
     ],
 )
 
@@ -15,8 +15,8 @@ cc_binary(
     deps = [
         "//bitboard",
         "//evaluate",
-        "//search",
-        "//search/test:mock",
+        "//search:find_best_move",
+        "//search:traverse_all_leaves",
         "@googlebenchmark//:benchmark",
     ],
 )
