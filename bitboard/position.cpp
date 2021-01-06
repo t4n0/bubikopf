@@ -60,7 +60,10 @@ Bitboard Position::MakeMove(Bitmove move)
     const Bitboard target = Bitboard{1} << ExtractTarget(move);
     const Bitboard source_and_target = source | target;
 
-    boards_[kExtrasBoard] &= ~(kBoardMaskEnPassant | kKingsideCastlingOnLastMove | kQueensideCastlingOnLastMove);
+    constexpr Bitboard obsolete_extras_from_last_move{kBoardMaskEnPassant | kKingsideCastlingOnLastMove |
+                                                      kQueensideCastlingOnLastMove};
+    boards_[kExtrasBoard] &= ~obsolete_extras_from_last_move;
+    boards_[kExtrasBoard] += kIncrementTotalPlies;
 
     boards_[attacking_side_] ^= source_and_target;
     boards_[attacking_piece_index] ^= source_and_target;
@@ -162,8 +165,6 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[kExtrasBoard] &= ~kCastlingBlackKingside;
         }
     }
-
-    boards_[kExtrasBoard] += kIncrementTotalPlies;
 
     white_to_move_ = !white_to_move_;
     attacking_side_ ^= kToggleSide;
