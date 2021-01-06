@@ -6,4 +6,5 @@ build --copt="-Wall"
 build --copt="-Werror"
 build --per_file_copt=external/.*@-w
 build -c opt
+build --copt="-O3"
 
