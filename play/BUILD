@@ -1,16 +1,16 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
 cc_library(
-    name = "logger",
-    srcs = ["logger.cpp"],
-    hdrs = ["logger.h"],
+    name = "logging",
+    srcs = ["logging.cpp"],
+    hdrs = ["logging.h"],
 )
 
 cc_library(
     name = "uci_interactor",
     srcs = ["uci_interactor.cpp"],
     hdrs = ["uci_interactor.h"],
-    deps = [":logger"],
+    deps = [":logging"],
 )
 
 cc_library(
@@ -19,7 +19,7 @@ cc_library(
     hdrs = ["bubikopf.h"],
     visibility = ["//play:__subpackages__"],
     deps = [
-        ":logger",
+        ":logging",
         "//bitboard",
         "//evaluate",
         "//search:find_best_move",
@@ -32,6 +32,7 @@ cc_binary(
     linkopts = ["-pthread"],
     deps = [
         ":engine_api",
+        ":logging",
         ":uci_interactor",
     ],
 )

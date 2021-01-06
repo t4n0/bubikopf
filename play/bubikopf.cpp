@@ -4,6 +4,7 @@
 #include "bitboard/generate_moves.h"
 #include "bitboard/uci_conversion.h"
 #include "evaluate/evaluate.h"
+#include "play/logging.h"
 #include "search/find_best_move.h"
 
 #include <algorithm>
@@ -19,13 +20,13 @@ Bubikopf::Bubikopf()
 void Bubikopf::SetUpBoardAccordingToFen(const std::string& fen)
 {
     position_ = PositionFromFen(fen);
-    logger.Log("Set up fen: " + fen);
+    ToCerrWithTime("Set up fen: " + fen);
 }
 
 void Bubikopf::SetUpBoardInStandardStartingPosition()
 {
     position_ = PositionFromFen(kStandardStartingPosition);
-    logger.Log("Set up standard position.");
+    ToCerrWithTime("Set up standard position.");
 }
 
 void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
@@ -35,7 +36,7 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
     {
         const std::string message = "Move list from gui is behind engine. Gui: " + std::to_string(move_list.size()) +
                                     ", Engine: " + std::to_string(played_plies_internal);
-        logger.Log(message);
+        ToCerrWithTime(message);
         throw std::runtime_error{message};
     }
 
@@ -52,23 +53,23 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
         if (move_to_play == possible_moves_end)
         {
             constexpr auto message = "Move played by gui not possible from internal representation.";
-            logger.Log(message);
+            ToCerrWithTime(message);
             throw std::runtime_error{message};
         }
 
-        logger.Log("Playing " + ToUciString(*move_to_play));
+        ToCerrWithTime("Playing " + ToUciString(*move_to_play));
         std::ignore = position_.MakeMove(*move_to_play);
     }
 }
 
 std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
 {
-    logger.Log("Starting search for best move.");
+    ToCerrWithTime("Starting search for best move.");
     constexpr int depth = 6;
     const auto [best_move, evaluation] = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial>(
         position_, depth, begin(move_stack_), GetCurrentNegamaxSign());
     const auto uci_move = ToUciString(best_move);
-    logger.Log("Best move is: " + uci_move);
+    ToCerrWithTime("Best move is: " + uci_move);
     return {uci_move, evaluation * GetCurrentNegamaxSign()};
 }
 

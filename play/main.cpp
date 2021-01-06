@@ -1,4 +1,5 @@
 #include "play/bubikopf.h"
+#include "play/logging.h"
 #include "play/uci_interactor.h"
 
 #include <thread>
@@ -9,6 +10,7 @@ int main()
     {
         Chess::Bubikopf engine_api{};
         Chess::UciInteractor uci_interactor{};
+
         std::thread uci_interaction{&Chess::UciInteractor::ParseIncomingCommandsContinously, std::ref(uci_interactor)};
 
         while (!uci_interactor.quit_game_.load())
@@ -33,7 +35,7 @@ int main()
     catch (const std::exception& e)
     {
         const auto error_message = std::string{"Exception caught in main: "} + e.what();
-        // TODO: Log error
+        Chess::ToCerrWithTime(error_message);
     }
 
     return 0;

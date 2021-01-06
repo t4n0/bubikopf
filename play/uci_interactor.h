@@ -1,8 +1,6 @@
 #ifndef PLAY_UCI_INTERACTOR_H
 #define PLAY_UCI_INTERACTOR_H
 
-#include "play/logger.h"
-
 #include <atomic>
 #include <mutex>
 #include <string>
@@ -24,11 +22,12 @@ class UciInteractor
 
   private:
     void SetMoveList(std::vector<std::string>&& move_list);
-    void WriteThreadSafeToCout(const std::string& command);
+
+    /// @brief Writes thread-safe to cout.
+    void ToCout(const std::string& command);
 
     std::vector<std::string> move_list_{};
     std::mutex move_list_mutex_{};
-    Logger logger{"log_uci_interactor.txt"};
 };
 
 }  // namespace Chess
