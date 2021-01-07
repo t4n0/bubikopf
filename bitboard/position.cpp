@@ -266,19 +266,14 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
             Bitboard attacker_location = SingleStep(square, direction);
             while (attacker_location)  // is on the board
             {
-                const bool location_is_occupied_by_friendly_piece = attacker_location & boards_[defending_side];
-                if (location_is_occupied_by_friendly_piece)
+                const bool attacker_location_is_occupied =
+                    attacker_location & (boards_[kBlackBoard] | boards_[kWhiteBoard]);
+                if (attacker_location_is_occupied)
                 {
-                    break;  // this direction is safe
-                }
-
-                const bool location_is_occupied_by_enemy_piece = attacker_location & boards_[attacking_side];
-                if (location_is_occupied_by_enemy_piece)
-                {
-                    const std::size_t piece_kind = GetPieceKind(attacking_side, attacker_location);
-                    const bool piece_can_attack_from_this_angle =
-                        (piece_kind == kQueen) || (piece_kind == dangerous_piece_besides_queen);
-                    if (piece_can_attack_from_this_angle)
+                    const bool dangerous_piece_on_attacker_location =
+                        attacker_location &
+                        (boards_[attacking_side + kQueen] | boards_[attacking_side + dangerous_piece_besides_queen]);
+                    if (dangerous_piece_on_attacker_location)
                     {
                         return true;
                     }
@@ -287,7 +282,6 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
                         break;  // this direction is safe
                     }
                 }
-
                 attacker_location = SingleStep(attacker_location, direction);  // next iteration
             }
 
