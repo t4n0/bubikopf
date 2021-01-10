@@ -28,7 +28,7 @@ class Position
     ///
     /// A search is started from the king's position and only relevant squares are checked for attackers.
     /// (Rather then calculating a complete attack board).
-    bool KingIsInCheck(const std::size_t side) const;
+    bool IsKingInCheck(const std::size_t side) const;
 
     std::size_t GetTotalPlies() const;
 

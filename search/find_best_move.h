@@ -116,7 +116,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
          move_iterator++)
     {
         const Bitboard saved_extras = position.MakeMove(*move_iterator);
-        if (!position.KingIsInCheck(position.defending_side_))
+        if (!position.IsKingInCheck(position.defending_side_))
         {
             PrintMove<DebugBehavior>(*move_iterator);
             is_terminal_node = false;
@@ -143,7 +143,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
     {
         constexpr Evaluation draw = Evaluation{0};
         const Evaluation opponent_win = position.white_to_move_ ? Evaluation{-1000} : Evaluation{1000};
-        const Evaluation game_result = position.KingIsInCheck(position.attacking_side_) ? opponent_win : draw;
+        const Evaluation game_result = position.IsKingInCheck(position.attacking_side_) ? opponent_win : draw;
         PrintEvaluation<DebugBehavior>(game_result);
         PrintNodeExit<DebugBehavior>(depth);
         return {kBitNullMove, game_result * negamax_sign};

@@ -256,7 +256,7 @@ bool operator==(const Position& a, const Position& b)
     return boards_are_equal && playing_side_is_equal;
 }
 
-bool Position::KingIsInCheck(const std::size_t defending_side) const
+bool Position::IsKingInCheck(const std::size_t defending_side) const
 {
     const std::size_t attacking_side = defending_side ^ kToggleSide;
 

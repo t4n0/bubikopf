@@ -41,7 +41,7 @@ void TraverseAllLeaves(Position& position,
          move_iterator++)
     {
         const Bitboard saved_extras = position.MakeMove(*move_iterator);
-        if (!position.KingIsInCheck(position.defending_side_))
+        if (!position.IsKingInCheck(position.defending_side_))
         {
             TraverseAllLeaves<GenerateBehavior>(position, depth - 1, end_iterator_after_move_generation, stats);
         }
