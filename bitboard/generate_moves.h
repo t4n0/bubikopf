@@ -3,6 +3,7 @@
 
 #include "bitboard/lookup_table/knight.h"
 #include "bitboard/lookup_table/pawn.h"
+#include "bitboard/lookup_table/piece.h"
 #include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "bitboard/shift.h"

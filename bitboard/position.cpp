@@ -1,9 +1,7 @@
 #include "bitboard/position.h"
 
-#include "bitboard/lookup_table/bishop.h"
-#include "bitboard/lookup_table/king.h"
 #include "bitboard/lookup_table/knight.h"
-#include "bitboard/lookup_table/rook.h"
+#include "bitboard/lookup_table/piece.h"
 #include "bitboard/pieces.h"
 #include "bitboard/shift.h"
 #include "bitboard/squares.h"
