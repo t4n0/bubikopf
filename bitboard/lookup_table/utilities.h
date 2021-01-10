@@ -36,6 +36,15 @@ constexpr std::array<value_type, size_a + size_b> ConcatenateArrays(std::array<v
     return concatenated_array;
 }
 
+template <typename value_type, std::size_t size_a, std::size_t size_b, std::size_t size_c, std::size_t size_d>
+constexpr std::array<value_type, size_a + size_b + size_c + size_d> ConcatenateArrays(std::array<value_type, size_a> a,
+                                                                                      std::array<value_type, size_b> b,
+                                                                                      std::array<value_type, size_c> c,
+                                                                                      std::array<value_type, size_d> d)
+{
+    return ConcatenateArrays(ConcatenateArrays(a, b), ConcatenateArrays(c, d));
+}
+
 }  // namespace Chess
 
 #endif
