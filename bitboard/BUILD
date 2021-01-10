@@ -12,7 +12,6 @@ cc_library(
         "pieces.h",
         "position.cpp",
         "position.h",
-        "shift.cpp",
         "shift.h",
         "squares.h",
         "uci_conversion.cpp",

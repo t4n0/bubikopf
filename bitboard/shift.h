@@ -2,9 +2,11 @@
 #define BITBOARD_SHIFT_H
 
 #include "bitboard/basic_type_declarations.h"
-#include "bitboard/lookup_table/pawn.h"
+#include "bitboard/lookup_table/knight.h"
+#include "bitboard/lookup_table/ray.h"
 
 #include <array>
+#include <cmath>
 
 namespace Chess
 {
@@ -16,11 +18,21 @@ constexpr std::array<std::size_t, 4> rook_directions{kWest, kNorth, kEast, kSout
 
 /// @brief Shifts the given bitboard in the given direction and NULLs the board if "wrap around" occurs.
 /// @pre Assumes that only a single bit is set
-Bitboard SingleStep(const Bitboard value, const std::size_t direction);
+inline Bitboard SingleStep(const Bitboard value, const std::size_t direction)
+{
+    const int shift = kStepBits[direction];
+    const Bitboard shifted_with_wrap = shift > 0 ? value << shift : value >> std::abs(shift);
+    return shifted_with_wrap & kLegalAreasWithoutWrapping[direction];
+}
 
 /// @brief Shifts the given bitboard in the given direction and NULLs the board if "wrap around" occurs.
 /// @pre Assumes that only a single bit is set
-Bitboard RuntimeKnightJump(const Bitboard value, const std::size_t direction);
+inline Bitboard RuntimeKnightJump(const Bitboard value, const std::size_t direction)
+{
+    const int shift = kJumpBits[direction];
+    const Bitboard shifted_with_wrap = shift > 0 ? value << shift : value >> std::abs(shift);
+    return shifted_with_wrap & kLegalLandingAreasWithoutWrapping[direction];
+}
 
 }  // namespace Chess
 
