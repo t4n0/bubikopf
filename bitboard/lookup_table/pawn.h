@@ -61,21 +61,8 @@ struct WhitePawnAttacks
     constexpr static Bitboard value = RayOneSquare<target, kSouthWest>::value | RayOneSquare<target, kSouthEast>::value;
 };
 
-template <template <Bitboard> typename PawnAttacks, std::size_t index = 0>
-constexpr std::array<Bitboard, 64> CalculatePawnAttackLookUpTable()
-{
-    std::array<Bitboard, 64> lookup_table{};
-    if constexpr (index < 63)  // terminate recursion at index 63
-    {
-        lookup_table = CalculatePawnAttackLookUpTable<PawnAttacks, index + 1>();
-    }
-    std::get<index>(lookup_table) = PawnAttacks<std::get<index>(kAllSquares)>::value;
-    return lookup_table;
-}
-
 constexpr std::array<Bitboard, 128> kPawnAttacks =
-    ConcatenateArrays(CalculatePawnAttackLookUpTable<BlackPawnAttacks>(),
-                      CalculatePawnAttackLookUpTable<WhitePawnAttacks>());
+    ConcatenateArrays(LoopOverAllSquares<BlackPawnAttacks>(), LoopOverAllSquares<WhitePawnAttacks>());
 constexpr std::size_t kPawnAttacksLookupTableOffsetForWhite = 64;
 
 }  // namespace Chess
