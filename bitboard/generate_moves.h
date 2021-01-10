@@ -75,12 +75,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
 
     // pawn moves
     const auto generate_pawn_move = [&](const Bitmove source_bit, const Bitboard source) {
-        const Bitmove pawn_capture_lookup_index_first_option =
-            source_bit + kPawnCaptureLookupTableOffsetForBlack * !white_to_move;
-        const std::array<Bitboard, 2> pawn_capture_targets{
-            kPawnCaptureLookupTable[pawn_capture_lookup_index_first_option],
-            kPawnCaptureLookupTable[pawn_capture_lookup_index_first_option +
-                                    kPawnCaptureLookupTableOffsetForSecondOption]};
+        const std::array<Bitboard, 2>& pawn_capture_targets =
+            kPawnCaptureLookupTable[source_bit + kPawnCapturesLookupTableOffsetForBlack * !white_to_move];
         const std::array<Bitboard, 2> pawn_capture_target_bits{tzcnt(std::get<0>(pawn_capture_targets)),
                                                                tzcnt(std::get<1>(pawn_capture_targets))};
         const Bitboard target_single_push = white_to_move ? source << 8 : source >> 8;

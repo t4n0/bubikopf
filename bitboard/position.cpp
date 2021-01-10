@@ -328,7 +328,8 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
 
         // pawn checks
         const bool pawn_is_giving_check =
-            kPawnAttacks[square_bit + (white_to_move_ * kPawnAttacksOffsetForWhite)] & boards_[attacking_side + kPawn];
+            kPawnAttacks[square_bit + (white_to_move_ * kPawnAttacksLookupTableOffsetForWhite)] &
+            boards_[attacking_side + kPawn];
         if (pawn_is_giving_check)
         {
             return true;

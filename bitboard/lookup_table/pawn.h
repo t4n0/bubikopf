@@ -8,14 +8,6 @@
 namespace Chess
 {
 
-/// @brief Given source the value of this type represents the target a black pawn could capture towards the queenside.
-template <Bitboard source>
-using BlackPawnCaptureQueenside = RayOneSquare<source, kSouthWest>;
-
-/// @brief Given source the value of this type represents the target a black pawn could capture towards the kingside.
-template <Bitboard source>
-using BlackPawnCaptureKingside = RayOneSquare<source, kSouthEast>;
-
 /// @brief Given source the value of this type represents the target a white pawn could capture towards the queenside.
 template <Bitboard source>
 using WhitePawnCaptureQueenside = RayOneSquare<source, kNorthWest>;
@@ -24,24 +16,34 @@ using WhitePawnCaptureQueenside = RayOneSquare<source, kNorthWest>;
 template <Bitboard source>
 using WhitePawnCaptureKingside = RayOneSquare<source, kNorthEast>;
 
-template <template <Bitboard> typename PawnCapture, std::size_t index = 0>
-constexpr std::array<Bitboard, 64> CalculatePawnCaptureLookUpTable()
+/// @brief Given source the value of this type represents the target a black pawn could capture towards the queenside.
+template <Bitboard source>
+using BlackPawnCaptureQueenside = RayOneSquare<source, kSouthWest>;
+
+/// @brief Given source the value of this type represents the target a black pawn could capture towards the kingside.
+template <Bitboard source>
+using BlackPawnCaptureKingside = RayOneSquare<source, kSouthEast>;
+
+template <template <Bitboard> typename QueensideCapture,
+          template <Bitboard>
+          typename KingsideCapture,
+          std::size_t index = 0>
+constexpr std::array<std::array<Bitboard, 2>, 64> CalculatePawnCaptureLookUpTable()
 {
-    std::array<Bitboard, 64> lookup_table{};
+    std::array<std::array<Bitboard, 2>, 64> lookup_table{};
     if constexpr (index < 63)  // terminate recursion at index 63
     {
-        lookup_table = CalculatePawnCaptureLookUpTable<PawnCapture, index + 1>();
+        lookup_table = CalculatePawnCaptureLookUpTable<QueensideCapture, KingsideCapture, index + 1>();
     }
-    std::get<index>(lookup_table) = PawnCapture<std::get<index>(kAllSquares)>::value;
+    std::get<index>(lookup_table) = {QueensideCapture<std::get<index>(kAllSquares)>::value,
+                                     KingsideCapture<std::get<index>(kAllSquares)>::value};
     return lookup_table;
 }
 
-constexpr auto kPawnCaptureLookupTable = ConcatenateArrays(CalculatePawnCaptureLookUpTable<WhitePawnCaptureQueenside>(),
-                                                           CalculatePawnCaptureLookUpTable<WhitePawnCaptureKingside>(),
-                                                           CalculatePawnCaptureLookUpTable<BlackPawnCaptureQueenside>(),
-                                                           CalculatePawnCaptureLookUpTable<BlackPawnCaptureKingside>());
-constexpr std::size_t kPawnCaptureLookupTableOffsetForSecondOption = 64;
-constexpr std::size_t kPawnCaptureLookupTableOffsetForBlack = 128;
+constexpr auto kPawnCaptureLookupTable =
+    ConcatenateArrays(CalculatePawnCaptureLookUpTable<WhitePawnCaptureQueenside, WhitePawnCaptureKingside>(),
+                      CalculatePawnCaptureLookUpTable<BlackPawnCaptureQueenside, BlackPawnCaptureKingside>());
+constexpr std::size_t kPawnCapturesLookupTableOffsetForBlack = 64;
 
 /// @brief Given an target bitboard the value of this struct represents a bitboard with the squares set that a black
 /// pawn could attack from.
@@ -74,7 +76,7 @@ constexpr std::array<Bitboard, 64> CalculatePawnAttackLookUpTable()
 constexpr std::array<Bitboard, 128> kPawnAttacks =
     ConcatenateArrays(CalculatePawnAttackLookUpTable<BlackPawnAttacks>(),
                       CalculatePawnAttackLookUpTable<WhitePawnAttacks>());
-constexpr std::size_t kPawnAttacksOffsetForWhite = 64;
+constexpr std::size_t kPawnAttacksLookupTableOffsetForWhite = 64;
 
 }  // namespace Chess
 
