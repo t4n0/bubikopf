@@ -45,7 +45,7 @@ constexpr auto kPawnCaptureLookupTable =
                       CalculatePawnCaptureLookUpTable<BlackPawnCaptureQueenside, BlackPawnCaptureKingside>());
 constexpr std::size_t kPawnCapturesLookupTableOffsetForBlack = 64;
 
-/// @brief Given an target bitboard the value of this struct represents a bitboard with the squares set that a black
+/// @brief Given a target bitboard the value of this struct represents a bitboard with the squares set that a black
 /// pawn could attack from.
 template <Bitboard target>
 struct BlackPawnAttacks
@@ -53,7 +53,7 @@ struct BlackPawnAttacks
     constexpr static Bitboard value = RayOneSquare<target, kNorthWest>::value | RayOneSquare<target, kNorthEast>::value;
 };
 
-/// @brief Given an target bitboard the value of this struct represents a bitboard with the squares set that a white
+/// @brief Given a target bitboard the value of this struct represents a bitboard with the squares set that a white
 /// pawn could attack from.
 template <Bitboard target>
 struct WhitePawnAttacks

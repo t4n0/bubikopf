@@ -290,9 +290,9 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         const int square_bit = tzcnt(square);
 
         // ray style checks horizontal and vertical
-        const bool rook_or_queen_aligend_on_rank_or_file =
+        const bool rook_or_queen_aligned_on_rank_or_file =
             kRookAttacks[square_bit] & (boards_[attacking_side + kRook] | boards_[attacking_side + kQueen]);
-        if (rook_or_queen_aligend_on_rank_or_file)
+        if (rook_or_queen_aligned_on_rank_or_file)
         {
             for (const auto direction : {kWest, kSouth, kEast, kNorth})
             {
@@ -304,9 +304,9 @@ bool Position::KingIsInCheck(const std::size_t defending_side) const
         }
 
         // ray style checks diagonally
-        const bool bishop_or_queen_aligend_diagonally =
+        const bool bishop_or_queen_aligned_diagonally =
             kBishopAttacks[square_bit] & (boards_[attacking_side + kBishop] | boards_[attacking_side + kQueen]);
-        if (bishop_or_queen_aligend_diagonally)
+        if (bishop_or_queen_aligned_diagonally)
         {
             for (const auto direction : {kNorthEast, kNorthWest, kSouthEast, kSouthWest})
             {
