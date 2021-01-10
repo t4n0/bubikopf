@@ -271,7 +271,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         kMoveTypeKingsideCastling, kMoveTypeQueensideCastling, kMoveTypeKingsideCastling, kMoveTypeQueensideCastling};
 
     const std ::size_t offset_for_white = 2 * white_to_move;
-    for (std::size_t side = 0; side < 2; side++)  // side as in queen- or kingside, not white or black
+    for (const std::size_t side : {0, 1})  // side as in queen- or kingside, not white or black
     {
         const std::size_t castling = side + offset_for_white;
         const bool castling_to_side_is_allowed = position[kExtrasBoard] & castling_rights[castling];
