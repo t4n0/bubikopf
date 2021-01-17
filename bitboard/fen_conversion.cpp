@@ -166,7 +166,7 @@ Position PositionFromFen(const std::string& fen)
     }
 
     const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
-    position[kExtrasBoard] |= static_plies;
+    position[kExtrasBoard] |= static_plies << kBoardShiftStaticPlies;
 
     const Bitboard full_moves_count = std::stoi(tokens.at(kFenTokenMoves));
     const Bitboard additional_ply_if_black_has_not_played_yet = tokens.at(kFenTokenSide) == "b";
@@ -253,7 +253,7 @@ std::string FenFromPosition(const Position& position)
     const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant;
     const auto en_passant = en_passant_square_bits ? kSquareLabels.at(en_passant_square_bits) : "-";
 
-    const auto static_plies = std::to_string(position[kExtrasBoard] & kBoardMaskStaticPlies);
+    const auto static_plies = std::to_string(position.GetStaticPlies());
 
     const auto full_moves = std::to_string(1 + (position.GetTotalPlies() / 2));
 

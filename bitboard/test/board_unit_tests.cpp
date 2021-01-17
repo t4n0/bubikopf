@@ -46,15 +46,22 @@ INSTANTIATE_TEST_SUITE_P(AllCombinations,
                          testing::Combine(testing::ValuesIn(kAllBoardMasks), testing::ValuesIn(kAllBoardMasks)));
 
 constexpr Bitboard kAllBitsSet = std::numeric_limits<Bitboard>::max();
+constexpr Bitboard k6BitsSet = 0b00111111;
+constexpr Bitboard k16BitsSet = 0b11111111'11111111;
+
+TEST(BoardShiftStaticPliesTest, GivenOnAllOnes_Expect6BitsSet)
+{
+    EXPECT_EQ((kAllBitsSet & kBoardMaskStaticPlies) >> kBoardShiftStaticPlies, k6BitsSet);
+}
 
 TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
 {
-    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kBoardShiftEnPassant, 0b00111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kBoardShiftEnPassant, k6BitsSet);
 }
 
 TEST(BoardShiftTotalPliesTest, GivenOnAllOnes_Expect16BitsSet)
 {
-    EXPECT_EQ((kAllBitsSet & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies, 0b11111111'11111111);
+    EXPECT_EQ((kAllBitsSet & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies, k16BitsSet);
 }
 
 }  // namespace

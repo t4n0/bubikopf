@@ -13,6 +13,11 @@
 namespace Chess
 {
 
+std::size_t Position::GetStaticPlies() const
+{
+    return (boards_[kExtrasBoard] & kBoardMaskStaticPlies) >> kBoardShiftStaticPlies;
+}
+
 std::size_t Position::GetTotalPlies() const
 {
     return (boards_[kExtrasBoard] & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies;
@@ -71,7 +76,7 @@ Bitboard Position::MakeMove(Bitmove move)
     switch (move_type)
     {
         case kMoveTypeQuietNonPawn: {
-            boards_[kExtrasBoard]++;
+            boards_[kExtrasBoard] += kIncrementStaticPlies;
             break;
         }
         case kMoveTypeCapture: {
@@ -108,7 +113,7 @@ Bitboard Position::MakeMove(Bitmove move)
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
-            boards_[kExtrasBoard]++;
+            boards_[kExtrasBoard] += kIncrementStaticPlies;
             boards_[kExtrasBoard] |= kKingsideCastlingOnLastMove;
             break;
         }
@@ -118,7 +123,7 @@ Bitboard Position::MakeMove(Bitmove move)
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
-            boards_[kExtrasBoard]++;
+            boards_[kExtrasBoard] += kIncrementStaticPlies;
             boards_[kExtrasBoard] |= kQueensideCastlingOnLastMove;
             break;
         }
