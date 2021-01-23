@@ -103,7 +103,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
                     // promotion (with capture)
                     PushBackAllPromotions(move_generation_insertion_iterator,
                                           source_bit,
-                                          tzcnt(pawn_capture_targets[index]),
+                                          pawn_capture_target_bits[index],
                                           captured_piece);
                 }
             }
