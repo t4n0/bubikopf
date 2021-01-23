@@ -2,6 +2,7 @@
 
 #include "bitboard/board.h"
 #include "bitboard/squares.h"
+#include "hardware/trailing_zeros_count.h"
 
 #include <algorithm>
 #include <iostream>
@@ -162,7 +163,7 @@ Position PositionFromFen(const std::string& fen)
         }
 
         const Bitboard en_passant_bits = std::distance(kSquareLabels.begin(), location_it);
-        position[kExtrasBoard] |= en_passant_bits << kBoardShiftEnPassant;
+        position[kExtrasBoard] |= Bitboard{1} << en_passant_bits;
     }
 
     const Bitboard static_plies = std::stoi(tokens.at(kFenTokenStaticPlies));
@@ -250,8 +251,9 @@ std::string FenFromPosition(const Position& position)
         castling += "-";
     }
 
-    const auto en_passant_square_bits = (position[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant;
-    const auto en_passant = en_passant_square_bits ? kSquareLabels.at(en_passant_square_bits) : "-";
+    const auto en_passant_square_bits = tzcnt(position[kExtrasBoard] & kBoardMaskEnPassant);
+    const auto en_passant_is_actually_set = en_passant_square_bits != 64;  // 64 is tzcnt if no bit is set
+    const auto en_passant = en_passant_is_actually_set ? kSquareLabels.at(en_passant_square_bits) : "-";
 
     const auto static_plies = std::to_string(position.GetStaticPlies());
 

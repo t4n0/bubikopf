@@ -56,11 +56,6 @@ TEST(BoardShiftStaticPliesTest, GivenOnAllOnes_Expect6BitsSet)
     EXPECT_EQ((kAllBitsSet & kBoardMaskStaticPlies) >> kBoardShiftStaticPlies, k6BitsSet);
 }
 
-TEST(BoardShiftEnPassantTest, GivenOnAllOnes_Expect6BitsSet)
-{
-    EXPECT_EQ((kAllBitsSet & kBoardMaskEnPassant) >> kBoardShiftEnPassant, k6BitsSet);
-}
-
 TEST(BoardShiftTotalPliesTest, GivenOnAllOnes_Expect16BitsSet)
 {
     EXPECT_EQ((kAllBitsSet & kBoardMaskTotalPlies) >> kBoardShiftTotalPlies, k16BitsSet);

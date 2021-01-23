@@ -18,9 +18,9 @@ constexpr std::size_t kToggleSide = kWhiteBoard - kBlackBoard;
 
 // clang-format off
 constexpr Bitboard kBoardMaskStaticPlies =                 0b00000000'00000000'00000000'00000000'00000000'00000000'00111111'00000000;
-constexpr Bitboard kBoardMaskEnPassant =                   0b00000000'00000000'00000000'00000000'00000000'00111111'00000000'00000000;
+constexpr Bitboard kBoardMaskEnPassant =                   0b00000000'00000000'11111111'00000000'00000000'11111111'00000000'00000000;
 constexpr Bitboard kBoardMaskTotalPlies =                  0b00000000'00000000'00000000'11111111'11111111'00000000'00000000'00000000;
-constexpr Bitboard kBoardMaskUnused =                      0b01110110'11111111'11111111'00000000'00000000'11000000'00000000'01110110;
+constexpr Bitboard kBoardMaskUnused =                      0b01110110'11111111'00000000'00000000'00000000'00000000'00000000'01110110;
 
 constexpr Bitboard kIncrementStaticPlies =                 0b00000000'00000000'00000000'00000000'00000000'00000000'00000001'00000000;
 constexpr Bitboard kIncrementTotalPlies =                  0b00000000'00000000'00000000'00000000'00000001'00000000'00000000'00000000;
@@ -39,7 +39,6 @@ constexpr Bitboard kCastlingBlackQueenside = A8 | E8;
 constexpr Bitboard kCastlingStillPossible = E1 | E8;
 
 constexpr int kBoardShiftStaticPlies = 8;
-constexpr int kBoardShiftEnPassant = 16;
 constexpr int kBoardShiftTotalPlies = 24;
 
 }  // namespace Chess

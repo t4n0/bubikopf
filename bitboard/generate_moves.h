@@ -110,13 +110,12 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         }
 
         // en passant
-        const Bitboard en_passant_mask = position[kExtrasBoard] & kBoardMaskEnPassant;
-        if (en_passant_mask)
+        const Bitboard en_passant_square = position[kExtrasBoard] & kBoardMaskEnPassant;
+        if (en_passant_square)
         {
-            const Bitboard en_passant_bit = en_passant_mask >> kBoardShiftEnPassant;
             for (const std::size_t index : {0, 1})
             {
-                if (en_passant_bit == pawn_capture_target_bits[index])
+                if (en_passant_square == pawn_capture_targets[index])
                 {
                     *move_generation_insertion_iterator++ = ComposeMove(source_bit,
                                                                         pawn_capture_target_bits[index],

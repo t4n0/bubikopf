@@ -91,17 +91,13 @@ Bitboard Position::MakeMove(Bitmove move)
             break;
         }
         case kMoveTypePawnDoublePush: {
-            const Bitmove source_bit = ExtractSource(move);
-            const Bitmove target_bit = ExtractTarget(move);
-            boards_[kExtrasBoard] |= ((source_bit + target_bit) >> 1)
-                                     << kBoardShiftEnPassant;  // (source_bit+target_bit)/2
+            const Bitboard en_passant_square = white_to_move_ ? source << 8 : source >> 8;
+            boards_[kExtrasBoard] |= en_passant_square;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
         case kMoveTypeEnPassantCapture: {
-            const Bitboard en_passant_square = Bitboard{1}
-                                               << ((current_extras & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
-            const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
+            const Bitboard en_passant_victim = white_to_move_ ? target >> 8 : target << 8;
             boards_[defending_side_] &= ~en_passant_victim;
             boards_[defending_side_ + kPawn] &= ~en_passant_victim;
             boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
@@ -185,9 +181,7 @@ void Position::UnmakeMove(Bitmove move, Bitboard saved_extras)
         }
 
         case kMoveTypeEnPassantCapture: {
-            const Bitboard en_passant_square =
-                Bitboard{1} << ((boards_[kExtrasBoard] & kBoardMaskEnPassant) >> kBoardShiftEnPassant);
-            const Bitboard en_passant_victim = white_to_move_ ? en_passant_square >> 8 : en_passant_square << 8;
+            const Bitboard en_passant_victim = white_to_move_ ? target >> 8 : target << 8;
             boards_[defending_side_] |= en_passant_victim;
             boards_[defending_side_ + kPawn] |= en_passant_victim;
             return;
