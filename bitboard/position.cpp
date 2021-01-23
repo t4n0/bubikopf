@@ -145,29 +145,10 @@ Bitboard Position::MakeMove(Bitmove move)
     }
 
     // revoke castling rights
-    const bool someone_can_still_castle = current_extras & kBoardMaskCastling;
+    const bool someone_can_still_castle = current_extras & kCastlingStillPossible;
     if (someone_can_still_castle)
     {
-        constexpr Bitboard white_queenside_castling_squares = A1 | E1;
-        if (source_and_target & white_queenside_castling_squares)
-        {
-            boards_[kExtrasBoard] &= ~kCastlingWhiteQueenside;
-        }
-        constexpr Bitboard white_kingside_castling_squares = E1 | H1;
-        if (source_and_target & white_kingside_castling_squares)
-        {
-            boards_[kExtrasBoard] &= ~kCastlingWhiteKingside;
-        }
-        constexpr Bitboard black_queenside_castling_squares = A8 | E8;
-        if (source_and_target & black_queenside_castling_squares)
-        {
-            boards_[kExtrasBoard] &= ~kCastlingBlackQueenside;
-        }
-        constexpr Bitboard black_kingside_castling_squares = E8 | H8;
-        if (source_and_target & black_kingside_castling_squares)
-        {
-            boards_[kExtrasBoard] &= ~kCastlingBlackKingside;
-        }
+        boards_[kExtrasBoard] &= ~(kBoardMaskCastling & source_and_target);
     }
 
     white_to_move_ = !white_to_move_;

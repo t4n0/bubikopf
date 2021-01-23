@@ -274,7 +274,8 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
     for (const std::size_t side : {0, 1})  // side as in queen- or kingside, not white or black
     {
         const std::size_t castling = side + offset_for_white;
-        const bool castling_to_side_is_allowed = position[kExtrasBoard] & castling_rights[castling];
+        const bool castling_to_side_is_allowed =
+            (position[kExtrasBoard] & castling_rights[castling]) == castling_rights[castling];
         const bool space_between_king_and_rook_is_free =
             (free_squares & neccessary_free_squares[castling]) == neccessary_free_squares[castling];
         const bool castling_possible = castling_to_side_is_allowed && space_between_king_and_rook_is_free;
