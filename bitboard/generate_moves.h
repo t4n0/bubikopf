@@ -44,7 +44,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
             Bitmove current_source_bit = tzcnt(remaining_population);
             while (current_source_bit < 64)
             {
-                const Bitboard current_source = 1ULL << current_source_bit;
+                const Bitboard current_source = Bitboard{1} << current_source_bit;
 
                 // execute body
                 loop_body(current_source_bit, current_source);
