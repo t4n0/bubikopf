@@ -65,8 +65,9 @@ Bitboard Position::MakeMove(Bitmove move)
     const Bitboard source_and_target = source | target;
 
     constexpr Bitboard obsolete_extras_from_last_move{kBoardMaskEnPassant | kBoardMaskKingsideCastlingOnLastMove |
-                                                      kBoardMaskQueensideCastlingOnLastMove};
-    boards_[kExtrasBoard] &= ~obsolete_extras_from_last_move;
+                                                      kBoardMaskQueensideCastlingOnLastMove | kBoardMaskStaticPlies};
+    const Bitboard castling_rights_to_revoke = kBoardMaskCastling & source_and_target;
+    boards_[kExtrasBoard] &= ~(obsolete_extras_from_last_move | castling_rights_to_revoke);
     boards_[kExtrasBoard] += kIncrementTotalPlies;
 
     boards_[attacking_side_] ^= source_and_target;
@@ -76,31 +77,24 @@ Bitboard Position::MakeMove(Bitmove move)
     switch (move_type)
     {
         case kMoveTypeQuietNonPawn: {
-            boards_[kExtrasBoard] += kIncrementStaticPlies;
+            boards_[kExtrasBoard] |= (current_extras & kBoardMaskStaticPlies) + kIncrementStaticPlies;
             break;
         }
         case kMoveTypeCapture: {
             const std::size_t captured_piece = defending_side_ + ExtractCapturedPiece(move);
             boards_[defending_side_] &= ~target;
             boards_[captured_piece] &= ~target;
-            boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
-            break;
-        }
-        case kMoveTypePawnSinglePush: {
-            boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
         case kMoveTypePawnDoublePush: {
             const Bitboard en_passant_square = white_to_move_ ? source << 8 : source >> 8;
             boards_[kExtrasBoard] |= en_passant_square;
-            boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
         case kMoveTypeEnPassantCapture: {
             const Bitboard en_passant_victim = white_to_move_ ? target >> 8 : target << 8;
             boards_[defending_side_] &= ~en_passant_victim;
             boards_[defending_side_ + kPawn] &= ~en_passant_victim;
-            boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             break;
         }
         case kMoveTypeKingsideCastling: {
@@ -109,8 +103,8 @@ Bitboard Position::MakeMove(Bitmove move)
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
-            boards_[kExtrasBoard] += kIncrementStaticPlies;
-            boards_[kExtrasBoard] |= kBoardMaskKingsideCastlingOnLastMove;
+            boards_[kExtrasBoard] |= kBoardMaskKingsideCastlingOnLastMove |
+                                     ((current_extras & kBoardMaskStaticPlies) + kIncrementStaticPlies);
             break;
         }
         case kMoveTypeQueensideCastling: {
@@ -119,8 +113,8 @@ Bitboard Position::MakeMove(Bitmove move)
             const Bitboard rook_jump_source_and_target = white_to_move_ ? white_rook_jump : black_rook_jump;
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
-            boards_[kExtrasBoard] += kIncrementStaticPlies;
-            boards_[kExtrasBoard] |= kBoardMaskQueensideCastlingOnLastMove;
+            boards_[kExtrasBoard] |= kBoardMaskQueensideCastlingOnLastMove |
+                                     ((current_extras & kBoardMaskStaticPlies) + kIncrementStaticPlies);
             break;
         }
         case kMoveTypePromotion: {
@@ -128,7 +122,6 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[attacking_piece_index] &=
                 ~source_and_target;  // pawn was moved to target as side effect of default operation earlier
             boards_[board_idx_added_piece_kind] |= target;
-            boards_[kExtrasBoard] &= ~kBoardMaskStaticPlies;
             const Bitmove capture = move & kMoveMaskCapturedPiece;
             if (capture)
             {
@@ -138,13 +131,6 @@ Bitboard Position::MakeMove(Bitmove move)
             }
             break;
         }
-    }
-
-    // revoke castling rights
-    const bool someone_can_still_castle = current_extras & kCastlingStillPossible;
-    if (someone_can_still_castle)
-    {
-        boards_[kExtrasBoard] &= ~(kBoardMaskCastling & source_and_target);
     }
 
     white_to_move_ = !white_to_move_;
