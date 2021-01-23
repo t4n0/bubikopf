@@ -9,12 +9,14 @@ namespace Chess
 namespace
 {
 
-constexpr std::array<Bitboard, 5> kAllBoardMasks{
+constexpr std::array<Bitboard, 7> kAllBoardMasks{
     kBoardMaskStaticPlies,
     kBoardMaskEnPassant,
     kBoardMaskCastling,
     kBoardMaskTotalPlies,
     kBoardMaskUnused,
+    kBoardMaskKingsideCastlingOnLastMove,
+    kBoardMaskQueensideCastlingOnLastMove,
 };
 
 TEST(BoardMaskTest, GivenAllBoardMasks_ExpectEntireRangeOfUnderlyingTypeIsUtilized)

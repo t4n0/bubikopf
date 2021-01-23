@@ -64,8 +64,8 @@ Bitboard Position::MakeMove(Bitmove move)
     const Bitboard target = Bitboard{1} << ExtractTarget(move);
     const Bitboard source_and_target = source | target;
 
-    constexpr Bitboard obsolete_extras_from_last_move{kBoardMaskEnPassant | kKingsideCastlingOnLastMove |
-                                                      kQueensideCastlingOnLastMove};
+    constexpr Bitboard obsolete_extras_from_last_move{kBoardMaskEnPassant | kBoardMaskKingsideCastlingOnLastMove |
+                                                      kBoardMaskQueensideCastlingOnLastMove};
     boards_[kExtrasBoard] &= ~obsolete_extras_from_last_move;
     boards_[kExtrasBoard] += kIncrementTotalPlies;
 
@@ -114,7 +114,7 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             boards_[kExtrasBoard] += kIncrementStaticPlies;
-            boards_[kExtrasBoard] |= kKingsideCastlingOnLastMove;
+            boards_[kExtrasBoard] |= kBoardMaskKingsideCastlingOnLastMove;
             break;
         }
         case kMoveTypeQueensideCastling: {
@@ -124,7 +124,7 @@ Bitboard Position::MakeMove(Bitmove move)
             boards_[attacking_side_] ^= rook_jump_source_and_target;
             boards_[attacking_side_ + kRook] ^= rook_jump_source_and_target;
             boards_[kExtrasBoard] += kIncrementStaticPlies;
-            boards_[kExtrasBoard] |= kQueensideCastlingOnLastMove;
+            boards_[kExtrasBoard] |= kBoardMaskQueensideCastlingOnLastMove;
             break;
         }
         case kMoveTypePromotion: {
@@ -337,11 +337,11 @@ bool Position::IsKingInCheck(const std::size_t defending_side) const
     }
 
     const bool defending_side_just_castled =
-        boards_[kExtrasBoard] & (kKingsideCastlingOnLastMove | kQueensideCastlingOnLastMove);
+        boards_[kExtrasBoard] & (kBoardMaskKingsideCastlingOnLastMove | kBoardMaskQueensideCastlingOnLastMove);
     if (defending_side_just_castled)
     {
         // pass through square
-        const bool defending_side_just_castled_kingside = boards_[kExtrasBoard] & kKingsideCastlingOnLastMove;
+        const bool defending_side_just_castled_kingside = boards_[kExtrasBoard] & kBoardMaskKingsideCastlingOnLastMove;
         const Bitboard pass_through_square_of_king =
             defending_side_just_castled_kingside ? king_location << 1 : king_location >> 1;
         if (square_is_under_attack(pass_through_square_of_king))
