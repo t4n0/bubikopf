@@ -19,23 +19,45 @@ constexpr Chess::Evaluation kNegamaxEvaluationSignWhite{1};
 
 }  // namespace
 
-static void TraverseAllLeaves(benchmark::State& state)
+static void TraverseAllLeavesStartPosition(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
     Chess::Statistic stats{};
     Chess::Position start_position = Chess::PositionFromFen(kStartPositionFen);
-    Chess::Position middle_game = Chess::PositionFromFen(kMiddleGameFen);
-    Chess::Position end_game = Chess::PositionFromFen(kEndGameFen);
 
     for (auto _ : state)
     {
         Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(
             start_position, kDepth4, move_stack.begin(), stats);
+    }
+}
+BENCHMARK(TraverseAllLeavesStartPosition)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
+
+static void TraverseAllLeavesMiddleGame(benchmark::State& state)
+{
+    Chess::MoveStack move_stack{};
+    Chess::Statistic stats{};
+    Chess::Position middle_game = Chess::PositionFromFen(kMiddleGameFen);
+
+    for (auto _ : state)
+    {
         Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(middle_game, kDepth4, move_stack.begin(), stats);
+    }
+}
+BENCHMARK(TraverseAllLeavesMiddleGame)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
+
+static void TraverseAllLeavesEndGame(benchmark::State& state)
+{
+    Chess::MoveStack move_stack{};
+    Chess::Statistic stats{};
+    Chess::Position end_game = Chess::PositionFromFen(kEndGameFen);
+
+    for (auto _ : state)
+    {
         Chess::TraverseAllLeaves<Chess::GenerateAllPseudoLegalMoves>(end_game, kDepth5, move_stack.begin(), stats);
     }
 }
-BENCHMARK(TraverseAllLeaves)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
+BENCHMARK(TraverseAllLeavesEndGame)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
 
 static void FindBestMove(benchmark::State& state)
 {
