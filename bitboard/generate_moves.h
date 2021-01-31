@@ -264,10 +264,18 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
     constexpr std::array<Bitboard, 4> castling_rights{
         kCastlingBlackKingside, kCastlingBlackQueenside, kCastlingWhiteKingside, kCastlingWhiteQueenside};
     constexpr std::array<Bitboard, 4> neccessary_free_squares = {F8 | G8, D8 | C8 | B8, F1 | G1, D1 | C1 | B1};
-    constexpr std::array<int, 4> source_bits = {59, 59, 3, 3};
+    constexpr Bitmove black_king_source_bits = 59;
+    constexpr Bitmove white_king_source_bits = 3;
     constexpr std::array<int, 4> target_bits{57, 61, 1, 5};
-    constexpr std::array<Bitmove, 4> move_values{
-        kMoveTypeKingsideCastling, kMoveTypeQueensideCastling, kMoveTypeKingsideCastling, kMoveTypeQueensideCastling};
+    constexpr Bitmove black_kingside = ComposeMove(
+        black_king_source_bits, std::get<0>(target_bits), kKing, kNoCapture, kNoPromotion, kMoveTypeKingsideCastling);
+    constexpr Bitmove black_queenside = ComposeMove(
+        black_king_source_bits, std::get<1>(target_bits), kKing, kNoCapture, kNoPromotion, kMoveTypeQueensideCastling);
+    constexpr Bitmove white_kingside = ComposeMove(
+        white_king_source_bits, std::get<2>(target_bits), kKing, kNoCapture, kNoPromotion, kMoveTypeKingsideCastling);
+    constexpr Bitmove white_queenside = ComposeMove(
+        white_king_source_bits, std::get<3>(target_bits), kKing, kNoCapture, kNoPromotion, kMoveTypeQueensideCastling);
+    constexpr std::array<Bitmove, 4> castling_moves{black_kingside, black_queenside, white_kingside, white_queenside};
 
     const std ::size_t offset_for_white = 2 * white_to_move;
     for (const std::size_t side : {0, 1})  // side as in queen- or kingside, not white or black
@@ -280,8 +288,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         const bool castling_possible = castling_to_side_is_allowed && space_between_king_and_rook_is_free;
         if (castling_possible)
         {
-            *move_generation_insertion_iterator++ = ComposeMove(
-                source_bits[castling], target_bits[castling], kKing, kNoCapture, kNoPromotion, move_values[castling]);
+            *move_generation_insertion_iterator++ = castling_moves[castling];
         }
     }
 
