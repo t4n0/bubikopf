@@ -132,16 +132,17 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         if (target_single_push_is_free)
         {
             const bool is_promotion = target_single_push & kPromotionRanks;
+            const Bitmove target_single_push_bits = tzcnt(target_single_push);
             if (!is_promotion)
             {
                 *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target_single_push), kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
+                    source_bit, target_single_push_bits, kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush);
             }
             else
             {
                 // promotion (without capture)
                 PushBackAllPromotions(
-                    move_generation_insertion_iterator, source_bit, tzcnt(target_single_push), kNoCapture);
+                    move_generation_insertion_iterator, source_bit, target_single_push_bits, kNoCapture);
             }
         }
 
@@ -176,16 +177,17 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
             }
 
             const bool target_is_free = target & free_squares;
+            const Bitmove target_bit = tzcnt(target);
             if (target_is_free)
             {
-                *move_generation_insertion_iterator++ = ComposeMove(
-                    source_bit, tzcnt(target), moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
+                *move_generation_insertion_iterator++ =
+                    ComposeMove(source_bit, target_bit, moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
             }
             else  // target occupied by opposing piece
             {
                 const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
                 *move_generation_insertion_iterator++ =
-                    ComposeMove(source_bit, tzcnt(target), moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
+                    ComposeMove(source_bit, target_bit, moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
                 break;
             }
             target = SingleStep(target, direction);
@@ -220,27 +222,29 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
     ForEveryBitInPopulation(position[attacking_side + kQueen], generate_queen_move);
 
     /// @brief Jump in the sense that only target and source are considered (possible in between squares are ignored)
-    const auto generate_jump_style_move =
-        [&](const Bitboard source, const Bitboard target, const std::size_t moved_piece) {
-            if (target)  // is on the board?
+    const auto generate_jump_style_move = [&](const Bitboard source,
+                                              const Bitboard target,
+                                              const std::size_t moved_piece) {
+        if (target)  // is on the board?
+        {
+            const Bitmove source_bit = tzcnt(source);
+            const Bitmove target_bit = tzcnt(target);
+            const bool target_is_free = target & free_squares;
+            if (target_is_free)
             {
-                const Bitmove source_bit = tzcnt(source);
-                const bool target_is_free = target & free_squares;
-                if (target_is_free)
-                {
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
-                    return;
-                }
-                const bool target_is_occupied_by_opponents_piece = target & position[defending_side];
-                if (target_is_occupied_by_opponents_piece)
-                {
-                    const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
-                    *move_generation_insertion_iterator++ = ComposeMove(
-                        source_bit, tzcnt(target), moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
-                }
+                *move_generation_insertion_iterator++ =
+                    ComposeMove(source_bit, target_bit, moved_piece, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn);
+                return;
             }
-        };
+            const bool target_is_occupied_by_opponents_piece = target & position[defending_side];
+            if (target_is_occupied_by_opponents_piece)
+            {
+                const Bitmove captured_piece = position.GetPieceKind(defending_side, target);
+                *move_generation_insertion_iterator++ =
+                    ComposeMove(source_bit, target_bit, moved_piece, captured_piece, kNoPromotion, kMoveTypeCapture);
+            }
+        }
+    };
 
     // knight moves
     const auto generate_knight_move = [&](const Bitmove /*unused*/, const Bitboard source) {
