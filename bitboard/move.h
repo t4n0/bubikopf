@@ -38,12 +38,12 @@ constexpr int kMoveShiftType = 27;
 constexpr std::size_t kNoCapture = 0;    // for clarity in tests
 constexpr std::size_t kNoPromotion = 0;  // for clarity in tests
 
-inline Bitmove ComposeMove(const Bitmove source,
-                           const Bitmove target,
-                           const Bitmove moved_piece,
-                           const Bitmove captured_piece,
-                           const Bitmove promotion,
-                           const Bitmove move_type)
+constexpr inline Bitmove ComposeMove(const Bitmove source,
+                                     const Bitmove target,
+                                     const Bitmove moved_piece,
+                                     const Bitmove captured_piece,
+                                     const Bitmove promotion,
+                                     const Bitmove move_type)
 {
     return source |                                       //
            (target << kMoveShiftTarget) |                 //
