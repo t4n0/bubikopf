@@ -90,7 +90,7 @@ void PrintNodeExit(const int depth)
 /// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
-                                             const MoveStack::iterator end_iterator_before_move_generation,
+                                             const MoveStack::iterator end_before_move_generation,
                                              const Evaluation negamax_sign,
                                              const AbortCondition& abort_condition,
                                              const std::size_t current_depth = 0,
@@ -105,16 +105,15 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
         return {kBitNullMove, evaluation * negamax_sign};
     }
 
-    const MoveStack::iterator end_iterator_after_move_generation =
-        GenerateMoves<GenerateBehavior>(position, end_iterator_before_move_generation);
-    std::sort(end_iterator_before_move_generation, end_iterator_after_move_generation, IsMaterialDifferenceGreater);
+    const MoveStack::iterator end_after_move_generation =
+        GenerateMoves<GenerateBehavior>(position, end_before_move_generation);
+    std::sort(end_before_move_generation, end_after_move_generation, IsMaterialDifferenceGreater);
 
     Evaluation alpha = alpha_parent;
     Bitmove best_move{};
     bool is_terminal_node = true;
 
-    for (MoveStack::iterator move_iterator = end_iterator_before_move_generation;
-         move_iterator != end_iterator_after_move_generation;
+    for (MoveStack::iterator move_iterator = end_before_move_generation; move_iterator != end_after_move_generation;
          move_iterator++)
     {
         const Bitmove current_move = *move_iterator;
@@ -126,7 +125,7 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
             Evaluation eval;
             std::tie(std::ignore, eval) =
                 FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(position,
-                                                                                end_iterator_after_move_generation,
+                                                                                end_after_move_generation,
                                                                                 -negamax_sign,
                                                                                 abort_condition,
                                                                                 current_depth + 1,
