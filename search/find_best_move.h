@@ -117,10 +117,11 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
          move_iterator != end_iterator_after_move_generation;
          move_iterator++)
     {
-        const Bitboard saved_extras = position.MakeMove(*move_iterator);
+        const Bitmove current_move = *move_iterator;
+        const Bitboard saved_extras = position.MakeMove(current_move);
         if (!position.IsKingInCheck(position.defending_side_))
         {
-            PrintMove<DebugBehavior>(*move_iterator);
+            PrintMove<DebugBehavior>(current_move);
             is_terminal_node = false;
             Evaluation eval;
             std::tie(std::ignore, eval) =
@@ -135,10 +136,10 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
             if (eval > alpha)
             {
                 alpha = eval;
-                best_move = *move_iterator;
+                best_move = current_move;
             }
         }
-        position.UnmakeMove(*move_iterator, saved_extras);
+        position.UnmakeMove(current_move, saved_extras);
 
         if (alpha >= beta_parent)
         {
