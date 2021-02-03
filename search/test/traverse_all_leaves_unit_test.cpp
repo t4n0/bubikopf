@@ -33,10 +33,11 @@ TEST(MoveListTest, GivenDepth3_ExpectDebuggingIdsOf6LastVisitedMovesInMoveStack)
     Position position{};
     MoveStack move_stack{};
     Statistic stats{};
-    constexpr int depth{3};
+    constexpr std::size_t full_search_depth = 3;
+    constexpr AbortCondition abort_condition{full_search_depth};
 
     // Call
-    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(position, depth, move_stack.begin(), stats);
+    TraverseAllLeaves<GenerateTwoMovesWithUniqueDebugId>(position, move_stack.begin(), stats, abort_condition);
 
     // Expect
     const std::array<Bitmove, 6> expected_debugging_ids{1, 2, 9, 10, 13, 14};  // worked out by hand

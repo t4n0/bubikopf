@@ -82,7 +82,8 @@ namespace
 TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 {
     // Setup
-    constexpr int depth{3};
+    constexpr std::size_t full_search_depth = 3;
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};
     MoveStack move_stack{};
     Position position{EncodeUniqueIdToZero()};
     const Evaluation negamax_sign_for_white{1};
@@ -98,7 +99,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 
     // Call
     FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingDisabled>(
-        position, depth, move_stack.begin(), negamax_sign_for_white);
+        position, move_stack.begin(), negamax_sign_for_white, abort_condition);
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -126,13 +127,14 @@ class FindBestMoveTestFixture : public testing::TestWithParam<std::tuple<std::st
 TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
 {
     // Setup
-    constexpr int depth{6};  // Allow king to be captured
+    constexpr std::size_t full_search_depth = 6;
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};  // Allow king to be captured
     Position position{PositionFromFen(GetFen())};
     MoveStack move_stack{};
 
     // Call
     const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
-        position, depth, move_stack.begin(), GetNegaMaxSign());
+        position, move_stack.begin(), GetNegaMaxSign(), abort_condition);
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
@@ -164,13 +166,14 @@ class FindBestMoveInFinalPosition : public testing::TestWithParam<std::tuple<std
 TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectMoveAndEvaluation)
 {
     // Setup
-    constexpr int depth{6};
+    constexpr std::size_t full_search_depth = 6;  // Allow king to be captured
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};  // Allow king to be captured
     Position position{PositionFromFen(GetFen())};
     MoveStack move_stack{};
 
     // Call
     const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
-        position, depth, move_stack.begin(), GetNegaMaxSign());
+        position, move_stack.begin(), GetNegaMaxSign(), abort_condition);
 
     // Expect
     EXPECT_EQ(ToUciString(best_move), kUciNullMove);

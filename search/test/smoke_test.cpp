@@ -13,12 +13,12 @@ namespace Chess
 namespace
 {
 
-using TraverseAllLeavesTestParameter = std::tuple<int, std::string, long long>;
+using TraverseAllLeavesTestParameter = std::tuple<std::size_t, std::string, long long>;
 
 class TraverseAllLeavesTestFixture : public testing::TestWithParam<TraverseAllLeavesTestParameter>
 {
   public:
-    int GetDepth() { return std::get<0>(GetParam()); }
+    std::size_t GetDepth() { return std::get<0>(GetParam()); }
     std::string GetFen() { return std::get<1>(GetParam()); }
     long long GetExpectedNumberOfLeaves() { return std::get<2>(GetParam()); }
 };
@@ -29,10 +29,11 @@ TEST_P(TraverseAllLeavesTestFixture, GivenDepth_ExpectCorrectNumberOfEvaluations
     Position position = PositionFromFen(GetFen());
     MoveStack move_stack{};
     Statistic stats{};
+    const Chess::AbortCondition abort_condition{GetDepth()};
 
     // Call
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(position, GetDepth(), move_stack.begin(), stats);
+    TraverseAllLeaves<GenerateAllPseudoLegalMoves>(position, move_stack.begin(), stats, abort_condition);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Expect

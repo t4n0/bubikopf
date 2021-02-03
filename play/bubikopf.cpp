@@ -65,9 +65,10 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
 {
     ToCerrWithTime("Starting search for best move.");
-    constexpr int depth = 6;
+    constexpr std::size_t full_search_depth = 6;
+    constexpr AbortCondition abort_condition{full_search_depth};
     const auto [best_move, evaluation] = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial>(
-        position_, depth, begin(move_stack_), GetCurrentNegamaxSign());
+        position_, begin(move_stack_), GetCurrentNegamaxSign(), abort_condition);
     const auto uci_move = ToUciString(best_move);
     ToCerrWithTime("Best move is: " + uci_move);
     return {uci_move, evaluation * GetCurrentNegamaxSign()};

@@ -5,6 +5,7 @@
 #include "bitboard/move_stack.h"
 #include "bitboard/position.h"
 #include "bitboard/uci_conversion.h"
+#include "search/abort_condition.h"
 #include "search/material_difference_comparison.h"
 
 #include <algorithm>
@@ -34,7 +35,7 @@ struct DebuggingEnabled
 };
 
 template <typename Behavior>
-void PrintNodeEntry(const Position& position, const int depth)
+void PrintNodeEntry(const Position& position, const std::size_t depth)
 {
     if constexpr (Behavior::debugging)
     {
@@ -81,7 +82,7 @@ void PrintNodeExit(const int depth)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << "returning to depth " << (depth + 1) << '\n' << std::endl;
+        std::cout << "returning to depth " << (depth - 1) << '\n' << std::endl;
     }
     std::ignore = depth;  // Resolve warning if debugging disabled.
 }
@@ -89,14 +90,15 @@ void PrintNodeExit(const int depth)
 /// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
-                                             const int depth,
                                              const MoveStack::iterator end_iterator_before_move_generation,
                                              const Evaluation negamax_sign,
+                                             const AbortCondition& abort_condition,
+                                             const std::size_t current_depth = 0,
                                              const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
                                              const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
-    PrintNodeEntry<DebugBehavior>(position, depth);
-    if (depth == 0)
+    PrintNodeEntry<DebugBehavior>(position, current_depth);
+    if (current_depth == abort_condition.full_search_depth)
     {
         const Evaluation evaluation = Evaluate<EvaluateBehavior>(position);
         PrintEvaluation<DebugBehavior>(evaluation);
@@ -121,8 +123,14 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
             PrintMove<DebugBehavior>(*move_iterator);
             is_terminal_node = false;
             Evaluation eval;
-            std::tie(std::ignore, eval) = FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(
-                position, depth - 1, end_iterator_after_move_generation, -negamax_sign, -beta_parent, -alpha);
+            std::tie(std::ignore, eval) =
+                FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(position,
+                                                                                end_iterator_after_move_generation,
+                                                                                -negamax_sign,
+                                                                                abort_condition,
+                                                                                current_depth + 1,
+                                                                                -beta_parent,
+                                                                                -alpha);
             eval *= Evaluation{-1};
             if (eval > alpha)
             {
@@ -145,11 +153,11 @@ std::tuple<Bitmove, Evaluation> FindBestMove(Position& position,
         const Evaluation opponent_win = position.white_to_move_ ? Evaluation{-1000} : Evaluation{1000};
         const Evaluation game_result = position.IsKingInCheck(position.attacking_side_) ? opponent_win : draw;
         PrintEvaluation<DebugBehavior>(game_result);
-        PrintNodeExit<DebugBehavior>(depth);
+        PrintNodeExit<DebugBehavior>(current_depth);
         return {kBitNullMove, game_result * negamax_sign};
     }
 
-    PrintNodeExit<DebugBehavior>(depth);
+    PrintNodeExit<DebugBehavior>(current_depth);
     return {best_move, alpha};
 }
 

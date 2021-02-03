@@ -3,6 +3,7 @@
 
 #include "bitboard/move_stack.h"
 #include "bitboard/position.h"
+#include "search/abort_condition.h"
 
 #include <type_traits>
 
@@ -23,11 +24,12 @@ std::enable_if_t<GenerateBehavior::not_defined, const MoveStack::iterator> Gener
 /// Used for debugging and benchmarking move generation.
 template <typename GenerateBehavior>
 void TraverseAllLeaves(Position& position,
-                       const int depth,
                        const MoveStack::iterator& end_iterator_before_move_generation,
-                       Statistic& stats)
+                       Statistic& stats,
+                       const AbortCondition& abort_condition,
+                       const std::size_t depth = 0)
 {
-    if (depth == 0)
+    if (depth == abort_condition.full_search_depth)
     {
         stats.number_of_evaluations++;
         return;
@@ -43,7 +45,8 @@ void TraverseAllLeaves(Position& position,
         const Bitboard saved_extras = position.MakeMove(*move_iterator);
         if (!position.IsKingInCheck(position.defending_side_))
         {
-            TraverseAllLeaves<GenerateBehavior>(position, depth - 1, end_iterator_after_move_generation, stats);
+            TraverseAllLeaves<GenerateBehavior>(
+                position, end_iterator_after_move_generation, stats, abort_condition, depth + 1);
         }
         position.UnmakeMove(*move_iterator, saved_extras);
     }
