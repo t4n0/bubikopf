@@ -58,6 +58,19 @@ void PrintEvaluation(const Evaluation evaluation)
 }
 
 template <typename Behavior>
+void PrintGeneratedMoves(const MoveStack::const_iterator begin, const MoveStack::const_iterator end)
+{
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "moves generated: ";
+        std::for_each(begin, end, [](const auto move) { std::cout << ToUciString(move) << " "; });
+        std::cout << '\n' << std::endl;
+    }
+    std::ignore = begin;
+    std::ignore = end;  // Resolve warning if debugging disabled.
+}
+
+template <typename Behavior>
 void PrintMove(const MoveStack::const_iterator end_before_move_generation,
                const MoveStack::const_iterator move_iterator,
                const MoveStack::const_iterator end_after_move_generation)
@@ -109,8 +122,8 @@ void PrintPrincipalVariation(const PrincipalVariation& principal_variation,
         constexpr const char* const uci_move_placeholder_with_max_length = "     ";  // five spaces
 
         int line{0};  // 0 is the main line, 1 the subline after first move of main line, etc.
-        std::cout << "Principal variation:\n";
-        std::cout << "Promoted subline after " << ToUciString(current_move) << " at depth " << current_depth << '\n';
+        std::cout << "principal variation:\n";
+        std::cout << "promoted subline after " << ToUciString(current_move) << " at depth " << current_depth << '\n';
         for (std::size_t index{0}; index < principal_variation.size(); index++)
         {
             const bool end_of_line_reached = (index == GetSublineIndexAtDepth(line + 1));
@@ -185,6 +198,7 @@ Evaluation FindBestMove(Position& position,
     const MoveStack::iterator end_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_before_move_generation);
     std::sort(end_before_move_generation, end_after_move_generation, IsMaterialDifferenceGreater);
+    PrintGeneratedMoves<DebugBehavior>(end_before_move_generation, end_after_move_generation);
 
     Evaluation alpha = alpha_parent;
     bool is_terminal_node = true;
