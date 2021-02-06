@@ -29,8 +29,7 @@ void TraverseAllLeaves(Position& position,
                        const AbortCondition& abort_condition,
                        const std::size_t depth = 0)
 {
-    const bool final_depth_of_full_search_reached{depth == abort_condition.full_search_depth};
-    if (final_depth_of_full_search_reached)
+    if (depth == abort_condition.full_search_depth)
     {
         stats.number_of_evaluations++;
         return;
@@ -44,8 +43,7 @@ void TraverseAllLeaves(Position& position,
          move_iterator++)
     {
         const Bitboard saved_extras = position.MakeMove(*move_iterator);
-        const bool move_is_legal{!position.IsKingInCheck(position.defending_side_)};
-        if (move_is_legal)
+        if (!position.IsKingInCheck(position.defending_side_))
         {
             TraverseAllLeaves<GenerateBehavior>(
                 position, end_iterator_after_move_generation, stats, abort_condition, depth + 1);

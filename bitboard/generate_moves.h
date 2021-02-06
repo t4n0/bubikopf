@@ -85,8 +85,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
         // captures
         for (const std::size_t index : {0, 1})
         {
-            const bool target_is_occupied_by_enemy_piece = position[defending_side] & pawn_capture_targets[index];
-            if (target_is_occupied_by_enemy_piece)
+            if (position[defending_side] & pawn_capture_targets[index])
             {
                 const Bitmove captured_piece = position.GetPieceKind(defending_side, pawn_capture_targets[index]);
                 const bool is_promotion = pawn_capture_targets[index] & kPromotionRanks;
@@ -112,8 +111,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
 
         // en passant
         const Bitboard en_passant_square = position[kExtrasBoard] & kBoardMaskEnPassant;
-        const bool previous_move_was_double_pawn_push = en_passant_square;
-        if (previous_move_was_double_pawn_push)
+        if (en_passant_square)
         {
             for (const std::size_t index : {0, 1})
             {
@@ -227,8 +225,7 @@ std::enable_if_t<Behavior::generate_all_legal_moves, MoveStack::iterator> Genera
     const auto generate_jump_style_move = [&](const Bitboard source,
                                               const Bitboard target,
                                               const std::size_t moved_piece) {
-        const bool target_is_on_the_board = target;
-        if (target_is_on_the_board)
+        if (target)  // is on the board?
         {
             const Bitmove source_bit = tzcnt(source);
             const Bitmove target_bit = tzcnt(target);
