@@ -116,7 +116,8 @@ void PrintPrincipalVariation(const PrincipalVariation& principal_variation,
             const bool end_of_line_reached = (index == GetSublineIndexAtDepth(line + 1));
             if (end_of_line_reached)
             {
-                if (line == 0)
+                const bool is_main_line{line == 0};
+                if (is_main_line)
                 {
                     std::cout << "(main line)";
                 }
@@ -129,7 +130,8 @@ void PrintPrincipalVariation(const PrincipalVariation& principal_variation,
             }
             const std::string uci_move{ToUciString(principal_variation[index])};
             std::cout << uci_move << separator;
-            if (uci_move.size() == 4)
+            const bool is_move_without_promotion{uci_move.size() == 4};
+            if (is_move_without_promotion)
             {
                 std::cout << empty_promotion;  // Make sure printout is aligned for promotions, too.
             }
@@ -171,7 +173,8 @@ Evaluation FindBestMove(Position& position,
                         const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
 {
     PrintNodeEntry<DebugBehavior>(position, current_depth);
-    if (current_depth == abort_condition.full_search_depth)
+    const bool final_depth_of_full_search_reached{current_depth == abort_condition.full_search_depth};
+    if (final_depth_of_full_search_reached)
     {
         const Evaluation evaluation = Evaluate<EvaluateBehavior>(position);
         PrintEvaluation<DebugBehavior>(evaluation);
@@ -191,7 +194,8 @@ Evaluation FindBestMove(Position& position,
     {
         const Bitmove current_move = *move_iterator;
         const Bitboard saved_extras = position.MakeMove(current_move);
-        if (!position.IsKingInCheck(position.defending_side_))
+        const bool move_is_legal = !position.IsKingInCheck(position.defending_side_);
+        if (move_is_legal)
         {
             PrintMove<DebugBehavior>(end_before_move_generation, move_iterator, end_after_move_generation);
             is_terminal_node = false;
@@ -204,7 +208,9 @@ Evaluation FindBestMove(Position& position,
                                                                                  current_depth + 1,
                                                                                  -beta_parent,
                                                                                  -alpha);
-            if (eval > alpha)
+
+            const bool current_move_is_best_so_far{eval > alpha};
+            if (current_move_is_best_so_far)
             {
                 alpha = eval;
                 PromoteSubline<DebugBehavior>(principal_variation, current_depth, current_move);
@@ -213,7 +219,8 @@ Evaluation FindBestMove(Position& position,
         }
         position.UnmakeMove(current_move, saved_extras);
 
-        if (alpha >= beta_parent)
+        const bool opponent_has_better_option{alpha >= beta_parent};
+        if (opponent_has_better_option)
         {
             PrintPruning<DebugBehavior>(alpha, beta_parent);
             break;
