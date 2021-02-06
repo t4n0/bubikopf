@@ -10,6 +10,7 @@ cc_library(
     hdrs = [
         "find_best_move.h",
         "material_difference_comparison.h",
+        "principal_variation.h",
     ],
     visibility = ["//visibility:public"],
     deps = [

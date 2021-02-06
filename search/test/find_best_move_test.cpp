@@ -85,6 +85,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
     constexpr std::size_t full_search_depth = 3;
     constexpr Chess::AbortCondition abort_condition{full_search_depth};
     MoveStack move_stack{};
+    PrincipalVariation principal_variation{};
     Position position{EncodeUniqueIdToZero()};
     const Evaluation negamax_sign_for_white{1};
     EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order = {};
@@ -99,7 +100,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
 
     // Call
     FindBestMove<GenerateTwoMovesThatEncodeUniqueId, EvaluteAccordingToEncodedUniqueId, DebuggingDisabled>(
-        position, move_stack.begin(), negamax_sign_for_white, abort_condition);
+        position, principal_variation, move_stack.begin(), negamax_sign_for_white, abort_condition);
 
     // Expect
     std::cout << "Order of evaluation:" << std::endl;
@@ -127,16 +128,18 @@ class FindBestMoveTestFixture : public testing::TestWithParam<std::tuple<std::st
 TEST_P(FindBestMoveTestFixture, GivenCheckmateIn3_ExpectCorrectContinuation)
 {
     // Setup
-    constexpr std::size_t full_search_depth = 6;
-    constexpr Chess::AbortCondition abort_condition{full_search_depth};  // Allow king to be captured
+    constexpr std::size_t full_search_depth = 6;  // Allow king to be captured
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};
     Position position{PositionFromFen(GetFen())};
     MoveStack move_stack{};
+    PrincipalVariation principal_variation{};
 
     // Call
-    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
-        position, move_stack.begin(), GetNegaMaxSign(), abort_condition);
+    FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
+        position, principal_variation, move_stack.begin(), GetNegaMaxSign(), abort_condition);
 
     // Expect
+    const auto best_move = principal_variation.front();
     EXPECT_EQ(ToUciString(best_move), GetExpectedBestMove());
 }
 
@@ -167,15 +170,17 @@ TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectMoveAndEv
 {
     // Setup
     constexpr std::size_t full_search_depth = 6;  // Allow king to be captured
-    constexpr Chess::AbortCondition abort_condition{full_search_depth};  // Allow king to be captured
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};
     Position position{PositionFromFen(GetFen())};
     MoveStack move_stack{};
+    PrincipalVariation principal_variation{};
 
     // Call
-    const auto [best_move, evaluation] = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
-        position, move_stack.begin(), GetNegaMaxSign(), abort_condition);
+    const auto evaluation = FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
+        position, principal_variation, move_stack.begin(), GetNegaMaxSign(), abort_condition);
 
     // Expect
+    const auto best_move = principal_variation.front();
     EXPECT_EQ(ToUciString(best_move), kUciNullMove);
     EXPECT_FLOAT_EQ(evaluation, GetExpectedEvaluation());
 }

@@ -3,6 +3,7 @@
 
 #include "bitboard/move_stack.h"
 #include "bitboard/position.h"
+#include "search/principal_variation.h"
 
 #include <string>
 #include <vector>
@@ -25,6 +26,7 @@ class Bubikopf
 
     Position position_{};
     MoveStack move_stack_{};
+    PrincipalVariation principal_variation_{};
 };
 
 }  // namespace Chess

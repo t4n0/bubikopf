@@ -67,6 +67,7 @@ BENCHMARK(TraverseAllLeavesEndGame)->Unit(benchmark::kMillisecond)->ReportAggreg
 static void FindBestMove(benchmark::State& state)
 {
     Chess::MoveStack move_stack{};
+    Chess::PrincipalVariation principal_variation{};
     Chess::Position start_position = Chess::PositionFromFen(kStartPositionFen);
     Chess::Position middle_game = Chess::PositionFromFen(kMiddleGameFen);
     Chess::Position end_game = Chess::PositionFromFen(kEndGameFen);
@@ -76,11 +77,13 @@ static void FindBestMove(benchmark::State& state)
     for (auto _ : state)
     {
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            start_position, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
+            start_position, principal_variation, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
+        principal_variation.fill(Chess::kBitNullMove);
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            middle_game, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
+            middle_game, principal_variation, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
+        principal_variation.fill(Chess::kBitNullMove);
         Chess::FindBestMove<Chess::GenerateAllPseudoLegalMoves, Chess::EvaluateMaterial>(
-            end_game, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
+            end_game, principal_variation, move_stack.begin(), kNegamaxEvaluationSignWhite, abort_condition);
     }
 }
 BENCHMARK(FindBestMove)->Unit(benchmark::kMillisecond)->ReportAggregatesOnly()->Repetitions(10);
