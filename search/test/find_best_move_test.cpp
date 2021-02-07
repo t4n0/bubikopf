@@ -76,6 +76,42 @@ std::enable_if_t<Behavior::generate_two_moves_that_encode_unique_id, MoveStack::
     return move_generation_insertion_iterator;
 }
 
+constexpr std::size_t kPrincipalVariationLength{2};
+struct CheckIfPrincipalVariationGetsEvaluatedFirst
+{
+    static constexpr bool check_if_principal_variation_gets_evaluated_first{true};
+    static std::string fen;
+    static std::array<Bitmove, kPrincipalVariationLength> principal_variation_to_check;
+    static bool evaluation_called;
+    static bool principal_variation_was_evaluated_fist;
+};
+std::array<Bitmove, kPrincipalVariationLength>
+    CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_to_check{};
+std::string CheckIfPrincipalVariationGetsEvaluatedFirst::fen{};
+bool CheckIfPrincipalVariationGetsEvaluatedFirst::evaluation_called{false};
+bool CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_was_evaluated_fist{false};
+
+template <typename Behavior>
+std::enable_if_t<Behavior::check_if_principal_variation_gets_evaluated_first, Evaluation> Evaluate(
+    const Position& position)
+{
+    if (!Behavior::evaluation_called)
+    {
+        Position expected_position{PositionFromFen(Behavior::fen)};
+        for (const auto move : Behavior::principal_variation_to_check)
+        {
+            expected_position.MakeMove(move);
+        }
+        Behavior::principal_variation_was_evaluated_fist = (position == expected_position);
+        std::cout << "Expected:\n";
+        PrettyPrintFen(FenFromPosition(expected_position));
+        std::cout << "Encountered:\n";
+        PrettyPrintFen(FenFromPosition(position));
+    }
+    Behavior::evaluation_called = true;
+    return Evaluation{0};
+}
+
 namespace
 {
 
@@ -196,6 +232,64 @@ const std::array<std::tuple<std::string, Evaluation>, 4> kFinalPositions{{
 }};
 
 INSTANTIATE_TEST_SUITE_P(VariousFinalPositions, FindBestMoveInFinalPosition, testing::ValuesIn(kFinalPositions));
+
+class FindBestMoveInvestigatesPrincipalVariationFirst : public testing::TestWithParam<std::array<Bitmove, 2>>
+{
+  public:
+    void SetUp() final
+    {
+        CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_to_check.fill(kBitNullMove);
+        CheckIfPrincipalVariationGetsEvaluatedFirst::fen = "";
+        CheckIfPrincipalVariationGetsEvaluatedFirst::evaluation_called = false;
+        CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_was_evaluated_fist = false;
+    }
+    void TearDown() final {}
+
+    std::array<Bitmove, kPrincipalVariationLength> GetPrincipalVariation() { return GetParam(); }
+};
+
+const std::string kSimpleArbitraryPosition{"k7/p7/8/8/8/8/P7/K7 w - - 0 1"};
+
+TEST_P(FindBestMoveInvestigatesPrincipalVariationFirst,
+       GivenStandardPosition_ExpectMovesFromPrincipalVariationSortedFirst)
+{
+    // Setup
+    constexpr std::size_t full_search_depth = kPrincipalVariationLength;
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};
+    constexpr Evaluation negamax_sign_for_starting_position{1};
+    Position position{PositionFromFen(kSimpleArbitraryPosition)};
+    MoveStack move_stack{};
+    PrincipalVariation principal_variation{};
+    const auto expected_principal_variation{GetPrincipalVariation()};
+
+    std::copy(std::begin(expected_principal_variation),  // provide input for search
+              std::end(expected_principal_variation),
+              std::begin(principal_variation));
+
+    std::copy(std::begin(expected_principal_variation),  // set expectation in static spy class
+              std::end(expected_principal_variation),
+              std::begin(CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_to_check));
+    CheckIfPrincipalVariationGetsEvaluatedFirst::fen = kSimpleArbitraryPosition;
+
+    // Call
+    std::ignore =
+        FindBestMove<GenerateAllPseudoLegalMoves, CheckIfPrincipalVariationGetsEvaluatedFirst, DebuggingDisabled>(
+            position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition);
+
+    // Expect
+    EXPECT_TRUE(CheckIfPrincipalVariationGetsEvaluatedFirst::principal_variation_was_evaluated_fist);
+}
+
+const std::array<std::array<Bitmove, kPrincipalVariationLength>, 2> kArbitraryPrincipalVariations{{
+    {ComposeMove(tzcnt(A2), tzcnt(A3), kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush),
+     ComposeMove(tzcnt(A7), tzcnt(A6), kPawn, kNoCapture, kNoPromotion, kMoveTypePawnSinglePush)},
+    {ComposeMove(tzcnt(A1), tzcnt(B1), kKing, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn),
+     ComposeMove(tzcnt(A8), tzcnt(B8), kKing, kNoCapture, kNoPromotion, kMoveTypeQuietNonPawn)},
+}};
+
+INSTANTIATE_TEST_SUITE_P(ArbitraryPrincipalVariations,
+                         FindBestMoveInvestigatesPrincipalVariationFirst,
+                         testing::ValuesIn(kArbitraryPrincipalVariations));
 
 }  // namespace
 }  // namespace Chess

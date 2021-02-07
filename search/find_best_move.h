@@ -198,6 +198,19 @@ Evaluation FindBestMove(Position& position,
     const MoveStack::iterator end_after_move_generation =
         GenerateMoves<GenerateBehavior>(position, end_before_move_generation);
     std::sort(end_before_move_generation, end_after_move_generation, IsMaterialDifferenceGreater);
+    const bool is_inital_entry =
+        (current_depth == 0) && (principal_variation[GetSublineIndexAtDepth(1)] == kBitNullMove);
+    const bool is_first_entry_into_current_depth{principal_variation[GetSublineIndexAtDepth(current_depth)] ==
+                                                 kBitNullMove};
+    if (is_inital_entry || is_first_entry_into_current_depth)
+    {
+        const auto IsMoveSuggestedByPrincipalVariation = [&principal_variation, &current_depth](const auto a,
+                                                                                                const auto b) {
+            std::ignore = b;
+            return a == principal_variation[current_depth];
+        };
+        std::sort(end_before_move_generation, end_after_move_generation, IsMoveSuggestedByPrincipalVariation);
+    }
     PrintGeneratedMoves<DebugBehavior>(end_before_move_generation, end_after_move_generation);
 
     Evaluation alpha = alpha_parent;
