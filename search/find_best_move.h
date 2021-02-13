@@ -117,39 +117,9 @@ void PrintPrincipalVariation(const PrincipalVariation& principal_variation,
 {
     if constexpr (Behavior::debugging)
     {
-        constexpr const char* const separator = " ";                                 // one space
-        constexpr const char* const empty_promotion = " ";                           // one space
-        constexpr const char* const uci_move_placeholder_with_max_length = "     ";  // five spaces
-
-        int line{0};  // 0 is the main line, 1 the subline after first move of main line, etc.
         std::cout << "principal variation:\n";
         std::cout << "promoted subline after " << ToUciString(current_move) << " at depth " << current_depth << '\n';
-        for (std::size_t index{0}; index < principal_variation.size(); index++)
-        {
-            const bool end_of_line_reached = (index == GetSublineIndexAtDepth(line + 1));
-            if (end_of_line_reached)
-            {
-                const bool is_main_line{line == 0};
-                if (is_main_line)
-                {
-                    std::cout << "(main line)";
-                }
-                line++;
-                std::cout << '\n';
-                for (int count{0}; count < line; count++)
-                {
-                    std::cout << uci_move_placeholder_with_max_length << separator;
-                }
-            }
-            const std::string uci_move{ToUciString(principal_variation[index])};
-            std::cout << uci_move << separator;
-            const bool is_move_without_promotion{uci_move.size() == 4};
-            if (is_move_without_promotion)
-            {
-                std::cout << empty_promotion;  // Make sure printout is aligned for promotions, too.
-            }
-        }
-        std::cout << '\n' << std::endl;
+        std::cout << ToString(principal_variation) << std::endl;
     }
     std::ignore = current_move;
     std::ignore = current_depth;

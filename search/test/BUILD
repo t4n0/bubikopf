@@ -15,6 +15,7 @@ cc_test(
     srcs = [
         "find_best_move_test.cpp",
         "material_difference_comparison_unit_test.cpp",
+        "principal_variation_test.cpp",
         "traverse_all_leaves_unit_test.cpp",
     ],
     deps = [

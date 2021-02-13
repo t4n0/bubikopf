@@ -2,8 +2,11 @@
 #define SEACH_PRINCIPAL_VARIATION_H
 
 #include "bitboard/basic_type_declarations.h"
+#include "bitboard/move.h"
+#include "bitboard/uci_conversion.h"
 
 #include <array>
+#include <sstream>
 
 namespace Chess
 {
@@ -25,6 +28,53 @@ using PrincipalVariation =
 inline std::size_t GetSublineIndexAtDepth(const std::size_t depth)
 {
     return depth * (2 * kMaximumLengthOfPrincipalVariation + 1 - depth) / 2;
+}
+
+inline void ClearSublines(PrincipalVariation& principal_variation)
+{
+    for (std::size_t index{GetSublineIndexAtDepth(1)}; index < principal_variation.size(); index++)
+    {
+        principal_variation[index] = kBitNullMove;
+    }
+}
+
+inline std::string ToString(const PrincipalVariation& principal_variation)
+{
+    constexpr const char* const separator = " ";                                 // one space
+    constexpr const char* const empty_promotion = " ";                           // one space
+    constexpr const char* const uci_move_placeholder_with_max_length = "     ";  // five spaces
+
+    std::stringstream stream{};
+
+    int line{0};  // 0 is the main line, 1 the subline after first move of main line, etc.
+    for (std::size_t index{0}; index < principal_variation.size(); index++)
+    {
+        const bool end_of_line_reached = (index == GetSublineIndexAtDepth(line + 1));
+        if (end_of_line_reached)
+        {
+            const bool is_main_line{line == 0};
+            if (is_main_line)
+            {
+                stream << "(main line)";
+            }
+            line++;
+            stream << '\n';
+            for (int count{0}; count < line; count++)
+            {
+                stream << uci_move_placeholder_with_max_length << separator;
+            }
+        }
+        const std::string uci_move{ToUciString(principal_variation[index])};
+        stream << uci_move << separator;
+        const bool is_move_without_promotion{uci_move.size() == 4};
+        if (is_move_without_promotion)
+        {
+            stream << empty_promotion;  // Make sure printout is aligned for promotions, too.
+        }
+    }
+    stream << '\n';
+
+    return stream.str();
 }
 
 }  // namespace Chess
