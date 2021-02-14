@@ -48,13 +48,13 @@ void PrintNodeEntry(const Position& position, const std::size_t depth)
 }
 
 template <typename Behavior>
-void PrintEvaluation(const Evaluation evaluation)
+void PrintEvaluation(const Evaluation minimax_evaluation)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << "= " << evaluation << '\n' << std::endl;
+        std::cout << "= " << minimax_evaluation << '\n' << std::endl;
     }
-    std::ignore = evaluation;  // Resolve warning if debugging disabled.
+    std::ignore = minimax_evaluation;  // Resolve warning if debugging disabled.
 }
 
 template <typename Behavior>
@@ -90,14 +90,14 @@ void PrintMoveInvestigation(const MoveStack::const_iterator end_before_move_gene
 }
 
 template <typename Behavior>
-void PrintMoveResult(const Bitmove move, const Evaluation evaluation)
+void PrintMoveResult(const Bitmove move, const Evaluation minimax_evaluation)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << ToUciString(move) << " = " << evaluation << '\n' << std::endl;
+        std::cout << ToUciString(move) << " = " << minimax_evaluation << '\n' << std::endl;
     }
     std::ignore = move;
-    std::ignore = evaluation;  // Resolve warning if debugging disabled.
+    std::ignore = minimax_evaluation;  // Resolve warning if debugging disabled.
 }
 
 template <typename Behavior>
@@ -190,17 +190,16 @@ Evaluation FindBestMove(Position& position,
                         const Evaluation negamax_sign,
                         const AbortCondition& abort_condition,
                         const std::size_t current_depth = 0,
-                        const Evaluation alpha_parent = std::numeric_limits<Evaluation>::lowest(),
-                        const Evaluation beta_parent = std::numeric_limits<Evaluation>::max())
+                        const Evaluation parent_negamax_alpha = std::numeric_limits<Evaluation>::lowest(),
+                        const Evaluation parent_negamax_beta = std::numeric_limits<Evaluation>::max())
 {
     PrintNodeEntry<DebugBehavior>(position, current_depth);
-    const bool final_depth_of_full_search_reached{current_depth == abort_condition.full_search_depth};
-    if (final_depth_of_full_search_reached)
+    if (current_depth == abort_condition.full_search_depth)
     {
-        const Evaluation evaluation = Evaluate<EvaluateBehavior>(position);
-        PrintEvaluation<DebugBehavior>(evaluation);
+        const Evaluation minimax_evaluation = Evaluate<EvaluateBehavior>(position);
+        PrintEvaluation<DebugBehavior>(minimax_evaluation);
         PrintNodeExit<DebugBehavior>(current_depth);
-        return evaluation * negamax_sign;
+        return minimax_evaluation * negamax_sign;
     }
 
     const MoveStack::iterator end_after_move_generation =
@@ -222,7 +221,7 @@ Evaluation FindBestMove(Position& position,
     }
     PrintGeneratedMoves<DebugBehavior>(end_before_move_generation, end_after_move_generation);
 
-    Evaluation alpha = alpha_parent;
+    Evaluation negamax_alpha = parent_negamax_alpha;
     bool is_terminal_node = true;
 
     for (MoveStack::iterator move_iterator = end_before_move_generation; move_iterator != end_after_move_generation;
@@ -230,35 +229,33 @@ Evaluation FindBestMove(Position& position,
     {
         const Bitmove current_move = *move_iterator;
         const Bitboard saved_extras = position.MakeMove(current_move);
-        const bool move_is_legal = !position.IsKingInCheck(position.defending_side_);
-        if (move_is_legal)
+        if (!position.IsKingInCheck(position.defending_side_))
         {
             PrintMoveInvestigation<DebugBehavior>(end_before_move_generation, move_iterator, end_after_move_generation);
             is_terminal_node = false;
-            Evaluation eval =
+            Evaluation negamax_evaluation =
                 -FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(position,
                                                                                  principal_variation,
                                                                                  end_after_move_generation,
                                                                                  -negamax_sign,
                                                                                  abort_condition,
                                                                                  current_depth + 1,
-                                                                                 -beta_parent,
-                                                                                 -alpha);
-            PrintMoveResult<DebugBehavior>(*move_iterator, eval * negamax_sign);
+                                                                                 -parent_negamax_beta,
+                                                                                 -negamax_alpha);
+            PrintMoveResult<DebugBehavior>(*move_iterator, negamax_evaluation * negamax_sign);
 
-            const bool current_move_is_best_so_far{eval > alpha};
-            if (current_move_is_best_so_far)
+            if (negamax_evaluation > negamax_alpha)
             {
-                alpha = eval;
+                negamax_alpha = negamax_evaluation;
                 PromoteSubline<DebugBehavior>(principal_variation, current_depth, current_move);
                 PrintPrincipalVariation<DebugBehavior>(principal_variation, current_depth, current_move);
             }
-            PrintPruningInfo<DebugBehavior>(alpha, beta_parent, negamax_sign);
+
+            PrintPruningInfo<DebugBehavior>(negamax_alpha, parent_negamax_beta, negamax_sign);
         }
         position.UnmakeMove(current_move, saved_extras);
 
-        const bool opponent_has_better_option{alpha >= beta_parent};
-        if (opponent_has_better_option)
+        if (negamax_alpha >= parent_negamax_beta)
         {
             PrintPruningDecision<DebugBehavior>();
             break;
@@ -267,16 +264,14 @@ Evaluation FindBestMove(Position& position,
 
     if (is_terminal_node)
     {
-        constexpr Evaluation draw = Evaluation{0};
-        constexpr Evaluation opponent_win = Evaluation{-1000};
-        const Evaluation game_result = position.IsKingInCheck(position.attacking_side_) ? opponent_win : draw;
-        PrintEvaluation<DebugBehavior>(game_result * negamax_sign);
-        PrintNodeExit<DebugBehavior>(current_depth);
-        return game_result;
+        constexpr Evaluation negamax_draw = Evaluation{0};
+        constexpr Evaluation negamax_loss = Evaluation{-1000};
+        negamax_alpha = position.IsKingInCheck(position.attacking_side_) ? negamax_loss : negamax_draw;
+        PrintEvaluation<DebugBehavior>(negamax_alpha * negamax_sign);
     }
 
     PrintNodeExit<DebugBehavior>(current_depth);
-    return alpha;
+    return negamax_alpha;
 }
 
 }  // namespace Chess
