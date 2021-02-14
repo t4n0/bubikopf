@@ -11,7 +11,7 @@
 namespace Chess
 {
 
-static constexpr std::size_t kMaximumLengthOfPrincipalVariation{8};
+static constexpr std::size_t kMaximumLengthOfPrincipalVariation{20};
 
 /// @brief The principal variation is stored as a triangular table.
 ///
