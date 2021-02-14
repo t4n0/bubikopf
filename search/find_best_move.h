@@ -126,6 +126,16 @@ void PrintPrincipalVariation(const PrincipalVariation& principal_variation,
     std::ignore = principal_variation;  // Resolve warning if debugging disabled.
 }
 
+template <typename Behavior>
+void PrintConsiderationOfPrincipalVariation(const Bitmove move)
+{
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "considering from principal variation:\n" << ToString(move) << std::endl;
+    }
+    std::ignore = move;  // Resolve warning if debugging disabled.
+}
+
 /// @brief Overwrites current line with next subline (assuming it was evaluated to be better)
 ///
 /// Copies line starting at current_depth+1 to current_depth in triangular prinicpal variation table.
@@ -174,6 +184,7 @@ Evaluation FindBestMove(Position& position,
                                                  kBitNullMove};
     if (is_inital_entry || is_first_entry_into_current_depth)
     {
+        PrintConsiderationOfPrincipalVariation<DebugBehavior>(principal_variation[current_depth]);
         const auto IsMoveSuggestedByPrincipalVariation = [&principal_variation, &current_depth](const auto a,
                                                                                                 const auto b) {
             std::ignore = b;
