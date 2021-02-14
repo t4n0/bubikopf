@@ -112,6 +112,21 @@ std::enable_if_t<Behavior::check_if_principal_variation_gets_evaluated_first, Ev
     return Evaluation{0};
 }
 
+struct CountEvaluations
+{
+    static constexpr bool count_evaluations{true};
+    static long number_of_evaluations;
+};
+long CountEvaluations::number_of_evaluations{};
+
+template <typename Behaviour>
+std::enable_if_t<Behaviour::count_evaluations, Evaluation> Evaluate(const Position& position)
+{
+    std::ignore = position;
+    CountEvaluations::number_of_evaluations++;
+    return 0;
+}
+
 namespace
 {
 
@@ -290,6 +305,34 @@ const std::array<std::array<Bitmove, kPrincipalVariationLength>, 2> kArbitraryPr
 INSTANTIATE_TEST_SUITE_P(ArbitraryPrincipalVariations,
                          FindBestMoveInvestigatesPrincipalVariationFirst,
                          testing::ValuesIn(kArbitraryPrincipalVariations));
+
+TEST(PrincipalVariationSmokeTest, GivenCheckmateInThree_ExpectPrincipalVariationNeedsLessEvaluations)
+{
+    // Setup
+    constexpr const char* const mate_in_three = "7r/Q1p2ppp/1p3k2/1Bb5/5q2/2N5/PPPrR1KP/R7 b - - 2 21";
+    Position position{PositionFromFen(mate_in_three)};
+    PrincipalVariation principal_variation{};
+    MoveStack move_stack{};
+    constexpr Evaluation negamax_sign_for_starting_position{-1};
+    constexpr std::size_t full_search_depth = 6;
+    constexpr Chess::AbortCondition abort_condition{full_search_depth};
+
+    // Call
+    CountEvaluations::number_of_evaluations = 0;
+    std::ignore = FindBestMove<GenerateAllPseudoLegalMoves, CountEvaluations, DebuggingDisabled>(
+        position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition);
+    const auto number_of_evaluations_without_principal_variation = CountEvaluations::number_of_evaluations;
+
+    ClearSublines(principal_variation);
+
+    CountEvaluations::number_of_evaluations = 0;
+    std::ignore = FindBestMove<GenerateAllPseudoLegalMoves, CountEvaluations, DebuggingDisabled>(
+        position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition);
+    const auto number_of_evaluations_with_principal_variation = CountEvaluations::number_of_evaluations;
+
+    // Expect
+    EXPECT_LT(number_of_evaluations_with_principal_variation, number_of_evaluations_without_principal_variation);
+}
 
 }  // namespace
 }  // namespace Chess
