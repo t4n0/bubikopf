@@ -71,9 +71,9 @@ void PrintGeneratedMoves(const MoveStack::const_iterator begin, const MoveStack:
 }
 
 template <typename Behavior>
-void PrintMove(const MoveStack::const_iterator end_before_move_generation,
-               const MoveStack::const_iterator move_iterator,
-               const MoveStack::const_iterator end_after_move_generation)
+void PrintMoveInvestigation(const MoveStack::const_iterator end_before_move_generation,
+                            const MoveStack::const_iterator move_iterator,
+                            const MoveStack::const_iterator end_after_move_generation)
 {
     if constexpr (Behavior::debugging)
     {
@@ -90,14 +90,42 @@ void PrintMove(const MoveStack::const_iterator end_before_move_generation,
 }
 
 template <typename Behavior>
-void PrintPruning(const Evaluation alpha, const Evaluation beta)
+void PrintMoveResult(const Bitmove move, const Evaluation evaluation)
 {
     if constexpr (Behavior::debugging)
     {
-        std::cout << "pruning due: alpha = " << alpha << ", beta = " << beta << '\n' << std::endl;
+        std::cout << ToUciString(move) << " = " << evaluation << '\n' << std::endl;
     }
-    std::ignore = alpha;  // Resolve warning if debugging disabled.
-    std::ignore = beta;
+    std::ignore = move;
+    std::ignore = evaluation;  // Resolve warning if debugging disabled.
+}
+
+template <typename Behavior>
+void PrintPruningInfo(const Evaluation negamax_alpha, const Evaluation negamax_beta, const Evaluation negamax_sign)
+{
+    if constexpr (Behavior::debugging)
+    {
+        if (negamax_sign > 0)
+        {
+            std::cout << "alpha = " << negamax_alpha << ", beta = " << negamax_beta << '\n' << std::endl;
+        }
+        else
+        {
+            std::cout << "alpha = " << -negamax_beta << ", beta = " << -negamax_alpha << '\n' << std::endl;
+        }
+    }
+    std::ignore = negamax_alpha;
+    std::ignore = negamax_beta;
+    std::ignore = negamax_sign;  // Resolve warning if debugging disabled.
+}
+
+template <typename Behavior>
+void PrintPruningDecision()
+{
+    if constexpr (Behavior::debugging)
+    {
+        std::cout << "pruning!" << '\n' << std::endl;
+    }
 }
 
 template <typename Behavior>
@@ -205,7 +233,7 @@ Evaluation FindBestMove(Position& position,
         const bool move_is_legal = !position.IsKingInCheck(position.defending_side_);
         if (move_is_legal)
         {
-            PrintMove<DebugBehavior>(end_before_move_generation, move_iterator, end_after_move_generation);
+            PrintMoveInvestigation<DebugBehavior>(end_before_move_generation, move_iterator, end_after_move_generation);
             is_terminal_node = false;
             Evaluation eval =
                 -FindBestMove<GenerateBehavior, EvaluateBehavior, DebugBehavior>(position,
@@ -216,6 +244,7 @@ Evaluation FindBestMove(Position& position,
                                                                                  current_depth + 1,
                                                                                  -beta_parent,
                                                                                  -alpha);
+            PrintMoveResult<DebugBehavior>(*move_iterator, eval * negamax_sign);
 
             const bool current_move_is_best_so_far{eval > alpha};
             if (current_move_is_best_so_far)
@@ -224,13 +253,14 @@ Evaluation FindBestMove(Position& position,
                 PromoteSubline<DebugBehavior>(principal_variation, current_depth, current_move);
                 PrintPrincipalVariation<DebugBehavior>(principal_variation, current_depth, current_move);
             }
+            PrintPruningInfo<DebugBehavior>(alpha, beta_parent, negamax_sign);
         }
         position.UnmakeMove(current_move, saved_extras);
 
         const bool opponent_has_better_option{alpha >= beta_parent};
         if (opponent_has_better_option)
         {
-            PrintPruning<DebugBehavior>(alpha, beta_parent);
+            PrintPruningDecision<DebugBehavior>();
             break;
         }
     }
