@@ -8,6 +8,7 @@
 #include "search/find_best_move.h"
 
 #include <algorithm>
+#include <chrono>
 
 namespace Chess
 {
@@ -65,10 +66,25 @@ void Bubikopf::UpdateBoard(const std::vector<std::string>& move_list)
 std::tuple<std::string, Evaluation> Bubikopf::FindBestMove()
 {
     ToCerrWithTime("Starting search for best move.");
-    constexpr std::size_t full_search_depth = 6;
-    constexpr AbortCondition abort_condition{full_search_depth};
-    const auto evaluation = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial>(
-        position_, principal_variation_, begin(move_stack_), GetCurrentNegamaxSign(), abort_condition);
+    const auto termination_time = std::chrono::steady_clock::now() + std::chrono::seconds{5};
+    const Position position_prior = position_;
+    std::size_t full_search_depth = 6;
+    Evaluation evaluation{};
+    try
+    {
+        while (true)
+        {
+            const AbortCondition abort_condition{full_search_depth, termination_time};
+            evaluation = Chess::FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial>(
+                position_, principal_variation_, begin(move_stack_), GetCurrentNegamaxSign(), abort_condition);
+            full_search_depth++;
+            ClearSublines(principal_variation_);
+        }
+    }
+    catch (const CalculationWasDue&)
+    {
+        position_ = position_prior;
+    }
     const auto uci_move = ToUciString(principal_variation_.front());
     ToCerrWithTime("Best move is: " + uci_move);
     return {uci_move, evaluation * GetCurrentNegamaxSign()};
