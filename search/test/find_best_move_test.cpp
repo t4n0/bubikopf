@@ -164,7 +164,7 @@ TEST(FindBestMovePruningTest, GivenDepth3_ExpectEvaluationOrderFromExample)
     EXPECT_EQ(EvaluteAccordingToEncodedUniqueId::unique_id_evaluation_order, expected_unique_id_evaluation_order);
 }
 
-constexpr std::size_t kPliesForCheckmateInThree{5};
+constexpr std::size_t kPliesForCheckmateInThree{6};  // one additional ply to test for nullmove as last move
 using ForcedCheckmatePossibleParameter = std::tuple<std::string, std::array<std::string, kPliesForCheckmateInThree>>;
 class FindBestMoveWhenForcedCheckmatePossible : public testing::TestWithParam<ForcedCheckmatePossibleParameter>
 {
@@ -200,10 +200,11 @@ TEST_P(FindBestMoveWhenForcedCheckmatePossible, GivenCheckmateIn3_ExpectCorrectC
 }
 
 const std::array<ForcedCheckmatePossibleParameter, 4> kVariousCheckmateIn3Positions{{
-    {"r2q1rk1/pb3p1p/1pn3p1/2p1R2Q/2P5/2BB4/P4PPP/R5K1 w - - 0 21", {"h5h7", "g8h7", "e5h5", "h7g8", "h5h8"}},
-    {"r2q2kr/ppp1b1pp/2n5/4B3/3Pn1b1/2P5/PP4PP/RN1Q1RK1 w - - 1 12", {"d1b3", "d8d5", "b3d5", "g4e6", "d5e6"}},
-    {"7r/Q1p2ppp/1p3k2/1Bb5/5q2/2N5/PPPrR1KP/R7 b - - 2 21", {"f4g4", "g2h1", "g4f3", "e2g2", "f3g2"}},
-    {"7r/6k1/1p2p1p1/p2pP1b1/P1NP1qpr/2P3N1/1R2QPP1/4R1K1 b - - 0 37", {"h4h1", "g3h1", "f4h2", "g1f1", "h2h1"}},
+    {"r2q1rk1/pb3p1p/1pn3p1/2p1R2Q/2P5/2BB4/P4PPP/R5K1 w - - 0 21", {"h5h7", "g8h7", "e5h5", "h7g8", "h5h8", "0000"}},
+    {"r2q2kr/ppp1b1pp/2n5/4B3/3Pn1b1/2P5/PP4PP/RN1Q1RK1 w - - 1 12", {"d1b3", "d8d5", "b3d5", "g4e6", "d5e6", "0000"}},
+    {"7r/Q1p2ppp/1p3k2/1Bb5/5q2/2N5/PPPrR1KP/R7 b - - 2 21", {"f4g4", "g2h1", "g4f3", "e2g2", "f3g2", "0000"}},
+    {"7r/6k1/1p2p1p1/p2pP1b1/P1NP1qpr/2P3N1/1R2QPP1/4R1K1 b - - 0 37",
+     {"h4h1", "g3h1", "f4h2", "g1f1", "h2h1", "0000"}},
 }};
 
 INSTANTIATE_TEST_SUITE_P(VariousCheckmateInThreePositions,

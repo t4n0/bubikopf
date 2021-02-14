@@ -182,6 +182,14 @@ inline void PromoteSubline(PrincipalVariation& principal_variation,
               begin_of_principal_variation + current_move_index + 1);
 }
 
+inline void ClearLine(PrincipalVariation& principal_variation, const std::size_t current_depth)
+{
+    const std::size_t begin_of_line_index = GetSublineIndexAtDepth(current_depth);
+    const std::size_t end_of_line_index = GetSublineIndexAtDepth(current_depth + 1);
+    std::fill_n(
+        std::begin(principal_variation) + begin_of_line_index, end_of_line_index - begin_of_line_index, kBitNullMove);
+}
+
 /// @brief A negamax search using alpha/beta pruning.
 template <typename GenerateBehavior, typename EvaluateBehavior, typename DebugBehavior = DebuggingDisabled>
 Evaluation FindBestMove(Position& position,
@@ -268,6 +276,7 @@ Evaluation FindBestMove(Position& position,
         constexpr Evaluation negamax_loss = Evaluation{-1000};
         negamax_alpha = position.IsKingInCheck(position.attacking_side_) ? negamax_loss : negamax_draw;
         PrintEvaluation<DebugBehavior>(negamax_alpha * negamax_sign);
+        ClearLine(principal_variation, current_depth);
     }
 
     PrintNodeExit<DebugBehavior>(current_depth);
