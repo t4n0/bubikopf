@@ -314,25 +314,43 @@ TEST(PrincipalVariationSmokeTest, GivenCheckmateInThree_ExpectPrincipalVariation
     Position position{PositionFromFen(mate_in_three)};
     PrincipalVariation principal_variation{};
     MoveStack move_stack{};
-    constexpr Evaluation negamax_sign_for_starting_position{-1};
+    constexpr Evaluation negamax_sign{-1};
     constexpr std::size_t full_search_depth = 6;
     constexpr Chess::AbortCondition abort_condition{full_search_depth};
 
     // Call
     CountEvaluations::number_of_evaluations = 0;
     std::ignore = FindBestMove<GenerateAllPseudoLegalMoves, CountEvaluations, DebuggingDisabled>(
-        position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition);
+        position, principal_variation, move_stack.begin(), negamax_sign, abort_condition);
     const auto number_of_evaluations_without_principal_variation = CountEvaluations::number_of_evaluations;
 
     ClearSublines(principal_variation);
 
     CountEvaluations::number_of_evaluations = 0;
     std::ignore = FindBestMove<GenerateAllPseudoLegalMoves, CountEvaluations, DebuggingDisabled>(
-        position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition);
+        position, principal_variation, move_stack.begin(), negamax_sign, abort_condition);
     const auto number_of_evaluations_with_principal_variation = CountEvaluations::number_of_evaluations;
 
     // Expect
     EXPECT_LT(number_of_evaluations_with_principal_variation, number_of_evaluations_without_principal_variation);
+}
+
+TEST(FindBestMoveTest, GivenTimeForCalculationIsOver_ExpectThrowsCalculationIsDue)
+{
+    // Setup
+    Position position{PositionFromFen(kStandardStartingPosition)};
+    PrincipalVariation principal_variation{};
+    MoveStack move_stack{};
+    constexpr Evaluation negamax_sign_for_starting_position{1};
+    constexpr std::size_t full_search_depth = 8;
+    constexpr auto beginning_of_time = std::chrono::steady_clock::time_point::min();
+    constexpr Chess::AbortCondition abort_condition{full_search_depth, beginning_of_time};
+
+    // Call& Expect
+    EXPECT_THROW(
+        (FindBestMove<GenerateAllPseudoLegalMoves, EvaluateMaterial, DebuggingDisabled>(
+            position, principal_variation, move_stack.begin(), negamax_sign_for_starting_position, abort_condition)),
+        CalculationWasDue);
 }
 
 }  // namespace

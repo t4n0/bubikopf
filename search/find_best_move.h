@@ -265,6 +265,10 @@ Evaluation FindBestMove(Position& position,
 
         if (negamax_alpha >= parent_negamax_beta)
         {
+            if (std::chrono::steady_clock::now() > abort_condition.calculation_is_due)
+            {
+                throw CalculationWasDue{};
+            }
             PrintPruningDecision<DebugBehavior>();
             break;
         }
