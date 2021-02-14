@@ -25,17 +25,17 @@ using PrincipalVariation =
 // Taken from https://www.chessprogramming.org/Triangular_PV-Table
 /// @brief This helper function returns the index where the subline at given depth can be accessed in the
 /// (logically triangular but in memory concatenated) principal variation table.
-inline std::size_t GetSublineIndexAtDepth(const std::size_t depth)
+inline constexpr std::size_t GetSublineIndexAtDepth(const std::size_t depth)
 {
     return depth * (2 * kMaximumLengthOfPrincipalVariation + 1 - depth) / 2;
 }
 
 inline void ClearSublines(PrincipalVariation& principal_variation)
 {
-    for (std::size_t index{GetSublineIndexAtDepth(1)}; index < principal_variation.size(); index++)
-    {
-        principal_variation[index] = kBitNullMove;
-    }
+    constexpr std::size_t index_after_principal_variation = GetSublineIndexAtDepth(1);
+    constexpr std::size_t number_of_elements_to_clear = principal_variation.size() - index_after_principal_variation;
+    std::fill_n(
+        std::begin(principal_variation) + index_after_principal_variation, number_of_elements_to_clear, kBitNullMove);
 }
 
 inline std::string ToString(const PrincipalVariation& principal_variation)
