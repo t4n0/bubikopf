@@ -80,7 +80,7 @@ void PrintMove(const MoveStack::const_iterator end_before_move_generation,
         const auto number_of_current_move = std::distance(end_before_move_generation, move_iterator);
         const auto total_number_of_pseudo_legal_moves =
             std::distance(end_before_move_generation, end_after_move_generation);
-        std::cout << "investigating " << ToUciString(*move_iterator) << " which is #" << number_of_current_move
+        std::cout << "investigating " << ToUciString(*move_iterator) << " which is #" << number_of_current_move + 1
                   << " of " << total_number_of_pseudo_legal_moves << " pseudo-legal moves\n"
                   << std::endl;
     }
