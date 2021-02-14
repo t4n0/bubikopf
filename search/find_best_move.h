@@ -238,11 +238,11 @@ Evaluation FindBestMove(Position& position,
     if (is_terminal_node)
     {
         constexpr Evaluation draw = Evaluation{0};
-        const Evaluation opponent_win = position.white_to_move_ ? Evaluation{-1000} : Evaluation{1000};
+        constexpr Evaluation opponent_win = Evaluation{-1000};
         const Evaluation game_result = position.IsKingInCheck(position.attacking_side_) ? opponent_win : draw;
-        PrintEvaluation<DebugBehavior>(game_result);
+        PrintEvaluation<DebugBehavior>(game_result * negamax_sign);
         PrintNodeExit<DebugBehavior>(current_depth);
-        return game_result * negamax_sign;
+        return game_result;
     }
 
     PrintNodeExit<DebugBehavior>(current_depth);
