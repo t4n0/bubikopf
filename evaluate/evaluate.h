@@ -20,6 +20,7 @@ struct EvaluateMaterial
     static constexpr bool evaluate_material{true};
 };
 
+/// Static evaluation of a position
 template <typename Behaviour = EvaluateMaterial>
 std::enable_if_t<Behaviour::evaluate_material, Evaluation> Evaluate(const Position& position)
 {
@@ -29,6 +30,15 @@ std::enable_if_t<Behaviour::evaluate_material, Evaluation> Evaluate(const Positi
            (popcnt(position[kWhiteBoard + kRook]) - popcnt(position[kBlackBoard + kRook])) * kRookValue +
            (popcnt(position[kWhiteBoard + kQueen]) - popcnt(position[kBlackBoard + kQueen])) * kQueenValue +
            (popcnt(position[kWhiteBoard + kKing]) - popcnt(position[kBlackBoard + kKing])) * kKingValue;
+}
+
+/// Function assumes that in the provided position no legal moves are left
+/// Returns the game result in negamax notation.
+inline Evaluation DetermineGameResult(const Position& position, const std::size_t current_depth)
+{
+    constexpr Evaluation negamax_draw = Evaluation{0};
+    constexpr Evaluation negamax_loss = Evaluation{-1000};
+    return position.IsKingInCheck(position.attacking_side_) ? negamax_loss + current_depth : negamax_draw;
 }
 
 }  // namespace Chess

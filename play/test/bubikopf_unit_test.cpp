@@ -74,8 +74,8 @@ TEST_P(BubikopfFindBestMoveTestFixture, GivenCheckmateIn4_ExpectCorrectContinuat
 }
 
 const std::array<std::tuple<std::string, std::string, Evaluation>, 2> kCheckMateInThreePositions{{
-    {"r4k2/pp2qp2/8/3N3r/3P4/1Q4p1/PP4P1/R4RK1 b - - 0 22", "h5h1", Evaluation{-1000}},
-    {"r4k2/p3R3/2p1R1pp/1p3pN1/6n1/8/PPPr2PP/7K w - - 14 32", "e7f7", Evaluation{1000}},
+    {"r4k2/pp2qp2/8/3N3r/3P4/1Q4p1/PP4P1/R4RK1 b - - 0 22", "h5h1", Evaluation{-995}},
+    {"r4k2/p3R3/2p1R1pp/1p3pN1/6n1/8/PPPr2PP/7K w - - 14 32", "e7f7", Evaluation{995}},
 }};
 
 INSTANTIATE_TEST_SUITE_P(CheckMateInThreePositions,

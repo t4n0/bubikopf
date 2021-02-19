@@ -211,7 +211,7 @@ INSTANTIATE_TEST_SUITE_P(VariousCheckmateInThreePositions,
                          FindBestMoveWhenForcedCheckmatePossible,
                          testing::ValuesIn(kVariousCheckmateIn3Positions));
 
-class FindBestMoveInFinalPosition : public testing::TestWithParam<std::tuple<std::string, Evaluation>>
+class FindBestMoveDetermineGameResult : public testing::TestWithParam<std::tuple<std::string, Evaluation>>
 {
   public:
     std::string GetFen() { return std::get<0>(GetParam()); }
@@ -223,7 +223,7 @@ class FindBestMoveInFinalPosition : public testing::TestWithParam<std::tuple<std
     }
 };
 
-TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectEvaluation)
+TEST_P(FindBestMoveDetermineGameResult, GivenDecidedPosition_ExpectCorrectEvaluation)
 {
     // Setup
     constexpr std::size_t full_search_depth = 6;
@@ -240,14 +240,20 @@ TEST_P(FindBestMoveInFinalPosition, GivenEndgamePositions_ExpectCorrectEvaluatio
     EXPECT_FLOAT_EQ(evaluation, GetExpectedEvaluation());
 }
 
-const std::array<std::tuple<std::string, Evaluation>, 4> kFinalPositions{{
-    {"8/8/8/8/8/2K1Q3/8/3k4 b - - 0 1", Evaluation{0.0}},      // stalemate on blacks turn
-    {"8/8/8/8/8/2k1q3/8/3K4 w - - 0 1", Evaluation{0.0}},      // stalemate on whites turn
-    {"8/8/8/8/8/2k5/3q4/3K4 w - - 0 1", Evaluation{-1000.0}},  // white is checkmate, eval -> opponent is losing
-    {"8/8/8/8/8/2K5/3Q4/3k4 b - - 0 1", Evaluation{-1000.0}},  // black is checkmate, eval -> opponent is losing
+const std::array<std::tuple<std::string, Evaluation>, 10> kFinalPositions{{
+    {"8/8/8/8/8/2K1Q3/8/3k4 b - - 0 1", Evaluation{0.0}},                              // stalemate on blacks turn
+    {"8/8/8/8/8/2k1q3/8/3K4 w - - 0 1", Evaluation{0.0}},                              // stalemate on whites turn
+    {"8/8/8/8/8/2k5/3q4/3K4 w - - 0 1", Evaluation{-1000.0}},                          // white checkmate
+    {"8/8/8/8/8/2K5/3Q4/3k4 b - - 0 1", Evaluation{-1000.0}},                          // black checkmate
+    {"6rk/5prp/1p3Q2/4N3/1P4b1/P3q1P1/7P/R1R2K2 b - - 1 30", Evaluation{999.0}},       // white checkmate in one ply
+    {"5b1r/R2R1p2/1pk1p2p/8/2P5/1PnK2P1/7P/8 w - - 3 33", Evaluation{999.0}},          // black checkmate in one ply
+    {"r6k/pp3Bpp/2p2B2/8/4N2Q/P4PP1/2P3K1/1R1r1q2 w - - 1 27", Evaluation{-998.0}},    // white checkmate in three plies
+    {"5r1k/4b1p1/p6R/1p6/1P1p1QP1/P2P4/B1r2RK1/3q4 b - - 0 36", Evaluation{-998.0}},   // black checkmate in three plies
+    {"r6k/pp3Bpp/2p2B2/1q6/4N2Q/P4PP1/2P3K1/1R1r4 b - - 0 26", Evaluation{997.0}},     // white checkmate in three plies
+    {"5r1k/4b1p1/p3R2p/1p6/1P1p1QP1/P2P4/B1r2RK1/3q4 w - - 1 36", Evaluation{997.0}},  // black checkmate in three plies
 }};
 
-INSTANTIATE_TEST_SUITE_P(VariousFinalPositions, FindBestMoveInFinalPosition, testing::ValuesIn(kFinalPositions));
+INSTANTIATE_TEST_SUITE_P(VariousFinalPositions, FindBestMoveDetermineGameResult, testing::ValuesIn(kFinalPositions));
 
 class FindBestMoveInvestigatesPrincipalVariationFirst : public testing::TestWithParam<std::array<Bitmove, 2>>
 {

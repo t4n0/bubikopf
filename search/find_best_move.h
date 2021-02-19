@@ -276,9 +276,7 @@ Evaluation FindBestMove(Position& position,
 
     if (is_terminal_node)
     {
-        constexpr Evaluation negamax_draw = Evaluation{0};
-        constexpr Evaluation negamax_loss = Evaluation{-1000};
-        negamax_alpha = position.IsKingInCheck(position.attacking_side_) ? negamax_loss : negamax_draw;
+        negamax_alpha = DetermineGameResult(position, current_depth);
         PrintEvaluation<DebugBehavior>(negamax_alpha * negamax_sign);
         ClearLine(principal_variation, current_depth);
     }
