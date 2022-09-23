@@ -33,7 +33,6 @@ cp <clone_dir>/bazel-bin/play/bubikopf <path_where_you_want_the_binary>
 
 ## acknowledgements
 For the development of bubikopf the following open source projects were used. A big thanks to the authors and contributors:
-- [grailbio/bazel-compilation-database](https://github.com/grailbio/bazel-compilation-database) (enables VS Code support for bazel)
 - [Mk-Chan/BBPerft](https://github.com/Mk-Chan/BBPerft) (reference implementation for debugging and benchmarking)
 - [ShailChoksi/lichess-bot](https://github.com/ShailChoksi/lichess-bot) (bridge between engine binary and lichess server)
 
